@@ -14,14 +14,20 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
+//        let window = UIWindow(windowScene: windowScene)
+//        let vc = MainViewController()
+//        let navController = UINavigationController(rootViewController: vc)
+//        navController.navigationBar.prefersLargeTitles = true
+//        vc.navigationItem.largeTitleDisplayMode = .always
+//        window.rootViewController = navController
+//        window.makeKeyAndVisible()
+//        window.overrideUserInterfaceStyle = .light
+//        self.window = window
         let window = UIWindow(windowScene: windowScene)
-        let vc = CalendarViewController()
-        let navController = UINavigationController(rootViewController: vc)
-        navController.navigationBar.prefersLargeTitles = true
-        vc.navigationItem.largeTitleDisplayMode = .always
-        vc.navigationController?.navigationBar.backgroundColor = .systemBackground
-        window.rootViewController = navController
+        let mainVC = TabBarViewController()
+        window.rootViewController = mainVC
         window.makeKeyAndVisible()
+        window.overrideUserInterfaceStyle = .light
         self.window = window
         
     }

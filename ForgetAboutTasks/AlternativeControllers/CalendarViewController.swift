@@ -10,7 +10,7 @@ import CalendarKit
 import EventKit
 import EventKitUI
 
-class CalendarViewController: DayViewController, EKEventEditViewDelegate {
+class CalendarViewController: DayViewController {
     
     private let eventStore = EKEventStore()
 
@@ -37,12 +37,22 @@ class CalendarViewController: DayViewController, EKEventEditViewDelegate {
         present(nav, animated: true)
     }
     
+    @objc private func didTapReturn(){
+        self.dismiss(animated: true)
+    }
+    
     private func setupView(){
         title = "Calendar"
         view.backgroundColor = .systemBackground
         requestAccessToCalendar()
         setupNotification()
+        setupNavigationController()
+        navigationController?.navigationBar.isTranslucent = false
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(didTapNextView))
+    }
+    
+    private func setupNavigationController(){
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "arrow.backward"), landscapeImagePhone: nil, style: .done, target: self, action: #selector(didTapReturn))
     }
     
     private func requestAccessToCalendar(){
@@ -155,12 +165,14 @@ class CalendarViewController: DayViewController, EKEventEditViewDelegate {
         endEventEditing()
     }
     
+
+}
+
+extension CalendarViewController: EKEventEditViewDelegate{
     func eventEditViewController(_ controller: EKEventEditViewController, didCompleteWith action: EKEventEditViewAction) {
         endEventEditing()
         reloadData()
         controller.dismiss(animated: true)
     }
-
-
 }
 

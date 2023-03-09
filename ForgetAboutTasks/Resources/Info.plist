@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSRemindersUsageDescription</key>
+	<string>Please allow to use notification to get fresh reminders from calendar</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>This app need Your access to calendar to get data and send it</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
