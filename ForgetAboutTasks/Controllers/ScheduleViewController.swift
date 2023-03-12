@@ -9,8 +9,17 @@
 
 import UIKit
 import FSCalendar
+import EventKit
 
 class ScheduleViewController: UIViewController {
+    
+    var dateDictionary: [String: [TasksDate]] = [:]
+    
+    lazy var dateFormatter: DateFormatter = {
+       let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter
+    }()
     
     private var calendar: FSCalendar = {
        let calendar = FSCalendar()
@@ -18,7 +27,8 @@ class ScheduleViewController: UIViewController {
         calendar.pagingEnabled = false
         calendar.weekdayHeight = 30
         calendar.headerHeight = 50
-        calendar.locale = Locale(identifier: "ru_RU")
+        calendar.firstWeekday = 2
+//        calendar.locale = Locale(identifier: "ru_RU")
         calendar.translatesAutoresizingMaskIntoConstraints = false
         return calendar
     }()
@@ -44,7 +54,7 @@ class ScheduleViewController: UIViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        calendar.frame = CGRect(x: 0, y: 0, width: view.frame.size.width, height: view.frame.size.height)
+        calendar.frame = CGRect(x: 0, y: 90, width: view.frame.size.width, height: view.frame.size.height)
     }
     
     @objc private func didTapTapped(){
@@ -57,10 +67,14 @@ class ScheduleViewController: UIViewController {
         }
     }
     
-
+    private func setupDelegates(){
+        let tasks = TasksViewController()
+        tasks.delegate = self
+    }
     
     private func setupView(){
         setupTarget()
+        setupDelegates()
         view.addSubview(calendar)
         calendar.delegate = self
         calendar.dataSource = self
@@ -78,9 +92,22 @@ class ScheduleViewController: UIViewController {
         navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "eye.fill"), landscapeImagePhone: nil, style: .done, target: self, action: #selector(didTapTapped))
     }
     
-
+    private func formatData(date: Date) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd-MM-yyyy"
+    }
+}
+//MARK: - Tasks Delegate
+extension ScheduleViewController: TasksViewDelegate {
+    func tasksData(array data: [TasksDate], date: Date) {
+        let date = data.first?.date ?? "No date"
+        dateDictionary[date] = data
+    }
+    
     
 }
+
+
 //MARK: - calendar delegates
 extension ScheduleViewController: FSCalendarDelegate, FSCalendarDataSource {
     func calendar(_ calendar: FSCalendar, boundingRectWillChange bounds: CGRect, animated: Bool) {
@@ -88,10 +115,47 @@ extension ScheduleViewController: FSCalendarDelegate, FSCalendarDataSource {
     }
     
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
-        print(date)
+        
+        let locString = DateFormatter.localizedString(from: date, dateStyle: .medium, timeStyle: .none)
+//        let time = DateFormatter.localizedString(from: date, dateStyle: .none, timeStyle: .medium)
+        let calendarDate = Date()
+        let hour = Calendar.current.component(.hour, from: calendarDate)
+        let minute = Calendar.current.component(.minute, from: calendarDate)
+        if date == .now {
+            
+        }
+        if monthPosition == .current {
+            let vc = TasksViewController()
+            vc.delegate = self
+            vc.dateGetter = date+1
+            vc.dateString = locString
+            vc.timeString = "\(hour)" + " : " + "\(minute)"
+            let nav = UINavigationController(rootViewController: vc)
+            nav.modalPresentationStyle = .fullScreen
+            nav.isNavigationBarHidden = false
+            present(nav, animated: true)
+//            calendar.deselect(date)
+        }
     }
     
+    func calendar(_ calendar: FSCalendar, numberOfEventsFor date: Date) -> Int {
+        let string = self.dateFormatter.string(from: date)
+        if self.dateDictionary.keys.contains(string) {
+            return 1
+        }
+        return 0
+        
+        
+    }
+    
+
+
 }
+
+//MARK: - Добавление евентов в календарь для отображения
+//    var dates = ["2023-03-10","2023-03-11","2023-03-12","2023-03-13","2023-03-14","2023-03-15"]
+//
+
 
 
 //    private func setupSwipeAction(){

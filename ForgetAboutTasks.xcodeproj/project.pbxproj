@@ -25,6 +25,7 @@
 		0A8AC1A429B9D4EB00EA052B /* TasksViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8AC1A329B9D4EB00EA052B /* TasksViewController.swift */; };
 		0A8AC1A629B9D4FA00EA052B /* ContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8AC1A529B9D4FA00EA052B /* ContactsViewController.swift */; };
 		0A8AC1A829B9DBD300EA052B /* UserProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8AC1A729B9DBD300EA052B /* UserProfileViewController.swift */; };
+		0A8DD8DB29BC8BEB00B2DDAB /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8DD8DA29BC8BEB00B2DDAB /* Formatters.swift */; };
 		8186764FB1BB2084EBD6465F /* Pods_ForgetAboutTasks_ForgetAboutTasksUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 081E2F7D28B71EC3AA3980C1 /* Pods_ForgetAboutTasks_ForgetAboutTasksUITests.framework */; };
 		A469AD9F86D4E441D8D2A55E /* Pods_ForgetAboutTasks.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC2C5346B0F22B63FF2E08B1 /* Pods_ForgetAboutTasks.framework */; };
 /* End PBXBuildFile section */
@@ -70,6 +71,7 @@
 		0A8AC1A329B9D4EB00EA052B /* TasksViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TasksViewController.swift; sourceTree = "<group>"; };
 		0A8AC1A529B9D4FA00EA052B /* ContactsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsViewController.swift; sourceTree = "<group>"; };
 		0A8AC1A729B9DBD300EA052B /* UserProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileViewController.swift; sourceTree = "<group>"; };
+		0A8DD8DA29BC8BEB00B2DDAB /* Formatters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Formatters.swift; sourceTree = "<group>"; };
 		3015CC6C7F05EBB6BF73F999 /* Pods-ForgetAboutTasks.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ForgetAboutTasks.release.xcconfig"; path = "Target Support Files/Pods-ForgetAboutTasks/Pods-ForgetAboutTasks.release.xcconfig"; sourceTree = "<group>"; };
 		5BFA5F0DDDDE5DC52FB7B995 /* Pods-ForgetAboutTasks-ForgetAboutTasksUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ForgetAboutTasks-ForgetAboutTasksUITests.debug.xcconfig"; path = "Target Support Files/Pods-ForgetAboutTasks-ForgetAboutTasksUITests/Pods-ForgetAboutTasks-ForgetAboutTasksUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		A2355D59545111B95037C74C /* Pods_ForgetAboutTasksTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ForgetAboutTasksTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -132,6 +134,7 @@
 		0A86ED0E29B5D97F001C9BAF /* ForgetAboutTasks */ = {
 			isa = PBXGroup;
 			children = (
+				0A8DD8D929BC8BD900B2DDAB /* DateFormatters */,
 				0A8AC1A229B9D4D700EA052B /* Controllers */,
 				0A8AC19B29B9C89900EA052B /* Models */,
 				0A8AC19D29B9CFCF00EA052B /* NavigationControllers */,
@@ -214,6 +217,14 @@
 				0A8AC1A729B9DBD300EA052B /* UserProfileViewController.swift */,
 			);
 			path = Controllers;
+			sourceTree = "<group>";
+		};
+		0A8DD8D929BC8BD900B2DDAB /* DateFormatters */ = {
+			isa = PBXGroup;
+			children = (
+				0A8DD8DA29BC8BEB00B2DDAB /* Formatters.swift */,
+			);
+			path = DateFormatters;
 			sourceTree = "<group>";
 		};
 		323A8B5E5503D5EEE0EAABE3 /* Frameworks */ = {
@@ -478,6 +489,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0A8AC19F29B9D00A00EA052B /* TabBarViewController.swift in Sources */,
+				0A8DD8DB29BC8BEB00B2DDAB /* Formatters.swift in Sources */,
 				0A8AC1A829B9DBD300EA052B /* UserProfileViewController.swift in Sources */,
 				0A8AC1A629B9D4FA00EA052B /* ContactsViewController.swift in Sources */,
 				0A8AC19829B8309F00EA052B /* MainViewController.swift in Sources */,
