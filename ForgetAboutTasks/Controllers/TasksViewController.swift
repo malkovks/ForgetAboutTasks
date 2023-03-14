@@ -11,7 +11,7 @@ import EventKit
 import EventKitUI
 
 protocol TasksViewDelegate: AnyObject {
-    func tasksData(array data: [TasksDate], date: Date)
+    func tasksData(array data: [TasksDate],date: String)
 }
 
 struct TasksDate {
@@ -27,13 +27,14 @@ class TasksViewController: UIViewController {
     
     weak var delegate: TasksViewDelegate?
     
-    public var dateGetter: Date?
-    public var dateString: String?
-    public var timeString: String?
-    
+    public var choosenDate = Date()
     var cellData: [TasksDate] = []
+    private var isValueWasChanged = Bool()
+    private var isTrailingSwipeActionActive = Bool()
     
-    private var indexOfCell: Int = 0
+    
+    private var indexOfCell = Int()
+    private var isCellEdited = Bool()
     
     private let store = EKEventStore()
     
@@ -71,9 +72,8 @@ class TasksViewController: UIViewController {
         super.viewDidLoad()
         setupView()
         setupNavigationController()
-        setupTableView()
-//        setupConstraintsForCalendar()
-    }
+        setupTableViewAndDelegates()
+            }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
@@ -81,86 +81,121 @@ class TasksViewController: UIViewController {
         tableView.frame = CGRect(x: 0, y: calendar.frame.size.height+10, width: view.frame.size.width, height: view.frame.size.height/1.7)
         saveButton.frame = CGRect(x: 30, y: calendar.frame.size.height+20+tableView.frame.size.height, width: view.frame.size.width-60, height: 55)
     }
- //MARK: - targets methods
+ //MARK: -  actions targets methods
     @objc private func didTapTapped(){
-        if !cellData.isEmpty {
-            setupAlertSheet(title: "Warning", subtitle: "Do you want to discard all changes?")
+        if !cellData.isEmpty && isValueWasChanged == true {
+            setupAlertSheet(title: "Warning", subtitle: "What do you want to do with this list?")
         } else {
+//            let date = Formatters.instance.stringFromDate(date: self.choosenDate)
+//            self.delegate?.tasksData(array: [],date: date)
             self.dismiss(animated: true)
         }
     }
     
     @objc private func didTapCreate(){
-        let alert = UIAlertController(title: "Hello!", message: "Please, enter the text", preferredStyle: .alert)
-        alert.addTextField { (textfield: UITextField) -> Void in
-            textfield.placeholder = "Enter the name of reminder"
-        }
-        alert.addAction(UIAlertAction(title: "Save", style: .default,handler: { _ in
-            let date = self.dateString
-            guard let field = alert.textFields?.first,
-                  let text = field.text, !text.isEmpty,
-                  let time = self.timeString,
-                  let date = date else { print("Error saving");return }
-            
-            self.cellData.append(TasksDate(date: date,time: time, name: text))
-            self.tableView.reloadData()
-            print("saved")
-        }))
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        present(alert, animated: true)
-        DispatchQueue.main.async {
-            self.tableView.reloadData()
+        let event = EKEvent(eventStore: self.store)
+        event.startDate = choosenDate
+        event.endDate = getEndDate(start: choosenDate)
+        
+        let eventVC = EKEventEditViewController()
+        eventVC.event = event
+        eventVC.eventStore = store
+        eventVC.editViewDelegate = self
+        present(eventVC, animated: true)
+    }
+    
+    @objc private func didTapSaveReminder(){
+        let date = Formatters.instance.stringFromDate(date: choosenDate)
+        if cellData.isEmpty {
+//            self.delegate?.tasksData(array: [], date: date)
+            self.dismiss(animated: true)
+        } else {
+            self.delegate?.tasksData(array: cellData, date: date)
+            self.dismiss(animated: true)
         }
     }
 //MARK: - Set up Methods
+    private func getEndDate(start date: Date) -> Date? {
+        var comp = DateComponents()
+        comp.day = 1
+        let calendar = Calendar.current
+        let endDate = calendar.date(byAdding: comp, to: date)
+        return endDate
+    }
+    
     private func setupAlertSheet(title: String,subtitle: String) {
+        let date = Formatters.instance.stringFromDate(date: self.choosenDate)
         let sheet = UIAlertController(title: title, message: subtitle, preferredStyle: .actionSheet)
         sheet.addAction(UIAlertAction(title: "Discard changes", style: .destructive,handler: { _ in
             self.dismiss(animated: true)
+            self.delegate?.tasksData(array: [],date: date)
         }))
         sheet.addAction(UIAlertAction(title: "Save", style: .default,handler: { [self] _ in
-            self.delegate?.tasksData(array: cellData, date: dateGetter!)
+            self.delegate?.tasksData(array: cellData, date: date)
             self.dismiss(animated: true)
-            print("Data was saved")
         }))
         sheet.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         present(sheet, animated: true)
     }
     
     private func setupView(){
-        setupTarget()
         view.addSubview(calendar)
         view.addSubview(tableView)
         view.addSubview(saveButton)
-        calendar.delegate = self
-        calendar.dataSource = self
         view.backgroundColor = .systemBackground
+        askForUsingEvent()
+        setupVisibleSaveButton()
+        setupTargetActions()
     }
     
-    private func setupTableView(){
+    private func setupTableViewAndDelegates(){
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.allowsSelection = false
         tableView.register(UITableViewCell.self
                            , forCellReuseIdentifier: "cell")
+        calendar.delegate = self
+        calendar.dataSource = self
+        let eventEditVC = EKEventEditViewController()
+        eventEditVC.editViewDelegate = self
     }
     
-    private func setupTarget(){
-        
+    private func setupVisibleSaveButton(){
+        if cellData.isEmpty {
+            saveButton.isHidden = true
+        } else {
+            saveButton.isHidden = false
+        }
     }
     
     private func setupNavigationController(){
-        title = "Задачи на \(dateString ?? "")"
+        let convertDate = Formatters.instance.stringFromDate(date: choosenDate)
+        title = "Задачи на \(convertDate)"
+        
         navigationController?.navigationItem.largeTitleDisplayMode = .always
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "arrow.backward.circle.fill"), landscapeImagePhone: nil, style: .done, target: self, action: #selector(didTapTapped))
-        let firstNav = UIBarButtonItem(image: UIImage(systemName: "plus.circle.fill"), landscapeImagePhone: nil, style: .done, target: self, action: #selector(didTapCreate))
-        firstNav.tintColor = .systemBlue
-        navigationItem.rightBarButtonItems = [firstNav]
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "plus.circle.fill"), landscapeImagePhone: nil, style: .done, target: self, action: #selector(didTapCreate))
+       
     }
-  //функция конвертации текста и возврата в строку
-//    private func cellConfigure() -> (String,String){
-//
-//    }
+    
+    private func setupTargetActions(){
+        saveButton.addTarget(self, action: #selector(didTapSaveReminder), for: .touchUpInside)
+    }
+    
+    private func askForUsingEvent(){
+        store.requestAccess(to: .event) { success, error in
+            if success, error == nil {
+                DispatchQueue.main.async {
+                    self.setupView()
+                }
+            } else {
+                let alert = UIAlertController(title: "Warning", message: "Please give access to calendar", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "Ok", style: .default))
+                self.present(alert, animated: true)
+            }
+        }
+    }
     
 
     
@@ -174,38 +209,71 @@ extension TasksViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cell")
         let model = cellData[indexPath.row]
-        cell.detailTextLabel?.text = model.date
-        cell.textLabel?.text = model.name
+        if model.event == nil {
+            cell.detailTextLabel?.text = model.date
+            cell.textLabel?.text = model.name
+        } else {
+            cell.textLabel?.text = model.event?.title
+            cell.detailTextLabel?.text = model.date
+        }
+        
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+    }
+    
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        isValueWasChanged = true
+        let index = indexPath.row
+        let deleteInstance = UIContextualAction(style: .destructive, title: "") { _, _, _ in
+            self.cellData.remove(at: index)
+            tableView.deleteRows(at: [indexPath], with: .fade)
+        }
+        deleteInstance.backgroundColor = .systemRed
+        deleteInstance.image = UIImage(systemName: "trash.fill")
+        deleteInstance.image?.withTintColor(.systemBackground)
+        let action = UISwipeActionsConfiguration(actions: [deleteInstance])
         
-        var comp = DateComponents()
-        comp.day = 1
-        let calendar = Calendar.current
-        let endDate = calendar.date(byAdding: comp, to: dateGetter!)
-        
-        let model = cellData[indexPath.row]
-        let event = EKEvent(eventStore: self.store)
-        event.title = "\(model.name)"
-        event.startDate = dateGetter
-        event.endDate = endDate
-        
-        let eventVC = EKEventEditViewController()
-        eventVC.event = event
-        eventVC.eventStore = store
-        eventVC.editViewDelegate = self
-        present(eventVC, animated: true)
-        indexOfCell = indexPath.row
+        return action
+    }
+    
+    func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        isTrailingSwipeActionActive = true
+        let index = indexPath.row
+        indexOfCell = index
+        isCellEdited = true
+        let model = cellData[index]
+        let actionInstance = UIContextualAction(style: .normal, title: "") { [weak self] _, _, completionHandler in
+            self?.isTrailingSwipeActionActive = false
+            let event = EKEvent(eventStore: model.store!)
+            event.startDate = model.event?.startDate
+            event.endDate = model.event?.endDate
+            event.title = model.name
+            
+            let eventVC = EKEventEditViewController()
+            eventVC.event = event
+            eventVC.eventStore = model.store
+            eventVC.editViewDelegate = self
+            self?.present(eventVC, animated: true)
+            completionHandler(true)
+        }
+        actionInstance.backgroundColor = .systemYellow
+        actionInstance.image = UIImage(systemName: "pencil.line")
+        actionInstance.image?.withTintColor(.systemBackground)
+        let action = UISwipeActionsConfiguration(actions: [actionInstance])
+        return action
+    }
+    
+    func tableView(_ tableView: UITableView, didEndEditingRowAt indexPath: IndexPath?) {
+        isTrailingSwipeActionActive = false
     }
 }
 
 //MARK: - calendar delegates
 extension TasksViewController: FSCalendarDelegate, FSCalendarDataSource {
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
-        print(date)
     }
 }
 
@@ -215,20 +283,30 @@ extension TasksViewController: EKEventEditViewDelegate {
         if action == .canceled {
             self.dismiss(animated: true)
         } else if action == .saved {
-            let title = controller.event?.title
-            var model = cellData[indexOfCell]
-            model.name = title ?? "Error of setting string"
-            model.event = controller.event
-            model.store = controller.eventStore
-            self.tableView.reloadData()
+            isValueWasChanged = true
+            let dateGetter = controller.event?.startDate
+            let date = cellData.first?.date ?? choosenDate.formatted(date: .complete, time: .omitted)
+            let name = controller.event?.title ?? ""
+            let event = controller.event
+            let ekStore = controller.eventStore
+            if !cellData.isEmpty && isCellEdited == true{
+                cellData.remove(at: indexOfCell)
+                isCellEdited = false
+            }
+            cellData.append(TasksDate(date: date, dateGetter: dateGetter, time: "No time still", name: name, event: event, store: ekStore))
             self.dismiss(animated: true)
+            self.indexOfCell = 0
+            self.tableView.reloadData()
+            
+            
+        } else {
+            print("some error")
         }
-        
     }
     
     
 }
-//MARK: - constrain extension for dymanic height changing
+//MARK: - constrain extension for dymanic height changing.NOT USING
 extension TasksViewController {
     func setupConstraintsForCalendar(){
         view.addSubview(calendar)

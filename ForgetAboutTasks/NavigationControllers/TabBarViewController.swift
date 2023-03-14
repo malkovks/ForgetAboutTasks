@@ -18,11 +18,10 @@ class TabBarViewController: UITabBarController {
     
     private func setupTabBar() {
         let scheduleVC = setupNavigationController(vc: ScheduleViewController(), itemName: "Schedule", image: "calendar.badge.clock")
-        let tasksVC = setupNavigationController(vc: TasksViewController(), itemName: "Tasks", image: "text.badge.checkmark")
         let contactsVC = setupNavigationController(vc: ContactsViewController(), itemName: "Contacts", image: "rectangle.stack.person.crop")
         let userVC = setupNavigationController(vc: UserProfileViewController(), itemName: "User Profile", image: "person.fill")
         
-        viewControllers = [scheduleVC, tasksVC, contactsVC, userVC]
+        viewControllers = [scheduleVC, contactsVC, userVC]
     }
     
     //настройка таб бара

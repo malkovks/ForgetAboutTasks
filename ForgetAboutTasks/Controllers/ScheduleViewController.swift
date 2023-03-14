@@ -15,9 +15,12 @@ class ScheduleViewController: UIViewController {
     
     var dateDictionary: [String: [TasksDate]] = [:]
     
+    let formatter = Formatters()
+    
     lazy var dateFormatter: DateFormatter = {
        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.dateFormat = "dd MMM yyyy"
+        formatter.locale = Locale(identifier: "ru_RU")
         return formatter
     }()
     
@@ -28,7 +31,6 @@ class ScheduleViewController: UIViewController {
         calendar.weekdayHeight = 30
         calendar.headerHeight = 50
         calendar.firstWeekday = 2
-//        calendar.locale = Locale(identifier: "ru_RU")
         calendar.translatesAutoresizingMaskIntoConstraints = false
         return calendar
     }()
@@ -70,19 +72,15 @@ class ScheduleViewController: UIViewController {
     private func setupDelegates(){
         let tasks = TasksViewController()
         tasks.delegate = self
+        calendar.delegate = self
+        calendar.dataSource = self
     }
     
     private func setupView(){
-        setupTarget()
         setupDelegates()
         view.addSubview(calendar)
-        calendar.delegate = self
-        calendar.dataSource = self
-        view.backgroundColor = .systemBackground
-    }
-    
-    private func setupTarget(){
         
+        view.backgroundColor = .systemBackground
     }
     
     private func setupNavigationController(){
@@ -91,20 +89,18 @@ class ScheduleViewController: UIViewController {
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "eye.fill"), landscapeImagePhone: nil, style: .done, target: self, action: #selector(didTapTapped))
     }
-    
-    private func formatData(date: Date) {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd-MM-yyyy"
-    }
 }
 //MARK: - Tasks Delegate
 extension ScheduleViewController: TasksViewDelegate {
-    func tasksData(array data: [TasksDate], date: Date) {
-        let date = data.first?.date ?? "No date"
-        dateDictionary[date] = data
+    func tasksData(array data: [TasksDate], date: String) {
+        if !data.isEmpty {
+            dateDictionary[date] = data
+            self.calendar.reloadData()
+        } else {
+            dateDictionary.removeValue(forKey: date)
+            self.calendar.reloadData()
+        }
     }
-    
-    
 }
 
 
@@ -116,20 +112,18 @@ extension ScheduleViewController: FSCalendarDelegate, FSCalendarDataSource {
     
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
         
-        let locString = DateFormatter.localizedString(from: date, dateStyle: .medium, timeStyle: .none)
-//        let time = DateFormatter.localizedString(from: date, dateStyle: .none, timeStyle: .medium)
-        let calendarDate = Date()
-        let hour = Calendar.current.component(.hour, from: calendarDate)
-        let minute = Calendar.current.component(.minute, from: calendarDate)
         if date == .now {
             
         }
         if monthPosition == .current {
+            let dateString = formatter.stringFromDate(date: date)
+            print(dateString)
             let vc = TasksViewController()
             vc.delegate = self
-            vc.dateGetter = date+1
-            vc.dateString = locString
-            vc.timeString = "\(hour)" + " : " + "\(minute)"
+            vc.choosenDate = date
+            if let dict = dateDictionary[dateString] {
+                vc.cellData = dict
+            }
             let nav = UINavigationController(rootViewController: vc)
             nav.modalPresentationStyle = .fullScreen
             nav.isNavigationBarHidden = false
@@ -139,14 +133,20 @@ extension ScheduleViewController: FSCalendarDelegate, FSCalendarDataSource {
     }
     
     func calendar(_ calendar: FSCalendar, numberOfEventsFor date: Date) -> Int {
-        let string = self.dateFormatter.string(from: date)
-        if self.dateDictionary.keys.contains(string) {
+        
+        let string = formatter.stringFromDate(date: date)
+        if self.dateDictionary[string] != nil && self.dateDictionary[string]?.count == 1 {
             return 1
+        } else if self.dateDictionary[string]?.count == 2 {
+            return 2
+        } else if let count = self.dateDictionary[string]?.count   {
+            if count >= 3 {
+                return 3
+            }
         }
         return 0
-        
-        
     }
+
     
 
 
