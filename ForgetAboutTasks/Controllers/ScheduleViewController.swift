@@ -17,16 +17,11 @@ class ScheduleViewController: UIViewController {
     
     let formatter = Formatters()
     
-    lazy var dateFormatter: DateFormatter = {
-       let formatter = DateFormatter()
-        formatter.dateFormat = "dd MMM yyyy"
-        formatter.locale = Locale(identifier: "ru_RU")
-        return formatter
-    }()
     
     private var calendar: FSCalendar = {
        let calendar = FSCalendar()
         calendar.scrollDirection = .vertical
+        calendar.locale = Locale(identifier: "ru_RU")
         calendar.pagingEnabled = false
         calendar.weekdayHeight = 30
         calendar.headerHeight = 50
@@ -116,6 +111,7 @@ extension ScheduleViewController: FSCalendarDelegate, FSCalendarDataSource {
             
         }
         if monthPosition == .current {
+            
             let dateString = formatter.stringFromDate(date: date)
             print(dateString)
             let vc = TasksViewController()

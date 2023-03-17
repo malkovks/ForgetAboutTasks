@@ -29,4 +29,21 @@ class Formatters {
         let dateString = formatter.string(from: inputDate)
         return dateString
     }
+    
+    public func timeStringFromDate(date: Date) -> String {
+        let calendar = Calendar.current
+        let hour = calendar.component(.hour, from: date)
+        let minute = calendar.component(.minute, from: date)
+        return "\(hour) : \(minute)"
+        
+    }
+}
+
+extension Formatter {
+    static let weekDay: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = .current
+        formatter.dateFormat = "EEEE, MMM d, yyyy"
+        return formatter
+    }()
 }
