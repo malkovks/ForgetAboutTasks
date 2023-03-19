@@ -10,6 +10,7 @@
 import UIKit
 import FSCalendar
 import EventKit
+import SnapKit
 
 class ScheduleViewController: UIViewController {
     
@@ -21,6 +22,7 @@ class ScheduleViewController: UIViewController {
     private var calendar: FSCalendar = {
        let calendar = FSCalendar()
         calendar.scrollDirection = .vertical
+        calendar.backgroundColor = .systemOrange
         calendar.locale = Locale(identifier: "ru_RU")
         calendar.pagingEnabled = false
         calendar.weekdayHeight = 30
@@ -45,15 +47,9 @@ class ScheduleViewController: UIViewController {
         super.viewDidLoad()
         setupView()
         setupNavigationController()
-
-        
     }
     
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        calendar.frame = CGRect(x: 0, y: 90, width: view.frame.size.width, height: view.frame.size.height)
-    }
-    
+   //MARK: - target methods
     @objc private func didTapTapped(){
         if !calendar.pagingEnabled {
             calendar.pagingEnabled = true
@@ -64,6 +60,16 @@ class ScheduleViewController: UIViewController {
         }
     }
     
+    @objc private func didTapSetting(){
+        let vc = OptionsForScheduleViewController()
+        let navVC = UINavigationController(rootViewController: vc)
+        navVC.isNavigationBarHidden = false
+        navVC.modalPresentationStyle = .fullScreen
+        navVC.modalTransitionStyle = .crossDissolve
+        present(navVC, animated: true)
+        
+    }
+    //MARK: - Setup Methods
     private func setupDelegates(){
         let tasks = TasksViewController()
         tasks.delegate = self
@@ -73,8 +79,7 @@ class ScheduleViewController: UIViewController {
     
     private func setupView(){
         setupDelegates()
-        view.addSubview(calendar)
-        
+        setupConstraints()
         view.backgroundColor = .systemBackground
     }
     
@@ -83,6 +88,7 @@ class ScheduleViewController: UIViewController {
         navigationController?.navigationItem.largeTitleDisplayMode = .always
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "eye.fill"), landscapeImagePhone: nil, style: .done, target: self, action: #selector(didTapTapped))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "gearshape.fill"), landscapeImagePhone: nil, style: .done, target: self, action: #selector(didTapSetting))
     }
 }
 //MARK: - Tasks Delegate
@@ -124,7 +130,6 @@ extension ScheduleViewController: FSCalendarDelegate, FSCalendarDataSource {
             nav.modalPresentationStyle = .fullScreen
             nav.isNavigationBarHidden = false
             present(nav, animated: true)
-//            calendar.deselect(date)
         }
     }
     
@@ -143,9 +148,17 @@ extension ScheduleViewController: FSCalendarDelegate, FSCalendarDataSource {
         return 0
     }
 
-    
+}
 
-
+extension ScheduleViewController {
+    private func setupConstraints(){
+        view.addSubview(calendar)
+        calendar.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(0)
+            make.leading.trailing.equalToSuperview().inset(0)
+            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(0)
+        }
+    }
 }
 
 //MARK: - Добавление евентов в календарь для отображения

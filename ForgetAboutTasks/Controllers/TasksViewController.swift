@@ -7,6 +7,7 @@
 
 import UIKit
 import FSCalendar
+import SnapKit
 import EventKit
 import EventKitUI
 
@@ -41,10 +42,15 @@ class TasksViewController: UIViewController {
     
     
     private var calendar: FSCalendar = {
-       let calendar = FSCalendar()
+        let calendar = FSCalendar()
         calendar.scrollDirection = .vertical
         calendar.scope = .week
         calendar.firstWeekday = 2
+        calendar.weekdayHeight = 30
+        calendar.headerHeight = 50
+        calendar.pagingEnabled = true
+        
+        calendar.backgroundColor = .systemOrange
         calendar.locale = Locale(identifier: "ru_RU")
         calendar.translatesAutoresizingMaskIntoConstraints = false
         return calendar
@@ -55,34 +61,15 @@ class TasksViewController: UIViewController {
         table.translatesAutoresizingMaskIntoConstraints = false
         return table
     }()
-    
-    private let saveButton: UIButton = {
-       let button = UIButton()
-        button.configuration = .tinted()
-        button.configuration?.title = "Сохранить"
-        button.configuration?.image = UIImage(systemName: "square.and.arrow.down.fill")
-        button.configuration?.imagePlacement = .leading
-        button.configuration?.imagePadding = 8
-        button.configuration?.baseBackgroundColor = .systemBlue
-        button.configuration?.baseForegroundColor = .systemBlue
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
         setupNavigationController()
         setupTableViewAndDelegates()
-        print(choosenDate)
+        setupConstraintsForCalendar()
     }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        calendar.frame = CGRect(x: 10, y: 90, width: view.frame.size.width-20, height: view.frame.size.height/4)
-        tableView.frame = CGRect(x: 0, y: calendar.frame.size.height+10, width: view.frame.size.width, height: view.frame.size.height/1.7)
-        saveButton.frame = CGRect(x: 30, y: calendar.frame.size.height+20+tableView.frame.size.height, width: view.frame.size.width-60, height: 55)
-    }
+
  //MARK: -  actions targets methods
     @objc private func didTapTapped(){
         if !cellData.isEmpty && isValueWasChanged == true {
@@ -152,18 +139,14 @@ class TasksViewController: UIViewController {
     }
     
     private func setupView(){
-        view.addSubview(calendar)
-        view.addSubview(tableView)
-        view.addSubview(saveButton)
         view.backgroundColor = .systemBackground
         calendar.appearance.todayColor = UIColor.systemBlue
         calendar.today =  choosenDate
         askForUsingEvent()
-        setupVisibleSaveButton()
-        setupTargetActions()
     }
     
     private func setupTableViewAndDelegates(){
+        tableView.backgroundColor = .systemBlue
         tableView.delegate = self
         tableView.dataSource = self
         tableView.allowsSelection = false
@@ -175,29 +158,18 @@ class TasksViewController: UIViewController {
         eventEditVC.editViewDelegate = self
     }
     
-    private func setupVisibleSaveButton(){
-        if cellData.isEmpty {
-            saveButton.isHidden = true
-        } else {
-            saveButton.isHidden = false
-        }
-    }
     
     private func setupNavigationController(){
         let convertDate = Formatters.instance.stringFromDate(date: choosenDate)
         title = "Задачи на \(convertDate)"
         
-        navigationController?.navigationItem.largeTitleDisplayMode = .always
-        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationController?.navigationItem.largeTitleDisplayMode = .never
+        navigationController?.navigationBar.prefersLargeTitles = false
         navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "arrow.backward.circle.fill"), landscapeImagePhone: nil, style: .done, target: self, action: #selector(didTapTapped))
         let firstBut = UIBarButtonItem(image: UIImage(systemName: "plus.circle.fill"), landscapeImagePhone: nil, style: .done, target: self, action: #selector(didTapCreate))
         let secondBut = UIBarButtonItem(title: "Edit", style: .done, target: self, action: #selector(didTapEditCell))
         navigationItem.rightBarButtonItems = [firstBut, secondBut]
        
-    }
-    
-    private func setupTargetActions(){
-        saveButton.addTarget(self, action: #selector(didTapSaveReminder), for: .touchUpInside)
     }
     
     private func askForUsingEvent(){
@@ -380,28 +352,21 @@ extension TasksViewController: EKEventViewDelegate {
 
 //MARK: - constrain extension for dymanic height changing.NOT USING
 extension TasksViewController {
-    func setupConstraintsForCalendar(){
+    private func setupConstraintsForCalendar(){
         view.addSubview(calendar)
-        NSLayoutConstraint.activate([
-            calendar.topAnchor.constraint(equalTo: view.topAnchor, constant: 90),
-            calendar.leadingAnchor.constraint(equalTo: view.leadingAnchor,constant: 0),
-            calendar.trailingAnchor.constraint(equalTo: view.trailingAnchor,constant: 0)
-        ])
+//        let height = view.frame.size.height/6
+        calendar.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(-10)
+            make.left.right.equalToSuperview().inset(0)
+            make.height.equalTo(150)
+
+        }
         
         view.addSubview(tableView)
-        NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: calendar.bottomAnchor,constant: 10),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor , constant: 0),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
-//            tableView.bottomAnchor.constraint(equalTo: view.topAnchor, constant: 10)
-        ])
-        
-        view.addSubview(saveButton)
-        NSLayoutConstraint.activate([
-            saveButton.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: 10),
-            saveButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30),
-            saveButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 30),
-            saveButton.bottomAnchor.constraint(equalTo: view.bottomAnchor,constant: -90)
-        ])
+        tableView.snp.makeConstraints { make in
+            make.top.equalTo(calendar.snp.bottom).inset(0)
+            make.trailing.leading.equalToSuperview().inset(0)
+            make.height.equalTo(view.frame.size.height)
+        }
     }
 }
