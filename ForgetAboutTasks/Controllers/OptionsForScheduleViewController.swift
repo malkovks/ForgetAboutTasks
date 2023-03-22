@@ -10,9 +10,9 @@ import SnapKit
 
 class OptionsForScheduleViewController: UIViewController {
     
-    let headerArray = ["Date","Name of event","User name","Color of event","Timer"]
+    let headerArray = ["Date and time","Details of event","Category of event","Color of event","Repeat"]
     
-    let cellsName = [["Date", "Time"],
+    var cellsName = [["Date", "Time"],
                      ["Name","Type","Building","Example of title"],
                      ["User Name"],
                      [""],
@@ -35,9 +35,17 @@ class OptionsForScheduleViewController: UIViewController {
     
     private func setupView() {
         setupNavigationController()
+        setupDelegate()
         view.backgroundColor = .secondarySystemBackground
         title = "Options"
 //        navigationController?.navigationItem.largeTitleDisplayMode = .always
+    }
+    
+    private func setupDelegate(){
+        let firstVC = SetDateViewController()
+        firstVC.delegate = self
+        let secondVC = SetTimeViewController()
+        secondVC.delegate = self
     }
     
     private func setupTableView(){
@@ -68,7 +76,7 @@ extension OptionsForScheduleViewController: UITableViewDelegate, UITableViewData
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "options")
+        var cell = UITableViewCell(style: .subtitle, reuseIdentifier: "options")
         let data = cellsName[indexPath.section][indexPath.row]
         cell.layer.cornerRadius = 12
         cell.textLabel?.text = data
@@ -81,6 +89,10 @@ extension OptionsForScheduleViewController: UITableViewDelegate, UITableViewData
             switchButton.isOn = true
             switchButton.onTintColor = #colorLiteral(red: 0.2392156869, green: 0.6745098233, blue: 0.9686274529, alpha: 1)
             cell.accessoryView = switchButton as UIView
+        } else if indexPath.section == 0 {
+            cell = UITableViewCell(style: .subtitle, reuseIdentifier: "options")
+            cell.textLabel?.text = data
+            cell.textLabel?.font = .systemFont(ofSize: 20, weight: .semibold)
         }
         
         return cell
@@ -88,26 +100,33 @@ extension OptionsForScheduleViewController: UITableViewDelegate, UITableViewData
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let cell = tableView.dequeueReusableCell(withIdentifier: "options",for: indexPath)
-        guard let label = cell.textLabel else { print("Error set value"); return  }
+        var cell = tableView.dequeueReusableCell(withIdentifier: "options")
+        cell = UITableViewCell(style: .value2, reuseIdentifier: "options")
+        cell?.selectionStyle = .blue
         switch indexPath {
-        case [0,0]: alertDate(label: label) { weekday, date in
-            DispatchQueue.main.async {
-                print(date)
-                label.text = String(describing: date)
-                self.tableView.reloadData()
-            }
-            
-        }
-        case [0,1]: alertTime(label: label) { date,string in
-            print(string)
-            label.text = string
-            DispatchQueue.main.async {
-                
-                self.tableView.reloadData()
-            }
-            
-        }
+        case [0,0]:
+            let vc = SetDateViewController()
+            vc.delegate = self
+            let nav = UINavigationController(rootViewController: vc)
+            nav.modalPresentationStyle = .pageSheet
+            nav.sheetPresentationController?.detents = [.custom(resolver: { context in
+                self.view.frame.size.height/2
+            })]
+            nav.isNavigationBarHidden = false
+            nav.sheetPresentationController?.prefersGrabberVisible = true
+            present(nav, animated: true)
+        case [0,1]:
+            let vc = SetTimeViewController()
+            vc.delegate = self
+            let nav = UINavigationController(rootViewController: vc)
+            nav.modalPresentationStyle = .pageSheet
+            nav.sheetPresentationController?.detents = [.custom(resolver: { context in
+                self.view.frame.size.height/4
+            })]
+            nav.isNavigationBarHidden = false
+            nav.sheetPresentationController?.prefersGrabberVisible = true
+            nav.presentationController?.delegate = self
+            present(nav, animated: true)
         default:
             print("error")
         }
@@ -124,6 +143,27 @@ extension OptionsForScheduleViewController: UITableViewDelegate, UITableViewData
     
     func numberOfSections(in tableView: UITableView) -> Int {
         5
+    }
+}
+
+extension OptionsForScheduleViewController: SetDateProtocol {
+    func datePicker(sendDate: String) {
+
+        cellsName[0][0] = "Date: "+sendDate
+        tableView.reloadData()
+    }
+}
+
+extension OptionsForScheduleViewController: SetTimeProtocol {
+    func timePicker(sendTime: String) {
+        cellsName[0][1] = "Time: "+sendTime
+        tableView.reloadData()
+    }
+}
+
+extension OptionsForScheduleViewController: UIAdaptivePresentationControllerDelegate {
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        
     }
 }
 
