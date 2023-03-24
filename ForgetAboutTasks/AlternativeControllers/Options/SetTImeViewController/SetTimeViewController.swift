@@ -33,7 +33,8 @@ class SetTimeViewController: UIViewController {
     
     @objc private func didTapDismiss(){
         let date = timeView.timePicker.date
-        let calendar = Calendar.current
+        var calendar = Calendar.current
+        
         let components = calendar.dateComponents([.hour, .minute], from: date)
         let result = String(describing: components.hour ?? 0) + "-" + String(describing: components.minute ?? 0)
         print(date)

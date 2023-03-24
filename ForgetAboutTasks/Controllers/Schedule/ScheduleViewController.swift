@@ -22,7 +22,6 @@ class ScheduleViewController: UIViewController {
     private var calendar: FSCalendar = {
        let calendar = FSCalendar()
         calendar.scrollDirection = .vertical
-        calendar.backgroundColor = .systemOrange
         calendar.locale = Locale(identifier: "ru_RU")
         calendar.pagingEnabled = false
         calendar.weekdayHeight = 30
@@ -42,6 +41,14 @@ class ScheduleViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
+    //MARK: - Setup for views
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if CheckAuth.shared.isNotAuth() {
+            let vc = UserAuthViewController()
+            present(vc, animated: true)
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -59,16 +66,7 @@ class ScheduleViewController: UIViewController {
             navigationItem.leftBarButtonItem?.image = UIImage(systemName: "eye.fill")
         }
     }
-    
-    @objc private func didTapSetting(){
-        let vc = OptionsForScheduleViewController()
-        let navVC = UINavigationController(rootViewController: vc)
-        navVC.isNavigationBarHidden = false
-        navVC.modalPresentationStyle = .fullScreen
-        navVC.modalTransitionStyle = .crossDissolve
-        present(navVC, animated: true)
-        
-    }
+
     //MARK: - Setup Methods
     private func setupDelegates(){
         let tasks = TasksViewController()
@@ -85,10 +83,8 @@ class ScheduleViewController: UIViewController {
     
     private func setupNavigationController(){
         title = "Schedule"
-        navigationController?.navigationItem.largeTitleDisplayMode = .always
-        navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "eye.fill"), landscapeImagePhone: nil, style: .done, target: self, action: #selector(didTapTapped))
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "gearshape.fill"), landscapeImagePhone: nil, style: .done, target: self, action: #selector(didTapSetting))
+        navigationController?.navigationItem.largeTitleDisplayMode = .never
+        navigationController?.navigationBar.prefersLargeTitles = false
     }
 }
 //MARK: - Tasks Delegate
@@ -108,7 +104,10 @@ extension ScheduleViewController: TasksViewDelegate {
 //MARK: - calendar delegates
 extension ScheduleViewController: FSCalendarDelegate, FSCalendarDataSource {
     func calendar(_ calendar: FSCalendar, boundingRectWillChange bounds: CGRect, animated: Bool) {
-        calendar.frame.size.height = bounds.height
+        calendar.snp.updateConstraints { make in
+            make.height.equalTo(bounds.height)
+        }
+        self.view.layoutIfNeeded()
     }
     
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {

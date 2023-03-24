@@ -28,9 +28,12 @@
 		0A8AC1A629B9D4FA00EA052B /* ContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8AC1A529B9D4FA00EA052B /* ContactsViewController.swift */; };
 		0A8AC1A829B9DBD300EA052B /* UserProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8AC1A729B9DBD300EA052B /* UserProfileViewController.swift */; };
 		0A8DD8DB29BC8BEB00B2DDAB /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8DD8DA29BC8BEB00B2DDAB /* Formatters.swift */; };
+		0A99A8FD29CD855100CC5A42 /* AlertTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A99A8FC29CD855100CC5A42 /* AlertTextField.swift */; };
+		0A99A8FF29CD8FE000CC5A42 /* AllTasksToDoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A99A8FE29CD8FE000CC5A42 /* AllTasksToDoViewController.swift */; };
+		0A99A90729CD99CA00CC5A42 /* UserAuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A99A90629CD99CA00CC5A42 /* UserAuthViewController.swift */; };
+		0A99A90B29CD9CB300CC5A42 /* CheckAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A99A90A29CD9CB300CC5A42 /* CheckAuth.swift */; };
 		0AA8EC5D29C76968004DC6DD /* AlertDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA8EC5C29C76968004DC6DD /* AlertDate.swift */; };
 		0AA8EC5F29C7AA56004DC6DD /* AlertTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA8EC5E29C7AA56004DC6DD /* AlertTime.swift */; };
-		0AA8EC6129C7BAE5004DC6DD /* AlertCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA8EC6029C7BAE5004DC6DD /* AlertCells.swift */; };
 		0AA8EC6429CAE690004DC6DD /* SetDateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA8EC6329CAE690004DC6DD /* SetDateViewController.swift */; };
 		0AA8EC6629CAE9B0004DC6DD /* SetDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA8EC6529CAE9B0004DC6DD /* SetDateView.swift */; };
 		0AA8EC6829CAF192004DC6DD /* SetDateProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA8EC6729CAF192004DC6DD /* SetDateProtocol.swift */; };
@@ -85,9 +88,12 @@
 		0A8AC1A529B9D4FA00EA052B /* ContactsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsViewController.swift; sourceTree = "<group>"; };
 		0A8AC1A729B9DBD300EA052B /* UserProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileViewController.swift; sourceTree = "<group>"; };
 		0A8DD8DA29BC8BEB00B2DDAB /* Formatters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Formatters.swift; sourceTree = "<group>"; };
+		0A99A8FC29CD855100CC5A42 /* AlertTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertTextField.swift; sourceTree = "<group>"; };
+		0A99A8FE29CD8FE000CC5A42 /* AllTasksToDoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllTasksToDoViewController.swift; sourceTree = "<group>"; };
+		0A99A90629CD99CA00CC5A42 /* UserAuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAuthViewController.swift; sourceTree = "<group>"; };
+		0A99A90A29CD9CB300CC5A42 /* CheckAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckAuth.swift; sourceTree = "<group>"; };
 		0AA8EC5C29C76968004DC6DD /* AlertDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertDate.swift; sourceTree = "<group>"; };
 		0AA8EC5E29C7AA56004DC6DD /* AlertTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertTime.swift; sourceTree = "<group>"; };
-		0AA8EC6029C7BAE5004DC6DD /* AlertCells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertCells.swift; sourceTree = "<group>"; };
 		0AA8EC6329CAE690004DC6DD /* SetDateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetDateViewController.swift; sourceTree = "<group>"; };
 		0AA8EC6529CAE9B0004DC6DD /* SetDateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetDateView.swift; sourceTree = "<group>"; };
 		0AA8EC6729CAF192004DC6DD /* SetDateProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetDateProtocol.swift; sourceTree = "<group>"; };
@@ -156,13 +162,14 @@
 		0A86ED0E29B5D97F001C9BAF /* ForgetAboutTasks */ = {
 			isa = PBXGroup;
 			children = (
+				0A99A90C29CD9E1900CC5A42 /* Managers */,
 				0A8DD8D929BC8BD900B2DDAB /* DateFormatters */,
 				0A8AC1A229B9D4D700EA052B /* Controllers */,
-				0A8AC19B29B9C89900EA052B /* Models */,
+				0AA8EC7029CAF52E004DC6DD /* Extensions */,
 				0A8AC19D29B9CFCF00EA052B /* NavigationControllers */,
-				0A8AC19929B9C87300EA052B /* Delegates */,
 				0A8AC19A29B9C88100EA052B /* AlternativeControllers */,
 				0A8AC19C29B9C8A400EA052B /* Resources */,
+				0A8AC19929B9C87300EA052B /* Delegates */,
 				0A86ED1829B5D97F001C9BAF /* ForgetAboutTasks.xcdatamodeld */,
 			);
 			path = ForgetAboutTasks;
@@ -197,9 +204,11 @@
 		0A8AC19A29B9C88100EA052B /* AlternativeControllers */ = {
 			isa = PBXGroup;
 			children = (
+				0A99A90429CD997700CC5A42 /* Options */,
 				0A8AC19729B8309F00EA052B /* MainViewController.swift */,
 				0A86ED1329B5D97F001C9BAF /* CalendarViewController.swift */,
 				0A8AC19329B7A31500EA052B /* SecondViewController.swift */,
+				0A8AC19B29B9C89900EA052B /* Models */,
 			);
 			path = AlternativeControllers;
 			sourceTree = "<group>";
@@ -233,12 +242,11 @@
 		0A8AC1A229B9D4D700EA052B /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				0AA8EC7029CAF52E004DC6DD /* Managers */,
-				0A0CE6F629C461F600A14648 /* OptionsForScheduleViewController.swift */,
-				0A8AC1A029B9D46D00EA052B /* ScheduleViewController.swift */,
-				0A8AC1A329B9D4EB00EA052B /* TasksViewController.swift */,
-				0A8AC1A529B9D4FA00EA052B /* ContactsViewController.swift */,
-				0A8AC1A729B9DBD300EA052B /* UserProfileViewController.swift */,
+				0A99A90529CD99B400CC5A42 /* UserAuth */,
+				0A99A90329CD98E600CC5A42 /* UserProfile */,
+				0A99A90229CD98DD00CC5A42 /* Contacts */,
+				0A99A90129CD98CE00CC5A42 /* AllTasks */,
+				0A99A90029CD98C600CC5A42 /* Schedule */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -252,12 +260,79 @@
 			path = DateFormatters;
 			sourceTree = "<group>";
 		};
+		0A99A90029CD98C600CC5A42 /* Schedule */ = {
+			isa = PBXGroup;
+			children = (
+				0A8AC1A029B9D46D00EA052B /* ScheduleViewController.swift */,
+				0A8AC1A329B9D4EB00EA052B /* TasksViewController.swift */,
+			);
+			path = Schedule;
+			sourceTree = "<group>";
+		};
+		0A99A90129CD98CE00CC5A42 /* AllTasks */ = {
+			isa = PBXGroup;
+			children = (
+				0A99A8FE29CD8FE000CC5A42 /* AllTasksToDoViewController.swift */,
+			);
+			path = AllTasks;
+			sourceTree = "<group>";
+		};
+		0A99A90229CD98DD00CC5A42 /* Contacts */ = {
+			isa = PBXGroup;
+			children = (
+				0A8AC1A529B9D4FA00EA052B /* ContactsViewController.swift */,
+			);
+			path = Contacts;
+			sourceTree = "<group>";
+		};
+		0A99A90329CD98E600CC5A42 /* UserProfile */ = {
+			isa = PBXGroup;
+			children = (
+				0A8AC1A729B9DBD300EA052B /* UserProfileViewController.swift */,
+			);
+			path = UserProfile;
+			sourceTree = "<group>";
+		};
+		0A99A90429CD997700CC5A42 /* Options */ = {
+			isa = PBXGroup;
+			children = (
+				0A0CE6F629C461F600A14648 /* OptionsForScheduleViewController.swift */,
+				0AA8EC6929CAF409004DC6DD /* SetTImeViewController */,
+				0AA8EC6229CAE5E6004DC6DD /* SetDateViewController */,
+			);
+			path = Options;
+			sourceTree = "<group>";
+		};
+		0A99A90529CD99B400CC5A42 /* UserAuth */ = {
+			isa = PBXGroup;
+			children = (
+				0A99A90629CD99CA00CC5A42 /* UserAuthViewController.swift */,
+			);
+			path = UserAuth;
+			sourceTree = "<group>";
+		};
+		0A99A90929CD9C9700CC5A42 /* CoreChecking */ = {
+			isa = PBXGroup;
+			children = (
+				0A99A90A29CD9CB300CC5A42 /* CheckAuth.swift */,
+			);
+			path = CoreChecking;
+			sourceTree = "<group>";
+		};
+		0A99A90C29CD9E1900CC5A42 /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				0A99A90929CD9C9700CC5A42 /* CoreChecking */,
+			);
+			path = Managers;
+			sourceTree = "<group>";
+		};
 		0AA8EC5B29C76897004DC6DD /* Alerts */ = {
 			isa = PBXGroup;
 			children = (
 				0AA8EC5C29C76968004DC6DD /* AlertDate.swift */,
 				0AA8EC5E29C7AA56004DC6DD /* AlertTime.swift */,
-				0AA8EC6029C7BAE5004DC6DD /* AlertCells.swift */,
+				0A99A8FC29CD855100CC5A42 /* AlertTextField.swift */,
 			);
 			path = Alerts;
 			sourceTree = "<group>";
@@ -282,14 +357,12 @@
 			path = SetTImeViewController;
 			sourceTree = "<group>";
 		};
-		0AA8EC7029CAF52E004DC6DD /* Managers */ = {
+		0AA8EC7029CAF52E004DC6DD /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				0AA8EC6929CAF409004DC6DD /* SetTImeViewController */,
-				0AA8EC6229CAE5E6004DC6DD /* SetDateViewController */,
 				0AA8EC5B29C76897004DC6DD /* Alerts */,
 			);
-			path = Managers;
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 		323A8B5E5503D5EEE0EAABE3 /* Frameworks */ = {
@@ -559,6 +632,7 @@
 				0A8AC19F29B9D00A00EA052B /* TabBarViewController.swift in Sources */,
 				0A8DD8DB29BC8BEB00B2DDAB /* Formatters.swift in Sources */,
 				0AA8EC6F29CAF4D2004DC6DD /* SetTimeProtocol.swift in Sources */,
+				0A99A90B29CD9CB300CC5A42 /* CheckAuth.swift in Sources */,
 				0A8AC1A829B9DBD300EA052B /* UserProfileViewController.swift in Sources */,
 				0AA8EC6D29CAF4A0004DC6DD /* SetTimeView.swift in Sources */,
 				0A8AC1A629B9D4FA00EA052B /* ContactsViewController.swift in Sources */,
@@ -567,10 +641,12 @@
 				0A86ED1429B5D97F001C9BAF /* CalendarViewController.swift in Sources */,
 				0A0CE6F729C461F600A14648 /* OptionsForScheduleViewController.swift in Sources */,
 				0AA8EC5F29C7AA56004DC6DD /* AlertTime.swift in Sources */,
+				0A99A8FD29CD855100CC5A42 /* AlertTextField.swift in Sources */,
+				0A99A8FF29CD8FE000CC5A42 /* AllTasksToDoViewController.swift in Sources */,
 				0A8AC1A129B9D46D00EA052B /* ScheduleViewController.swift in Sources */,
-				0AA8EC6129C7BAE5004DC6DD /* AlertCells.swift in Sources */,
 				0A0CE6F429C4500E00A14648 /* DateExtensions.swift in Sources */,
 				0A86ED1A29B5D97F001C9BAF /* ForgetAboutTasks.xcdatamodeld in Sources */,
+				0A99A90729CD99CA00CC5A42 /* UserAuthViewController.swift in Sources */,
 				0AA8EC6829CAF192004DC6DD /* SetDateProtocol.swift in Sources */,
 				0A86ED1029B5D97F001C9BAF /* AppDelegate.swift in Sources */,
 				0A8AC19629B7B58300EA052B /* EKWrapper.swift in Sources */,

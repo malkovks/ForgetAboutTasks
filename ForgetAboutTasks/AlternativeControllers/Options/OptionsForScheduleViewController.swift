@@ -12,9 +12,9 @@ class OptionsForScheduleViewController: UIViewController {
     
     let headerArray = ["Date and time","Details of event","Category of event","Color of event","Repeat"]
     
-    var cellsName = [["Date", "Time"],
-                     ["Name","Type","Building","Example of title"],
-                     ["User Name"],
+    var cellsName = [["Name of event"],
+                     ["Date", "Time"],
+                     ["Name","Type","URL","Note"],
                      [""],
                      ["Repeat every 7 days"]]
     
@@ -66,9 +66,9 @@ class OptionsForScheduleViewController: UIViewController {
 extension OptionsForScheduleViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
-        case 0: return 2
-        case 1: return 4
-        case 2: return 1
+        case 0: return 1
+        case 1: return 2
+        case 2: return 4
         case 3: return 1
         default: return 1
             
@@ -89,7 +89,7 @@ extension OptionsForScheduleViewController: UITableViewDelegate, UITableViewData
             switchButton.isOn = true
             switchButton.onTintColor = #colorLiteral(red: 0.2392156869, green: 0.6745098233, blue: 0.9686274529, alpha: 1)
             cell.accessoryView = switchButton as UIView
-        } else if indexPath.section == 0 {
+        } else if indexPath.section == 1 {
             cell = UITableViewCell(style: .subtitle, reuseIdentifier: "options")
             cell.textLabel?.text = data
             cell.textLabel?.font = .systemFont(ofSize: 20, weight: .semibold)
@@ -104,7 +104,7 @@ extension OptionsForScheduleViewController: UITableViewDelegate, UITableViewData
         cell = UITableViewCell(style: .value2, reuseIdentifier: "options")
         cell?.selectionStyle = .blue
         switch indexPath {
-        case [0,0]:
+        case [1,0]:
             let vc = SetDateViewController()
             vc.delegate = self
             let nav = UINavigationController(rootViewController: vc)
@@ -115,7 +115,7 @@ extension OptionsForScheduleViewController: UITableViewDelegate, UITableViewData
             nav.isNavigationBarHidden = false
             nav.sheetPresentationController?.prefersGrabberVisible = true
             present(nav, animated: true)
-        case [0,1]:
+        case [1,1]:
             let vc = SetTimeViewController()
             vc.delegate = self
             let nav = UINavigationController(rootViewController: vc)
@@ -127,6 +127,12 @@ extension OptionsForScheduleViewController: UITableViewDelegate, UITableViewData
             nav.sheetPresentationController?.prefersGrabberVisible = true
             nav.presentationController?.delegate = self
             present(nav, animated: true)
+//        case [0,0]:
+//            alertTextField(subtitle: "Test title") { text in
+//                self.cellsName.remove(at: indexPath.row)
+//                self.cellsName[0][0] = text
+//                self.tableView.reloadData()
+//            }
         default:
             print("error")
         }
@@ -149,14 +155,14 @@ extension OptionsForScheduleViewController: UITableViewDelegate, UITableViewData
 extension OptionsForScheduleViewController: SetDateProtocol {
     func datePicker(sendDate: String) {
 
-        cellsName[0][0] = "Date: "+sendDate
+        cellsName[1][0] = "Date: "+sendDate
         tableView.reloadData()
     }
 }
 
 extension OptionsForScheduleViewController: SetTimeProtocol {
     func timePicker(sendTime: String) {
-        cellsName[0][1] = "Time: "+sendTime
+        cellsName[1][1] = "Time: "+sendTime
         tableView.reloadData()
     }
 }
