@@ -32,6 +32,10 @@
 		0A99A8FF29CD8FE000CC5A42 /* AllTasksToDoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A99A8FE29CD8FE000CC5A42 /* AllTasksToDoViewController.swift */; };
 		0A99A90729CD99CA00CC5A42 /* UserAuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A99A90629CD99CA00CC5A42 /* UserAuthViewController.swift */; };
 		0A99A90B29CD9CB300CC5A42 /* CheckAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A99A90A29CD9CB300CC5A42 /* CheckAuth.swift */; };
+		0A9E1C3829CEEC4B000CC9A9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0A9E1C3729CEEC4B000CC9A9 /* GoogleService-Info.plist */; };
+		0A9E1C3A29CEEDCE000CC9A9 /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9E1C3929CEEDCE000CC9A9 /* LogInViewController.swift */; };
+		0A9E1C3C29D0778F000CC9A9 /* RegisterAccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9E1C3B29D0778F000CC9A9 /* RegisterAccountViewController.swift */; };
+		0A9E1C3F29D078BD000CC9A9 /* LogInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9E1C3E29D078BD000CC9A9 /* LogInView.swift */; };
 		0AA8EC5D29C76968004DC6DD /* AlertDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA8EC5C29C76968004DC6DD /* AlertDate.swift */; };
 		0AA8EC5F29C7AA56004DC6DD /* AlertTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA8EC5E29C7AA56004DC6DD /* AlertTime.swift */; };
 		0AA8EC6429CAE690004DC6DD /* SetDateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA8EC6329CAE690004DC6DD /* SetDateViewController.swift */; };
@@ -92,6 +96,10 @@
 		0A99A8FE29CD8FE000CC5A42 /* AllTasksToDoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllTasksToDoViewController.swift; sourceTree = "<group>"; };
 		0A99A90629CD99CA00CC5A42 /* UserAuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAuthViewController.swift; sourceTree = "<group>"; };
 		0A99A90A29CD9CB300CC5A42 /* CheckAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckAuth.swift; sourceTree = "<group>"; };
+		0A9E1C3729CEEC4B000CC9A9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		0A9E1C3929CEEDCE000CC9A9 /* LogInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewController.swift; sourceTree = "<group>"; };
+		0A9E1C3B29D0778F000CC9A9 /* RegisterAccountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterAccountViewController.swift; sourceTree = "<group>"; };
+		0A9E1C3E29D078BD000CC9A9 /* LogInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInView.swift; sourceTree = "<group>"; };
 		0AA8EC5C29C76968004DC6DD /* AlertDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertDate.swift; sourceTree = "<group>"; };
 		0AA8EC5E29C7AA56004DC6DD /* AlertTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertTime.swift; sourceTree = "<group>"; };
 		0AA8EC6329CAE690004DC6DD /* SetDateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetDateViewController.swift; sourceTree = "<group>"; };
@@ -227,6 +235,7 @@
 				0A86ED1B29B5D981001C9BAF /* Assets.xcassets */,
 				0A86ED1D29B5D981001C9BAF /* LaunchScreen.storyboard */,
 				0A86ED2029B5D981001C9BAF /* Info.plist */,
+				0A9E1C3729CEEC4B000CC9A9 /* GoogleService-Info.plist */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -306,7 +315,11 @@
 		0A99A90529CD99B400CC5A42 /* UserAuth */ = {
 			isa = PBXGroup;
 			children = (
+				0A9E1C4029D188AC000CC9A9 /* For Test Group */,
 				0A99A90629CD99CA00CC5A42 /* UserAuthViewController.swift */,
+				0A9E1C3929CEEDCE000CC9A9 /* LogInViewController.swift */,
+				0A9E1C3D29D078A0000CC9A9 /* LogInView */,
+				0A9E1C3B29D0778F000CC9A9 /* RegisterAccountViewController.swift */,
 			);
 			path = UserAuth;
 			sourceTree = "<group>";
@@ -325,6 +338,21 @@
 				0A99A90929CD9C9700CC5A42 /* CoreChecking */,
 			);
 			path = Managers;
+			sourceTree = "<group>";
+		};
+		0A9E1C3D29D078A0000CC9A9 /* LogInView */ = {
+			isa = PBXGroup;
+			children = (
+				0A9E1C3E29D078BD000CC9A9 /* LogInView.swift */,
+			);
+			path = LogInView;
+			sourceTree = "<group>";
+		};
+		0A9E1C4029D188AC000CC9A9 /* For Test Group */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "For Test Group";
 			sourceTree = "<group>";
 		};
 		0AA8EC5B29C76897004DC6DD /* Alerts */ = {
@@ -499,6 +527,7 @@
 			files = (
 				0A86ED1F29B5D981001C9BAF /* LaunchScreen.storyboard in Resources */,
 				0A86ED1C29B5D981001C9BAF /* Assets.xcassets in Resources */,
+				0A9E1C3829CEEC4B000CC9A9 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -626,6 +655,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0A9E1C3F29D078BD000CC9A9 /* LogInView.swift in Sources */,
 				0AA8EC6B29CAF469004DC6DD /* SetTimeViewController.swift in Sources */,
 				0AA8EC5D29C76968004DC6DD /* AlertDate.swift in Sources */,
 				0AA8EC6629CAE9B0004DC6DD /* SetDateView.swift in Sources */,
@@ -650,7 +680,9 @@
 				0AA8EC6829CAF192004DC6DD /* SetDateProtocol.swift in Sources */,
 				0A86ED1029B5D97F001C9BAF /* AppDelegate.swift in Sources */,
 				0A8AC19629B7B58300EA052B /* EKWrapper.swift in Sources */,
+				0A9E1C3A29CEEDCE000CC9A9 /* LogInViewController.swift in Sources */,
 				0A8AC1A429B9D4EB00EA052B /* TasksViewController.swift in Sources */,
+				0A9E1C3C29D0778F000CC9A9 /* RegisterAccountViewController.swift in Sources */,
 				0A8AC19429B7A31500EA052B /* SecondViewController.swift in Sources */,
 				0A86ED1229B5D97F001C9BAF /* SceneDelegate.swift in Sources */,
 			);
@@ -825,6 +857,7 @@
 				DEVELOPMENT_TEAM = 8UABHSLKYJ;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ForgetAboutTasks/Resources/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Forget About Tasks";
 				INFOPLIST_KEY_NSCalendarsUsageDescription = "The app needs access to calendar of user to display event";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
@@ -854,6 +887,7 @@
 				DEVELOPMENT_TEAM = 8UABHSLKYJ;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ForgetAboutTasks/Resources/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Forget About Tasks";
 				INFOPLIST_KEY_NSCalendarsUsageDescription = "The app needs access to calendar of user to display event";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
