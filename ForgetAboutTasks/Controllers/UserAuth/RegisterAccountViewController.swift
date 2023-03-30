@@ -84,7 +84,7 @@ class RegisterAccountViewController: UIViewController {
         setupView()
     }
     //MARK: - Targets
-    @objc private func didTapSave(){
+    @objc private func didTapBack(){
         self.dismiss(animated: true)
     }
     
@@ -116,9 +116,10 @@ class RegisterAccountViewController: UIViewController {
                 FirebaseAuth.Auth.auth().createUser(withEmail: field, password: secondPassword) { result, error in
                     guard error == nil else { self.setupAlert(); return }
                     self.view.window?.rootViewController?.dismiss(animated: true)
+                    CheckAuth.shared.setupForAuth()
                 }
             } else {
-                setupAlert(title: "Alert!", subtitle: "Password must contains at least 8 letters.\nChange your password!")
+                setupAlert(title: "Alert!", subtitle: "Password must contains at least 8 letters.\nChange size of your password!")
             }
             
         } else {
@@ -137,7 +138,7 @@ class RegisterAccountViewController: UIViewController {
     private func setupNavigationController(){
         title = "Create New Account"
         navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(didTapSave))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "return"), landscapeImagePhone: nil, style: .done, target: self, action: #selector(didTapBack))
     }
     
     private func setupTargets(){

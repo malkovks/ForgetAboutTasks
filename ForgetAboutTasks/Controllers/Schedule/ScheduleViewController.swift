@@ -42,26 +42,15 @@ class ScheduleViewController: UIViewController {
         return button
     }()
     //MARK: - Setup for views
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-//        if CheckAuth.shared.isNotAuth() {
-//            let vc = UserAuthViewController()
-//            let navVC = UINavigationController(rootViewController: vc)
-//            navVC.modalPresentationStyle = .fullScreen
-//            navVC.isNavigationBarHidden = false
-//            present(navVC, animated: true)
-//        }
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
         setupNavigationController()
-        let vc = UserAuthViewController()
-                    let navVC = UINavigationController(rootViewController: vc)
-                    navVC.modalPresentationStyle = .fullScreen
-                    navVC.isNavigationBarHidden = false
-                    present(navVC, animated: true)
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setupAuthentification()
     }
     
    //MARK: - target methods
@@ -83,9 +72,22 @@ class ScheduleViewController: UIViewController {
         calendar.dataSource = self
     }
     
+    private func setupAuthentification(){
+        if CheckAuth.shared.isNotAuth() {
+            let vc = UserAuthViewController()
+            let navVC = UINavigationController(rootViewController: vc)
+            navVC.modalPresentationStyle = .fullScreen
+            navVC.isNavigationBarHidden = false
+            present(navVC, animated: true)
+        } else {
+            print("User is authorized")
+        }
+    }
+    
     private func setupView(){
         setupDelegates()
         setupConstraints()
+        
         view.backgroundColor = .systemBackground
     }
     

@@ -63,7 +63,7 @@ class LogInViewController: UIViewController {
         setupView()
     }
     //MARK: - Targets
-    @objc private func didTapSave(){
+    @objc private func didTapBack(){
         self.dismiss(animated: true)
     }
     
@@ -87,15 +87,13 @@ class LogInViewController: UIViewController {
         
         //get auth
         FirebaseAuth.Auth.auth().signIn(withEmail: email, password: password) { [weak self] result, error in
-            //if account did not created, segue to register view controller\
-            
-            guard let strongSelf = self else { return }
             
             guard error == nil else {
                 self?.setupAlert(subtitle: "Account wasn't Found!\nPlease, try again!")
                 return
             }
             self?.view.window?.rootViewController?.dismiss(animated: true)
+            CheckAuth.shared.setupForAuth()
             
             
         }
@@ -118,7 +116,7 @@ class LogInViewController: UIViewController {
     private func setupNavigationController(){
         title = "Log In"
         navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(didTapSave))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "return"), landscapeImagePhone: nil, style: .done, target: self, action: #selector(didTapBack))
     }
     
     private func setupTargets(){

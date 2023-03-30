@@ -100,6 +100,7 @@
 		0A9E1C3929CEEDCE000CC9A9 /* LogInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewController.swift; sourceTree = "<group>"; };
 		0A9E1C3B29D0778F000CC9A9 /* RegisterAccountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterAccountViewController.swift; sourceTree = "<group>"; };
 		0A9E1C3E29D078BD000CC9A9 /* LogInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInView.swift; sourceTree = "<group>"; };
+		0A9E1C4329D46851000CC9A9 /* ForgetAboutTasks.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ForgetAboutTasks.entitlements; sourceTree = "<group>"; };
 		0AA8EC5C29C76968004DC6DD /* AlertDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertDate.swift; sourceTree = "<group>"; };
 		0AA8EC5E29C7AA56004DC6DD /* AlertTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertTime.swift; sourceTree = "<group>"; };
 		0AA8EC6329CAE690004DC6DD /* SetDateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetDateViewController.swift; sourceTree = "<group>"; };
@@ -170,6 +171,7 @@
 		0A86ED0E29B5D97F001C9BAF /* ForgetAboutTasks */ = {
 			isa = PBXGroup;
 			children = (
+				0A9E1C4329D46851000CC9A9 /* ForgetAboutTasks.entitlements */,
 				0A99A90C29CD9E1900CC5A42 /* Managers */,
 				0A8DD8D929BC8BD900B2DDAB /* DateFormatters */,
 				0A8AC1A229B9D4D700EA052B /* Controllers */,
@@ -318,8 +320,8 @@
 				0A9E1C4029D188AC000CC9A9 /* For Test Group */,
 				0A99A90629CD99CA00CC5A42 /* UserAuthViewController.swift */,
 				0A9E1C3929CEEDCE000CC9A9 /* LogInViewController.swift */,
-				0A9E1C3D29D078A0000CC9A9 /* LogInView */,
 				0A9E1C3B29D0778F000CC9A9 /* RegisterAccountViewController.swift */,
+				0A9E1C3D29D078A0000CC9A9 /* LogInView */,
 			);
 			path = UserAuth;
 			sourceTree = "<group>";
@@ -852,13 +854,16 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = ForgetAboutTasks/ForgetAboutTasks.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 8UABHSLKYJ;
+				DEVELOPMENT_TEAM = 2275P6FG35;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ForgetAboutTasks/Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Forget About Tasks";
-				INFOPLIST_KEY_NSCalendarsUsageDescription = "The app needs access to calendar of user to display event";
+				INFOPLIST_KEY_NSCalendarsUsageDescription = "This app need Your access to calendar to get data and send it";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Please allow to user your own photo library for Your choosing images for profile images";
+				INFOPLIST_KEY_NSRemindersUsageDescription = "Please allow to use notification to get fresh reminders from calendar";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -882,13 +887,16 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = ForgetAboutTasks/ForgetAboutTasks.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 8UABHSLKYJ;
+				DEVELOPMENT_TEAM = 2275P6FG35;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ForgetAboutTasks/Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Forget About Tasks";
-				INFOPLIST_KEY_NSCalendarsUsageDescription = "The app needs access to calendar of user to display event";
+				INFOPLIST_KEY_NSCalendarsUsageDescription = "This app need Your access to calendar to get data and send it";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Please allow to user your own photo library for Your choosing images for profile images";
+				INFOPLIST_KEY_NSRemindersUsageDescription = "Please allow to use notification to get fresh reminders from calendar";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
