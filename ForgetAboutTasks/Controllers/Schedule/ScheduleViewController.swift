@@ -44,14 +44,13 @@ class ScheduleViewController: UIViewController {
     //MARK: - Setup for views
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupView()
-        setupNavigationController()
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
         setupAuthentification()
     }
+
+//    override func viewWillAppear(_ animated: Bool) {
+//        super.viewWillAppear(animated)
+//        setupAuthentification()
+//    }
     
    //MARK: - target methods
     @objc private func didTapTapped(){
@@ -80,7 +79,8 @@ class ScheduleViewController: UIViewController {
             navVC.isNavigationBarHidden = false
             present(navVC, animated: true)
         } else {
-            print("User is authorized")
+            setupView()
+            setupNavigationController()
         }
     }
     

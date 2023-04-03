@@ -77,21 +77,30 @@ class TasksViewController: UIViewController {
             self.dismiss(animated: true)
         }
     }
+    //РАБОТАЕТ С ФРЕЙМОМ EventKit
+//    @objc private func didTapCreate(){
+//        let event = EKEvent(eventStore: self.store)
+//        event.startDate = choosenDate
+//        event.endDate = getEndDate(start: choosenDate)
+//        event.timeZone = TimeZone(identifier: "Europe/Moscow")
+//
+//        let eventVC = EKEventEditViewController()
+//
+//
+//        eventVC.event = event
+//        eventVC.event?.timeZone = TimeZone(identifier: "Europe/Moscow")
+//        eventVC.eventStore = store
+//        eventVC.editViewDelegate = self
+//        present(eventVC, animated: true)
+//    }
     
     @objc private func didTapCreate(){
-        let event = EKEvent(eventStore: self.store)
-        event.startDate = choosenDate
-        event.endDate = getEndDate(start: choosenDate)
-        event.timeZone = TimeZone(identifier: "Europe/Moscow")
-        
-        let eventVC = EKEventEditViewController()
-        
-        
-        eventVC.event = event
-        eventVC.event?.timeZone = TimeZone(identifier: "Europe/Moscow")
-        eventVC.eventStore = store
-        eventVC.editViewDelegate = self
-        present(eventVC, animated: true)
+        let vc = OptionsForScheduleViewController()
+        let navVC = UINavigationController(rootViewController: vc)
+        navVC.modalTransitionStyle = .flipHorizontal
+        navVC.modalPresentationStyle = .fullScreen
+        navVC.isNavigationBarHidden = false
+        present(navVC, animated: true)
     }
     
     @objc private func didTapEditCell(){

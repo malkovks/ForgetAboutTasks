@@ -93,6 +93,7 @@ class LogInViewController: UIViewController {
                 return
             }
             self?.view.window?.rootViewController?.dismiss(animated: true)
+            self?.setupLoadingSpinner()
             CheckAuth.shared.setupForAuth()
             
             

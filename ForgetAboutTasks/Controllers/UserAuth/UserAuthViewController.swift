@@ -18,6 +18,8 @@ class UserAuthViewController: UIViewController {
     
     weak var delegate: UserAuthProtocol?
     
+    private let spinner = UIActivityIndicatorView()
+    
     //MARK: - UI views
     private let loginButton: UIButton = {
         let button = UIButton(type: .system)
@@ -77,6 +79,8 @@ class UserAuthViewController: UIViewController {
     }
     //MARK: - Targets methods
     @objc private func didTapLogin(){
+        spinner.startAnimating()
+        view.alpha = 0.8
         let vc = LogInViewController()
         let nav = UINavigationController(rootViewController: vc)
         nav.modalPresentationStyle = .fullScreen
@@ -86,6 +90,8 @@ class UserAuthViewController: UIViewController {
     }
     
     @objc private func didTapRegister(){
+        spinner.startAnimating()
+        view.alpha = 0.8
         let vc = RegisterAccountViewController()
         let nav = UINavigationController(rootViewController: vc)
         nav.modalPresentationStyle = .fullScreen
@@ -95,17 +101,24 @@ class UserAuthViewController: UIViewController {
     }
     
     @objc private func didTapLoginWithGoogle(){
+        spinner.startAnimating()
+        view.alpha = 0.8
+        
         guard let client = FirebaseApp.app()?.options.clientID else {
             print("Error client id")
             return
         }
+        
+        //разобраться с авторизацией и с отображением загрузочного спинера
+        //
         //create google sign in configuration object
         let config = GIDConfiguration(clientID: client)
         GIDSignIn.sharedInstance.configuration = config
         //start the sign in flow
         GIDSignIn.sharedInstance.signIn(withPresenting: self) { [unowned self] result, error in
             guard error == nil else {
-                print("Error sign in ")
+                self.spinner.stopAnimating()
+                self.view.alpha = 1.0
                 return
             }
             guard let user = result?.user,
@@ -120,19 +133,20 @@ class UserAuthViewController: UIViewController {
                     
                     return
                 }
-                print((result.user.displayName)! + " " + (result.user.email ?? ""))
                 CheckAuth.shared.setupForAuth()
                 self.delegate?.userData(result: result)
                 self.dismiss(animated: true)
                 self.tabBarController?.selectedIndex = 3
+                self.spinner.stopAnimating()
+                self.view.alpha = 1.0
+                
                 
                 
             }
         }
     }
     @objc private func didTapLoginWithGitHub(){
-        var provider = OAuthProvider(providerID: "github.com")
-        provider.customParameters = ["allows_signup": "false"]
+        //not working
     }
     
     //MARK: - Setup methods
@@ -140,6 +154,8 @@ class UserAuthViewController: UIViewController {
         setupNavigation()
         setupConstraints()
         setupTargets()
+        spinner.hidesWhenStopped = true
+        
         view.backgroundColor = .secondarySystemBackground
     }
     
@@ -160,6 +176,8 @@ class UserAuthViewController: UIViewController {
         alert.addAction(UIAlertAction(title: "OK", style: .cancel))
         present(alert,animated: true)
     }
+    
+
     
     
     
@@ -194,11 +212,11 @@ extension UserAuthViewController {
             make.height.equalTo(55)
         }
         
-        view.addSubview(signInWithGitHub)
-        signInWithGitHub.snp.makeConstraints { make in
-            make.top.equalTo(signWithGoogle.snp.bottom).offset(5)
-            make.leading.trailing.equalToSuperview().inset(20)
-            make.height.equalTo(55)
+        view.addSubview(spinner)
+        spinner.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.centerY.equalToSuperview().offset(-60)
+            make.width.height.equalTo(50)
         }
     }
 }

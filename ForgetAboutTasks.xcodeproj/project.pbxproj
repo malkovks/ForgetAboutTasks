@@ -44,6 +44,8 @@
 		0AA8EC6B29CAF469004DC6DD /* SetTimeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA8EC6A29CAF469004DC6DD /* SetTimeViewController.swift */; };
 		0AA8EC6D29CAF4A0004DC6DD /* SetTimeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA8EC6C29CAF4A0004DC6DD /* SetTimeView.swift */; };
 		0AA8EC6F29CAF4D2004DC6DD /* SetTimeProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA8EC6E29CAF4D2004DC6DD /* SetTimeProtocol.swift */; };
+		0ACE796B29D9EEAA00599C19 /* AlertSpinner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE796A29D9EEAA00599C19 /* AlertSpinner.swift */; };
+		0ACE796E29D9FBAC00599C19 /* OptionsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE796D29D9FBAC00599C19 /* OptionsTableViewCell.swift */; };
 		8186764FB1BB2084EBD6465F /* Pods_ForgetAboutTasks_ForgetAboutTasksUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 081E2F7D28B71EC3AA3980C1 /* Pods_ForgetAboutTasks_ForgetAboutTasksUITests.framework */; };
 		A469AD9F86D4E441D8D2A55E /* Pods_ForgetAboutTasks.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC2C5346B0F22B63FF2E08B1 /* Pods_ForgetAboutTasks.framework */; };
 /* End PBXBuildFile section */
@@ -109,6 +111,8 @@
 		0AA8EC6A29CAF469004DC6DD /* SetTimeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetTimeViewController.swift; sourceTree = "<group>"; };
 		0AA8EC6C29CAF4A0004DC6DD /* SetTimeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetTimeView.swift; sourceTree = "<group>"; };
 		0AA8EC6E29CAF4D2004DC6DD /* SetTimeProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetTimeProtocol.swift; sourceTree = "<group>"; };
+		0ACE796A29D9EEAA00599C19 /* AlertSpinner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertSpinner.swift; sourceTree = "<group>"; };
+		0ACE796D29D9FBAC00599C19 /* OptionsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionsTableViewCell.swift; sourceTree = "<group>"; };
 		3015CC6C7F05EBB6BF73F999 /* Pods-ForgetAboutTasks.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ForgetAboutTasks.release.xcconfig"; path = "Target Support Files/Pods-ForgetAboutTasks/Pods-ForgetAboutTasks.release.xcconfig"; sourceTree = "<group>"; };
 		5BFA5F0DDDDE5DC52FB7B995 /* Pods-ForgetAboutTasks-ForgetAboutTasksUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ForgetAboutTasks-ForgetAboutTasksUITests.debug.xcconfig"; path = "Target Support Files/Pods-ForgetAboutTasks-ForgetAboutTasksUITests/Pods-ForgetAboutTasks-ForgetAboutTasksUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		A2355D59545111B95037C74C /* Pods_ForgetAboutTasksTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ForgetAboutTasksTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -307,6 +311,7 @@
 		0A99A90429CD997700CC5A42 /* Options */ = {
 			isa = PBXGroup;
 			children = (
+				0ACE796C29D9FB7D00599C19 /* OptionsForScheduleTableCell */,
 				0A0CE6F629C461F600A14648 /* OptionsForScheduleViewController.swift */,
 				0AA8EC6929CAF409004DC6DD /* SetTImeViewController */,
 				0AA8EC6229CAE5E6004DC6DD /* SetDateViewController */,
@@ -353,6 +358,7 @@
 		0A9E1C4029D188AC000CC9A9 /* For Test Group */ = {
 			isa = PBXGroup;
 			children = (
+				0ACE796A29D9EEAA00599C19 /* AlertSpinner.swift */,
 			);
 			path = "For Test Group";
 			sourceTree = "<group>";
@@ -393,6 +399,14 @@
 				0AA8EC5B29C76897004DC6DD /* Alerts */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		0ACE796C29D9FB7D00599C19 /* OptionsForScheduleTableCell */ = {
+			isa = PBXGroup;
+			children = (
+				0ACE796D29D9FBAC00599C19 /* OptionsTableViewCell.swift */,
+			);
+			path = OptionsForScheduleTableCell;
 			sourceTree = "<group>";
 		};
 		323A8B5E5503D5EEE0EAABE3 /* Frameworks */ = {
@@ -661,6 +675,7 @@
 				0AA8EC6B29CAF469004DC6DD /* SetTimeViewController.swift in Sources */,
 				0AA8EC5D29C76968004DC6DD /* AlertDate.swift in Sources */,
 				0AA8EC6629CAE9B0004DC6DD /* SetDateView.swift in Sources */,
+				0ACE796E29D9FBAC00599C19 /* OptionsTableViewCell.swift in Sources */,
 				0A8AC19F29B9D00A00EA052B /* TabBarViewController.swift in Sources */,
 				0A8DD8DB29BC8BEB00B2DDAB /* Formatters.swift in Sources */,
 				0AA8EC6F29CAF4D2004DC6DD /* SetTimeProtocol.swift in Sources */,
@@ -678,6 +693,7 @@
 				0A8AC1A129B9D46D00EA052B /* ScheduleViewController.swift in Sources */,
 				0A0CE6F429C4500E00A14648 /* DateExtensions.swift in Sources */,
 				0A86ED1A29B5D97F001C9BAF /* ForgetAboutTasks.xcdatamodeld in Sources */,
+				0ACE796B29D9EEAA00599C19 /* AlertSpinner.swift in Sources */,
 				0A99A90729CD99CA00CC5A42 /* UserAuthViewController.swift in Sources */,
 				0AA8EC6829CAF192004DC6DD /* SetDateProtocol.swift in Sources */,
 				0A86ED1029B5D97F001C9BAF /* AppDelegate.swift in Sources */,
@@ -862,6 +878,7 @@
 				INFOPLIST_FILE = ForgetAboutTasks/Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Forget About Tasks";
 				INFOPLIST_KEY_NSCalendarsUsageDescription = "This app need Your access to calendar to get data and send it";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Please allow to use camera for setting up photo on user image";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Please allow to user your own photo library for Your choosing images for profile images";
 				INFOPLIST_KEY_NSRemindersUsageDescription = "Please allow to use notification to get fresh reminders from calendar";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -895,6 +912,7 @@
 				INFOPLIST_FILE = ForgetAboutTasks/Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Forget About Tasks";
 				INFOPLIST_KEY_NSCalendarsUsageDescription = "This app need Your access to calendar to get data and send it";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Please allow to use camera for setting up photo on user image";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Please allow to user your own photo library for Your choosing images for profile images";
 				INFOPLIST_KEY_NSRemindersUsageDescription = "Please allow to use notification to get fresh reminders from calendar";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

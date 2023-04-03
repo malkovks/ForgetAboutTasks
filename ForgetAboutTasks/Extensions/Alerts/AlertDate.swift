@@ -26,14 +26,23 @@ extension UIViewController {
             let weekday = weekdayComp
             completiongHandler(weekday,date,dateString)
             
-            label.text = dateString
+            label.text = String(describing: date)
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .destructive))
-        alert.view.heightAnchor.constraint(equalToConstant: 300).isActive = true
+        
+        alert.view.snp.makeConstraints { make in
+            make.height.equalTo(300)
+        }
+        datePicker.snp.makeConstraints { make in
+            make.width.equalTo(alert.view.snp.width)
+            make.height.equalTo(160)
+            make.top.equalToSuperview().offset(5)
+        }
         datePicker.translatesAutoresizingMaskIntoConstraints = false
         datePicker.widthAnchor.constraint(equalTo: alert.view.widthAnchor).isActive = true
         datePicker.heightAnchor.constraint(equalToConstant: 160).isActive = true
         datePicker.topAnchor.constraint(equalTo: alert.view.topAnchor, constant: 20).isActive = true
+        
         present(alert, animated: true)
     }
 }

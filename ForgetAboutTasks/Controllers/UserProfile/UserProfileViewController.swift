@@ -103,12 +103,20 @@ class UserProfileViewController: UIViewController {
     
     @objc private func didTapImagePicker(){
         let alert = UIAlertController(title: "", message: "What exactly do you want to do?", preferredStyle: .actionSheet)
-        alert.addAction(UIAlertAction(title: "Set new image", style: .default,handler: { _ in
+        alert.addAction(UIAlertAction(title: "Set new image", style: .default,handler: { [self] _ in
             if UIImagePickerController.isSourceTypeAvailable(.photoLibrary){
-                self.imagePicker.delegate = self
-                self.imagePicker.sourceType = .photoLibrary
-                self.imagePicker.allowsEditing = true
-                self.present(self.imagePicker, animated: true)
+                imagePicker.delegate = self
+                imagePicker.sourceType = .photoLibrary
+                imagePicker.allowsEditing = true
+                present(self.imagePicker, animated: true)
+            }
+        }))
+        alert.addAction(UIAlertAction(title: "Make new image", style: .default,handler: { [self] _ in
+            if UIImagePickerController.isSourceTypeAvailable(.camera) {
+                imagePicker.delegate = self
+                imagePicker.sourceType = .camera
+                imagePicker.allowsEditing = true
+                present(self.imagePicker, animated: true)
             }
         }))
         alert.addAction(UIAlertAction(title: "Delete image", style: .destructive,handler: { _ in
@@ -116,16 +124,21 @@ class UserProfileViewController: UIViewController {
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         present(alert, animated: true)
-        print("Pressed")
-        
     }
     
+    @objc private func didTapTapOnLabel(sender: UITapGestureRecognizer){
+        print("Label selected")
+    }
+    
+    
+    //MARK: - Setup methods
     private func setupView(){
         setupNavigationController()
         configureConstraints()
         setupDelegates()
         setupTapGestureForImage()
         setupTargets()
+        setTapGestureForLabel()
         view.backgroundColor = .secondarySystemBackground
         title = "My Profile"
     }
@@ -147,6 +160,12 @@ class UserProfileViewController: UIViewController {
         userImageView.addGestureRecognizer(tap)
     }
     
+    private func setTapGestureForLabel(){
+        let tap = UITapGestureRecognizer(target: self, action: #selector(didTapTapOnLabel))
+        userMailLabel.isUserInteractionEnabled = true
+        userMailLabel.addGestureRecognizer(tap)
+    }
+    
     private func setupTargets(){
         changeUserImageView.addTarget(self, action: #selector(didTapImagePicker), for: .touchUpInside)
     }
@@ -163,6 +182,8 @@ class UserProfileViewController: UIViewController {
             }
         }
     }
+    
+  
     
 }
 
@@ -233,6 +254,6 @@ extension UserProfileViewController  {
             make.leading.trailing.equalToSuperview().inset(50)
             make.height.equalTo(30)
         }
-        
+        // начать думать как хранить словарь в coredata (или в firebase)
     }
 }
