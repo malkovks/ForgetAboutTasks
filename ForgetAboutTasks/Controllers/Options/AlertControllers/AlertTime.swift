@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 
 extension UIViewController {
-    func alertTime(label: UILabel, completiongHandler: @escaping (NSDate,String) -> Void) {
+    func alertTime(table: UITableView, completiongHandler: @escaping (NSDate,String) -> Void) {
         let alert = UIAlertController(title: "", message: nil, preferredStyle: .actionSheet)
         let datePicker = UIDatePicker()
         datePicker.datePickerMode = .time
@@ -25,14 +25,21 @@ extension UIViewController {
             let date = datePicker.date as NSDate
             completiongHandler(date,timeString)
             
-            label.text = timeString
+            DispatchQueue.main.async {
+                table.reloadData()
+            }
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .destructive))
-        alert.view.heightAnchor.constraint(equalToConstant: 300).isActive = true
-        datePicker.translatesAutoresizingMaskIntoConstraints = false
-        datePicker.widthAnchor.constraint(equalTo: alert.view.widthAnchor).isActive = true
-        datePicker.heightAnchor.constraint(equalToConstant: 160).isActive = true
-        datePicker.topAnchor.constraint(equalTo: alert.view.topAnchor, constant: 20).isActive = true
+        
+        alert.view.snp.makeConstraints { make in
+            make.height.equalTo(300)
+        }
+        
+        datePicker.snp.makeConstraints { make in
+            make.width.equalTo(alert.view.snp.width)
+            make.height.equalTo(160)
+            make.top.equalTo(alert.view.snp.top).offset(20)
+        }
         present(alert, animated: true)
     }
 }

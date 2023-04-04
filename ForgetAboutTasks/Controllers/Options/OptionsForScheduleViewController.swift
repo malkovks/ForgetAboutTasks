@@ -7,10 +7,11 @@
 
 import UIKit
 import SnapKit
+import Combine
 
 class OptionsForScheduleViewController: UIViewController {
     
-    let headerArray = ["Date and time","Details of event","Category of event","Color of event","Repeat"]
+    let headerArray = ["Details of event","Date and time","Category of event","Color of event","Repeat"]
     
     var cellsName = [["Name of event"],
                      ["Date", "Time"],
@@ -18,17 +19,21 @@ class OptionsForScheduleViewController: UIViewController {
                      [""],
                      ["Repeat every 7 days"]]
     
+    var cellBackgroundColor =  #colorLiteral(red: 0.6633207798, green: 0.6751670241, blue: 1, alpha: 1)
     
-
+    var cancellable: AnyCancellable?
+    
+    let picker = UIColorPickerViewController()
+    
     private let tableView = UITableView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTableView()
         setupView()
-        // Do any additional setup after loading the view.
     }
 
+    //MARK: - Targets methods
     @objc private func didTapDismiss(){
         dismiss(animated: true)
     }
@@ -37,12 +42,21 @@ class OptionsForScheduleViewController: UIViewController {
         print("Save in table view of previous view")
     }
     
+    @objc private func didTapSwitch(switchButton: UISwitch){
+        if switchButton.isOn {
+            print("Switch is on")
+        } else {
+            print("Switch is off")
+        }
+    }
+    //MARK: - Setup methods
     private func setupView() {
         setupNavigationController()
         setupDelegate()
+        setupColorPicker()
+        setupConstraints()
         view.backgroundColor = .secondarySystemBackground
         title = "Options"
-//        navigationController?.navigationItem.largeTitleDisplayMode = .always
     }
     
     private func setupDelegate(){
@@ -50,6 +64,7 @@ class OptionsForScheduleViewController: UIViewController {
         firstVC.delegate = self
         let secondVC = SetTimeViewController()
         secondVC.delegate = self
+        picker.delegate = self
     }
     
     private func setupTableView(){
@@ -57,10 +72,13 @@ class OptionsForScheduleViewController: UIViewController {
         tableView.backgroundColor = .secondarySystemBackground
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.separatorStyle = .none
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "options")
-        tableView.register(OptionsTableViewCell.self, forCellReuseIdentifier: OptionsTableViewCell.identifier)
-        setupConstraints()
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+//        tableView.register(OptionsTableViewCell.self, forCellReuseIdentifier: OptionsTableViewCell.identifier)
+        
+    }
+    
+    private func setupColorPicker(){
+        picker.selectedColor = self.view.backgroundColor ?? #colorLiteral(red: 0.6633207798, green: 0.6751670241, blue: 1, alpha: 1)
     }
     
     private func setupNavigationController(){
@@ -68,18 +86,22 @@ class OptionsForScheduleViewController: UIViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(didTapSave))
     }
     
-    private func alertTextForCell(text title:String,handler: @escaping ((String)->Void)){
-        let alert = UIAlertController(title: "", message: "Enter text in \(title)", preferredStyle: .alert)
-        alert.addTextField { field in
-            field.placeholder = title
-//            handler(field.text ?? "")
-        }
-        alert.addAction(UIAlertAction(title: "OK", style: .default,handler: { _ in
-            handler(alert.textFields?[0].text ?? "")
-            
-        }))
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        present(alert, animated: true)
+    @objc private func openColorPicker(){
+        self.cancellable = picker.publisher(for: \.selectedColor) .sink(receiveValue: { color in
+            DispatchQueue.main.async {
+                self.cellBackgroundColor = color
+            }
+        })
+        self.present(picker, animated: true)
+    }
+    
+    @objc private func pushController(vc: UIViewController){
+        let nav = UINavigationController(rootViewController: vc)
+        nav.modalPresentationStyle = .formSheet
+        nav.sheetPresentationController?.detents = [.large()]
+        nav.sheetPresentationController?.prefersGrabberVisible = true
+        nav.isNavigationBarHidden = false
+        present(nav, animated: true)
     }
 
 }
@@ -97,45 +119,51 @@ extension OptionsForScheduleViewController: UITableViewDelegate, UITableViewData
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        let data = cellsName[indexPath.section][indexPath.row]
+        cell.textLabel?.text = data
+        cell.layer.cornerRadius = 10
+        cell.contentView.layer.cornerRadius = 10
+        cell.backgroundColor = .systemBackground
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: OptionsTableViewCell.identifier, for: indexPath) as! OptionsTableViewCell
-        cell.configureCell(indexPath: indexPath)
-//        var cell = UITableViewCell(style: .subtitle, reuseIdentifier: "options")
-//        let data = cellsName[indexPath.section][indexPath.row]
-//        cell.layer.cornerRadius = 12
-//        cell.textLabel?.text = data
-//        cell.backgroundColor = .systemBackground
-//        if indexPath.section == 3 {
-//            cell.backgroundColor = #colorLiteral(red: 0.2392156869, green: 0.6745098233, blue: 0.9686274529, alpha: 1)
-//            cell.textLabel?.text = ""
-//        } else if indexPath.section == 4 {
-//            let switchButton = UISwitch()
-//            switchButton.isOn = true
-//            switchButton.onTintColor = #colorLiteral(red: 0.2392156869, green: 0.6745098233, blue: 0.9686274529, alpha: 1)
-//            cell.accessoryView = switchButton as UIView
-//        } else if indexPath.section == 1 {
-//            cell = UITableViewCell(style: .subtitle, reuseIdentifier: "options")
-//            cell.textLabel?.text = data
-//            cell.textLabel?.font = .systemFont(ofSize: 20, weight: .semibold)
-//        } else if indexPath.section == 2 {
-//            let cell = tableView.dequeueReusableCell(withIdentifier: OptionsTableViewCell.identifier, for: indexPath) as! OptionsTableViewCell
-//            cell.configureCell(indexPath: indexPath)
-//        }
+        let switchButton = UISwitch()
+        switchButton.isOn = false
+        switchButton.isHidden = true
+        switchButton.onTintColor = #colorLiteral(red: 0.6633207798, green: 0.6751670241, blue: 1, alpha: 1)
+        switchButton.addTarget(self, action: #selector(didTapSwitch(switchButton: )), for: .touchUpInside)
+        cell.accessoryView = switchButton as UIView
         
+        if indexPath == [3,0] {
+            cell.backgroundColor = cellBackgroundColor
+        } else if indexPath == [4,0] {
+            cell.accessoryView?.isHidden = false
+        }
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        var cell = tableView.dequeueReusableCell(withIdentifier: "options")
-        let customCell = tableView.dequeueReusableCell(withIdentifier: OptionsTableViewCell.identifier) as! OptionsTableViewCell
+        let cellName = cellsName[indexPath.section][indexPath.row]
         switch indexPath {
+        case [0,0]:
+            alertTextField(cell: cellName, placeholder: "Enter text", table: tableView) { text in
+                self.cellsName[indexPath.section][indexPath.row] = text
+            }
         case [1,0]:
-            alertDate(label: customCell.nameCellLabel) { weekday, date, dateString in
-                print(weekday,date,dateString)
+            alertDate(table: tableView) { weekday, date, dateString in
+                self.cellsName[indexPath.section][indexPath.row] = dateString
+            }
+        case [1,1]:
+            alertTime(table: tableView) { date, timeString in
+                self.cellsName[indexPath.section][indexPath.row] = timeString
             }
         case [2,indexPath.row]:
-            print("third section")
+            alertTextField(cell: cellName, placeholder: "Enter \(cellName) value", table: tableView, completion: { text in
+                self.cellsName[indexPath.section][indexPath.row] = text
+            })
+        case [3,0]:
+//            pushController(vc: ColorPickerViewController())
+            openColorPicker()
             
         default:
             print("error")
@@ -155,6 +183,16 @@ extension OptionsForScheduleViewController: UITableViewDelegate, UITableViewData
         5
     }
     
+}
+
+extension OptionsForScheduleViewController: UIColorPickerViewControllerDelegate {
+    
+    func colorPickerViewController(_ viewController: UIColorPickerViewController, didSelect color: UIColor, continuously: Bool) {
+        cellBackgroundColor = color
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
+    }
 }
 
 extension OptionsForScheduleViewController: SetDateProtocol {

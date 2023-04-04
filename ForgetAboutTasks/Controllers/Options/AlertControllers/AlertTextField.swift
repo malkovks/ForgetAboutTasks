@@ -8,18 +8,18 @@
 import UIKit
 
 extension UIViewController {
-    func alertTextField(subtitle: String, completion: @escaping (String) -> Void) {
-        let alert = UIAlertController(title: "", message: "Enter text to \(subtitle) cell", preferredStyle: .alert)
+    func alertTextField(cell title: String,placeholder: String,table: UITableView, completion: @escaping (String) -> Void) {
+        let alert = UIAlertController(title: "", message: title, preferredStyle: .alert)
         alert.addTextField(configurationHandler: { text in
-            text.placeholder = "Enter text"
+            text.placeholder = placeholder
         })
         alert.addAction(UIAlertAction(title: "Save", style: .default,handler: { _ in
             DispatchQueue.main.async {
-                completion(alert.textFields![0].text!)
-                print(alert.textFields![0].text ?? "")
+                completion(alert.textFields?.first?.text ?? "")
+                table.reloadData()
             }
         }))
-        alert.addAction(UIAlertAction(title: "Cance;", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         present(alert, animated: true)
     }
 }
