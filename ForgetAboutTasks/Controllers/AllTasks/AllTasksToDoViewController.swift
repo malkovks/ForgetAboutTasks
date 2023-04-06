@@ -19,7 +19,17 @@ class AllTasksToDoViewController: UIViewController {
         setupView()
         
     }
+    //MARK: - Targets methods
+    @objc private func didTapCreateNewTask(){
+        let vc = UINavigationController(rootViewController: CreateTaskTableViewController())
+        vc.modalPresentationStyle = .formSheet
+        vc.sheetPresentationController?.detents = [.large()]
+        vc.sheetPresentationController?.prefersGrabberVisible = true
+        vc.isNavigationBarHidden = false
+        present(vc, animated: true)
+    }
     
+    //MARK: - Setup methods
     private func setupNavCont(){
         title = "All tasks"
         navigationController?.navigationItem.largeTitleDisplayMode = .always
@@ -30,7 +40,12 @@ class AllTasksToDoViewController: UIViewController {
         setupNavCont()
         setupConstraints()
         setupTableView()
+        setupNavigationController()
         view.backgroundColor = .lightGray
+    }
+    
+    private func setupNavigationController(){
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "folder.fill.badge.plus"), landscapeImagePhone: nil, style: .done, target: self, action: #selector(didTapCreateNewTask))
     }
     
     private func setupTableView(){

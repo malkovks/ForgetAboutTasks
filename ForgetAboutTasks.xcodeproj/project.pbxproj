@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		00B260B35014A5CB26FCFA2A /* Pods_ForgetAboutTasksTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A2355D59545111B95037C74C /* Pods_ForgetAboutTasksTests.framework */; };
-		0A0CE6F429C4500E00A14648 /* DateExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A0CE6F329C4500E00A14648 /* DateExtensions.swift */; };
 		0A0CE6F729C461F600A14648 /* OptionsForScheduleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A0CE6F629C461F600A14648 /* OptionsForScheduleViewController.swift */; };
 		0A86ED1029B5D97F001C9BAF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A86ED0F29B5D97F001C9BAF /* AppDelegate.swift */; };
 		0A86ED1229B5D97F001C9BAF /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A86ED1129B5D97F001C9BAF /* SceneDelegate.swift */; };
@@ -24,7 +23,7 @@
 		0A8AC19829B8309F00EA052B /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8AC19729B8309F00EA052B /* MainViewController.swift */; };
 		0A8AC19F29B9D00A00EA052B /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8AC19E29B9D00A00EA052B /* TabBarViewController.swift */; };
 		0A8AC1A129B9D46D00EA052B /* ScheduleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8AC1A029B9D46D00EA052B /* ScheduleViewController.swift */; };
-		0A8AC1A429B9D4EB00EA052B /* TasksViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8AC1A329B9D4EB00EA052B /* TasksViewController.swift */; };
+		0A8AC1A429B9D4EB00EA052B /* CreateTaskForDayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8AC1A329B9D4EB00EA052B /* CreateTaskForDayController.swift */; };
 		0A8AC1A629B9D4FA00EA052B /* ContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8AC1A529B9D4FA00EA052B /* ContactsViewController.swift */; };
 		0A8AC1A829B9DBD300EA052B /* UserProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8AC1A729B9DBD300EA052B /* UserProfileViewController.swift */; };
 		0A8DD8DB29BC8BEB00B2DDAB /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8DD8DA29BC8BEB00B2DDAB /* Formatters.swift */; };
@@ -45,7 +44,10 @@
 		0AA8EC6D29CAF4A0004DC6DD /* SetTimeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA8EC6C29CAF4A0004DC6DD /* SetTimeView.swift */; };
 		0AA8EC6F29CAF4D2004DC6DD /* SetTimeProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA8EC6E29CAF4D2004DC6DD /* SetTimeProtocol.swift */; };
 		0ACE796B29D9EEAA00599C19 /* AlertSpinner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE796A29D9EEAA00599C19 /* AlertSpinner.swift */; };
-		0ACE797029DC2C9100599C19 /* ColorPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE796F29DC2C9100599C19 /* ColorPickerViewController.swift */; };
+		0ACE797229DD95C600599C19 /* CreateTaskTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE797129DD95C600599C19 /* CreateTaskTableViewController.swift */; };
+		0ACE797529DDA0C900599C19 /* CreateTaskModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE797429DDA0C900599C19 /* CreateTaskModel.swift */; };
+		0ACE797829DECF3300599C19 /* NewContactViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE797729DECF3300599C19 /* NewContactViewController.swift */; };
+		0ACE797A29DED2D400599C19 /* NewContactCustomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE797929DED2D400599C19 /* NewContactCustomView.swift */; };
 		8186764FB1BB2084EBD6465F /* Pods_ForgetAboutTasks_ForgetAboutTasksUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 081E2F7D28B71EC3AA3980C1 /* Pods_ForgetAboutTasks_ForgetAboutTasksUITests.framework */; };
 		A469AD9F86D4E441D8D2A55E /* Pods_ForgetAboutTasks.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC2C5346B0F22B63FF2E08B1 /* Pods_ForgetAboutTasks.framework */; };
 /* End PBXBuildFile section */
@@ -70,7 +72,6 @@
 /* Begin PBXFileReference section */
 		081E2F7D28B71EC3AA3980C1 /* Pods_ForgetAboutTasks_ForgetAboutTasksUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ForgetAboutTasks_ForgetAboutTasksUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		08A4F059D6FFDCFE4C1DE90E /* Pods-ForgetAboutTasksTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ForgetAboutTasksTests.release.xcconfig"; path = "Target Support Files/Pods-ForgetAboutTasksTests/Pods-ForgetAboutTasksTests.release.xcconfig"; sourceTree = "<group>"; };
-		0A0CE6F329C4500E00A14648 /* DateExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtensions.swift; sourceTree = "<group>"; };
 		0A0CE6F629C461F600A14648 /* OptionsForScheduleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionsForScheduleViewController.swift; sourceTree = "<group>"; };
 		0A86ED0C29B5D97F001C9BAF /* ForgetAboutTasks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ForgetAboutTasks.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A86ED0F29B5D97F001C9BAF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -90,7 +91,7 @@
 		0A8AC19729B8309F00EA052B /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		0A8AC19E29B9D00A00EA052B /* TabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
 		0A8AC1A029B9D46D00EA052B /* ScheduleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleViewController.swift; sourceTree = "<group>"; };
-		0A8AC1A329B9D4EB00EA052B /* TasksViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TasksViewController.swift; sourceTree = "<group>"; };
+		0A8AC1A329B9D4EB00EA052B /* CreateTaskForDayController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTaskForDayController.swift; sourceTree = "<group>"; };
 		0A8AC1A529B9D4FA00EA052B /* ContactsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsViewController.swift; sourceTree = "<group>"; };
 		0A8AC1A729B9DBD300EA052B /* UserProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileViewController.swift; sourceTree = "<group>"; };
 		0A8DD8DA29BC8BEB00B2DDAB /* Formatters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Formatters.swift; sourceTree = "<group>"; };
@@ -112,7 +113,10 @@
 		0AA8EC6C29CAF4A0004DC6DD /* SetTimeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetTimeView.swift; sourceTree = "<group>"; };
 		0AA8EC6E29CAF4D2004DC6DD /* SetTimeProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetTimeProtocol.swift; sourceTree = "<group>"; };
 		0ACE796A29D9EEAA00599C19 /* AlertSpinner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertSpinner.swift; sourceTree = "<group>"; };
-		0ACE796F29DC2C9100599C19 /* ColorPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPickerViewController.swift; sourceTree = "<group>"; };
+		0ACE797129DD95C600599C19 /* CreateTaskTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTaskTableViewController.swift; sourceTree = "<group>"; };
+		0ACE797429DDA0C900599C19 /* CreateTaskModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTaskModel.swift; sourceTree = "<group>"; };
+		0ACE797729DECF3300599C19 /* NewContactViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewContactViewController.swift; sourceTree = "<group>"; };
+		0ACE797929DED2D400599C19 /* NewContactCustomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewContactCustomView.swift; sourceTree = "<group>"; };
 		3015CC6C7F05EBB6BF73F999 /* Pods-ForgetAboutTasks.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ForgetAboutTasks.release.xcconfig"; path = "Target Support Files/Pods-ForgetAboutTasks/Pods-ForgetAboutTasks.release.xcconfig"; sourceTree = "<group>"; };
 		5BFA5F0DDDDE5DC52FB7B995 /* Pods-ForgetAboutTasks-ForgetAboutTasksUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ForgetAboutTasks-ForgetAboutTasksUITests.debug.xcconfig"; path = "Target Support Files/Pods-ForgetAboutTasks-ForgetAboutTasksUITests/Pods-ForgetAboutTasks-ForgetAboutTasksUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		A2355D59545111B95037C74C /* Pods_ForgetAboutTasksTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ForgetAboutTasksTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -181,10 +185,10 @@
 				0A8AC1A229B9D4D700EA052B /* Controllers */,
 				0AA8EC7029CAF52E004DC6DD /* Extensions */,
 				0A8AC19D29B9CFCF00EA052B /* NavigationControllers */,
-				0A8AC19A29B9C88100EA052B /* AlternativeControllers */,
 				0A8AC19C29B9C8A400EA052B /* Resources */,
-				0A8AC19929B9C87300EA052B /* Delegates */,
+				0A8AC19929B9C87300EA052B /* System Delegates */,
 				0A86ED1829B5D97F001C9BAF /* ForgetAboutTasks.xcdatamodeld */,
+				0A8AC19A29B9C88100EA052B /* AlternativeControllers */,
 			);
 			path = ForgetAboutTasks;
 			sourceTree = "<group>";
@@ -206,13 +210,13 @@
 			path = ForgetAboutTasksUITests;
 			sourceTree = "<group>";
 		};
-		0A8AC19929B9C87300EA052B /* Delegates */ = {
+		0A8AC19929B9C87300EA052B /* System Delegates */ = {
 			isa = PBXGroup;
 			children = (
 				0A86ED0F29B5D97F001C9BAF /* AppDelegate.swift */,
 				0A86ED1129B5D97F001C9BAF /* SceneDelegate.swift */,
 			);
-			path = Delegates;
+			path = "System Delegates";
 			sourceTree = "<group>";
 		};
 		0A8AC19A29B9C88100EA052B /* AlternativeControllers */ = {
@@ -261,7 +265,6 @@
 				0A99A90229CD98DD00CC5A42 /* Contacts */,
 				0A99A90129CD98CE00CC5A42 /* AllTasks */,
 				0A99A90029CD98C600CC5A42 /* Schedule */,
-				0A99A90429CD997700CC5A42 /* Options */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -270,7 +273,6 @@
 			isa = PBXGroup;
 			children = (
 				0A8DD8DA29BC8BEB00B2DDAB /* Formatters.swift */,
-				0A0CE6F329C4500E00A14648 /* DateExtensions.swift */,
 			);
 			path = DateFormatters;
 			sourceTree = "<group>";
@@ -279,7 +281,8 @@
 			isa = PBXGroup;
 			children = (
 				0A8AC1A029B9D46D00EA052B /* ScheduleViewController.swift */,
-				0A8AC1A329B9D4EB00EA052B /* TasksViewController.swift */,
+				0ACE797329DDA0B200599C19 /* CreateTaskVC */,
+				0A99A90429CD997700CC5A42 /* Options */,
 			);
 			path = Schedule;
 			sourceTree = "<group>";
@@ -288,6 +291,7 @@
 			isa = PBXGroup;
 			children = (
 				0A99A8FE29CD8FE000CC5A42 /* AllTasksToDoViewController.swift */,
+				0ACE797129DD95C600599C19 /* CreateTaskTableViewController.swift */,
 			);
 			path = AllTasks;
 			sourceTree = "<group>";
@@ -296,6 +300,8 @@
 			isa = PBXGroup;
 			children = (
 				0A8AC1A529B9D4FA00EA052B /* ContactsViewController.swift */,
+				0ACE797729DECF3300599C19 /* NewContactViewController.swift */,
+				0ACE797929DED2D400599C19 /* NewContactCustomView.swift */,
 			);
 			path = Contacts;
 			sourceTree = "<group>";
@@ -312,11 +318,6 @@
 			isa = PBXGroup;
 			children = (
 				0A0CE6F629C461F600A14648 /* OptionsForScheduleViewController.swift */,
-				0ACE796F29DC2C9100599C19 /* ColorPickerViewController.swift */,
-				0AA8EC5B29C76897004DC6DD /* AlertControllers */,
-				0ACE796C29D9FB7D00599C19 /* Cells */,
-				0AA8EC6929CAF409004DC6DD /* SetTImeViewController */,
-				0AA8EC6229CAE5E6004DC6DD /* SetDateViewController */,
 			);
 			path = Options;
 			sourceTree = "<group>";
@@ -344,6 +345,8 @@
 		0A99A90C29CD9E1900CC5A42 /* Managers */ = {
 			isa = PBXGroup;
 			children = (
+				0AA8EC6229CAE5E6004DC6DD /* SetDateViewController */,
+				0AA8EC6929CAF409004DC6DD /* SetTImeViewController */,
 				0A99A90929CD9C9700CC5A42 /* CoreChecking */,
 			);
 			path = Managers;
@@ -398,15 +401,26 @@
 		0AA8EC7029CAF52E004DC6DD /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				0AA8EC5B29C76897004DC6DD /* AlertControllers */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
 		};
-		0ACE796C29D9FB7D00599C19 /* Cells */ = {
+		0ACE797329DDA0B200599C19 /* CreateTaskVC */ = {
 			isa = PBXGroup;
 			children = (
+				0ACE797629DDA0CC00599C19 /* Model */,
+				0A8AC1A329B9D4EB00EA052B /* CreateTaskForDayController.swift */,
 			);
-			path = Cells;
+			path = CreateTaskVC;
+			sourceTree = "<group>";
+		};
+		0ACE797629DDA0CC00599C19 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				0ACE797429DDA0C900599C19 /* CreateTaskModel.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 		323A8B5E5503D5EEE0EAABE3 /* Frameworks */ = {
@@ -672,7 +686,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				0A9E1C3F29D078BD000CC9A9 /* LogInView.swift in Sources */,
+				0ACE797829DECF3300599C19 /* NewContactViewController.swift in Sources */,
 				0AA8EC6B29CAF469004DC6DD /* SetTimeViewController.swift in Sources */,
+				0ACE797A29DED2D400599C19 /* NewContactCustomView.swift in Sources */,
 				0AA8EC5D29C76968004DC6DD /* AlertDate.swift in Sources */,
 				0AA8EC6629CAE9B0004DC6DD /* SetDateView.swift in Sources */,
 				0A8AC19F29B9D00A00EA052B /* TabBarViewController.swift in Sources */,
@@ -690,16 +706,16 @@
 				0A99A8FD29CD855100CC5A42 /* AlertTextField.swift in Sources */,
 				0A99A8FF29CD8FE000CC5A42 /* AllTasksToDoViewController.swift in Sources */,
 				0A8AC1A129B9D46D00EA052B /* ScheduleViewController.swift in Sources */,
-				0A0CE6F429C4500E00A14648 /* DateExtensions.swift in Sources */,
 				0A86ED1A29B5D97F001C9BAF /* ForgetAboutTasks.xcdatamodeld in Sources */,
 				0ACE796B29D9EEAA00599C19 /* AlertSpinner.swift in Sources */,
+				0ACE797529DDA0C900599C19 /* CreateTaskModel.swift in Sources */,
 				0A99A90729CD99CA00CC5A42 /* UserAuthViewController.swift in Sources */,
+				0ACE797229DD95C600599C19 /* CreateTaskTableViewController.swift in Sources */,
 				0AA8EC6829CAF192004DC6DD /* SetDateProtocol.swift in Sources */,
 				0A86ED1029B5D97F001C9BAF /* AppDelegate.swift in Sources */,
-				0ACE797029DC2C9100599C19 /* ColorPickerViewController.swift in Sources */,
 				0A8AC19629B7B58300EA052B /* EKWrapper.swift in Sources */,
 				0A9E1C3A29CEEDCE000CC9A9 /* LogInViewController.swift in Sources */,
-				0A8AC1A429B9D4EB00EA052B /* TasksViewController.swift in Sources */,
+				0A8AC1A429B9D4EB00EA052B /* CreateTaskForDayController.swift in Sources */,
 				0A9E1C3C29D0778F000CC9A9 /* RegisterAccountViewController.swift in Sources */,
 				0A8AC19429B7A31500EA052B /* SecondViewController.swift in Sources */,
 				0A86ED1229B5D97F001C9BAF /* SceneDelegate.swift in Sources */,

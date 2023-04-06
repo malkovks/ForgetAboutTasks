@@ -27,6 +27,7 @@ class ScheduleViewController: UIViewController {
         calendar.weekdayHeight = 30
         calendar.headerHeight = 50
         calendar.firstWeekday = 2
+        calendar.tintColor = #colorLiteral(red: 0.6633207798, green: 0.6751670241, blue: 1, alpha: 1)
         calendar.translatesAutoresizingMaskIntoConstraints = false
         return calendar
     }()
@@ -36,7 +37,7 @@ class ScheduleViewController: UIViewController {
         button.setTitle("Open Calendar", for: .normal)
         button.setTitleColor(#colorLiteral(red: 0.04713427275, green: 0.08930709213, blue: 0.1346856952, alpha: 1), for: .normal)
         button.titleLabel?.font = UIFont(name: "Avenir Next Demi Bold", size: 16)
-        button.backgroundColor = #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1)
+        button.backgroundColor = #colorLiteral(red: 0.6633207798, green: 0.6751670241, blue: 1, alpha: 1)
         button.layer.cornerRadius = 12
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -57,6 +58,7 @@ class ScheduleViewController: UIViewController {
         if !calendar.pagingEnabled {
             calendar.pagingEnabled = true
             navigationItem.leftBarButtonItem?.image = UIImage(systemName: "eye.slash.fill")
+            
         } else {
             calendar.pagingEnabled = false
             navigationItem.leftBarButtonItem?.image = UIImage(systemName: "eye.fill")
@@ -65,7 +67,7 @@ class ScheduleViewController: UIViewController {
 
     //MARK: - Setup Methods
     private func setupDelegates(){
-        let tasks = TasksViewController()
+        let tasks = CreateTaskForDayController()
         tasks.delegate = self
         calendar.delegate = self
         calendar.dataSource = self
@@ -129,7 +131,7 @@ extension ScheduleViewController: FSCalendarDelegate, FSCalendarDataSource {
             
             let dateString = formatter.stringFromDate(date: date)
             print(dateString)
-            let vc = TasksViewController()
+            let vc = CreateTaskForDayController()
             vc.delegate = self
             vc.choosenDate = date
             if let dict = dateDictionary[dateString] {

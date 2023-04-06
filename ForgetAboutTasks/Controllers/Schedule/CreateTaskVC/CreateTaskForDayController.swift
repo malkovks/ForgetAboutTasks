@@ -8,24 +8,8 @@
 import UIKit
 import FSCalendar
 import SnapKit
-import EventKit
-import EventKitUI
 
-protocol TasksViewDelegate: AnyObject {
-    func tasksData(array data: [TasksDate],date: String)
-}
-
-struct TasksDate {
-    var date: String
-    var dateGetter: Date?
-    var startDate: String?
-    var endDate: String?
-    var name: String
-    var event: EKEvent?
-    var store: EKEventStore?
-}
-
-class TasksViewController: UIViewController {
+class CreateTaskForDayController: UIViewController {
     
     weak var delegate: TasksViewDelegate?
     
@@ -37,8 +21,7 @@ class TasksViewController: UIViewController {
     
     private var indexOfCell = Int()
     private var isCellEdited = Bool()
-    
-    private var store = EKEventStore()
+
     
     
     private var calendar: FSCalendar = {
@@ -49,6 +32,7 @@ class TasksViewController: UIViewController {
         calendar.weekdayHeight = 20
         calendar.headerHeight = 30
         calendar.pagingEnabled = true
+        calendar.tintColor = #colorLiteral(red: 0.6633207798, green: 0.6751670241, blue: 1, alpha: 1)
         calendar.locale = Locale(identifier: "ru_RU")
         calendar.translatesAutoresizingMaskIntoConstraints = false
         return calendar
@@ -77,22 +61,6 @@ class TasksViewController: UIViewController {
             self.dismiss(animated: true)
         }
     }
-    //РАБОТАЕТ С ФРЕЙМОМ EventKit
-//    @objc private func didTapCreate(){
-//        let event = EKEvent(eventStore: self.store)
-//        event.startDate = choosenDate
-//        event.endDate = getEndDate(start: choosenDate)
-//        event.timeZone = TimeZone(identifier: "Europe/Moscow")
-//
-//        let eventVC = EKEventEditViewController()
-//
-//
-//        eventVC.event = event
-//        eventVC.event?.timeZone = TimeZone(identifier: "Europe/Moscow")
-//        eventVC.eventStore = store
-//        eventVC.editViewDelegate = self
-//        present(eventVC, animated: true)
-//    }
     
     @objc private func didTapCreate(){
         let vc = OptionsForScheduleViewController()
@@ -138,7 +106,6 @@ class TasksViewController: UIViewController {
         view.backgroundColor = .systemBackground
         calendar.appearance.todayColor = UIColor.systemBlue
         calendar.today =  choosenDate
-        askForUsingEvent()
     }
     
     private func setupTableViewAndDelegates(){
@@ -150,8 +117,6 @@ class TasksViewController: UIViewController {
                            , forCellReuseIdentifier: "cell")
         calendar.delegate = self
         calendar.dataSource = self
-        let eventEditVC = EKEventEditViewController()
-        eventEditVC.editViewDelegate = self
     }
     
     
@@ -165,55 +130,27 @@ class TasksViewController: UIViewController {
         let firstBut = UIBarButtonItem(image: UIImage(systemName: "plus.circle.fill"), landscapeImagePhone: nil, style: .done, target: self, action: #selector(didTapCreate))
         let secondBut = UIBarButtonItem(title: "Edit", style: .done, target: self, action: #selector(didTapEditCell))
         navigationItem.rightBarButtonItems = [firstBut, secondBut]
-       
+        navigationController?.navigationBar.tintColor = #colorLiteral(red: 0.6633207798, green: 0.6751670241, blue: 1, alpha: 1)
+        
     }
-    
-    private func askForUsingEvent(){
-        store.requestAccess(to: .event) { success, error in
-            if success, error == nil {
-                DispatchQueue.main.async {
-                    self.setupView()
-                }
-            } else {
-                let alert = UIAlertController(title: "Warning", message: "Please give access to calendar", preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "Ok", style: .default))
-                self.present(alert, animated: true)
-            }
-        }
-    }
-    
-
     
 }
 //MARK: - table delegates and datasource
-extension TasksViewController: UITableViewDelegate, UITableViewDataSource {
+extension CreateTaskForDayController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         cellData.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cell")
-        let model = cellData[indexPath.row]
-        let colorEvent = model.event?.calendar.cgColor
-        let color = UIColor(cgColor: colorEvent!)
-        
-        cell.accessoryType = .detailButton
-        cell.textLabel?.text = "\(model.event?.title ?? ""), категория: \(model.event?.calendar.title ?? "")"
-        cell.detailTextLabel?.text = "\(model.startDate ?? "") -> \(model.endDate ?? "")"
-        cell.imageView?.image = UIImage(systemName: "circle.fill")
-        cell.imageView?.tintColor = color
+        cell.textLabel?.text = cellData[indexPath.row].name
     
         return cell
     }
     
     func tableView(_ tableView: UITableView, accessoryButtonTappedForRowWith indexPath: IndexPath) {
         let model = cellData[indexPath.row]
-        let vc = EKEventViewController()
-        vc.event = model.event
-        vc.title = model.name
-        vc.delegate = self
-        present(UINavigationController(rootViewController: vc), animated: true)
-        self.indexOfCell = indexPath.row
+        
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -225,16 +162,6 @@ extension TasksViewController: UITableViewDelegate, UITableViewDataSource {
         let index = indexPath.row
         let deleteInstance = UIContextualAction(style: .destructive, title: "") { [self] _, _, _ in
             self.cellData.remove(at: index)
-            //доработать!!!
-            do {
-                if let event = cellData[index].event {
-                    try self.store.remove(event, span: .thisEvent, commit: true)
-                }
-            }catch {
-                let alert = UIAlertController(title: "Warning", message: "Can't delete this event. Try again later", preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "Ok", style: .cancel))
-                present(alert, animated: true)
-            }
             tableView.deleteRows(at: [indexPath], with: .fade)
         }
         deleteInstance.backgroundColor = .systemRed
@@ -253,17 +180,6 @@ extension TasksViewController: UITableViewDelegate, UITableViewDataSource {
         let model = cellData[index]
         let actionInstance = UIContextualAction(style: .normal, title: "") { [weak self] _, _, completionHandler in
             self?.isTrailingSwipeActionActive = false
-            let event = EKEvent(eventStore: model.store!)
-            event.startDate = model.event?.startDate
-            event.endDate = model.event?.endDate
-            event.title = model.name
-            
-            let eventVC = EKEventEditViewController()
-            eventVC.event = event
-            eventVC.eventStore = model.store
-            eventVC.editViewDelegate = self
-            self?.present(eventVC, animated: true)
-            completionHandler(true)
         }
         actionInstance.backgroundColor = .systemYellow
         actionInstance.image = UIImage(systemName: "pencil.line")
@@ -293,7 +209,7 @@ extension TasksViewController: UITableViewDelegate, UITableViewDataSource {
 }
 
 //MARK: - calendar delegates
-extension TasksViewController: FSCalendarDelegate, FSCalendarDataSource {
+extension CreateTaskForDayController: FSCalendarDelegate, FSCalendarDataSource {
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
     }
     func calendar(_ calendar: FSCalendar, boundingRectWillChange bounds: CGRect, animated: Bool) {
@@ -303,58 +219,8 @@ extension TasksViewController: FSCalendarDelegate, FSCalendarDataSource {
         self.view.layoutIfNeeded()
     }
 }
-
-//MARK: - events edit delegate
-extension TasksViewController: EKEventEditViewDelegate {
-    func eventEditViewController(_ controller: EKEventEditViewController, didCompleteWith action: EKEventEditViewAction) {
-        if action == .canceled {
-            self.dismiss(animated: true)
-        } else if action == .saved {
-            isValueWasChanged = true
-            let dateGetter = controller.event?.startDate
-            let stringDate = controller.event?.startDate.formatted(date: .numeric, time: .standard)
-            let endDate = controller.event?.endDate.formatted(date: .numeric, time: .standard)
-            let date = cellData.first?.date ?? choosenDate.formatted(date: .omitted, time: .shortened)
-            print(date)
-            let name = controller.event?.title ?? ""
-            guard let event = controller.event else { print("Error saving event");return}
-            let ekStore = controller.eventStore
-            if !cellData.isEmpty && isCellEdited == true{
-                cellData.remove(at: indexOfCell)
-                isCellEdited = false
-            }
-            self.store = controller.eventStore
-            cellData.append(TasksDate(date: date, dateGetter: dateGetter, startDate: stringDate ?? "",endDate: endDate ?? "", name: name, event: event, store: ekStore))
-            self.dismiss(animated: true)
-            self.indexOfCell = 0
-            self.tableView.reloadData()
-            print(cellData[0].event?.startDate ?? "")
-            
-        } else {
-            print("some error")
-        }
-    }
-}
-//MARK: - event delegates
-extension TasksViewController: EKEventViewDelegate {
-    func eventViewController(_ controller: EKEventViewController, didCompleteWith action: EKEventViewAction) {
-        if action == .deleted {
-            self.dismiss(animated: true)
-        } else if action == .done {
-            self.dismiss(animated: true)
-            var model = cellData[indexOfCell]
-            model.event = controller.event
-            model.name = controller.event.title
-            self.tableView.reloadData()
-        }
-    }
-    
-    
-}
-
-
 //MARK: - constrain extension for dymanic height changing.NOT USING
-extension TasksViewController {
+extension CreateTaskForDayController {
     private func setupConstraintsForCalendar(){
         view.addSubview(calendar)
 //        let height = view.frame.size.height/6
