@@ -7,21 +7,17 @@
 
 import UIKit
 import SnapKit
-import Combine
+
 
 class ContactsViewController: UIViewController {
     
-    var cellsName = [["Name of event"],
+    private var cellsName = [["Name of event"],
                      ["Date and Time"],
                      ["Notes"],
                      ["URL"],
                      [""]]
     
-    var cellBackgroundColor =  #colorLiteral(red: 0.6633207798, green: 0.6751670241, blue: 1, alpha: 1)
-    
-    var cancellable: AnyCancellable?//for parallels displaying color in cell and Combine Kit for it
-    
-    let picker = UIColorPickerViewController()
+    private let searchController = UISearchController()
     
     private let tableView = UITableView()
     
@@ -42,15 +38,10 @@ class ContactsViewController: UIViewController {
     //MARK: - Setup methods
     private func setupView() {
         setupNavigationController()
-        setupDelegate()
-        setupColorPicker()
         setupConstraints()
+        setupSearchController()
         view.backgroundColor = .secondarySystemBackground
-        title = "Contacts"
-    }
-    
-    private func setupDelegate(){
-        picker.delegate = self
+        
     }
     
     private func setupTableView(){
@@ -61,9 +52,10 @@ class ContactsViewController: UIViewController {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "contactCell")
     }
-    
-    private func setupColorPicker(){
-        picker.selectedColor = self.view.backgroundColor ?? #colorLiteral(red: 0.6633207798, green: 0.6751670241, blue: 1, alpha: 1)
+
+    private func setupSearchController(){
+        searchController.searchBar.placeholder = "Search Contacts"
+        navigationItem.searchController = searchController
     }
     
     private func setupNavigationController(){
@@ -71,17 +63,9 @@ class ContactsViewController: UIViewController {
         navigationController?.navigationBar.tintColor = #colorLiteral(red: 0.6633207798, green: 0.6751670241, blue: 1, alpha: 1)
         navigationController?.navigationItem.largeTitleDisplayMode = .always
         navigationController?.navigationBar.prefersLargeTitles = true
+        title = "Contacts"
     }
     //MARK: - Segue methods
-    //methods with dispatch of displaying color in cell while choosing color in picker view
-    @objc private func openColorPicker(){
-        self.cancellable = picker.publisher(for: \.selectedColor) .sink(receiveValue: { color in
-            DispatchQueue.main.async {
-                self.cellBackgroundColor = color
-            }
-        })
-        self.present(picker, animated: true)
-    }
     
     @objc private func pushController(vc: UIViewController){
         let nav = UINavigationController(rootViewController: vc)
@@ -116,7 +100,7 @@ extension ContactsViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let cellName = cellsName[indexPath.section][indexPath.row]
+//        let cellName = cellsName[indexPath.section][indexPath.row]
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -126,18 +110,6 @@ extension ContactsViewController: UITableViewDelegate, UITableViewDataSource {
 
     
 }
-
-extension ContactsViewController: UIColorPickerViewControllerDelegate {
-    
-    func colorPickerViewController(_ viewController: UIColorPickerViewController, didSelect color: UIColor, continuously: Bool) {
-        cellBackgroundColor = color
-        DispatchQueue.main.async {
-            self.tableView.reloadData()
-        }
-    }
-}
-
-
 
 extension ContactsViewController {
     private func setupConstraints(){

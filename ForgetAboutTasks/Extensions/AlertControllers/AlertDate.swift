@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 
 extension UIViewController {
-    func alertDate(table: UITableView, completiongHandler: @escaping (Int,NSDate,String) -> Void) {
+    func alertDate(table: UITableView, completiongHandler: @escaping (Int,Date,String) -> Void) {
         let alert = UIAlertController(title: "", message: nil, preferredStyle: .actionSheet)
         let datePicker = UIDatePicker()
         datePicker.datePickerMode = .date
@@ -17,11 +17,11 @@ extension UIViewController {
         alert.view.addSubview(datePicker)
         
         alert.addAction(UIAlertAction(title: "Ok", style: .default) { action in
-            let date = datePicker.date as NSDate
-            let dateString = Formatters.instance.stringFromDate(date: date as Date)
+            let date = datePicker.date
+            let dateString = Formatters.instance.stringFromDate(date: date)
             
             let calendar = Calendar.current
-            let comp = calendar.dateComponents([.weekday], from: date as Date)
+            let comp = calendar.dateComponents([.weekday], from: date)
             guard let weekdayComp = comp.weekday else { return }
             let weekday = weekdayComp
             completiongHandler(weekday,date,dateString)

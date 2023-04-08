@@ -161,6 +161,7 @@ class UserAuthViewController: UIViewController {
     
     private func setupNavigation(){
         title = "Authorization"
+        navigationController?.navigationBar.tintColor = #colorLiteral(red: 0.6633207798, green: 0.6751670241, blue: 1, alpha: 1)
         navigationController?.navigationItem.largeTitleDisplayMode = .always
         navigationController?.navigationBar.prefersLargeTitles = true
     }

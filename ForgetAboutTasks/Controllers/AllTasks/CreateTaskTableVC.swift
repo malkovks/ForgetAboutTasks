@@ -81,6 +81,7 @@ class CreateTaskTableViewController: UIViewController {
     }
     
     private func setupNavigationController(){
+        navigationController?.navigationBar.tintColor = #colorLiteral(red: 0.6633207798, green: 0.6751670241, blue: 1, alpha: 1)
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(didTapDismiss))
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(didTapSave))
     }
@@ -134,8 +135,9 @@ extension CreateTaskTableViewController: UITableViewDelegate, UITableViewDataSou
         let cellName = cellsName[indexPath.section][indexPath.row]
         switch indexPath {
         case [0,0]:
-            alertTextField(cell: cellName, placeholder: "Enter title of event", table: tableView) { text in
+            alertTextField(cell: cellName, placeholder: "Enter title of event", table: tableView) { [self] text in
                 self.cellsName[indexPath.section][indexPath.row] = text
+                cellsName[indexPath.section][indexPath.row] = text
             }
         case [1,0]:
             alertDate(table: tableView) { weekday, date, dateString in

@@ -19,10 +19,11 @@ class NewContactCustomView: UIView {
     
     let contactImageView: UIImageView = {
        let image = UIImageView()
-        image.contentMode = .scaleAspectFill
+        image.contentMode = .scaleAspectFit
         image.clipsToBounds = true
-        image.image = UIImage(systemName: "photo.on.rectangle.angled")?.withRenderingMode(.alwaysTemplate)
+        image.image = UIImage(systemName: "person.crop.circle.badge.plus")?.withRenderingMode(.alwaysTemplate)
         image.tintColor = #colorLiteral(red: 0.6633207798, green: 0.6751670241, blue: 1, alpha: 1)
+        image.layer.cornerRadius = 10
         return image
     }()
     
@@ -51,9 +52,8 @@ extension NewContactCustomView {
         }
         viewForImage.addSubview(contactImageView)
         contactImageView.snp.makeConstraints { make in
-            make.top.bottom.equalToSuperview().inset(10)
-            make.trailing.leading.equalToSuperview().inset(50)
-            make.centerX.centerY.equalToSuperview()
+            make.top.bottom.equalToSuperview()
+            make.trailing.leading.equalToSuperview()
         }
     }
 }

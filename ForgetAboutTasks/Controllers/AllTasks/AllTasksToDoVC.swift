@@ -13,7 +13,6 @@ class AllTasksToDoViewController: UIViewController {
     
     private let tableView = UITableView()
     
-
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
@@ -30,14 +29,9 @@ class AllTasksToDoViewController: UIViewController {
     }
     
     //MARK: - Setup methods
-    private func setupNavCont(){
-        title = "All tasks"
-        navigationController?.navigationItem.largeTitleDisplayMode = .always
-        navigationController?.navigationBar.prefersLargeTitles = true
-    }
+
     
     private func setupView(){
-        setupNavCont()
         setupConstraints()
         setupTableView()
         setupNavigationController()
@@ -45,6 +39,10 @@ class AllTasksToDoViewController: UIViewController {
     }
     
     private func setupNavigationController(){
+        title = "All tasks"
+        navigationController?.navigationItem.largeTitleDisplayMode = .always
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationController?.navigationBar.tintColor = #colorLiteral(red: 0.6633207798, green: 0.6751670241, blue: 1, alpha: 1)
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "folder.fill.badge.plus"), landscapeImagePhone: nil, style: .done, target: self, action: #selector(didTapCreateNewTask))
     }
     

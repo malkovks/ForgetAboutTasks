@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 
 extension UIViewController {
-    func alertTime(table: UITableView, completiongHandler: @escaping (NSDate,String) -> Void) {
+    func alertTime(table: UITableView, completiongHandler: @escaping (Date,String) -> Void) {
         let alert = UIAlertController(title: "", message: nil, preferredStyle: .actionSheet)
         let datePicker = UIDatePicker()
         datePicker.datePickerMode = .time
@@ -22,7 +22,7 @@ extension UIViewController {
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "HH:mm"
             let timeString = dateFormatter.string(from: datePicker.date)
-            let date = datePicker.date as NSDate
+            let date = datePicker.date
             completiongHandler(date,timeString)
             
             DispatchQueue.main.async {

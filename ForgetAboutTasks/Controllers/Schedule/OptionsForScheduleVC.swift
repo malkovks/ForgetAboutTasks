@@ -21,9 +21,12 @@ class OptionsForScheduleViewController: UIViewController {
     
     var cellBackgroundColor =  #colorLiteral(red: 0.6633207798, green: 0.6751670241, blue: 1, alpha: 1)
     
-    var cancellable: AnyCancellable?//for parallels displaying color in cell and Combine Kit for it
     
-    let picker = UIColorPickerViewController()
+    
+    private var cancellable: AnyCancellable?//for parallels displaying color in cell and Combine Kit for it
+    
+    private let picker = UIColorPickerViewController()
+    private let scheduleModel = ScheduleModel()
     
     private let tableView = UITableView()
     
@@ -39,14 +42,18 @@ class OptionsForScheduleViewController: UIViewController {
     }
     
     @objc private func didTapSave(){
-        print("Save in table view of previous view")
+        print("Saved")
+        
+        RealmManager.shared.saveScheduleModel(model: scheduleModel)
     }
     
-    @objc private func didTapSwitch(switchButton: UISwitch){
-        if switchButton.isOn {
-            print("Switch is on")
+    @objc private func didTapSwitch(sender: UISwitch){
+        if sender.isOn {
+            print("It repeat")
+            scheduleModel.scheduleRepeat = true
         } else {
-            print("Switch is off")
+            print("it doesnt repeat")
+            scheduleModel.scheduleRepeat = false
         }
     }
     //MARK: - Setup methods
@@ -126,12 +133,12 @@ extension OptionsForScheduleViewController: UITableViewDelegate, UITableViewData
         cell.contentView.layer.cornerRadius = 10
         cell.backgroundColor = .systemBackground
         
-        let switchButton = UISwitch()
+        let switchButton = UISwitch(frame: .zero)
         switchButton.isOn = false
         switchButton.isHidden = true
         switchButton.onTintColor = #colorLiteral(red: 0.6633207798, green: 0.6751670241, blue: 1, alpha: 1)
-        switchButton.addTarget(self, action: #selector(didTapSwitch(switchButton: )), for: .touchUpInside)
-        cell.accessoryView = switchButton as UIView
+        switchButton.addTarget(self, action: #selector(self.didTapSwitch(sender: )), for: .touchUpInside)
+        cell.accessoryView = switchButton
         
         if indexPath == [3,0] {
             cell.backgroundColor = cellBackgroundColor
@@ -146,21 +153,41 @@ extension OptionsForScheduleViewController: UITableViewDelegate, UITableViewData
         let cellName = cellsName[indexPath.section][indexPath.row]
         switch indexPath {
         case [0,0]:
-            alertTextField(cell: cellName, placeholder: "Enter text", table: tableView) { text in
-                self.cellsName[indexPath.section][indexPath.row] = text
+            alertTextField(cell: cellName, placeholder: "Enter text", table: tableView) { [self] text in
+                scheduleModel.scheduleName = text
+                cellsName[indexPath.section][indexPath.row] = text
             }
         case [1,0]:
-            alertDate(table: tableView) { weekday, date, dateString in
-                self.cellsName[indexPath.section][indexPath.row] = dateString
+            alertDate( table: tableView) { [self] weekday, date, dateString in
+                scheduleModel.scheduleDate = date
+                scheduleModel.scheduleWeekday = weekday
+                cellsName[indexPath.section][indexPath.row] = dateString
             }
         case [1,1]:
-            alertTime(table: tableView) { date, timeString in
-                self.cellsName[indexPath.section][indexPath.row] = timeString
+            alertTime(table: tableView) { [self] date, timeString in
+                scheduleModel.scheduleTime = date
+                cellsName[indexPath.section][indexPath.row] = timeString
             }
-        case [2,indexPath.row]:
-            alertTextField(cell: cellName, placeholder: "Enter \(cellName) value", table: tableView, completion: { text in
-                self.cellsName[indexPath.section][indexPath.row] = text
-            })
+        case [2,0]:
+            alertTextField(cell: "Enter Name of event", placeholder: "Enter the text", table: tableView) { [self] text in
+                scheduleModel.scheduleCategoryName = text
+                cellsName[indexPath.section][indexPath.row] = text
+            }
+        case [2,1]:
+            alertTextField(cell: "Enter Type of event", placeholder: "Enter the text", table: tableView) { [self] text in
+                scheduleModel.scheduleCategoryType = text
+                cellsName[indexPath.section][indexPath.row] = text
+            }
+        case [2,2]:
+            alertTextField(cell: "Enter URL of event", placeholder: "Enter the text", table: tableView) { [self] text in
+                scheduleModel.scheduleCategoryURL = text
+                cellsName[indexPath.section][indexPath.row] = text
+            }
+        case [2,3]:
+            alertTextField(cell: "Enter Notes of event", placeholder: "Enter the text", table: tableView) { [self] text in
+                scheduleModel.scheduleCategoryNote = text
+                cellsName[indexPath.section][indexPath.row] = text
+            }
         case [3,0]:
             openColorPicker()
             

@@ -140,10 +140,12 @@ class UserProfileViewController: UIViewController {
         setupTargets()
         setTapGestureForLabel()
         view.backgroundColor = .secondarySystemBackground
-        title = "My Profile"
+        
     }
     
     private func setupNavigationController(){
+        title = "My Profile"
+        navigationController?.navigationBar.tintColor = #colorLiteral(red: 0.6633207798, green: 0.6751670241, blue: 1, alpha: 1)
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "arrow.uturn.right.square"), style: .done, target: self, action: #selector(didTapLogout))
     }
 

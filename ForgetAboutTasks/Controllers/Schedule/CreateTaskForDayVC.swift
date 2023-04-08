@@ -148,10 +148,7 @@ extension CreateTaskForDayController: UITableViewDelegate, UITableViewDataSource
         return cell
     }
     
-    func tableView(_ tableView: UITableView, accessoryButtonTappedForRowWith indexPath: IndexPath) {
-        let model = cellData[indexPath.row]
-        
-    }
+    func tableView(_ tableView: UITableView, accessoryButtonTappedForRowWith indexPath: IndexPath) { }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
@@ -177,7 +174,7 @@ extension CreateTaskForDayController: UITableViewDelegate, UITableViewDataSource
         let index = indexPath.row
         indexOfCell = index
         isCellEdited = true
-        let model = cellData[index]
+//        let model = cellData[index]
         let actionInstance = UIContextualAction(style: .normal, title: "") { [weak self] _, _, completionHandler in
             self?.isTrailingSwipeActionActive = false
         }

@@ -11,6 +11,7 @@ import UIKit
 import FSCalendar
 import EventKit
 import SnapKit
+import RealmSwift
 
 class ScheduleViewController: UIViewController {
     
@@ -46,12 +47,9 @@ class ScheduleViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupAuthentification()
+        
+        print(Realm.Configuration.defaultConfiguration.fileURL)
     }
-
-//    override func viewWillAppear(_ animated: Bool) {
-//        super.viewWillAppear(animated)
-//        setupAuthentification()
-//    }
     
    //MARK: - target methods
     @objc private func didTapTapped(){
@@ -95,6 +93,7 @@ class ScheduleViewController: UIViewController {
     
     private func setupNavigationController(){
         title = "Schedule"
+        navigationController?.tabBarController?.tabBar.scrollEdgeAppearance = navigationController?.tabBarController?.tabBar.standardAppearance
         navigationController?.navigationItem.largeTitleDisplayMode = .never
         navigationController?.navigationBar.prefersLargeTitles = false
     }

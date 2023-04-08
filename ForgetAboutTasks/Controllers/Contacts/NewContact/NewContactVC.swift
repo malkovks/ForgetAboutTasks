@@ -11,18 +11,12 @@ import Combine
 
 class NewContactViewController: UIViewController {
     
-    let headerArray = ["Name","Phone","Mail","Type"]
+    private let headerArray = ["Name","Phone","Mail","Type"]
     
-    var cellsName = [["Name"],
+    private var cellsName = [["Name"],
                      ["Phone number"],
                      ["Mail"],
                      ["Type of contact"]]
-    
-    var cellBackgroundColor =  #colorLiteral(red: 0.6633207798, green: 0.6751670241, blue: 1, alpha: 1)
-    
-    var cancellable: AnyCancellable?//for parallels displaying color in cell and Combine Kit for it
-    
-    let picker = UIColorPickerViewController()
     
     private let tableView = UITableView()
     private let viewForTable = NewContactCustomView()
@@ -47,7 +41,9 @@ class NewContactViewController: UIViewController {
     }
     
     @objc private func didTapOpenPhoto(){
-        print("Opened photo album")
+        alertImagePicker { sourceType in
+            self.chooseImagePicker(source: sourceType)
+        }
     }
     
     @objc private func didTapDismiss(){
@@ -57,16 +53,10 @@ class NewContactViewController: UIViewController {
     //MARK: - Setup methods
     private func setupView() {
         setupNavigationController()
-        setupDelegate()
-        setupColorPicker()
         setupConstraints()
         customiseView()
         view.backgroundColor = .secondarySystemBackground
         title = "New Contact"
-    }
-    
-    private func setupDelegate(){
-        picker.delegate = self
     }
     
     private func setupTableView(){
@@ -76,10 +66,6 @@ class NewContactViewController: UIViewController {
         tableView.dataSource = self
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "tasksCell")
-    }
-    
-    private func setupColorPicker(){
-        picker.selectedColor = self.view.backgroundColor ?? #colorLiteral(red: 0.6633207798, green: 0.6751670241, blue: 1, alpha: 1)
     }
     
     private func setupNavigationController(){
@@ -93,21 +79,13 @@ class NewContactViewController: UIViewController {
     private func customiseView(){
         viewForTable.backgroundColor = .secondarySystemBackground
         viewForTable.viewForImage.backgroundColor = .systemBackground
+        
         let gesture = UITapGestureRecognizer(target: self, action: #selector(didTapOpenPhoto))
         gesture.numberOfTapsRequired = 1
         viewForTable.addGestureRecognizer(gesture)
         
     }
     //MARK: - Segue methods
-    //methods with dispatch of displaying color in cell while choosing color in picker view
-    @objc private func openColorPicker(){
-        self.cancellable = picker.publisher(for: \.selectedColor) .sink(receiveValue: { color in
-            DispatchQueue.main.async {
-                self.cellBackgroundColor = color
-            }
-        })
-        self.present(picker, animated: true)
-    }
     
     @objc private func pushController(vc: UIViewController){
         let nav = UINavigationController(rootViewController: vc)
@@ -136,39 +114,29 @@ extension NewContactViewController: UITableViewDelegate, UITableViewDataSource {
         cell.layer.cornerRadius = 10
         cell.contentView.layer.cornerRadius = 10
         cell.backgroundColor = .systemBackground
-        
-        if indexPath == [4,0] {
-            cell.backgroundColor = cellBackgroundColor
-        }
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let cellName = cellsName[indexPath.section][indexPath.row]
-        switch indexPath {
-        case [0,0]:
-            alertTextField(cell: cellName, placeholder: "Enter title of event", table: tableView) { text in
+        switch indexPath.section {
+        case 0:
+            alertTextField(cell: cellName, placeholder: "Enter name of contact", table: tableView) { text in
                 self.cellsName[indexPath.section][indexPath.row] = text
             }
-        case [1,0]:
-            alertDate(table: tableView) { weekday, date, dateString in
-                self.cellsName[indexPath.section][indexPath.row] += ": " + dateString
-            }
-            alertTime(table: tableView) { date, time in
-                self.cellsName[indexPath.section][indexPath.row] += ".Time : " + time
-            }
-        case [2,0]:
-            alertTextField(cell: cellName, placeholder: "Enter notes value", table: tableView) { text in
+        case 1:
+            alertTextField(cell: cellName, placeholder: "Enter number of contact", table: tableView) { text in
                 self.cellsName[indexPath.section][indexPath.row] = text
             }
-        case [3,0]:
-            alertTextField(cell: cellName, placeholder: "Enter URL value", table: tableView, completion: { text in
+        case 2:
+            alertTextField(cell: cellName, placeholder: "Enter mail", table: tableView) { text in
                 self.cellsName[indexPath.section][indexPath.row] = text
-            })
-        case [4,0]:
-            openColorPicker()
-            
+            }
+        case 3:
+            alertFriends(tableView: tableView) { text in
+                self.cellsName[indexPath.section][indexPath.row] = text
+            }
         default:
             print("error")
         }
@@ -181,20 +149,28 @@ extension NewContactViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 40
     }
-    
-
-    
 }
 
-extension NewContactViewController: UIColorPickerViewControllerDelegate {
-    
-    func colorPickerViewController(_ viewController: UIColorPickerViewController, didSelect color: UIColor, continuously: Bool) {
-        cellBackgroundColor = color
-        DispatchQueue.main.async {
-            self.tableView.reloadData()
+extension NewContactViewController: UIImagePickerControllerDelegate,UINavigationControllerDelegate {
+    func chooseImagePicker(source: UIImagePickerController.SourceType) {
+        if UIImagePickerController.isSourceTypeAvailable(source){
+            let imagePicker = UIImagePickerController()
+            imagePicker.delegate = self
+            imagePicker.allowsEditing = true
+            imagePicker.sourceType = source
+            present(imagePicker, animated: true)
         }
     }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        viewForTable.contactImageView.image = info[.editedImage] as? UIImage
+        viewForTable.contactImageView.contentMode = .scaleAspectFill
+        viewForTable.contactImageView.clipsToBounds = true
+        dismiss(animated: true)
+    }
 }
+
+
 
 extension NewContactViewController {
     private func setupConstraints(){

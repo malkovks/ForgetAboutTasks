@@ -137,6 +137,7 @@ class RegisterAccountViewController: UIViewController {
     
     private func setupNavigationController(){
         title = "Create New Account"
+        navigationController?.navigationBar.tintColor = #colorLiteral(red: 0.6633207798, green: 0.6751670241, blue: 1, alpha: 1)
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "return"), landscapeImagePhone: nil, style: .done, target: self, action: #selector(didTapBack))
     }
