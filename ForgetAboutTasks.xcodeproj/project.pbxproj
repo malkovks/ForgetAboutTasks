@@ -49,6 +49,8 @@
 		0AA8EC6B29CAF469004DC6DD /* SetTimeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA8EC6A29CAF469004DC6DD /* SetTimeViewController.swift */; };
 		0AA8EC6D29CAF4A0004DC6DD /* SetTimeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA8EC6C29CAF4A0004DC6DD /* SetTimeView.swift */; };
 		0AA8EC6F29CAF4D2004DC6DD /* SetTimeProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA8EC6E29CAF4D2004DC6DD /* SetTimeProtocol.swift */; };
+		0AB763B829E2BA5300BFDB0D /* TaskModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB763B729E2BA5300BFDB0D /* TaskModel.swift */; };
+		0AB763BA29E3FAC900BFDB0D /* AlertError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB763B929E3FAC900BFDB0D /* AlertError.swift */; };
 		0ACE796B29D9EEAA00599C19 /* AlertSpinner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE796A29D9EEAA00599C19 /* AlertSpinner.swift */; };
 		0ACE797229DD95C600599C19 /* CreateTaskTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE797129DD95C600599C19 /* CreateTaskTableVC.swift */; };
 		0ACE797529DDA0C900599C19 /* CreateTaskModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE797429DDA0C900599C19 /* CreateTaskModel.swift */; };
@@ -124,6 +126,8 @@
 		0AA8EC6A29CAF469004DC6DD /* SetTimeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetTimeViewController.swift; sourceTree = "<group>"; };
 		0AA8EC6C29CAF4A0004DC6DD /* SetTimeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetTimeView.swift; sourceTree = "<group>"; };
 		0AA8EC6E29CAF4D2004DC6DD /* SetTimeProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetTimeProtocol.swift; sourceTree = "<group>"; };
+		0AB763B729E2BA5300BFDB0D /* TaskModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskModel.swift; sourceTree = "<group>"; };
+		0AB763B929E3FAC900BFDB0D /* AlertError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertError.swift; sourceTree = "<group>"; };
 		0ACE796A29D9EEAA00599C19 /* AlertSpinner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertSpinner.swift; sourceTree = "<group>"; };
 		0ACE797129DD95C600599C19 /* CreateTaskTableVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTaskTableVC.swift; sourceTree = "<group>"; };
 		0ACE797429DDA0C900599C19 /* CreateTaskModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTaskModel.swift; sourceTree = "<group>"; };
@@ -305,6 +309,7 @@
 		0A99A90129CD98CE00CC5A42 /* AllTasks */ = {
 			isa = PBXGroup;
 			children = (
+				0AB763B629E2BA4700BFDB0D /* Model */,
 				0A99A8FE29CD8FE000CC5A42 /* AllTasksToDoVC.swift */,
 				0ACE797129DD95C600599C19 /* CreateTaskTableVC.swift */,
 			);
@@ -432,6 +437,7 @@
 				0A99A8FC29CD855100CC5A42 /* AlertTextField.swift */,
 				0AA604DB29E03CB1007ACE58 /* AlertContacts.swift */,
 				0AA604DE29E04541007ACE58 /* AlertImagePicker.swift */,
+				0AB763B929E3FAC900BFDB0D /* AlertError.swift */,
 			);
 			path = AlertControllers;
 			sourceTree = "<group>";
@@ -463,6 +469,14 @@
 				0AA8EC5B29C76897004DC6DD /* AlertControllers */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		0AB763B629E2BA4700BFDB0D /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				0AB763B729E2BA5300BFDB0D /* TaskModel.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 		0ACE797629DDA0CC00599C19 /* Model */ = {
@@ -747,6 +761,7 @@
 				0AA8EC6F29CAF4D2004DC6DD /* SetTimeProtocol.swift in Sources */,
 				0A99A90B29CD9CB300CC5A42 /* CheckAuth.swift in Sources */,
 				0A8AC1A829B9DBD300EA052B /* UserProfileVC.swift in Sources */,
+				0AB763B829E2BA5300BFDB0D /* TaskModel.swift in Sources */,
 				0AA604E629E14814007ACE58 /* RealmManager.swift in Sources */,
 				0AA8EC6D29CAF4A0004DC6DD /* SetTimeView.swift in Sources */,
 				0A8AC1A629B9D4FA00EA052B /* ContactsVC.swift in Sources */,
@@ -757,6 +772,7 @@
 				0A86ED1429B5D97F001C9BAF /* CalendarViewController.swift in Sources */,
 				0A0CE6F729C461F600A14648 /* OptionsForScheduleVC.swift in Sources */,
 				0AA8EC5F29C7AA56004DC6DD /* AlertTime.swift in Sources */,
+				0AB763BA29E3FAC900BFDB0D /* AlertError.swift in Sources */,
 				0A99A8FD29CD855100CC5A42 /* AlertTextField.swift in Sources */,
 				0A99A8FF29CD8FE000CC5A42 /* AllTasksToDoVC.swift in Sources */,
 				0A8AC1A129B9D46D00EA052B /* ScheduleVC.swift in Sources */,

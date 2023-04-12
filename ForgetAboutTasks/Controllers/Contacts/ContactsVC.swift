@@ -98,9 +98,53 @@ extension ContactsViewController: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
     
+    func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let cell = tableView.cellForRow(at: indexPath)
+        let actionInstance = UIContextualAction(style: .normal, title: "") { _, _, completionHandler in
+            if cell?.textLabel?.textColor == .lightGray {
+                cell?.textLabel?.textColor = .black
+                cell?.detailTextLabel?.textColor = .black
+                cell?.imageView?.tintColor = .systemBlue
+            } else {
+                cell?.textLabel?.textColor = .lightGray
+                cell?.imageView?.tintColor = .lightGray
+                cell?.detailTextLabel?.textColor = .lightGray
+            }
+        }
+        let detailInstance = UIContextualAction(style: .normal, title: "") { [self] _, _, handler in
+            let vc = NewContactViewController()
+            let nav = UINavigationController(rootViewController: vc)
+            nav.isNavigationBarHidden = false
+            nav.modalPresentationStyle = .pageSheet
+            nav.sheetPresentationController?.prefersGrabberVisible = true
+            present(nav, animated: true)
+        }
+        detailInstance.backgroundColor = .systemGray
+        detailInstance.image = UIImage(systemName: "ellipsis")
+        detailInstance.image?.withTintColor(.systemBackground)
+        
+        actionInstance.backgroundColor = .systemYellow
+        actionInstance.image = UIImage(systemName: "pencil.line")
+        actionInstance.image?.withTintColor(.systemBackground)
+        let action = UISwipeActionsConfiguration(actions: [actionInstance,detailInstance])
+        return action
+    }
+    
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let index = indexPath.row
+        let deleteInstance = UIContextualAction(style: .destructive, title: "") { _, _, _ in
+            tableView.deleteRows(at: [indexPath], with: .fade)
+        }
+        deleteInstance.backgroundColor = .systemRed
+        deleteInstance.image = UIImage(systemName: "trash.fill")
+        deleteInstance.image?.withTintColor(.systemBackground)
+        let action = UISwipeActionsConfiguration(actions: [deleteInstance])
+        
+        return action
+    }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-//        let cellName = cellsName[indexPath.section][indexPath.row]
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

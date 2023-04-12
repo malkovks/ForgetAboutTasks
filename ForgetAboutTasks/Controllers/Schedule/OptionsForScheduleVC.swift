@@ -26,7 +26,7 @@ class OptionsForScheduleViewController: UIViewController {
     private var cancellable: AnyCancellable?//for parallels displaying color in cell and Combine Kit for it
     
     private let picker = UIColorPickerViewController()
-    private let scheduleModel = ScheduleModel()
+    private var scheduleModel = ScheduleModel()
     
     private let tableView = UITableView()
     
@@ -45,6 +45,8 @@ class OptionsForScheduleViewController: UIViewController {
         print("Saved")
         
         RealmManager.shared.saveScheduleModel(model: scheduleModel)
+        scheduleModel = ScheduleModel()
+        self.dismiss(animated: true)
     }
     
     @objc private func didTapSwitch(sender: UISwitch){

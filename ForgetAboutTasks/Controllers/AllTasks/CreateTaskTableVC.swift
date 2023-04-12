@@ -9,7 +9,13 @@ import UIKit
 import SnapKit
 import Combine
 
+protocol TaskModelProtocol: AnyObject {
+    func getData(data: TaskModel)
+}
+
 class CreateTaskTableViewController: UIViewController {
+    
+    weak var delegate: TaskModelProtocol?
     
     let headerArray = ["Name","Date","Notes","URL","Color accent"]
     
@@ -19,7 +25,10 @@ class CreateTaskTableViewController: UIViewController {
                      ["URL"],
                      [""]]
     
+    var cellData = TaskModel(nameTask: "", dateTask: "", noteTask: "", urlTask: "", colorTask: #colorLiteral(red: 0.6633207798, green: 0.6751670241, blue: 1, alpha: 1))
+
     var cellBackgroundColor =  #colorLiteral(red: 0.6633207798, green: 0.6751670241, blue: 1, alpha: 1)
+    var isCellSelectedFromTable: Bool = false
     
     var cancellable: AnyCancellable?//for parallels displaying color in cell and Combine Kit for it
     
@@ -39,15 +48,14 @@ class CreateTaskTableViewController: UIViewController {
     }
     
     @objc private func didTapSave(){
-        print("Save in table view of previous view")
+
+        delegate?.getData(data: cellData)
+        self.dismiss(animated: true)
+        
     }
     
-    @objc private func didTapSwitch(switchButton: UISwitch){
-        if switchButton.isOn {
-            print("Switch is on")
-        } else {
-            print("Switch is off")
-        }
+    @objc private func didTapEdit(sender: Bool){
+        
     }
     //MARK: - Setup methods
     private func setupView() {
@@ -60,10 +68,6 @@ class CreateTaskTableViewController: UIViewController {
     }
     
     private func setupDelegate(){
-        let firstVC = SetDateViewController()
-        firstVC.delegate = self
-        let secondVC = SetTimeViewController()
-        secondVC.delegate = self
         picker.delegate = self
     }
     
@@ -80,10 +84,18 @@ class CreateTaskTableViewController: UIViewController {
         picker.selectedColor = self.view.backgroundColor ?? #colorLiteral(red: 0.6633207798, green: 0.6751670241, blue: 1, alpha: 1)
     }
     
+    
+    
     private func setupNavigationController(){
         navigationController?.navigationBar.tintColor = #colorLiteral(red: 0.6633207798, green: 0.6751670241, blue: 1, alpha: 1)
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(didTapDismiss))
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(didTapSave))
+        if isCellSelectedFromTable == true {
+            tableView.allowsSelection = false
+            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(didTapEdit(sender: )))
+        } else {
+            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(didTapSave))
+        }
+        
     }
     //MARK: - Segue methods
     //methods with dispatch of displaying color in cell while choosing color in picker view
@@ -118,15 +130,32 @@ extension CreateTaskTableViewController: UITableViewDelegate, UITableViewDataSou
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "tasksCell", for: indexPath)
-        let data = cellsName[indexPath.section][indexPath.row]
-        cell.textLabel?.text = data
         cell.layer.cornerRadius = 10
         cell.contentView.layer.cornerRadius = 10
         cell.backgroundColor = .systemBackground
-        
-        if indexPath == [4,0] {
-            cell.backgroundColor = cellBackgroundColor
+        if isCellSelectedFromTable == false {
+            let data = cellsName[indexPath.section][indexPath.row]
+            cell.textLabel?.text = data
+            if indexPath == [4,0] {
+                cell.backgroundColor = cellBackgroundColor
+            }
+        } else {
+            switch indexPath {
+            case [0,0]:
+                cell.textLabel?.text = cellData.nameTask
+            case [1,0]:
+                cell.textLabel?.text = cellData.dateTask
+            case [2,0]:
+                cell.textLabel?.text = cellData.noteTask
+            case [3,0]:
+                cell.textLabel?.text = cellData.urlTask
+            case [4,0]:
+                cell.backgroundColor = cellData.colorTask
+            default:
+                print("error")
+            }
         }
+        
         return cell
     }
     
@@ -136,35 +165,33 @@ extension CreateTaskTableViewController: UITableViewDelegate, UITableViewDataSou
         switch indexPath {
         case [0,0]:
             alertTextField(cell: cellName, placeholder: "Enter title of event", table: tableView) { [self] text in
-                self.cellsName[indexPath.section][indexPath.row] = text
                 cellsName[indexPath.section][indexPath.row] = text
+                cellData.nameTask = text
             }
         case [1,0]:
-            alertDate(table: tableView) { weekday, date, dateString in
-                self.cellsName[indexPath.section][indexPath.row] += ": " + dateString
-            }
-            alertTime(table: tableView) { date, time in
-                self.cellsName[indexPath.section][indexPath.row] += ".Time : " + time
+            alertDate(table: tableView) { [self] weekday, date, dateString in
+                cellsName[indexPath.section][indexPath.row] += ": " + dateString
+                cellData.dateTask = dateString
             }
         case [2,0]:
-            alertTextField(cell: cellName, placeholder: "Enter notes value", table: tableView) { text in
-                self.cellsName[indexPath.section][indexPath.row] = text
+            alertTextField(cell: cellName, placeholder: "Enter notes value", table: tableView) { [self] text in
+                cellsName[indexPath.section][indexPath.row] = text
+                cellData.noteTask = text
             }
         case [3,0]:
-            alertTextField(cell: cellName, placeholder: "Enter URL value", table: tableView, completion: { text in
-                self.cellsName[indexPath.section][indexPath.row] = text
+            alertTextField(cell: cellName, placeholder: "Enter URL value", table: tableView, completion: { [self] text in
+                cellsName[indexPath.section][indexPath.row] = text
+                cellData.urlTask = text
             })
         case [4,0]:
             openColorPicker()
-            
+            cellData.colorTask = cellBackgroundColor
         default:
             print("error")
         }
     }
     
-//    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-//        return UITableView.automaticDimension
-//    }
+    
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return headerArray[section]
@@ -174,12 +201,9 @@ extension CreateTaskTableViewController: UITableViewDelegate, UITableViewDataSou
         45
     }
     
-
-    
 }
 
 extension CreateTaskTableViewController: UIColorPickerViewControllerDelegate {
-    
     func colorPickerViewController(_ viewController: UIColorPickerViewController, didSelect color: UIColor, continuously: Bool) {
         cellBackgroundColor = color
         DispatchQueue.main.async {
@@ -188,25 +212,8 @@ extension CreateTaskTableViewController: UIColorPickerViewControllerDelegate {
     }
 }
 
-extension CreateTaskTableViewController: SetDateProtocol {
-    func datePicker(sendDate: String) {
-
-        cellsName[1][0] = "Date: "+sendDate
-        tableView.reloadData()
-    }
-}
-
-extension CreateTaskTableViewController: SetTimeProtocol {
-    func timePicker(sendTime: String) {
-        cellsName[1][1] = "Time: "+sendTime
-        tableView.reloadData()
-    }
-}
-
 extension CreateTaskTableViewController: UIAdaptivePresentationControllerDelegate {
-    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
-        
-    }
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {}
 }
 
 extension CreateTaskTableViewController {
