@@ -13,16 +13,28 @@ class Formatters {
     
     lazy var dateFormatter: DateFormatter = {
        let formatter = DateFormatter()
-        formatter.dateFormat = "dd MMM yyyy"
-        formatter.locale = Locale(identifier: "ru_RU")
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+//        formatter.locale = Locale(identifier: "ru_RU")
         return formatter
     }()
     
     public func stringFromDate(date: Date) -> String{
         let string = self.dateFormatter.string(from: date)
-        return string + " г."
+        return string
     }
     
+    public func dateString(date: Date) -> String {
+        let dateString = dateFormatter.string(from: date)
+        return dateString
+    }
+    
+    public func standartedDate(date: Date) -> Date {
+        let comp = Calendar.current.dateComponents([.day,.month,.year], from: date)
+        
+        let returnDate = Calendar.current.date(from: comp)
+        return returnDate ?? Date()
+    }
     public func dateStringFromDate(_ inputDate: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "MMMM d, yyyy"
@@ -35,7 +47,6 @@ class Formatters {
         let hour = calendar.component(.hour, from: date)
         let minute = calendar.component(.minute, from: date)
         return "\(hour) : \(minute)"
-        
     }
 }
 

@@ -22,5 +22,20 @@ class RealmManager {
         }
     }
     
+    func deleteScheduleModel(model: ScheduleModel){
+        try! localRealm.write {
+            localRealm.delete(model)
+        }
+    }
+    
+    func editScheduleModel(model: ScheduleModel,selected row: String){
+        let results = localRealm.objects(ScheduleModel.self).filter("scheduleName == %@", row)
+        guard var result = results.first else { return }
+        try! localRealm.write {
+            result = model
+            print("Data was changed")
+        }
+    }
+    
     
 }

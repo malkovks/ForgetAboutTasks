@@ -15,8 +15,16 @@ extension UIViewController {
         })
         alert.addAction(UIAlertAction(title: "Save", style: .default,handler: { _ in
             DispatchQueue.main.async {
-                completion(alert.textFields?.first?.text ?? "")
-                table.reloadData()
+                guard let text = alert.textFields?.first?.text else {
+                    self.alertError(text: "Error value!")
+                    return
+                }
+                if !text.isEmpty {
+                    completion(text)
+                    table.reloadData()
+                } else {
+                    self.alertError(text: "Enter some value!")
+                }
             }
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))

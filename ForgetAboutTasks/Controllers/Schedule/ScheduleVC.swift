@@ -19,36 +19,28 @@ class ScheduleViewController: UIViewController {
     
     let formatter = Formatters()
     
+    let localRealm = try! Realm()
+    private var scheduleModel: Results<ScheduleModel>!
     
     private var calendar: FSCalendar = {
        let calendar = FSCalendar()
         calendar.scrollDirection = .vertical
-        calendar.locale = Locale(identifier: "ru_RU")
+        calendar.locale = Locale(identifier: "en")
         calendar.pagingEnabled = false
         calendar.weekdayHeight = 30
         calendar.headerHeight = 50
         calendar.firstWeekday = 2
-        calendar.tintColor = #colorLiteral(red: 0.6633207798, green: 0.6751670241, blue: 1, alpha: 1)
+        calendar.tintColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
         calendar.translatesAutoresizingMaskIntoConstraints = false
         return calendar
     }()
     
-    private let hideButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setTitle("Open Calendar", for: .normal)
-        button.setTitleColor(#colorLiteral(red: 0.04713427275, green: 0.08930709213, blue: 0.1346856952, alpha: 1), for: .normal)
-        button.titleLabel?.font = UIFont(name: "Avenir Next Demi Bold", size: 16)
-        button.backgroundColor = #colorLiteral(red: 0.6633207798, green: 0.6751670241, blue: 1, alpha: 1)
-        button.layer.cornerRadius = 12
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
+    
+    
     //MARK: - Setup for views
     override func viewDidLoad() {
         super.viewDidLoad()
         setupAuthentification()
-        
-        print(Realm.Configuration.defaultConfiguration.fileURL)
     }
     
    //MARK: - target methods
@@ -65,8 +57,6 @@ class ScheduleViewController: UIViewController {
 
     //MARK: - Setup Methods
     private func setupDelegates(){
-        let tasks = CreateTaskForDayController()
-        tasks.delegate = self
         calendar.delegate = self
         calendar.dataSource = self
     }
@@ -87,7 +77,8 @@ class ScheduleViewController: UIViewController {
     private func setupView(){
         setupDelegates()
         setupConstraints()
-        
+        loadingRealmData()
+        loadingDataByDate(date: Date(), at: .current, is: true)
         view.backgroundColor = .systemBackground
     }
     
@@ -96,6 +87,42 @@ class ScheduleViewController: UIViewController {
         navigationController?.tabBarController?.tabBar.scrollEdgeAppearance = navigationController?.tabBarController?.tabBar.standardAppearance
         navigationController?.navigationItem.largeTitleDisplayMode = .never
         navigationController?.navigationBar.prefersLargeTitles = false
+    }
+    
+    private func loadingRealmData(){
+        scheduleModel = localRealm.objects(ScheduleModel.self)
+    }
+    
+    private func loadingDataByDate(date: Date,at monthPosition: FSCalendarMonthPosition,is firstLoad: Bool) {
+        let dateStart = date
+        let dateEnd: Date = {
+            let components = DateComponents(day:1, second: -1)
+            return Calendar.current.date(byAdding: components, to: dateStart)!
+        }()
+        
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.weekday], from: date)
+        guard let weekday = components.weekday else { alertError(text: "", mainTitle: "Error value");return }
+        
+        let predicate = NSPredicate(format: "scheduleWeekday = \(weekday) AND scheduleRepeat = true")
+        let predicateUnrepeat = NSPredicate(format: "scheduleRepeat = false AND scheduleDate BETWEEN %@", [dateStart,dateEnd])
+        let compound = NSCompoundPredicate(type: .or, subpredicates: [predicate,predicateUnrepeat])
+        let value = localRealm.objects(ScheduleModel.self).filter(compound)
+        scheduleModel = value
+        
+
+        if firstLoad == false {
+            if monthPosition == .current {
+                let vc = CreateTaskForDayController()
+                vc.choosenDate = date
+                vc.cellDataScheduleModel = value
+                let nav = UINavigationController(rootViewController: vc)
+                nav.modalPresentationStyle = .fullScreen
+                nav.isNavigationBarHidden = false
+                present(nav, animated: true)
+            }
+        }
+        
     }
 }
 //MARK: - Tasks Delegate
@@ -122,30 +149,29 @@ extension ScheduleViewController: FSCalendarDelegate, FSCalendarDataSource {
     }
     
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
-        
-        if date == .now {
-            
-        }
-        if monthPosition == .current {
-            
-            let dateString = formatter.stringFromDate(date: date)
-            print(dateString)
-            let vc = CreateTaskForDayController()
-            vc.delegate = self
-            vc.choosenDate = date
-            if let dict = dateDictionary[dateString] {
-                vc.cellData = dict
-            }
-            let nav = UINavigationController(rootViewController: vc)
-            nav.modalPresentationStyle = .fullScreen
-            nav.isNavigationBarHidden = false
-            present(nav, animated: true)
-        }
+        loadingDataByDate(date: date, at: monthPosition, is: false)
+        print(calendar.selectedDate)
+         
     }
     
     func calendar(_ calendar: FSCalendar, numberOfEventsFor date: Date) -> Int {
         
-        let string = formatter.stringFromDate(date: date)
+        return 0
+//        let calendar = Calendar.current
+//        let components = calendar.dateComponents([.weekday], from: date)
+//        let weekday = components.weekday
+//        let predicate = NSPredicate(format: "scheduleWeekday = \(weekday ?? 0) AND scheduleRepeat = true")
+//        let secondPredicate = NSPredicate(format: "scheduleWeekday = \(weekday ?? 0)")
+//        scheduleModel = localRealm.objects(ScheduleModel.self).filter(predicate)
+//        let valueCount = localRealm.objects(ScheduleModel.self).filter(secondPredicate).count
+//        return valueCount
+        
+        
+        
+       
+        
+        
+        /* let string = formatter.stringFromDate(date: date)
         if self.dateDictionary[string] != nil && self.dateDictionary[string]?.count == 1 {
             return 1
         } else if self.dateDictionary[string]?.count == 2 {
@@ -156,8 +182,12 @@ extension ScheduleViewController: FSCalendarDelegate, FSCalendarDataSource {
             }
         }
         return 0
+         */
     }
+}
 
+extension ScheduleViewController: FSCalendarDelegateAppearance {
+    
 }
 
 extension ScheduleViewController {

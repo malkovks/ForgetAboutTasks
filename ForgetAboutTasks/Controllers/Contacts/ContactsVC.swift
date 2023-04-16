@@ -11,11 +11,13 @@ import SnapKit
 
 class ContactsViewController: UIViewController {
     
-    private var cellsName = [["Name of event"],
-                     ["Date and Time"],
-                     ["Notes"],
-                     ["URL"],
-                     [""]]
+    private let cellContactModel = [
+        ContactsModel(contactName: "Joe", contactPhoneNumber: "+7(999)632-66-66", contactImage: UIImage(systemName: "person.crop.circle.fill")!, colorImage: .systemBlue),
+        ContactsModel(contactName: "Mike", contactPhoneNumber: "+7(999)632-66-66", contactImage: UIImage(systemName: "person.crop.circle.fill")!, colorImage: .systemBlue),
+        ContactsModel(contactName: "Sven", contactPhoneNumber: "+7(999)632-66-66", contactImage: UIImage(systemName: "person.crop.circle.fill")!, colorImage: .systemBlue),
+        ContactsModel(contactName: "Allen", contactPhoneNumber: "+7(999)632-66-66", contactImage: UIImage(systemName: "person.crop.circle.fill")!, colorImage: .systemBlue),
+        ContactsModel(contactName: "David", contactPhoneNumber: "+7(999)632-66-66", contactImage: UIImage(systemName: "person.crop.circle.fill")!, colorImage: .systemBlue)
+    ]
     
     private let searchController = UISearchController()
     
@@ -81,20 +83,22 @@ class ContactsViewController: UIViewController {
 extension ContactsViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 5
+        return cellContactModel.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "contactCell")
+        let data = cellContactModel[indexPath.row]
         cell.layer.cornerRadius = 10
         cell.contentView.layer.cornerRadius = 10
         cell.backgroundColor = .systemBackground
         cell.textLabel?.font = .systemFont(ofSize: 20,weight: .semibold)
-        cell.textLabel?.text = "Cell test"
-        cell.detailTextLabel?.text = "Phone number +7(999)-123-45-67"
+        cell.textLabel?.text = data.contactName
+        cell.detailTextLabel?.text = "Phone number: " + data.contactPhoneNumber 
         cell.imageView?.contentMode = .scaleAspectFill
         cell.imageView?.clipsToBounds = true
-        cell.imageView?.image = UIImage(systemName: "person.crop.circle.fill")
+        cell.imageView?.image = data.contactImage
+        cell.imageView?.image?.withTintColor(data.colorImage)
         return cell
     }
     

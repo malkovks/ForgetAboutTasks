@@ -19,17 +19,19 @@ class OptionsForScheduleViewController: UIViewController {
                      [""],
                      ["Repeat every 7 days"]]
     
-    var cellBackgroundColor =  #colorLiteral(red: 0.6633207798, green: 0.6751670241, blue: 1, alpha: 1)
+    var cellBackgroundColor =  #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
+    var isEditingView: Bool = false
     
-    
+    private let formatter = Formatters()
     
     private var cancellable: AnyCancellable?//for parallels displaying color in cell and Combine Kit for it
     
     private let picker = UIColorPickerViewController()
     private var scheduleModel = ScheduleModel()
+    var testScheduleModel: ScheduleModel?
     
     private let tableView = UITableView()
-    
+    //MARK: - viewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTableView()
@@ -42,11 +44,12 @@ class OptionsForScheduleViewController: UIViewController {
     }
     
     @objc private func didTapSave(){
-        print("Saved")
-        
-        RealmManager.shared.saveScheduleModel(model: scheduleModel)
-        scheduleModel = ScheduleModel()
-        self.dismiss(animated: true)
+        let isClear = setupAlertIfDataEmpty()
+        if isClear {
+            RealmManager.shared.saveScheduleModel(model: scheduleModel)
+            scheduleModel = ScheduleModel()
+            self.dismiss(animated: true)
+        }
     }
     
     @objc private func didTapSwitch(sender: UISwitch){
@@ -58,21 +61,21 @@ class OptionsForScheduleViewController: UIViewController {
             scheduleModel.scheduleRepeat = false
         }
     }
-    //MARK: - Setup methods
+
+    
+    //MARK: - Setup Views and secondary methods
     private func setupView() {
         setupNavigationController()
         setupDelegate()
         setupColorPicker()
         setupConstraints()
+        basedValueForModel()
         view.backgroundColor = .secondarySystemBackground
         title = "Options"
+        
     }
     
     private func setupDelegate(){
-        let firstVC = SetDateViewController()
-        firstVC.delegate = self
-        let secondVC = SetTimeViewController()
-        secondVC.delegate = self
         picker.delegate = self
     }
     
@@ -85,13 +88,35 @@ class OptionsForScheduleViewController: UIViewController {
     }
     
     private func setupColorPicker(){
-        picker.selectedColor = self.view.backgroundColor ?? #colorLiteral(red: 0.6633207798, green: 0.6751670241, blue: 1, alpha: 1)
+        picker.selectedColor = self.view.backgroundColor ?? #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
     }
     
     private func setupNavigationController(){
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(didTapDismiss))
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(didTapSave))
-        navigationController?.navigationBar.tintColor = #colorLiteral(red: 0.6633207798, green: 0.6751670241, blue: 1, alpha: 1)
+        let saveButton = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(didTapSave))
+        navigationItem.rightBarButtonItems = [saveButton]
+        navigationController?.navigationBar.tintColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
+    }
+    //MARK: - Logics methods
+    
+    private func setupAlertIfDataEmpty() -> Bool{
+        if scheduleModel.scheduleName == "Unknown" {
+            alertError(text: "Enter value in Name cell")
+            return false
+        } else if scheduleModel.scheduleDate == nil {
+            alertError(text: "Choose date of event")
+            return false
+        } else if scheduleModel.scheduleTime == nil {
+            alertError(text: "Choose time of event")
+            return false
+        } else {
+            return true
+        }
+    }
+    
+    private func basedValueForModel(){
+        let color = cellBackgroundColor.encode()
+        scheduleModel.scheduleColor = color
     }
     //MARK: - Segue methods
     //methods with dispatch of displaying color in cell while choosing color in picker view
@@ -103,16 +128,6 @@ class OptionsForScheduleViewController: UIViewController {
         })
         self.present(picker, animated: true)
     }
-    
-    @objc private func pushController(vc: UIViewController){
-        let nav = UINavigationController(rootViewController: vc)
-        nav.modalPresentationStyle = .formSheet
-        nav.sheetPresentationController?.detents = [.large()]
-        nav.sheetPresentationController?.prefersGrabberVisible = true
-        nav.isNavigationBarHidden = false
-        present(nav, animated: true)
-    }
-
 }
 
 extension OptionsForScheduleViewController: UITableViewDelegate, UITableViewDataSource {
@@ -123,14 +138,16 @@ extension OptionsForScheduleViewController: UITableViewDelegate, UITableViewData
         case 2: return 4
         case 3: return 1
         default: return 1
-            
         }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        let inheritedData = testScheduleModel
         let data = cellsName[indexPath.section][indexPath.row]
-        cell.textLabel?.text = data
+        let date = inheritedData?.scheduleDate ?? Date()
+        let time = inheritedData?.scheduleTime ?? Date()
+        
         cell.layer.cornerRadius = 10
         cell.contentView.layer.cornerRadius = 10
         cell.backgroundColor = .systemBackground
@@ -138,63 +155,99 @@ extension OptionsForScheduleViewController: UITableViewDelegate, UITableViewData
         let switchButton = UISwitch(frame: .zero)
         switchButton.isOn = false
         switchButton.isHidden = true
-        switchButton.onTintColor = #colorLiteral(red: 0.6633207798, green: 0.6751670241, blue: 1, alpha: 1)
+        switchButton.onTintColor = cellBackgroundColor
         switchButton.addTarget(self, action: #selector(self.didTapSwitch(sender: )), for: .touchUpInside)
         cell.accessoryView = switchButton
         
-        if indexPath == [3,0] {
-            cell.backgroundColor = cellBackgroundColor
-        } else if indexPath == [4,0] {
-            cell.accessoryView?.isHidden = false
+        if inheritedData != nil {
+            switch indexPath {
+            case [0,0]:
+                cell.textLabel?.text = inheritedData?.scheduleName
+            case [1,0]:
+                cell.textLabel?.text = DateFormatter.localizedString(from: date, dateStyle: .medium, timeStyle: .none)
+            case [1,1]:
+                cell.textLabel?.text = DateFormatter.localizedString(from: time, dateStyle: .none, timeStyle: .medium)
+            case[2,0]:
+                cell.textLabel?.text = inheritedData?.scheduleCategoryName ?? data
+            case [2,1]:
+                cell.textLabel?.text = inheritedData?.scheduleCategoryType ?? data
+            case [2,2]:
+                cell.textLabel?.text = inheritedData?.scheduleCategoryURL ?? data
+            case [2,3]:
+                cell.textLabel?.text = inheritedData?.scheduleCategoryNote ?? data
+            case [3,0]:
+                cell.backgroundColor = UIColor.color(withData: (inheritedData?.scheduleColor)!)
+            case [4,0]:
+                cell.textLabel?.text = data
+                cell.accessoryView?.isHidden = false
+                switchButton.isOn = ((inheritedData?.scheduleRepeat) != nil)
+            default:
+                alertError(text: "Please,try again later\nError getting data", mainTitle: "Error!!")
+            }
+        } else {
+            cell.textLabel?.text = data
+            if indexPath == [3,0] {
+                cell.backgroundColor = cellBackgroundColor
+            } else if indexPath == [4,0] {
+                cell.accessoryView?.isHidden = false
+            }
         }
+    
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let cellName = cellsName[indexPath.section][indexPath.row]
-        switch indexPath {
-        case [0,0]:
-            alertTextField(cell: cellName, placeholder: "Enter text", table: tableView) { [self] text in
-                scheduleModel.scheduleName = text
-                cellsName[indexPath.section][indexPath.row] = text
+        if isEditingView {
+            tableView.allowsSelection = false
+        } else {
+            switch indexPath {
+            case [0,0]:
+                alertTextField(cell: cellName, placeholder: "Enter text", table: tableView) { [self] text in
+                    scheduleModel.scheduleName = text
+                    cellsName[indexPath.section][indexPath.row] = text
+                }
+            case [1,0]:
+                alertDate( table: tableView) { [self] weekday, date, dateString in
+                    scheduleModel.scheduleDate = date
+                    scheduleModel.scheduleWeekday = weekday
+                    cellsName[indexPath.section][indexPath.row] = dateString
+                }
+            case [1,1]:
+                alertTime(table: tableView) { [self] date, timeString in
+                    scheduleModel.scheduleTime = date
+                    cellsName[indexPath.section][indexPath.row] = timeString
+                }
+            case [2,0]:
+                alertTextField(cell: "Enter Name of event", placeholder: "Enter the text", table: tableView) { [self] text in
+                    scheduleModel.scheduleCategoryName = text
+                    cellsName[indexPath.section][indexPath.row] = text
+                }
+            case [2,1]:
+                alertTextField(cell: "Enter Type of event", placeholder: "Enter the text", table: tableView) { [self] text in
+                    scheduleModel.scheduleCategoryType = text
+                    cellsName[indexPath.section][indexPath.row] = text
+                }
+            case [2,2]:
+                alertTextField(cell: "Enter URL of event", placeholder: "Enter the text", table: tableView) { [self] text in
+                    scheduleModel.scheduleCategoryURL = text
+                    cellsName[indexPath.section][indexPath.row] = text
+                }
+            case [2,3]:
+                alertTextField(cell: "Enter Notes of event", placeholder: "Enter the text", table: tableView) { [self] text in
+                    scheduleModel.scheduleCategoryNote = text
+                    cellsName[indexPath.section][indexPath.row] = text
+                }
+            case [3,0]:
+                openColorPicker()
+                let cell = tableView.cellForRow(at: [3,0])
+                let pickedColor = cell?.backgroundColor?.encode()
+                scheduleModel.scheduleColor = pickedColor
+                
+            default:
+                print("error")
             }
-        case [1,0]:
-            alertDate( table: tableView) { [self] weekday, date, dateString in
-                scheduleModel.scheduleDate = date
-                scheduleModel.scheduleWeekday = weekday
-                cellsName[indexPath.section][indexPath.row] = dateString
-            }
-        case [1,1]:
-            alertTime(table: tableView) { [self] date, timeString in
-                scheduleModel.scheduleTime = date
-                cellsName[indexPath.section][indexPath.row] = timeString
-            }
-        case [2,0]:
-            alertTextField(cell: "Enter Name of event", placeholder: "Enter the text", table: tableView) { [self] text in
-                scheduleModel.scheduleCategoryName = text
-                cellsName[indexPath.section][indexPath.row] = text
-            }
-        case [2,1]:
-            alertTextField(cell: "Enter Type of event", placeholder: "Enter the text", table: tableView) { [self] text in
-                scheduleModel.scheduleCategoryType = text
-                cellsName[indexPath.section][indexPath.row] = text
-            }
-        case [2,2]:
-            alertTextField(cell: "Enter URL of event", placeholder: "Enter the text", table: tableView) { [self] text in
-                scheduleModel.scheduleCategoryURL = text
-                cellsName[indexPath.section][indexPath.row] = text
-            }
-        case [2,3]:
-            alertTextField(cell: "Enter Notes of event", placeholder: "Enter the text", table: tableView) { [self] text in
-                scheduleModel.scheduleCategoryNote = text
-                cellsName[indexPath.section][indexPath.row] = text
-            }
-        case [3,0]:
-            openColorPicker()
-            
-        default:
-            print("error")
         }
     }
     
@@ -212,36 +265,22 @@ extension OptionsForScheduleViewController: UITableViewDelegate, UITableViewData
     }
     
 }
-
+//MARK: - Color picker delegate
 extension OptionsForScheduleViewController: UIColorPickerViewControllerDelegate {
     
     func colorPickerViewController(_ viewController: UIColorPickerViewController, didSelect color: UIColor, continuously: Bool) {
         cellBackgroundColor = color
+        let encodeColor = color.encode()
         DispatchQueue.main.async {
+            self.scheduleModel.scheduleColor = encodeColor
             self.tableView.reloadData()
         }
     }
 }
-
-extension OptionsForScheduleViewController: SetDateProtocol {
-    func datePicker(sendDate: String) {
-
-        cellsName[1][0] = "Date: "+sendDate
-        tableView.reloadData()
-    }
-}
-
-extension OptionsForScheduleViewController: SetTimeProtocol {
-    func timePicker(sendTime: String) {
-        cellsName[1][1] = "Time: "+sendTime
-        tableView.reloadData()
-    }
-}
+//MARK: - Adaptivity PC delegate and constraints setups
 
 extension OptionsForScheduleViewController: UIAdaptivePresentationControllerDelegate {
-    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
-        
-    }
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {    }
 }
 
 extension OptionsForScheduleViewController {
@@ -253,50 +292,3 @@ extension OptionsForScheduleViewController {
         }
     }
 }
-
-
-
-
-//func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//    tableView.deselectRow(at: indexPath, animated: true)
-//    var cell = tableView.dequeueReusableCell(withIdentifier: "options")
-//    let customCell = tableView.dequeueReusableCell(withIdentifier: OptionsTableViewCell.identifier, for: indexPath) as? OptionsTableViewCell
-//    cell?.selectionStyle = .blue
-//    let data = cellsName[indexPath.section][indexPath.row]
-//    switch indexPath {
-//    case [1,0]:
-//        let vc = SetDateViewController()
-//        vc.delegate = self
-//        let nav = UINavigationController(rootViewController: vc)
-//        nav.modalPresentationStyle = .pageSheet
-//        nav.sheetPresentationController?.detents = [.custom(resolver: { context in
-//            self.view.frame.size.height/2
-//        })]
-//        nav.isNavigationBarHidden = false
-//        nav.sheetPresentationController?.prefersGrabberVisible = true
-//        present(nav, animated: true)
-//    case [1,1]:
-//        let vc = SetTimeViewController()
-//        vc.delegate = self
-//        let nav = UINavigationController(rootViewController: vc)
-//        nav.modalPresentationStyle = .pageSheet
-//        nav.sheetPresentationController?.detents = [.custom(resolver: { context in
-//            self.view.frame.size.height/4
-//        })]
-//        nav.isNavigationBarHidden = false
-//        nav.sheetPresentationController?.prefersGrabberVisible = true
-//        nav.presentationController?.delegate = self
-//        present(nav, animated: true)
-//        case [0,0]:
-//            alertTextField(subtitle: "Test title") { text in
-//                self.cellsName.remove(at: indexPath.row)
-//                self.cellsName[0][0] = text
-//                self.tableView.reloadData()
-//            }
-//    case [2,indexPath.row]:
-//        print("third section")
-//
-//    default:
-//        print("error")
-//    }
-//}
