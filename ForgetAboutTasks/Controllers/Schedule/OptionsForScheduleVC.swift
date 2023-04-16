@@ -22,8 +22,6 @@ class OptionsForScheduleViewController: UIViewController {
     var cellBackgroundColor =  #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
     var isEditingView: Bool = false
     
-    private let formatter = Formatters()
-    
     private var cancellable: AnyCancellable?//for parallels displaying color in cell and Combine Kit for it
     
     private let picker = UIColorPickerViewController()
@@ -46,7 +44,7 @@ class OptionsForScheduleViewController: UIViewController {
     @objc private func didTapSave(){
         let isClear = setupAlertIfDataEmpty()
         if isClear {
-            RealmManager.shared.saveScheduleModel(model: scheduleModel)
+            ScheduleRealmManager.shared.saveScheduleModel(model: scheduleModel)
             scheduleModel = ScheduleModel()
             self.dismiss(animated: true)
         }
@@ -241,10 +239,6 @@ extension OptionsForScheduleViewController: UITableViewDelegate, UITableViewData
                 }
             case [3,0]:
                 openColorPicker()
-                let cell = tableView.cellForRow(at: [3,0])
-                let pickedColor = cell?.backgroundColor?.encode()
-                scheduleModel.scheduleColor = pickedColor
-                
             default:
                 print("error")
             }

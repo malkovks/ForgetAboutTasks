@@ -125,20 +125,6 @@ class ScheduleViewController: UIViewController {
         
     }
 }
-//MARK: - Tasks Delegate
-extension ScheduleViewController: TasksViewDelegate {
-    func tasksData(array data: [TasksDate], date: String) {
-        if !data.isEmpty {
-            dateDictionary[date] = data
-            self.calendar.reloadData()
-        } else {
-            dateDictionary.removeValue(forKey: date)
-            self.calendar.reloadData()
-        }
-    }
-}
-
-
 //MARK: - calendar delegates
 extension ScheduleViewController: FSCalendarDelegate, FSCalendarDataSource {
     func calendar(_ calendar: FSCalendar, boundingRectWillChange bounds: CGRect, animated: Bool) {

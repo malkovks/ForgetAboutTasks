@@ -1,5 +1,5 @@
 //
-//  RealmManager.swift
+//  ScheduleRealmManager.swift
 //  ForgetAboutTasks
 //
 //  Created by Константин Малков on 08.04.2023.
@@ -7,9 +7,9 @@
 
 import RealmSwift
 
-class RealmManager {
+class ScheduleRealmManager {
     
-    static let shared = RealmManager()
+    static let shared = ScheduleRealmManager()
     
     let localRealm = try! Realm()
     
@@ -27,15 +27,15 @@ class RealmManager {
             localRealm.delete(model)
         }
     }
-    
-    func editScheduleModel(model: ScheduleModel,selected row: String){
-        let results = localRealm.objects(ScheduleModel.self).filter("scheduleName == %@", row)
-        guard var result = results.first else { return }
-        try! localRealm.write {
-            result = model
-            print("Data was changed")
-        }
-    }
+//    
+//    func editScheduleModel(model: ScheduleModel,selected row: String){
+//        let results = localRealm.objects(ScheduleModel.self).filter("scheduleName == %@", row)
+//        guard var result = results.first else { return }
+//        try! localRealm.write {
+//            result = model
+//            print("Data was changed")
+//        }
+//    }
     
     
 }

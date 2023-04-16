@@ -9,26 +9,23 @@ import UIKit
 import SnapKit
 import Combine
 
-protocol TaskModelProtocol: AnyObject {
-    func getData(data: TaskModel)
-}
 
 class CreateTaskTableViewController: UIViewController {
     
-    weak var delegate: TaskModelProtocol?
-    
-    let headerArray = ["Name","Date","Notes","URL","Color accent"]
+    let headerArray = ["Name","Date","Time","Notes","URL","Color accent"]
     
     var cellsName = [["Name of event"],
-                     ["Date and Time"],
+                     ["Date"],
+                     ["Time"],
                      ["Notes"],
                      ["URL"],
                      [""]]
     
-    var cellData = TaskModel(nameTask: "", dateTask: "", noteTask: "", urlTask: "", colorTask: #colorLiteral(red: 0.6633207798, green: 0.6751670241, blue: 1, alpha: 1))
+    var cellData = TaskModel(nameTask: "", dateTask: "", noteTask: "", urlTask: "", colorTask: #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1))
 
-    var cellBackgroundColor =  #colorLiteral(red: 0.6633207798, green: 0.6751670241, blue: 1, alpha: 1)
+    var cellBackgroundColor =  #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
     var isCellSelectedFromTable: Bool = false
+    var tasksModel = AllTaskModel()
     
     var cancellable: AnyCancellable?//for parallels displaying color in cell and Combine Kit for it
     
@@ -48,9 +45,13 @@ class CreateTaskTableViewController: UIViewController {
     }
     
     @objc private func didTapSave(){
-
-        delegate?.getData(data: cellData)
-        self.dismiss(animated: true)
+        if !(tasksModel.allTaskNameEvent.isEmpty) {
+            AllTasksRealmManager.shared.saveScheduleModel(model: tasksModel)
+            tasksModel = AllTaskModel()
+            self.dismiss(animated: true)
+        } else {
+            alertError(text: "Enter value in Name cell", mainTitle: "Error saving!")
+        }
         
     }
     
@@ -81,13 +82,11 @@ class CreateTaskTableViewController: UIViewController {
     }
     
     private func setupColorPicker(){
-        picker.selectedColor = self.view.backgroundColor ?? #colorLiteral(red: 0.6633207798, green: 0.6751670241, blue: 1, alpha: 1)
+        picker.selectedColor = self.view.backgroundColor ?? #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
     }
     
-    
-    
     private func setupNavigationController(){
-        navigationController?.navigationBar.tintColor = #colorLiteral(red: 0.6633207798, green: 0.6751670241, blue: 1, alpha: 1)
+        navigationController?.navigationBar.tintColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(didTapDismiss))
         if isCellSelectedFromTable == true {
             tableView.allowsSelection = false
@@ -107,21 +106,11 @@ class CreateTaskTableViewController: UIViewController {
         })
         self.present(picker, animated: true)
     }
-    
-    @objc private func pushController(vc: UIViewController){
-        let nav = UINavigationController(rootViewController: vc)
-        nav.modalPresentationStyle = .formSheet
-        nav.sheetPresentationController?.detents = [.large()]
-        nav.sheetPresentationController?.prefersGrabberVisible = true
-        nav.isNavigationBarHidden = false
-        present(nav, animated: true)
-    }
-
 }
-
+//MARK: - Table view delegates
 extension CreateTaskTableViewController: UITableViewDelegate, UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        5
+        6
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -136,21 +125,25 @@ extension CreateTaskTableViewController: UITableViewDelegate, UITableViewDataSou
         if isCellSelectedFromTable == false {
             let data = cellsName[indexPath.section][indexPath.row]
             cell.textLabel?.text = data
-            if indexPath == [4,0] {
+            if indexPath == [5,0] {
                 cell.backgroundColor = cellBackgroundColor
             }
         } else {
+            
             switch indexPath {
             case [0,0]:
-                cell.textLabel?.text = cellData.nameTask
+                cell.textLabel?.text = tasksModel.allTaskNameEvent
             case [1,0]:
-                cell.textLabel?.text = cellData.dateTask
+                cell.textLabel?.text = DateFormatter.localizedString(from: tasksModel.allTaskDate ?? Date(), dateStyle: .medium, timeStyle: .none)
             case [2,0]:
-                cell.textLabel?.text = cellData.noteTask
+                cell.textLabel?.text = Formatters.instance.timeStringFromDate(date: tasksModel.allTaskTime ?? Date())
             case [3,0]:
-                cell.textLabel?.text = cellData.urlTask
+                cell.textLabel?.text = tasksModel.allTaskNotes
             case [4,0]:
-                cell.backgroundColor = cellData.colorTask
+                cell.textLabel?.text = tasksModel.allTaskURL
+            case [5,0]:
+                let color = UIColor.color(withData: tasksModel.allTaskColor!)
+                cell.backgroundColor = color
             default:
                 print("error")
             }
@@ -167,25 +160,35 @@ extension CreateTaskTableViewController: UITableViewDelegate, UITableViewDataSou
             alertTextField(cell: cellName, placeholder: "Enter title of event", table: tableView) { [self] text in
                 cellsName[indexPath.section][indexPath.row] = text
                 cellData.nameTask = text
+                tasksModel.allTaskNameEvent = text
             }
         case [1,0]:
-            alertDate(table: tableView) { [self] weekday, date, dateString in
+            alertDate(table: tableView) { [self] _ , date, dateString in
                 cellsName[indexPath.section][indexPath.row] += ": " + dateString
                 cellData.dateTask = dateString
+                tasksModel.allTaskDate = date
+                
             }
         case [2,0]:
+            alertTime(table: tableView) {  [self] date, timeString in
+                cellsName[indexPath.section][indexPath.row] += ": " + timeString
+                tasksModel.allTaskTime = date
+            }
+        case [3,0]:
             alertTextField(cell: cellName, placeholder: "Enter notes value", table: tableView) { [self] text in
                 cellsName[indexPath.section][indexPath.row] = text
                 cellData.noteTask = text
+                tasksModel.allTaskNotes = text
+                
             }
-        case [3,0]:
+        case [4,0]:
             alertTextField(cell: cellName, placeholder: "Enter URL value", table: tableView, completion: { [self] text in
                 cellsName[indexPath.section][indexPath.row] = text
                 cellData.urlTask = text
+                tasksModel.allTaskURL = text
             })
-        case [4,0]:
+        case [5,0]:
             openColorPicker()
-            cellData.colorTask = cellBackgroundColor
         default:
             print("error")
         }
@@ -206,7 +209,9 @@ extension CreateTaskTableViewController: UITableViewDelegate, UITableViewDataSou
 extension CreateTaskTableViewController: UIColorPickerViewControllerDelegate {
     func colorPickerViewController(_ viewController: UIColorPickerViewController, didSelect color: UIColor, continuously: Bool) {
         cellBackgroundColor = color
+        let encodeColor = color.encode()
         DispatchQueue.main.async {
+            self.tasksModel.allTaskColor = encodeColor
             self.tableView.reloadData()
         }
     }

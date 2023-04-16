@@ -50,10 +50,6 @@ class CreateTaskForDayController: UIViewController {
         table.translatesAutoresizingMaskIntoConstraints = false
         return table
     }()
-    
-    
-        
-    
     //MARK: - override views
     
     override func viewWillAppear(_ animated: Bool) {
@@ -110,6 +106,9 @@ class CreateTaskForDayController: UIViewController {
         }
     }
     
+
+    
+    
    
 //MARK: - Setups for view controller
     private func setupAlertSheet(title: String,subtitle: String) {
@@ -126,6 +125,7 @@ class CreateTaskForDayController: UIViewController {
     
     private func setupView(){
         view.backgroundColor = .systemBackground
+        
         calendar.appearance.todayColor = UIColor.systemBlue
         calendar.today =  choosenDate
         segmentalController.addTarget(self, action: #selector(didTapSegmentChanged(segment:)), for: .valueChanged)
@@ -195,11 +195,11 @@ extension CreateTaskForDayController: UITableViewDelegate, UITableViewDataSource
         
         if let date = data.scheduleDate, let time = data.scheduleTime {
             let date = DateFormatter.localizedString(from: date, dateStyle: .medium, timeStyle: .none)
-            let time = DateFormatter.localizedString(from: time, dateStyle: .none, timeStyle: .medium)
+            let time = Formatters.instance.timeStringFromDate(date: time)
             cell.textLabel?.text = data.scheduleName
             cell.detailTextLabel?.text = date + "time: " + time
             cell.imageView?.image = UIImage(systemName: "circle.fill")
-                    cell.imageView?.tintColor = color
+            cell.imageView?.tintColor = color
         } else {
             alertError(mainTitle: "Error time or date.\nTry again!")
         }
@@ -221,7 +221,7 @@ extension CreateTaskForDayController: UITableViewDelegate, UITableViewDataSource
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let editingData = cellDataScheduleModel[indexPath.row]
         let deleteInstance = UIContextualAction(style: .destructive, title: "") { _, _, _ in
-            RealmManager.shared.deleteScheduleModel(model: editingData)
+            ScheduleRealmManager.shared.deleteScheduleModel(model: editingData)
             tableView.deleteRows(at: [indexPath], with: .fade)
         }
         deleteInstance.backgroundColor = .systemRed

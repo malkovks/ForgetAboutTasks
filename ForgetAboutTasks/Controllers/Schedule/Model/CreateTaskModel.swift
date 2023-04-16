@@ -7,10 +7,6 @@
 
 import UIKit
 
-protocol TasksViewDelegate: AnyObject {
-    func tasksData(array data: [TasksDate],date: String)
-}
-
 struct TasksDate {
     var date: String
     var dateGetter: Date?

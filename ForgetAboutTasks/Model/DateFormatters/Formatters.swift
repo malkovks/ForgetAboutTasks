@@ -43,10 +43,11 @@ class Formatters {
     }
     
     public func timeStringFromDate(date: Date) -> String {
-        let calendar = Calendar.current
-        let hour = calendar.component(.hour, from: date)
-        let minute = calendar.component(.minute, from: date)
-        return "\(hour) : \(minute)"
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm"
+        formatter.timeZone = .current
+        let time = formatter.string(from: date)
+        return time
     }
 }
 
