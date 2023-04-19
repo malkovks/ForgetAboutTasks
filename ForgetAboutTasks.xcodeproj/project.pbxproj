@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		00B260B35014A5CB26FCFA2A /* Pods_ForgetAboutTasksTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A2355D59545111B95037C74C /* Pods_ForgetAboutTasksTests.framework */; };
 		0A0CE6F729C461F600A14648 /* OptionsForScheduleVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A0CE6F629C461F600A14648 /* OptionsForScheduleVC.swift */; };
+		0A7FFFB829EFD9E100CAC9DA /* ContactModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7FFFB729EFD9E100CAC9DA /* ContactModel.swift */; };
+		0A7FFFBA29EFDC0B00CAC9DA /* ContactRealmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7FFFB929EFDC0B00CAC9DA /* ContactRealmManager.swift */; };
 		0A86ED1029B5D97F001C9BAF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A86ED0F29B5D97F001C9BAF /* AppDelegate.swift */; };
 		0A86ED1229B5D97F001C9BAF /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A86ED1129B5D97F001C9BAF /* SceneDelegate.swift */; };
 		0A86ED1429B5D97F001C9BAF /* CalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A86ED1329B5D97F001C9BAF /* CalendarViewController.swift */; };
@@ -86,6 +88,8 @@
 		081E2F7D28B71EC3AA3980C1 /* Pods_ForgetAboutTasks_ForgetAboutTasksUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ForgetAboutTasks_ForgetAboutTasksUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		08A4F059D6FFDCFE4C1DE90E /* Pods-ForgetAboutTasksTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ForgetAboutTasksTests.release.xcconfig"; path = "Target Support Files/Pods-ForgetAboutTasksTests/Pods-ForgetAboutTasksTests.release.xcconfig"; sourceTree = "<group>"; };
 		0A0CE6F629C461F600A14648 /* OptionsForScheduleVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionsForScheduleVC.swift; sourceTree = "<group>"; };
+		0A7FFFB729EFD9E100CAC9DA /* ContactModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactModel.swift; sourceTree = "<group>"; };
+		0A7FFFB929EFDC0B00CAC9DA /* ContactRealmManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactRealmManager.swift; sourceTree = "<group>"; };
 		0A86ED0C29B5D97F001C9BAF /* ForgetAboutTasks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ForgetAboutTasks.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A86ED0F29B5D97F001C9BAF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0A86ED1129B5D97F001C9BAF /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -413,6 +417,7 @@
 			children = (
 				0AA604E229E14673007ACE58 /* ScheduleModel.swift */,
 				0AA74A2729EC524200F01532 /* AllTaskModel.swift */,
+				0A7FFFB729EFD9E100CAC9DA /* ContactModel.swift */,
 			);
 			path = Realm;
 			sourceTree = "<group>";
@@ -422,6 +427,7 @@
 			children = (
 				0AA604E529E14814007ACE58 /* ScheduleRealmManager.swift */,
 				0AA74A2529EC521800F01532 /* AllTasksRealmManager.swift */,
+				0A7FFFB929EFDC0B00CAC9DA /* ContactRealmManager.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -821,11 +827,13 @@
 				0A8AC19629B7B58300EA052B /* EKWrapper.swift in Sources */,
 				0A9E1C3A29CEEDCE000CC9A9 /* LoginController.swift in Sources */,
 				0A8AC1A429B9D4EB00EA052B /* CreateTaskForDayVC.swift in Sources */,
+				0A7FFFBA29EFDC0B00CAC9DA /* ContactRealmManager.swift in Sources */,
 				0A9E1C3C29D0778F000CC9A9 /* RegisterAccountController.swift in Sources */,
 				0A8AC19429B7A31500EA052B /* SecondViewController.swift in Sources */,
 				0A86ED1229B5D97F001C9BAF /* SceneDelegate.swift in Sources */,
 				0AA604DC29E03CB1007ACE58 /* AlertContacts.swift in Sources */,
 				0AA74A2829EC524200F01532 /* AllTaskModel.swift in Sources */,
+				0A7FFFB829EFD9E100CAC9DA /* ContactModel.swift in Sources */,
 				0AA604E329E14673007ACE58 /* ScheduleModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

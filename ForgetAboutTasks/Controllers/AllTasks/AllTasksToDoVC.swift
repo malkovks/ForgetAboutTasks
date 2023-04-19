@@ -15,7 +15,6 @@ class AllTasksToDoViewController: UIViewController {
     var allTasksData: Results<AllTaskModel>!
     private var localRealmData = try! Realm()
     
-    private var isSwipeCompleted: Bool = false
     
     private let tableView = UITableView()
     
@@ -128,9 +127,8 @@ extension AllTasksToDoViewController: UITableViewDelegate, UITableViewDataSource
         cell.backgroundColor = .secondarySystemBackground
         cell.accessoryType = .disclosureIndicator
         if let date = data.allTaskDate, let time = data.allTaskTime {
-            let timeFF = Formatters.instance.timeStringFromDate(date: date)
+            let timeFF = Formatters.instance.timeStringFromDate(date: time)
             let dateF = DateFormatter.localizedString(from: date, dateStyle: .medium, timeStyle: .none)
-            let timeF = DateFormatter.localizedString(from: time, dateStyle: .none, timeStyle: .medium)
             
             cell.textLabel?.text = data.allTaskNameEvent
             cell.detailTextLabel?.text = dateF + "   " + timeFF
@@ -145,7 +143,6 @@ extension AllTasksToDoViewController: UITableViewDelegate, UITableViewDataSource
         let model = allTasksData[indexPath.row]
         let vc = CreateTaskTableViewController()
         vc.tasksModel = model
-//        vc.cellData =
         vc.isCellSelectedFromTable = true
         
         let nav = UINavigationController(rootViewController: vc)
@@ -158,7 +155,7 @@ extension AllTasksToDoViewController: UITableViewDelegate, UITableViewDataSource
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let model = allTasksData[indexPath.row]
-        let deleteInstance = UIContextualAction(style: .destructive, title: "") { [self] _, _, _ in
+        let deleteInstance = UIContextualAction(style: .destructive, title: "") { _, _, _ in
             AllTasksRealmManager.shared.deleteScheduleModel(model: model)
             tableView.deleteRows(at: [indexPath], with: .fade)
         }
@@ -171,32 +168,30 @@ extension AllTasksToDoViewController: UITableViewDelegate, UITableViewDataSource
     }
     
     func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        isSwipeCompleted = true
         let cell = tableView.cellForRow(at: indexPath)
-        let actionInstance = UIContextualAction(style: .normal, title: "") { _, _, completionHandler in
+        let data = allTasksData[indexPath.row]
+        let color = UIColor.color(withData: data.allTaskColor!)
+        let actionInstance = UIContextualAction(style: .normal, title: "") { _, _, success in
             if cell?.textLabel?.textColor == .lightGray {
                 cell?.textLabel?.textColor = .black
                 cell?.detailTextLabel?.textColor = .black
-//                cell?.imageView?.tintColor = self.tasksData[indexPath.row].colorTask
-                self.isSwipeCompleted = false
+                cell?.imageView?.image = UIImage(systemName: "circle.fill")
+                cell?.imageView?.tintColor = color
+                success(true)
             } else {
                 cell?.textLabel?.textColor = .lightGray
+                cell?.imageView?.image = UIImage(systemName: "circle")
                 cell?.imageView?.tintColor = .lightGray
                 cell?.detailTextLabel?.textColor = .lightGray
-                self.isSwipeCompleted = false
+                success(true)
             }
             
         }
-        self.isSwipeCompleted = false
         actionInstance.backgroundColor = .systemYellow
         actionInstance.image = UIImage(systemName: "pencil.line")
         actionInstance.image?.withTintColor(.systemBackground)
         let action = UISwipeActionsConfiguration(actions: [actionInstance])
         return action
-    }
-    
-    func tableView(_ tableView: UITableView, didEndEditingRowAt indexPath: IndexPath?) {
-        isSwipeCompleted = false
     }
 }
 

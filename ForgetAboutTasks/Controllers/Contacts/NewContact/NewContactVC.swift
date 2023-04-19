@@ -18,6 +18,8 @@ class NewContactViewController: UIViewController {
                      ["Mail"],
                      ["Type of contact"]]
     
+    var contactModel = ContactModel()
+    
     private let tableView = UITableView()
     private let viewForTable = NewContactCustomView()
     
@@ -37,12 +39,20 @@ class NewContactViewController: UIViewController {
 
     //MARK: - Targets methods
     @objc private func didTapSave(){
-        print("Save in table view of previous view")
+        if !contactModel.contactName.isEmpty && !contactModel.contactPhoneNumber.isEmpty {
+            ContactRealmManager.shared.saveScheduleModel(model: contactModel)
+            contactModel = ContactModel()
+            self.dismiss(animated: true)
+            print("Contact was saved successfully")
+        } else {
+            alertError(text: "Enter value in Name and Phone sections", mainTitle: "Error saving!")
+        }
     }
     
     @objc private func didTapOpenPhoto(){
-        alertImagePicker { sourceType in
-            self.chooseImagePicker(source: sourceType)
+        alertImagePicker { [weak self] sourceType in
+            self?.chooseImagePicker(source: sourceType)
+//            self?.contactModel.contactImage =
         }
     }
     
@@ -60,7 +70,8 @@ class NewContactViewController: UIViewController {
     }
     
     private func setupTableView(){
-        
+        tableView.isScrollEnabled = false
+        tableView.bounces = false
         tableView.backgroundColor = .secondarySystemBackground
         tableView.delegate = self
         tableView.dataSource = self
@@ -87,14 +98,6 @@ class NewContactViewController: UIViewController {
     }
     //MARK: - Segue methods
     
-    @objc private func pushController(vc: UIViewController){
-        let nav = UINavigationController(rootViewController: vc)
-        nav.modalPresentationStyle = .formSheet
-        nav.sheetPresentationController?.detents = [.large()]
-        nav.sheetPresentationController?.prefersGrabberVisible = true
-        nav.isNavigationBarHidden = false
-        present(nav, animated: true)
-    }
 
 }
 
@@ -122,20 +125,24 @@ extension NewContactViewController: UITableViewDelegate, UITableViewDataSource {
         let cellName = cellsName[indexPath.section][indexPath.row]
         switch indexPath.section {
         case 0:
-            alertTextField(cell: cellName, placeholder: "Enter name of contact", table: tableView) { text in
+            alertTextField(cell: cellName, placeholder: "Enter name of contact", table: tableView) { [unowned self] text in
                 self.cellsName[indexPath.section][indexPath.row] = text
+                contactModel.contactName = text
             }
         case 1:
-            alertTextField(cell: cellName, placeholder: "Enter number of contact", table: tableView) { text in
+            alertTextField(cell: cellName, placeholder: "Enter number of contact", table: tableView) { [unowned self] text in
                 self.cellsName[indexPath.section][indexPath.row] = text
+                contactModel.contactPhoneNumber = text
             }
         case 2:
-            alertTextField(cell: cellName, placeholder: "Enter mail", table: tableView) { text in
-                self.cellsName[indexPath.section][indexPath.row] = text
+            alertTextField(cell: cellName, placeholder: "Enter mail", table: tableView) { [weak self] text in
+                self?.cellsName[indexPath.section][indexPath.row] = text
+                self?.contactModel.contactMail = text
             }
         case 3:
-            alertFriends(tableView: tableView) { text in
-                self.cellsName[indexPath.section][indexPath.row] = text
+            alertFriends(tableView: tableView) { [ weak self] text in
+                self?.cellsName[indexPath.section][indexPath.row] = text
+                self?.contactModel.contactType = text
             }
         default:
             print("error")
@@ -163,9 +170,13 @@ extension NewContactViewController: UIImagePickerControllerDelegate,UINavigation
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        viewForTable.contactImageView.image = info[.editedImage] as? UIImage
+        let image = info[.editedImage] as? UIImage
+        viewForTable.contactImageView.image = image
         viewForTable.contactImageView.contentMode = .scaleAspectFill
         viewForTable.contactImageView.clipsToBounds = true
+        guard let data = image?.pngData() else { print("Error converting"); return }
+        print("Data was saved successfully")
+        contactModel.contactImage = data
         dismiss(animated: true)
     }
 }

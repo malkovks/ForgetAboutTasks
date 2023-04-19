@@ -20,8 +20,6 @@ class CreateTaskTableViewController: UIViewController {
                      ["Notes"],
                      ["URL"],
                      [""]]
-    
-    var cellData = TaskModel(nameTask: "", dateTask: "", noteTask: "", urlTask: "", colorTask: #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1))
 
     var cellBackgroundColor =  #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
     var isCellSelectedFromTable: Bool = false
@@ -159,15 +157,12 @@ extension CreateTaskTableViewController: UITableViewDelegate, UITableViewDataSou
         case [0,0]:
             alertTextField(cell: cellName, placeholder: "Enter title of event", table: tableView) { [self] text in
                 cellsName[indexPath.section][indexPath.row] = text
-                cellData.nameTask = text
                 tasksModel.allTaskNameEvent = text
             }
         case [1,0]:
             alertDate(table: tableView) { [self] _ , date, dateString in
                 cellsName[indexPath.section][indexPath.row] += ": " + dateString
-                cellData.dateTask = dateString
                 tasksModel.allTaskDate = date
-                
             }
         case [2,0]:
             alertTime(table: tableView) {  [self] date, timeString in
@@ -177,14 +172,11 @@ extension CreateTaskTableViewController: UITableViewDelegate, UITableViewDataSou
         case [3,0]:
             alertTextField(cell: cellName, placeholder: "Enter notes value", table: tableView) { [self] text in
                 cellsName[indexPath.section][indexPath.row] = text
-                cellData.noteTask = text
                 tasksModel.allTaskNotes = text
-                
             }
         case [4,0]:
             alertTextField(cell: cellName, placeholder: "Enter URL value", table: tableView, completion: { [self] text in
                 cellsName[indexPath.section][indexPath.row] = text
-                cellData.urlTask = text
                 tasksModel.allTaskURL = text
             })
         case [5,0]:
