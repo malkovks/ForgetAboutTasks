@@ -15,7 +15,7 @@ class SetDateView: UIView {
         picker.locale = .current
         picker.datePickerMode = .date
         picker.preferredDatePickerStyle = .inline
-        picker.tintColor = #colorLiteral(red: 0.2588235438, green: 0.7568627596, blue: 0.9686274529, alpha: 1)
+        picker.tintColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
         picker.backgroundColor = .secondarySystemBackground
 //        picker.preferredDatePickerStyle = .compact
         return picker

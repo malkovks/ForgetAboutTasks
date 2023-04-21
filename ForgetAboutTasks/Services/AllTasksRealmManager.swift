@@ -15,14 +15,21 @@ class AllTasksRealmManager {
     
     private init() {}
     
-    func saveScheduleModel(model: AllTaskModel){
+    func saveAllTasksModel(model: AllTaskModel){
         try! localRealm.write {
             localRealm.add(model)
             print("Tasks saved in realm")
         }
     }
     
-    func deleteScheduleModel(model: AllTaskModel){
+    func changeAllTasksModel(model: AllTaskModel){
+        try! localRealm.write {
+            
+        }
+    }
+    
+    
+    func deleteAllTasks(model: AllTaskModel){
         try! localRealm.write {
             localRealm.delete(model)
         }

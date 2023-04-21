@@ -12,7 +12,7 @@ class NewContactCustomView: UIView {
     
     let viewForImage: UIView = {
        let view = UIView()
-        view.backgroundColor = #colorLiteral(red: 0.6633207798, green: 0.6751670241, blue: 1, alpha: 1)
+        view.backgroundColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
         view.layer.cornerRadius = 10
         return view
     }()
@@ -22,7 +22,7 @@ class NewContactCustomView: UIView {
         image.contentMode = .scaleAspectFit
         image.clipsToBounds = true
         image.image = UIImage(systemName: "person.crop.circle.badge.plus")?.withRenderingMode(.alwaysTemplate)
-        image.tintColor = #colorLiteral(red: 0.6633207798, green: 0.6751670241, blue: 1, alpha: 1)
+        image.tintColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
         image.layer.cornerRadius = 10
         return image
     }()

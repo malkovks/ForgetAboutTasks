@@ -15,5 +15,6 @@ class AllTaskModel: Object {
     @Persisted var allTaskTime: Date?
     @Persisted var allTaskNotes: String = "Unknown datqa"
     @Persisted var allTaskURL: String = "Unknown URL"
-    @Persisted var allTaskColor: Data?    
+    @Persisted var allTaskColor: Data?
+    @Persisted var allTaskCompleted: Bool = false
 }

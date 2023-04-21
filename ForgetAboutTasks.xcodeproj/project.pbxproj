@@ -11,6 +11,8 @@
 		0A0CE6F729C461F600A14648 /* OptionsForScheduleVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A0CE6F629C461F600A14648 /* OptionsForScheduleVC.swift */; };
 		0A7FFFB829EFD9E100CAC9DA /* ContactModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7FFFB729EFD9E100CAC9DA /* ContactModel.swift */; };
 		0A7FFFBA29EFDC0B00CAC9DA /* ContactRealmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7FFFB929EFDC0B00CAC9DA /* ContactRealmManager.swift */; };
+		0A7FFFBD29F1326A00CAC9DA /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7FFFBC29F1326A00CAC9DA /* StringExtension.swift */; };
+		0A7FFFC029F1BA1800CAC9DA /* DownloadImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7FFFBF29F1BA1800CAC9DA /* DownloadImage.swift */; };
 		0A86ED1029B5D97F001C9BAF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A86ED0F29B5D97F001C9BAF /* AppDelegate.swift */; };
 		0A86ED1229B5D97F001C9BAF /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A86ED1129B5D97F001C9BAF /* SceneDelegate.swift */; };
 		0A86ED1429B5D97F001C9BAF /* CalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A86ED1329B5D97F001C9BAF /* CalendarViewController.swift */; };
@@ -43,7 +45,6 @@
 		0AA604E629E14814007ACE58 /* ScheduleRealmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA604E529E14814007ACE58 /* ScheduleRealmManager.swift */; };
 		0AA604E929E16C05007ACE58 /* ColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA604E829E16C05007ACE58 /* ColorExtensions.swift */; };
 		0AA604EC29E16DC1007ACE58 /* PressButtonProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA604EB29E16DC1007ACE58 /* PressButtonProtocols.swift */; };
-		0AA74A1F29E68C5900F01532 /* ContactsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA74A1E29E68C5900F01532 /* ContactsModel.swift */; };
 		0AA74A2129E6EAB200F01532 /* ColorConverters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA74A2029E6EAB200F01532 /* ColorConverters.swift */; };
 		0AA74A2429E715ED00F01532 /* DateFormatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA74A2329E715ED00F01532 /* DateFormatters.swift */; };
 		0AA74A2629EC521800F01532 /* AllTasksRealmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA74A2529EC521800F01532 /* AllTasksRealmManager.swift */; };
@@ -56,7 +57,6 @@
 		0AA8EC6B29CAF469004DC6DD /* SetTimeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA8EC6A29CAF469004DC6DD /* SetTimeViewController.swift */; };
 		0AA8EC6D29CAF4A0004DC6DD /* SetTimeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA8EC6C29CAF4A0004DC6DD /* SetTimeView.swift */; };
 		0AA8EC6F29CAF4D2004DC6DD /* SetTimeProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA8EC6E29CAF4D2004DC6DD /* SetTimeProtocol.swift */; };
-		0AB763B829E2BA5300BFDB0D /* TaskModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB763B729E2BA5300BFDB0D /* TaskModel.swift */; };
 		0AB763BA29E3FAC900BFDB0D /* AlertError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB763B929E3FAC900BFDB0D /* AlertError.swift */; };
 		0ACE796B29D9EEAA00599C19 /* AlertSpinner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE796A29D9EEAA00599C19 /* AlertSpinner.swift */; };
 		0ACE797229DD95C600599C19 /* CreateTaskTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE797129DD95C600599C19 /* CreateTaskTableVC.swift */; };
@@ -90,6 +90,8 @@
 		0A0CE6F629C461F600A14648 /* OptionsForScheduleVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionsForScheduleVC.swift; sourceTree = "<group>"; };
 		0A7FFFB729EFD9E100CAC9DA /* ContactModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactModel.swift; sourceTree = "<group>"; };
 		0A7FFFB929EFDC0B00CAC9DA /* ContactRealmManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactRealmManager.swift; sourceTree = "<group>"; };
+		0A7FFFBC29F1326A00CAC9DA /* StringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
+		0A7FFFBF29F1BA1800CAC9DA /* DownloadImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadImage.swift; sourceTree = "<group>"; };
 		0A86ED0C29B5D97F001C9BAF /* ForgetAboutTasks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ForgetAboutTasks.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A86ED0F29B5D97F001C9BAF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0A86ED1129B5D97F001C9BAF /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -127,7 +129,6 @@
 		0AA604E529E14814007ACE58 /* ScheduleRealmManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleRealmManager.swift; sourceTree = "<group>"; };
 		0AA604E829E16C05007ACE58 /* ColorExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtensions.swift; sourceTree = "<group>"; };
 		0AA604EB29E16DC1007ACE58 /* PressButtonProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PressButtonProtocols.swift; sourceTree = "<group>"; };
-		0AA74A1E29E68C5900F01532 /* ContactsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsModel.swift; sourceTree = "<group>"; };
 		0AA74A2029E6EAB200F01532 /* ColorConverters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorConverters.swift; sourceTree = "<group>"; };
 		0AA74A2329E715ED00F01532 /* DateFormatters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormatters.swift; sourceTree = "<group>"; };
 		0AA74A2529EC521800F01532 /* AllTasksRealmManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllTasksRealmManager.swift; sourceTree = "<group>"; };
@@ -140,7 +141,6 @@
 		0AA8EC6A29CAF469004DC6DD /* SetTimeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetTimeViewController.swift; sourceTree = "<group>"; };
 		0AA8EC6C29CAF4A0004DC6DD /* SetTimeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetTimeView.swift; sourceTree = "<group>"; };
 		0AA8EC6E29CAF4D2004DC6DD /* SetTimeProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetTimeProtocol.swift; sourceTree = "<group>"; };
-		0AB763B729E2BA5300BFDB0D /* TaskModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskModel.swift; sourceTree = "<group>"; };
 		0AB763B929E3FAC900BFDB0D /* AlertError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertError.swift; sourceTree = "<group>"; };
 		0ACE796A29D9EEAA00599C19 /* AlertSpinner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertSpinner.swift; sourceTree = "<group>"; };
 		0ACE797129DD95C600599C19 /* CreateTaskTableVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTaskTableVC.swift; sourceTree = "<group>"; };
@@ -184,6 +184,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0A7FFFBB29F1325500CAC9DA /* String */ = {
+			isa = PBXGroup;
+			children = (
+				0A7FFFBC29F1326A00CAC9DA /* StringExtension.swift */,
+			);
+			path = String;
+			sourceTree = "<group>";
+		};
+		0A7FFFBE29F1B9F700CAC9DA /* DownloadImage */ = {
+			isa = PBXGroup;
+			children = (
+				0A7FFFBF29F1BA1800CAC9DA /* DownloadImage.swift */,
+			);
+			path = DownloadImage;
+			sourceTree = "<group>";
+		};
 		0A86ED0329B5D97F001C9BAF = {
 			isa = PBXGroup;
 			children = (
@@ -294,7 +310,6 @@
 			children = (
 				0A99A90529CD99B400CC5A42 /* UserAuth */,
 				0A99A90329CD98E600CC5A42 /* UserProfile */,
-				0A99A90229CD98DD00CC5A42 /* Contacts */,
 				0A99A90129CD98CE00CC5A42 /* AllTasks */,
 				0A99A90029CD98C600CC5A42 /* Schedule */,
 			);
@@ -325,7 +340,6 @@
 			children = (
 				0A99A8FE29CD8FE000CC5A42 /* AllTasksToDoVC.swift */,
 				0ACE797129DD95C600599C19 /* CreateTaskTableVC.swift */,
-				0AB763B629E2BA4700BFDB0D /* Model */,
 			);
 			path = AllTasks;
 			sourceTree = "<group>";
@@ -333,7 +347,6 @@
 		0A99A90229CD98DD00CC5A42 /* Contacts */ = {
 			isa = PBXGroup;
 			children = (
-				0AA74A1D29E68C3E00F01532 /* Model */,
 				0A8AC1A529B9D4FA00EA052B /* ContactsVC.swift */,
 				0AA604DD29E04042007ACE58 /* NewContact */,
 			);
@@ -351,7 +364,6 @@
 		0A99A90529CD99B400CC5A42 /* UserAuth */ = {
 			isa = PBXGroup;
 			children = (
-				0A9E1C4029D188AC000CC9A9 /* For Test Group */,
 				0A99A90629CD99CA00CC5A42 /* UserAuthController.swift */,
 				0A9E1C3929CEEDCE000CC9A9 /* LoginController.swift */,
 				0A9E1C3B29D0778F000CC9A9 /* RegisterAccountController.swift */,
@@ -383,14 +395,6 @@
 				0A9E1C3E29D078BD000CC9A9 /* LogInView.swift */,
 			);
 			path = LogInView;
-			sourceTree = "<group>";
-		};
-		0A9E1C4029D188AC000CC9A9 /* For Test Group */ = {
-			isa = PBXGroup;
-			children = (
-				0ACE796A29D9EEAA00599C19 /* AlertSpinner.swift */,
-			);
-			path = "For Test Group";
 			sourceTree = "<group>";
 		};
 		0AA604DD29E04042007ACE58 /* NewContact */ = {
@@ -432,13 +436,13 @@
 			path = Services;
 			sourceTree = "<group>";
 		};
-		0AA604E729E16BF6007ACE58 /*  UIColor */ = {
+		0AA604E729E16BF6007ACE58 /* UIColor */ = {
 			isa = PBXGroup;
 			children = (
 				0AA604E829E16C05007ACE58 /* ColorExtensions.swift */,
 				0AA74A2029E6EAB200F01532 /* ColorConverters.swift */,
 			);
-			path = " UIColor";
+			path = UIColor;
 			sourceTree = "<group>";
 		};
 		0AA604EA29E16DA1007ACE58 /* Protocols */ = {
@@ -447,14 +451,6 @@
 				0AA604EB29E16DC1007ACE58 /* PressButtonProtocols.swift */,
 			);
 			path = Protocols;
-			sourceTree = "<group>";
-		};
-		0AA74A1D29E68C3E00F01532 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				0AA74A1E29E68C5900F01532 /* ContactsModel.swift */,
-			);
-			path = Model;
 			sourceTree = "<group>";
 		};
 		0AA74A2229E715DA00F01532 /* Date */ = {
@@ -468,6 +464,7 @@
 		0AA8EC5B29C76897004DC6DD /* AlertControllers */ = {
 			isa = PBXGroup;
 			children = (
+				0ACE796A29D9EEAA00599C19 /* AlertSpinner.swift */,
 				0AA8EC5C29C76968004DC6DD /* AlertDate.swift */,
 				0AA8EC5E29C7AA56004DC6DD /* AlertTime.swift */,
 				0A99A8FC29CD855100CC5A42 /* AlertTextField.swift */,
@@ -501,19 +498,14 @@
 		0AA8EC7029CAF52E004DC6DD /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				0A7FFFBE29F1B9F700CAC9DA /* DownloadImage */,
+				0A7FFFBB29F1325500CAC9DA /* String */,
 				0AA74A2229E715DA00F01532 /* Date */,
-				0AA604E729E16BF6007ACE58 /*  UIColor */,
+				0A99A90229CD98DD00CC5A42 /* Contacts */,
+				0AA604E729E16BF6007ACE58 /* UIColor */,
 				0AA8EC5B29C76897004DC6DD /* AlertControllers */,
 			);
 			path = Extensions;
-			sourceTree = "<group>";
-		};
-		0AB763B629E2BA4700BFDB0D /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				0AB763B729E2BA5300BFDB0D /* TaskModel.swift */,
-			);
-			path = Model;
 			sourceTree = "<group>";
 		};
 		0ACE797629DDA0CC00599C19 /* Model */ = {
@@ -799,8 +791,6 @@
 				0AA8EC6F29CAF4D2004DC6DD /* SetTimeProtocol.swift in Sources */,
 				0A99A90B29CD9CB300CC5A42 /* CheckAuth.swift in Sources */,
 				0A8AC1A829B9DBD300EA052B /* UserProfileVC.swift in Sources */,
-				0AB763B829E2BA5300BFDB0D /* TaskModel.swift in Sources */,
-				0AA74A1F29E68C5900F01532 /* ContactsModel.swift in Sources */,
 				0AA604E629E14814007ACE58 /* ScheduleRealmManager.swift in Sources */,
 				0AA8EC6D29CAF4A0004DC6DD /* SetTimeView.swift in Sources */,
 				0A8AC1A629B9D4FA00EA052B /* ContactsVC.swift in Sources */,
@@ -818,6 +808,8 @@
 				0A99A8FF29CD8FE000CC5A42 /* AllTasksToDoVC.swift in Sources */,
 				0A8AC1A129B9D46D00EA052B /* ScheduleVC.swift in Sources */,
 				0A86ED1A29B5D97F001C9BAF /* ForgetAboutTasks.xcdatamodeld in Sources */,
+				0A7FFFC029F1BA1800CAC9DA /* DownloadImage.swift in Sources */,
+				0A7FFFBD29F1326A00CAC9DA /* StringExtension.swift in Sources */,
 				0ACE796B29D9EEAA00599C19 /* AlertSpinner.swift in Sources */,
 				0ACE797529DDA0C900599C19 /* CreateTaskModel.swift in Sources */,
 				0A99A90729CD99CA00CC5A42 /* UserAuthController.swift in Sources */,

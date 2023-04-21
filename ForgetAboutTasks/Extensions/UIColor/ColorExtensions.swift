@@ -15,7 +15,7 @@ extension UIColor {
             hex.remove(at: hex.startIndex)
         }
         if hex.count != 6 {
-            return #colorLiteral(red: 0.6633207798, green: 0.6751670241, blue: 1, alpha: 1)
+            return #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
         }
         
         var rgb: UInt64 = 0

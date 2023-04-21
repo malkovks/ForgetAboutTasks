@@ -44,7 +44,7 @@ class CreateTaskTableViewController: UIViewController {
     
     @objc private func didTapSave(){
         if !(tasksModel.allTaskNameEvent.isEmpty) {
-            AllTasksRealmManager.shared.saveScheduleModel(model: tasksModel)
+            AllTasksRealmManager.shared.saveAllTasksModel(model: tasksModel)
             tasksModel = AllTaskModel()
             self.dismiss(animated: true)
         } else {
@@ -155,7 +155,7 @@ extension CreateTaskTableViewController: UITableViewDelegate, UITableViewDataSou
         let cellName = cellsName[indexPath.section][indexPath.row]
         switch indexPath {
         case [0,0]:
-            alertTextField(cell: cellName, placeholder: "Enter title of event", table: tableView) { [self] text in
+            alertTextField(cell: cellName, placeholder: "Enter title of event", keyboard: .default, table: tableView) { [self] text in
                 cellsName[indexPath.section][indexPath.row] = text
                 tasksModel.allTaskNameEvent = text
             }
@@ -170,12 +170,12 @@ extension CreateTaskTableViewController: UITableViewDelegate, UITableViewDataSou
                 tasksModel.allTaskTime = date
             }
         case [3,0]:
-            alertTextField(cell: cellName, placeholder: "Enter notes value", table: tableView) { [self] text in
+            alertTextField(cell: cellName, placeholder: "Enter notes value", keyboard: .default, table: tableView) { [self] text in
                 cellsName[indexPath.section][indexPath.row] = text
                 tasksModel.allTaskNotes = text
             }
         case [4,0]:
-            alertTextField(cell: cellName, placeholder: "Enter URL value", table: tableView, completion: { [self] text in
+            alertTextField(cell: cellName, placeholder: "Enter URL value", keyboard: .default, table: tableView, completion: { [self] text in
                 cellsName[indexPath.section][indexPath.row] = text
                 tasksModel.allTaskURL = text
             })

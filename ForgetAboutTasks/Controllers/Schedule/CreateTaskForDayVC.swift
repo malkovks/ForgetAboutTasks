@@ -31,6 +31,7 @@ class CreateTaskForDayController: UIViewController {
         calendar.headerHeight = 30
         calendar.pagingEnabled = true
         calendar.tintColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
+
         calendar.locale = Locale(identifier: "en")
         calendar.translatesAutoresizingMaskIntoConstraints = false
         return calendar

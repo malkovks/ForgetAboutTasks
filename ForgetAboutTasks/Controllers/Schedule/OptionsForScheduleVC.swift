@@ -202,7 +202,7 @@ extension OptionsForScheduleViewController: UITableViewDelegate, UITableViewData
         } else {
             switch indexPath {
             case [0,0]:
-                alertTextField(cell: cellName, placeholder: "Enter text", table: tableView) { [self] text in
+                alertTextField(cell: cellName, placeholder: "Enter text", keyboard: .default, table: tableView) { [self] text in
                     scheduleModel.scheduleName = text
                     cellsName[indexPath.section][indexPath.row] = text
                 }
@@ -218,22 +218,22 @@ extension OptionsForScheduleViewController: UITableViewDelegate, UITableViewData
                     cellsName[indexPath.section][indexPath.row] = timeString
                 }
             case [2,0]:
-                alertTextField(cell: "Enter Name of event", placeholder: "Enter the text", table: tableView) { [self] text in
+                alertTextField(cell: "Enter Name of event", placeholder: "Enter the text", keyboard: .default, table: tableView) { [self] text in
                     scheduleModel.scheduleCategoryName = text
                     cellsName[indexPath.section][indexPath.row] = text
                 }
             case [2,1]:
-                alertTextField(cell: "Enter Type of event", placeholder: "Enter the text", table: tableView) { [self] text in
+                alertTextField(cell: "Enter Type of event", placeholder: "Enter the text", keyboard: .default, table: tableView) { [self] text in
                     scheduleModel.scheduleCategoryType = text
                     cellsName[indexPath.section][indexPath.row] = text
                 }
             case [2,2]:
-                alertTextField(cell: "Enter URL of event", placeholder: "Enter the text", table: tableView) { [self] text in
+                alertTextField(cell: "Enter URL of event", placeholder: "Enter the text", keyboard: .emailAddress, table: tableView) { [self] text in
                     scheduleModel.scheduleCategoryURL = text
                     cellsName[indexPath.section][indexPath.row] = text
                 }
             case [2,3]:
-                alertTextField(cell: "Enter Notes of event", placeholder: "Enter the text", table: tableView) { [self] text in
+                alertTextField(cell: "Enter Notes of event", placeholder: "Enter the text", keyboard: .default, table: tableView) { [self] text in
                     scheduleModel.scheduleCategoryNote = text
                     cellsName[indexPath.section][indexPath.row] = text
                 }

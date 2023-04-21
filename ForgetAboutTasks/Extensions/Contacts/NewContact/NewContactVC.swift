@@ -20,6 +20,8 @@ class NewContactViewController: UIViewController {
     
     var contactModel = ContactModel()
     
+    var isViewEdited: Bool = true
+    
     private let tableView = UITableView()
     private let viewForTable = NewContactCustomView()
     
@@ -40,7 +42,7 @@ class NewContactViewController: UIViewController {
     //MARK: - Targets methods
     @objc private func didTapSave(){
         if !contactModel.contactName.isEmpty && !contactModel.contactPhoneNumber.isEmpty {
-            ContactRealmManager.shared.saveScheduleModel(model: contactModel)
+            ContactRealmManager.shared.saveContactModel(model: contactModel)
             contactModel = ContactModel()
             self.dismiss(animated: true)
             print("Contact was saved successfully")
@@ -65,6 +67,7 @@ class NewContactViewController: UIViewController {
         setupNavigationController()
         setupConstraints()
         customiseView()
+        setupSelection(boolean: isViewEdited)
         view.backgroundColor = .secondarySystemBackground
         title = "New Contact"
     }
@@ -79,10 +82,24 @@ class NewContactViewController: UIViewController {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "tasksCell")
     }
     
+    private func setupSelection(boolean: Bool){
+        if !boolean {
+            tableView.allowsSelection = false
+            labelForImageView.isHidden = true
+            viewForTable.isHidden = true
+            navigationItem.rightBarButtonItem?.isHidden = true
+        } else {
+            tableView.allowsSelection = true
+            labelForImageView.isHidden = false
+            viewForTable.isHidden = false
+            navigationItem.rightBarButtonItem?.isHidden = false
+        }
+    }
+    
     private func setupNavigationController(){
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(didTapSave))
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Contacts", style: .done, target: self, action: #selector(didTapDismiss))
-        navigationController?.navigationBar.tintColor = #colorLiteral(red: 0.6633207798, green: 0.6751670241, blue: 1, alpha: 1)
+        navigationController?.navigationBar.tintColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
         navigationController?.navigationItem.largeTitleDisplayMode = .never
         navigationController?.navigationBar.prefersLargeTitles = false
     }
@@ -113,10 +130,28 @@ extension NewContactViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "tasksCell", for: indexPath)
         let data = cellsName[indexPath.section][indexPath.row]
-        cell.textLabel?.text = data
         cell.layer.cornerRadius = 10
         cell.contentView.layer.cornerRadius = 10
         cell.backgroundColor = .systemBackground
+        if !isViewEdited {
+
+            switch indexPath {
+            case [0,0]:
+                cell.textLabel?.text = contactModel.contactName
+            case [1,0]:
+                cell.textLabel?.text = contactModel.contactPhoneNumber
+            case [2,0]:
+                cell.textLabel?.text = contactModel.contactMail
+            case [3,0]:
+                cell.textLabel?.text = contactModel.contactType
+            default:
+                print("Error")
+            }
+        } else {
+            cell.textLabel?.text = data
+        }
+        
+        
         return cell
     }
     
@@ -125,17 +160,19 @@ extension NewContactViewController: UITableViewDelegate, UITableViewDataSource {
         let cellName = cellsName[indexPath.section][indexPath.row]
         switch indexPath.section {
         case 0:
-            alertTextField(cell: cellName, placeholder: "Enter name of contact", table: tableView) { [unowned self] text in
+            alertTextField(cell: cellName, placeholder: "Enter name of contact", keyboard: .default, table: tableView) { [unowned self] text in
                 self.cellsName[indexPath.section][indexPath.row] = text
                 contactModel.contactName = text
             }
         case 1:
-            alertTextField(cell: cellName, placeholder: "Enter number of contact", table: tableView) { [unowned self] text in
-                self.cellsName[indexPath.section][indexPath.row] = text
-                contactModel.contactPhoneNumber = text
+            alertTextField(cell: cellName, placeholder: "Enter number of contact", keyboard: .numberPad, table: tableView) { [unowned self] text in
+                let phoneNumber = String.format(with: "+X (XXX) XXX-XXXX", phone: text)
+                self.cellsName[indexPath.section][indexPath.row] = phoneNumber
+                
+                contactModel.contactPhoneNumber = phoneNumber
             }
         case 2:
-            alertTextField(cell: cellName, placeholder: "Enter mail", table: tableView) { [weak self] text in
+            alertTextField(cell: cellName, placeholder: "Enter mail", keyboard: .emailAddress, table: tableView) { [weak self] text in
                 self?.cellsName[indexPath.section][indexPath.row] = text
                 self?.contactModel.contactMail = text
             }

@@ -15,8 +15,6 @@ import RealmSwift
 
 class ScheduleViewController: UIViewController {
     
-    var dateDictionary: [String: [TasksDate]] = [:]
-    
     let formatter = Formatters()
     
     let localRealm = try! Realm()

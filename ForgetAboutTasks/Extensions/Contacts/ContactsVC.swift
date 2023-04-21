@@ -12,19 +12,18 @@ import RealmSwift
 
 class ContactsViewController: UIViewController {
     
-    private let cellContactModel = [
-        ContactsModel(contactName: "Joe", contactPhoneNumber: "+7(999)632-66-66", contactImage: UIImage(systemName: "person.crop.circle.fill")!, colorImage: .systemBlue),
-        ContactsModel(contactName: "Mike", contactPhoneNumber: "+7(999)632-66-66", contactImage: UIImage(systemName: "person.crop.circle.fill")!, colorImage: .systemBlue),
-        ContactsModel(contactName: "Sven", contactPhoneNumber: "+7(999)632-66-66", contactImage: UIImage(systemName: "person.crop.circle.fill")!, colorImage: .systemBlue),
-        ContactsModel(contactName: "Allen", contactPhoneNumber: "+7(999)632-66-66", contactImage: UIImage(systemName: "person.crop.circle.fill")!, colorImage: .systemBlue),
-        ContactsModel(contactName: "David", contactPhoneNumber: "+7(999)632-66-66", contactImage: UIImage(systemName: "person.crop.circle.fill")!, colorImage: .systemBlue)
-    ]
-    
     var contactData: Results<ContactModel>!
     private var localRealmData = try! Realm()
     
     private let searchController = UISearchController()
     private let tableView = UITableView()
+    
+    private let refreshController: UIRefreshControl = {
+       let controller = UIRefreshControl()
+        controller.tintColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
+        controller.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        return controller
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,6 +39,13 @@ class ContactsViewController: UIViewController {
         vc.modalTransitionStyle = .coverVertical
         present(vc, animated: true)
     }
+    
+    @objc private func didTapRefresh(sender: AnyObject){
+        self.tableView.reloadData()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            self.refreshController.endRefreshing()
+        }
+    }
     //MARK: - Setup methods
     private func setupView() {
         setupNavigationController()
@@ -47,11 +53,12 @@ class ContactsViewController: UIViewController {
         setupSearchController()
         loadingRealmData()
         view.backgroundColor = .secondarySystemBackground
-        
+        refreshController.addTarget(self, action: #selector(didTapRefresh), for: .valueChanged)
     }
     
     private func setupTableView(){
         view.addSubview(tableView)
+        tableView.refreshControl = refreshController
         tableView.backgroundColor = .secondarySystemBackground
         tableView.delegate = self
         tableView.dataSource = self
@@ -66,7 +73,7 @@ class ContactsViewController: UIViewController {
     
     private func setupNavigationController(){
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(didTapCreateNewContact))
-        navigationController?.navigationBar.tintColor = #colorLiteral(red: 0.6633207798, green: 0.6751670241, blue: 1, alpha: 1)
+        navigationController?.navigationBar.tintColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
         navigationController?.navigationItem.largeTitleDisplayMode = .always
         navigationController?.navigationBar.prefersLargeTitles = true
         title = "Contacts"
@@ -93,16 +100,16 @@ extension ContactsViewController: UITableViewDelegate, UITableViewDataSource {
         cell.contentView.layer.cornerRadius = 10
         cell.backgroundColor = .systemBackground
         cell.textLabel?.font = .systemFont(ofSize: 20,weight: .semibold)
-        
-        cell.imageView?.contentMode = .scaleAspectFill
+        cell.accessoryType = .disclosureIndicator
+
+        cell.imageView?.layer.cornerRadius = 0.5 * (cell.imageView?.bounds.size.width)!
         cell.imageView?.clipsToBounds = true
-//        cell.imageView?.image?.withTintColor(data.colorImage)
+        cell.imageView?.frame = .zero
         if let dataImage = data.contactImage {
             cell.textLabel?.text = data.contactName
             cell.detailTextLabel?.text = "Phone number: " + data.contactPhoneNumber
             cell.imageView?.image = UIImage(data: dataImage)
         } else {
-            print("Out of image")
             cell.imageView?.image = UIImage(systemName: "person.crop.circle.fill")
         }
         
@@ -111,6 +118,7 @@ extension ContactsViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let cell = tableView.cellForRow(at: indexPath)
+        let cellData = contactData[indexPath.row]
         let actionInstance = UIContextualAction(style: .normal, title: "") { _, _, completionHandler in
             if cell?.textLabel?.textColor == .lightGray {
                 cell?.textLabel?.textColor = .black
@@ -124,6 +132,8 @@ extension ContactsViewController: UITableViewDelegate, UITableViewDataSource {
         }
         let detailInstance = UIContextualAction(style: .normal, title: "") { [self] _, _, handler in
             let vc = NewContactViewController()
+            vc.isViewEdited = false
+            vc.contactModel = cellData
             let nav = UINavigationController(rootViewController: vc)
             nav.isNavigationBarHidden = false
             nav.modalPresentationStyle = .pageSheet
@@ -144,8 +154,8 @@ extension ContactsViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let model = contactData[indexPath.row]
         let deleteInstance = UIContextualAction(style: .destructive, title: "") { _, _, _ in
+            ContactRealmManager.shared.deleteContactModel(model: model)
             tableView.deleteRows(at: [indexPath], with: .fade)
-            ContactRealmManager.shared.deleteScheduleModel(model: model)
         }
         deleteInstance.backgroundColor = .systemRed
         deleteInstance.image = UIImage(systemName: "trash.fill")
@@ -157,14 +167,20 @@ extension ContactsViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        let cellData = contactData[indexPath.row]
+        let vc = NewContactViewController()
+        vc.isViewEdited = false
+        vc.contactModel = cellData
+        let nav = UINavigationController(rootViewController: vc)
+        nav.isNavigationBarHidden = false
+        nav.modalPresentationStyle = .pageSheet
+        nav.sheetPresentationController?.prefersGrabberVisible = true
+        present(nav, animated: true)
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         80
     }
-    
-
-    
 }
 
 extension ContactsViewController {

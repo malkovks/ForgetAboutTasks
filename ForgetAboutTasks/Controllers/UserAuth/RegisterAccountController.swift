@@ -19,7 +19,7 @@ class RegisterAccountViewController: UIViewController {
         field.placeholder = " example@email.com"
         field.layer.borderWidth = 1
         field.layer.cornerRadius = 12
-        field.layer.borderColor = #colorLiteral(red: 0.1460708082, green: 0.1460708082, blue: 0.1460708082, alpha: 1)
+        field.layer.borderColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
         field.clearButtonMode = .whileEditing
         field.autocapitalizationType = .none
         return field
@@ -33,7 +33,7 @@ class RegisterAccountViewController: UIViewController {
         field.autocapitalizationType = .none
         field.passwordRules = UITextInputPasswordRules(descriptor: "No matter how and what")
         field.layer.cornerRadius = 12
-        field.layer.borderColor = #colorLiteral(red: 0.1460708082, green: 0.1460708082, blue: 0.1460708082, alpha: 1)
+        field.layer.borderColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
         return field
     }()
     
@@ -45,7 +45,7 @@ class RegisterAccountViewController: UIViewController {
         field.autocapitalizationType = .none
         field.passwordRules = UITextInputPasswordRules(descriptor: "No matter how and what")
         field.layer.cornerRadius = 12
-        field.layer.borderColor = #colorLiteral(red: 0.1460708082, green: 0.1460708082, blue: 0.1460708082, alpha: 1)
+        field.layer.borderColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
         return field
     }()
     
@@ -74,7 +74,7 @@ class RegisterAccountViewController: UIViewController {
         button.configuration?.image = UIImage(systemName: "plus.circle.fill")?.withTintColor(.secondarySystemBackground,renderingMode: .alwaysOriginal)
         button.configuration?.imagePadding = 8
         button.layer.cornerRadius = 8
-        button.backgroundColor = #colorLiteral(red: 0.06544024497, green: 0.06544024497, blue: 0.06544024497, alpha: 1)
+        button.backgroundColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
         button.tintColor = .systemBackground
         return button
     }()
@@ -137,7 +137,7 @@ class RegisterAccountViewController: UIViewController {
     
     private func setupNavigationController(){
         title = "Create New Account"
-        navigationController?.navigationBar.tintColor = #colorLiteral(red: 0.6633207798, green: 0.6751670241, blue: 1, alpha: 1)
+        navigationController?.navigationBar.tintColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "return"), landscapeImagePhone: nil, style: .done, target: self, action: #selector(didTapBack))
     }

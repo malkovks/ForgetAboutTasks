@@ -139,13 +139,20 @@ class UserProfileViewController: UIViewController {
         setupTapGestureForImage()
         setupTargets()
         setTapGestureForLabel()
+        loadingData()
         view.backgroundColor = .secondarySystemBackground
-        
+    }
+    
+    private func loadingData(){
+        let (name,mail,image) = CheckAuth.shared.loadData()
+        userImageView.image = image
+        userNameLabel.text = name
+        userMailLabel.text = mail
     }
     
     private func setupNavigationController(){
         title = "My Profile"
-        navigationController?.navigationBar.tintColor = #colorLiteral(red: 0.6633207798, green: 0.6751670241, blue: 1, alpha: 1)
+        navigationController?.navigationBar.tintColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "arrow.uturn.right.square"), style: .done, target: self, action: #selector(didTapLogout))
     }
 
@@ -172,27 +179,17 @@ class UserProfileViewController: UIViewController {
         changeUserImageView.addTarget(self, action: #selector(didTapImagePicker), for: .touchUpInside)
     }
     
-    private func downloadImage(url: URL) {
-        URLSession.shared.dataTask(with: url) { data, request, error in
-            guard let data = data,
-                  error == nil else {
-                print("Error downloading data")
-                return
-            }
-            DispatchQueue.main.async {
-                self.userImageView.image = UIImage(data: data)
-            }
-        }
-    }
-    
-  
-    
+
 }
 
 extension UserProfileViewController: UserAuthProtocol {
     func userData(result: AuthDataResult) {
+        CheckAuth.shared.saveData(result: result)
         guard let imageURL = result.user.photoURL else { print("Error");return}
-        downloadImage(url: imageURL)
+        downloadImage(url: imageURL) { [weak self] data in
+            let image = UIImage(data: data)
+            self?.userImageView.image = image
+        }
         self.userNameLabel.text = result.user.displayName ?? "Unavaliable name"
         self.userMailLabel.text = result.user.email ?? ""
     }
@@ -203,6 +200,9 @@ extension UserProfileViewController: UserAuthProtocol {
 extension UserProfileViewController: UIImagePickerControllerDelegate,UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let image = info[.editedImage] as? UIImage{
+            guard let data = image.jpegData(compressionQuality: 0.5) else { print("error saving");return}
+            let encode = try! PropertyListEncoder().encode(data)
+            UserDefaults.standard.set(encode, forKey: "userImage")
             userImageView.image = image
         } else {
             print("Error")

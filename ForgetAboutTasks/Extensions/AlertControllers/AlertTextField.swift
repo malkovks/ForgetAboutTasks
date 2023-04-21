@@ -8,10 +8,14 @@
 import UIKit
 
 extension UIViewController {
-    func alertTextField(cell title: String,placeholder: String,table: UITableView, completion: @escaping (String) -> Void) {
+    func alertTextField(cell title: String,placeholder: String,keyboard type: UIKeyboardType,table: UITableView, completion: @escaping (String) -> Void) {
         let alert = UIAlertController(title: "", message: title, preferredStyle: .alert)
         alert.addTextField(configurationHandler: { text in
             text.placeholder = placeholder
+            text.keyboardType = type
+//            if type == .phonePad {
+//                text.
+//            }
         })
         alert.addAction(UIAlertAction(title: "Save", style: .default,handler: { _ in
             DispatchQueue.main.async {

@@ -34,6 +34,7 @@ class AllTasksToDoViewController: UIViewController {
         controller.attributedTitle = NSAttributedString(string: "Pull to refresh")
         return controller
     }()
+
     //MARK: - Views loading
     
     override func viewDidLoad() {
@@ -74,6 +75,29 @@ class AllTasksToDoViewController: UIViewController {
         }
     }
     
+    @objc private func didTapChangeCell(sender tag: AnyObject) {
+        
+        let button = tag as! UIButton
+        let indexPath = IndexPath(row: button.tag, section: 0)
+        let model = allTasksData[indexPath.row]
+        let color = UIColor.color(withData: model.allTaskColor!)
+        let cell = tableView.cellForRow(at: indexPath)
+        if model.allTaskCompleted {
+            cell?.textLabel?.textColor = .systemGray
+            cell?.detailTextLabel?.textColor = .systemGray
+            cell?.imageView?.tintColor = .systemGray
+            model.allTaskCompleted = true
+            AllTasksRealmManager.shared.saveAllTasksModel(model: model)
+        } else {
+            cell?.textLabel?.textColor = .black
+            cell?.detailTextLabel?.textColor = .black
+            cell?.imageView?.tintColor = color
+            model.allTaskCompleted = false
+            AllTasksRealmManager.shared.saveAllTasksModel(model: model)
+        }
+        print(model.allTaskCompleted)
+    }
+    
     //MARK: - Setup methods
     private func setupView(){
         setupConstraints()
@@ -89,7 +113,7 @@ class AllTasksToDoViewController: UIViewController {
         title = "All tasks"
         navigationController?.navigationItem.largeTitleDisplayMode = .always
         navigationController?.navigationBar.prefersLargeTitles = true
-        navigationController?.navigationBar.tintColor = #colorLiteral(red: 0.6633207798, green: 0.6751670241, blue: 1, alpha: 1)
+        navigationController?.navigationBar.tintColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "folder.fill.badge.plus"), landscapeImagePhone: nil, style: .done, target: self, action: #selector(didTapCreateNewTask))
     }
     
@@ -125,11 +149,23 @@ extension AllTasksToDoViewController: UITableViewDelegate, UITableViewDataSource
         let data = allTasksData[indexPath.row]
         let color = UIColor.color(withData: data.allTaskColor!)
         cell.backgroundColor = .secondarySystemBackground
-        cell.accessoryType = .disclosureIndicator
+        
+        let button = UIButton(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
+        button.setImage(UIImage(systemName: "circle"), for: .normal)
+
+        button.tintColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
+        button.addTarget(self, action: #selector(didTapChangeCell), for: .touchUpInside)
+        button.sizeToFit()
+        button.tag = indexPath.row
+        
+        cell.accessoryView = button as UIView
+        
+//        cell.accessoryType = .disclosureIndicator
         if let date = data.allTaskDate, let time = data.allTaskTime {
             let timeFF = Formatters.instance.timeStringFromDate(date: time)
             let dateF = DateFormatter.localizedString(from: date, dateStyle: .medium, timeStyle: .none)
             
+            cell.textLabel?.textColor = .black
             cell.textLabel?.text = data.allTaskNameEvent
             cell.detailTextLabel?.text = dateF + "   " + timeFF
             cell.imageView?.image = UIImage(systemName: "circle.fill")
@@ -156,7 +192,7 @@ extension AllTasksToDoViewController: UITableViewDelegate, UITableViewDataSource
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let model = allTasksData[indexPath.row]
         let deleteInstance = UIContextualAction(style: .destructive, title: "") { _, _, _ in
-            AllTasksRealmManager.shared.deleteScheduleModel(model: model)
+            AllTasksRealmManager.shared.deleteAllTasks(model: model)
             tableView.deleteRows(at: [indexPath], with: .fade)
         }
         deleteInstance.backgroundColor = .systemRed

@@ -15,14 +15,14 @@ class ContactRealmManager {
     
     private init() {}
     
-    func saveScheduleModel(model: ContactModel){
+    func saveContactModel(model: ContactModel){
         try! localRealm.write {
             localRealm.add(model)
             print("Tasks saved in realm")
         }
     }
     
-    func deleteScheduleModel(model: ContactModel){
+    func deleteContactModel(model: ContactModel){
         try! localRealm.write {
             localRealm.delete(model)
             print("Contact was deleted")
