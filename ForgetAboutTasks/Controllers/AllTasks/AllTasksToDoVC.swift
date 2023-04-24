@@ -14,7 +14,7 @@ class AllTasksToDoViewController: UIViewController {
     
     var allTasksData: Results<AllTaskModel>!
     private var localRealmData = try! Realm()
-    
+    var allTasksDataSections = [String]()
     
     private let tableView = UITableView()
     
@@ -80,22 +80,9 @@ class AllTasksToDoViewController: UIViewController {
         let button = tag as! UIButton
         let indexPath = IndexPath(row: button.tag, section: 0)
         let model = allTasksData[indexPath.row]
-        let color = UIColor.color(withData: model.allTaskColor!)
-        let cell = tableView.cellForRow(at: indexPath)
-        if model.allTaskCompleted {
-            cell?.textLabel?.textColor = .systemGray
-            cell?.detailTextLabel?.textColor = .systemGray
-            cell?.imageView?.tintColor = .systemGray
-            model.allTaskCompleted = true
-            AllTasksRealmManager.shared.saveAllTasksModel(model: model)
-        } else {
-            cell?.textLabel?.textColor = .black
-            cell?.detailTextLabel?.textColor = .black
-            cell?.imageView?.tintColor = color
-            model.allTaskCompleted = false
-            AllTasksRealmManager.shared.saveAllTasksModel(model: model)
-        }
-        print(model.allTaskCompleted)
+        let booleanValue = !model.allTaskCompleted
+        AllTasksRealmManager.shared.changeAllTasksModel(model: model, boolean: booleanValue)
+        tableView.reloadData()
     }
     
     //MARK: - Setup methods
@@ -106,7 +93,6 @@ class AllTasksToDoViewController: UIViewController {
         setupTargetsAndDelegates()
         loadingRealmData()
         view.backgroundColor = .secondarySystemBackground
-        
     }
     
     private func setupNavigationController(){
@@ -133,8 +119,11 @@ class AllTasksToDoViewController: UIViewController {
     private func loadingRealmData(typeOf sort: String = "allTaskDate") {
         let secValue = localRealmData.objects(AllTaskModel.self).sorted(byKeyPath: sort)
         allTasksData = secValue
+//        allTasksDataSections = secValue
         self.tableView.reloadData()
     }
+    
+   
 }
 //MARK: - Task model protocol
 
@@ -144,6 +133,14 @@ extension AllTasksToDoViewController: UITableViewDelegate, UITableViewDataSource
         return allTasksData.count
     }
     
+    func numberOfSections(in tableView: UITableView) -> Int {
+        allTasksDataSections.count
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return "d"
+    }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cellIdentifier")
         let data = allTasksData[indexPath.row]
@@ -151,8 +148,6 @@ extension AllTasksToDoViewController: UITableViewDelegate, UITableViewDataSource
         cell.backgroundColor = .secondarySystemBackground
         
         let button = UIButton(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
-        button.setImage(UIImage(systemName: "circle"), for: .normal)
-
         button.tintColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
         button.addTarget(self, action: #selector(didTapChangeCell), for: .touchUpInside)
         button.sizeToFit()
@@ -160,15 +155,24 @@ extension AllTasksToDoViewController: UITableViewDelegate, UITableViewDataSource
         
         cell.accessoryView = button as UIView
         
-//        cell.accessoryType = .disclosureIndicator
         if let date = data.allTaskDate, let time = data.allTaskTime {
             let timeFF = Formatters.instance.timeStringFromDate(date: time)
             let dateF = DateFormatter.localizedString(from: date, dateStyle: .medium, timeStyle: .none)
-            
+        
             cell.textLabel?.textColor = .black
             cell.textLabel?.text = data.allTaskNameEvent
             cell.detailTextLabel?.text = dateF + "   " + timeFF
             cell.imageView?.image = UIImage(systemName: "circle.fill")
+        }
+        if data.allTaskCompleted {
+            button.setImage(UIImage(systemName: "circle.fill"), for: .normal)
+            cell.textLabel?.textColor = .lightGray
+            cell.detailTextLabel?.textColor = .lightGray
+            cell.imageView?.tintColor = .lightGray
+        } else {
+            button.setImage(UIImage(systemName: "circle"), for: .normal)
+            cell.textLabel?.textColor = .black
+            cell.detailTextLabel?.textColor = .black
             cell.imageView?.tintColor = color
         }
         return cell
@@ -184,8 +188,8 @@ extension AllTasksToDoViewController: UITableViewDelegate, UITableViewDataSource
         let nav = UINavigationController(rootViewController: vc)
         nav.modalPresentationStyle = .pageSheet
         nav.isNavigationBarHidden = false
+        nav.title = model.allTaskNameEvent
         nav.sheetPresentationController?.prefersGrabberVisible = true
-
         present(nav, animated: true)
     }
     
@@ -202,37 +206,11 @@ extension AllTasksToDoViewController: UITableViewDelegate, UITableViewDataSource
         
         return action
     }
-    
-    func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let cell = tableView.cellForRow(at: indexPath)
-        let data = allTasksData[indexPath.row]
-        let color = UIColor.color(withData: data.allTaskColor!)
-        let actionInstance = UIContextualAction(style: .normal, title: "") { _, _, success in
-            if cell?.textLabel?.textColor == .lightGray {
-                cell?.textLabel?.textColor = .black
-                cell?.detailTextLabel?.textColor = .black
-                cell?.imageView?.image = UIImage(systemName: "circle.fill")
-                cell?.imageView?.tintColor = color
-                success(true)
-            } else {
-                cell?.textLabel?.textColor = .lightGray
-                cell?.imageView?.image = UIImage(systemName: "circle")
-                cell?.imageView?.tintColor = .lightGray
-                cell?.detailTextLabel?.textColor = .lightGray
-                success(true)
-            }
-            
-        }
-        actionInstance.backgroundColor = .systemYellow
-        actionInstance.image = UIImage(systemName: "pencil.line")
-        actionInstance.image?.withTintColor(.systemBackground)
-        let action = UISwipeActionsConfiguration(actions: [actionInstance])
-        return action
-    }
 }
 
 extension AllTasksToDoViewController {
     private func setupConstraints(){
+        
         view.addSubview(segmentalController)
         segmentalController.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(5)
@@ -247,3 +225,31 @@ extension AllTasksToDoViewController {
         }
     }
 }
+
+
+//func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+//        let cell = tableView.cellForRow(at: indexPath)
+//        let data = allTasksData[indexPath.row]
+//        let color = UIColor.color(withData: data.allTaskColor!)
+//        let actionInstance = UIContextualAction(style: .normal, title: "") { _, _, success in
+//            if cell?.textLabel?.textColor == .lightGray {
+//                cell?.textLabel?.textColor = .black
+//                cell?.detailTextLabel?.textColor = .black
+//                cell?.imageView?.image = UIImage(systemName: "circle.fill")
+//                cell?.imageView?.tintColor = color
+//                success(true)
+//            } else {
+//                cell?.textLabel?.textColor = .lightGray
+//                cell?.imageView?.image = UIImage(systemName: "circle")
+//                cell?.imageView?.tintColor = .lightGray
+//                cell?.detailTextLabel?.textColor = .lightGray
+//                success(true)
+//            }
+//
+//        }
+//        actionInstance.backgroundColor = .systemYellow
+//        actionInstance.image = UIImage(systemName: "pencil.line")
+//        actionInstance.image?.withTintColor(.systemBackground)
+//        let action = UISwipeActionsConfiguration(actions: [actionInstance])
+//        return action
+//    }

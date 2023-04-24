@@ -22,10 +22,25 @@ class AllTasksRealmManager {
         }
     }
     
-    func changeAllTasksModel(model: AllTaskModel){
+    func changeAllTasksModel(model: AllTaskModel,boolean: Bool){
         try! localRealm.write {
-            
+            model.allTaskCompleted = boolean
         }
+        
+//        let mainModel =  localRealm.objects(AllTaskModel.self)
+//        let taskModel = mainModel[index]
+//        if boolean == true {
+//            try! localRealm.write {
+//                taskModel.allTaskCompleted = false
+//                print("value was changed to false")
+//            }
+//        } else if boolean == false {
+//            try! localRealm.write {
+//                taskModel.allTaskCompleted = true
+//                print("value was cnanged to true")
+//            }
+//        }
+        
     }
     
     

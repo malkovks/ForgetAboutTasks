@@ -312,6 +312,7 @@
 				0A99A90329CD98E600CC5A42 /* UserProfile */,
 				0A99A90129CD98CE00CC5A42 /* AllTasks */,
 				0A99A90029CD98C600CC5A42 /* Schedule */,
+				0A99A90229CD98DD00CC5A42 /* Contacts */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -501,7 +502,6 @@
 				0A7FFFBE29F1B9F700CAC9DA /* DownloadImage */,
 				0A7FFFBB29F1325500CAC9DA /* String */,
 				0AA74A2229E715DA00F01532 /* Date */,
-				0A99A90229CD98DD00CC5A42 /* Contacts */,
 				0AA604E729E16BF6007ACE58 /* UIColor */,
 				0AA8EC5B29C76897004DC6DD /* AlertControllers */,
 			);

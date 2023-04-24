@@ -13,7 +13,17 @@ import RealmSwift
 class ContactsViewController: UIViewController {
     
     var contactData: Results<ContactModel>!
+    var filteredContactData: Results<ContactModel>!
     private var localRealmData = try! Realm()
+    
+    private var searchBarIsEmpty: Bool {
+        guard let text = searchController.searchBar.text else { return true }
+        return text.isEmpty
+    }
+    
+    private var viewIsFiltered: Bool {
+        return searchController.isActive && !searchBarIsEmpty
+    }
     
     private let searchController = UISearchController()
     private let tableView = UITableView()
@@ -24,6 +34,11 @@ class ContactsViewController: UIViewController {
         controller.attributedTitle = NSAttributedString(string: "Pull to refresh")
         return controller
     }()
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tableView.reloadData()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,13 +54,6 @@ class ContactsViewController: UIViewController {
         vc.modalTransitionStyle = .coverVertical
         present(vc, animated: true)
     }
-    
-    @objc private func didTapRefresh(sender: AnyObject){
-        self.tableView.reloadData()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            self.refreshController.endRefreshing()
-        }
-    }
     //MARK: - Setup methods
     private func setupView() {
         setupNavigationController()
@@ -53,12 +61,9 @@ class ContactsViewController: UIViewController {
         setupSearchController()
         loadingRealmData()
         view.backgroundColor = .secondarySystemBackground
-        refreshController.addTarget(self, action: #selector(didTapRefresh), for: .valueChanged)
     }
     
     private func setupTableView(){
-        view.addSubview(tableView)
-        tableView.refreshControl = refreshController
         tableView.backgroundColor = .secondarySystemBackground
         tableView.delegate = self
         tableView.dataSource = self
@@ -68,6 +73,7 @@ class ContactsViewController: UIViewController {
 
     private func setupSearchController(){
         searchController.searchBar.placeholder = "Search Contacts"
+        searchController.searchResultsUpdater = self
         navigationItem.searchController = searchController
     }
     
@@ -84,18 +90,29 @@ class ContactsViewController: UIViewController {
         contactData = secValue
         self.tableView.reloadData()
     }
+}
 
+extension ContactsViewController: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        filterTable(searchController.searchBar.text ?? "Empty value")
+    }
+    
+    private func filterTable(_ searchText: String) {
+        filteredContactData = contactData.filter("contactName CONTAINS[c] %@ ",searchText)
+        tableView.reloadData()
+    }
+    
 }
 
 extension ContactsViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return contactData.count
+        return (viewIsFiltered ? filteredContactData.count : contactData.count)
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "contactCell")
-        let data = contactData[indexPath.row]
+        let data = (viewIsFiltered ? filteredContactData[indexPath.row] : contactData[indexPath.row])
         cell.layer.cornerRadius = 10
         cell.contentView.layer.cornerRadius = 10
         cell.backgroundColor = .systemBackground
@@ -105,9 +122,11 @@ extension ContactsViewController: UITableViewDelegate, UITableViewDataSource {
         cell.imageView?.layer.cornerRadius = 0.5 * (cell.imageView?.bounds.size.width)!
         cell.imageView?.clipsToBounds = true
         cell.imageView?.frame = .zero
+        cell.imageView?.contentMode = .scaleAspectFit
+        
+        cell.textLabel?.text = data.contactName
+        cell.detailTextLabel?.text = "Phone number: " + data.contactPhoneNumber
         if let dataImage = data.contactImage {
-            cell.textLabel?.text = data.contactName
-            cell.detailTextLabel?.text = "Phone number: " + data.contactPhoneNumber
             cell.imageView?.image = UIImage(data: dataImage)
         } else {
             cell.imageView?.image = UIImage(systemName: "person.crop.circle.fill")
@@ -174,6 +193,7 @@ extension ContactsViewController: UITableViewDelegate, UITableViewDataSource {
         let nav = UINavigationController(rootViewController: vc)
         nav.isNavigationBarHidden = false
         nav.modalPresentationStyle = .pageSheet
+        nav.title = cellData.contactName
         nav.sheetPresentationController?.prefersGrabberVisible = true
         present(nav, animated: true)
     }
@@ -184,7 +204,8 @@ extension ContactsViewController: UITableViewDelegate, UITableViewDataSource {
 }
 
 extension ContactsViewController {
-    private func setupConstraints(){
+        private func setupConstraints(){
+        view.addSubview(tableView)
         tableView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).inset(0)
             make.leading.trailing.equalToSuperview().inset(10)

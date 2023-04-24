@@ -10,9 +10,9 @@ import RealmSwift
 
 class ContactModel: Object {
     
-    @Persisted var contactName: String
-    @Persisted var contactPhoneNumber: String
-    @Persisted var contactMail: String
-    @Persisted var contactType: String
+    @Persisted var contactName: String = "Unknown"
+    @Persisted var contactPhoneNumber: String = "Unknown"
+    @Persisted var contactMail: String = "Unknown"
+    @Persisted var contactType: String = "Unknown"
     @Persisted var contactImage: Data?
 }
