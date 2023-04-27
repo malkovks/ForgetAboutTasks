@@ -90,6 +90,18 @@ class ContactsViewController: UIViewController {
         contactData = secValue
         self.tableView.reloadData()
     }
+    
+    private func openCurrentContact(model: ContactModel){
+        let vc = NewContactViewController()
+        vc.isViewEdited = false
+        vc.contactModel = model
+        let nav = UINavigationController(rootViewController: vc)
+        nav.isNavigationBarHidden = false
+        nav.modalPresentationStyle = .pageSheet
+        nav.title = model.contactName
+        nav.sheetPresentationController?.prefersGrabberVisible = true
+        present(nav, animated: true)
+    }
 }
 
 extension ContactsViewController: UISearchResultsUpdating {
@@ -101,6 +113,7 @@ extension ContactsViewController: UISearchResultsUpdating {
         filteredContactData = contactData.filter("contactName CONTAINS[c] %@ ",searchText)
         tableView.reloadData()
     }
+
     
 }
 
@@ -119,17 +132,20 @@ extension ContactsViewController: UITableViewDelegate, UITableViewDataSource {
         cell.textLabel?.font = .systemFont(ofSize: 20,weight: .semibold)
         cell.accessoryType = .disclosureIndicator
 
-        cell.imageView?.layer.cornerRadius = 0.5 * (cell.imageView?.bounds.size.width)!
         cell.imageView?.clipsToBounds = true
         cell.imageView?.frame = .zero
-        cell.imageView?.contentMode = .scaleAspectFit
+        cell.imageView?.contentMode = .scaleToFill
         
         cell.textLabel?.text = data.contactName
         cell.detailTextLabel?.text = "Phone number: " + data.contactPhoneNumber
         if let dataImage = data.contactImage {
+            let image = UIImage(data: dataImage)
+            cell.imageView?.layer.cornerRadius = (cell.imageView?.frame.size.width)!/2
+            cell.imageView?.sizeThatFits(CGSize(width: 20, height: 20))
             cell.imageView?.image = UIImage(data: dataImage)
         } else {
             cell.imageView?.image = UIImage(systemName: "person.crop.circle.fill")
+            cell.imageView?.frame(forAlignmentRect: CGRect(x: 0, y: 0, width: 50, height: 50))
         }
         
         return cell
@@ -150,14 +166,7 @@ extension ContactsViewController: UITableViewDelegate, UITableViewDataSource {
             }
         }
         let detailInstance = UIContextualAction(style: .normal, title: "") { [self] _, _, handler in
-            let vc = NewContactViewController()
-            vc.isViewEdited = false
-            vc.contactModel = cellData
-            let nav = UINavigationController(rootViewController: vc)
-            nav.isNavigationBarHidden = false
-            nav.modalPresentationStyle = .pageSheet
-            nav.sheetPresentationController?.prefersGrabberVisible = true
-            present(nav, animated: true)
+            openCurrentContact(model: cellData)
         }
         detailInstance.backgroundColor = .systemGray
         detailInstance.image = UIImage(systemName: "ellipsis")
@@ -186,16 +195,8 @@ extension ContactsViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let cellData = contactData[indexPath.row]
-        let vc = NewContactViewController()
-        vc.isViewEdited = false
-        vc.contactModel = cellData
-        let nav = UINavigationController(rootViewController: vc)
-        nav.isNavigationBarHidden = false
-        nav.modalPresentationStyle = .pageSheet
-        nav.title = cellData.contactName
-        nav.sheetPresentationController?.prefersGrabberVisible = true
-        present(nav, animated: true)
+        let model = contactData[indexPath.row]
+        openCurrentContact(model: model)
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

@@ -14,7 +14,8 @@ class AllTasksToDoViewController: UIViewController {
     
     var allTasksData: Results<AllTaskModel>!
     private var localRealmData = try! Realm()
-    var allTasksDataSections = [String]()
+    var allTasksDataSections = [Date]()
+    var taskDate = Set<Date>()
     
     private let tableView = UITableView()
     
@@ -123,6 +124,12 @@ class AllTasksToDoViewController: UIViewController {
         self.tableView.reloadData()
     }
     
+    private func setupCategories(model: AllTaskModel) {
+        allTasksDataSections.append(model.allTaskDate ?? Date())
+        self.tableView.reloadData()
+//        taskDate.insert(model.allTaskDate)
+    }
+    
    
 }
 //MARK: - Task model protocol
@@ -133,19 +140,22 @@ extension AllTasksToDoViewController: UITableViewDelegate, UITableViewDataSource
         return allTasksData.count
     }
     
-    func numberOfSections(in tableView: UITableView) -> Int {
-        allTasksDataSections.count
-    }
-    
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return "d"
-    }
+//    func numberOfSections(in tableView: UITableView) -> Int {
+//        allTasksDataSections.count
+//    }
+//
+//    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+//        let title = allTasksDataSections[section]
+//        let date = DateFormatter.localizedString(from: title, dateStyle: .medium, timeStyle: .none)
+//        return date
+//    }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cellIdentifier")
         let data = allTasksData[indexPath.row]
         let color = UIColor.color(withData: data.allTaskColor!)
         cell.backgroundColor = .secondarySystemBackground
+//        setupCategories(model: data)
         
         let button = UIButton(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
         button.tintColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
@@ -155,14 +165,19 @@ extension AllTasksToDoViewController: UITableViewDelegate, UITableViewDataSource
         
         cell.accessoryView = button as UIView
         
-        if let date = data.allTaskDate, let time = data.allTaskTime {
-            let timeFF = Formatters.instance.timeStringFromDate(date: time)
-            let dateF = DateFormatter.localizedString(from: date, dateStyle: .medium, timeStyle: .none)
         
-            cell.textLabel?.textColor = .black
-            cell.textLabel?.text = data.allTaskNameEvent
-            cell.detailTextLabel?.text = dateF + "   " + timeFF
-            cell.imageView?.image = UIImage(systemName: "circle.fill")
+        
+        if let date = data.allTaskDate, let time = data.allTaskTime {
+//            if allTasksDataSections[indexPath.section] == date {
+                let timeFF = Formatters.instance.timeStringFromDate(date: time)
+                let dateF = DateFormatter.localizedString(from: date, dateStyle: .medium, timeStyle: .none)
+            
+                cell.textLabel?.textColor = .black
+                cell.textLabel?.text = data.allTaskNameEvent
+                cell.detailTextLabel?.text = dateF + "   " + timeFF
+                cell.imageView?.image = UIImage(systemName: "circle.fill")
+//            }
+            
         }
         if data.allTaskCompleted {
             button.setImage(UIImage(systemName: "circle.fill"), for: .normal)

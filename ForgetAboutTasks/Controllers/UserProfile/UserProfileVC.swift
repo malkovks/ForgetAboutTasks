@@ -12,9 +12,12 @@ import SnapKit
 class UserProfileViewController: UIViewController {
     
     private var imagePicker = UIImagePickerController()
+    private let scrollView = UIScrollView()
+    private let tableView = UITableView()
     
     private let userImageView: UIImageView = {
         let image = UIImageView(frame: .zero)
+        image.translatesAutoresizingMaskIntoConstraints = false
         image.backgroundColor = .secondarySystemBackground
         image.layer.cornerRadius = image.frame.size.width/2
         image.clipsToBounds = true
@@ -140,7 +143,19 @@ class UserProfileViewController: UIViewController {
         setupTargets()
         setTapGestureForLabel()
         loadingData()
+        setupScrollView()
+        setupTableView()
         view.backgroundColor = .secondarySystemBackground
+    }
+    
+    private func setupScrollView(){
+        scrollView.contentSize = CGSize(width: view.frame.size.width, height: view.frame.size.height)
+    }
+    
+    private func setupTableView(){
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "settingsIdentifier")
+        tableView.delegate = self
+        tableView.dataSource = self
     }
     
     private func loadingData(){
@@ -193,6 +208,18 @@ extension UserProfileViewController: UserAuthProtocol {
         self.userNameLabel.text = result.user.displayName ?? "Unavaliable name"
         self.userMailLabel.text = result.user.email ?? ""
     }
+}
+
+extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        10
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "settingsIdentifier", for: indexPath)
+        cell.textLabel?.text = "cell"
+        return cell
+    }
     
     
 }
@@ -217,7 +244,15 @@ extension UserProfileViewController: UIImagePickerControllerDelegate,UINavigatio
 
 extension UserProfileViewController  {
     private func configureConstraints(){
-        view.addSubview(userImageView)
+        
+        
+        view.addSubview(scrollView)
+        scrollView.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
+            make.leading.trailing.bottom.equalToSuperview()
+        }
+        
+        scrollView.addSubview(userImageView)
         userImageView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(20)
             make.height.width.equalTo(100)
@@ -225,7 +260,7 @@ extension UserProfileViewController  {
             
         }
         
-        view.addSubview(changeUserImageView)
+        scrollView.addSubview(changeUserImageView)
         changeUserImageView.snp.makeConstraints { make in
             make.top.equalTo(userImageView.snp.bottom).offset(5)
             make.height.equalTo(30)
@@ -233,29 +268,38 @@ extension UserProfileViewController  {
             make.leading.trailing.equalToSuperview().inset(100)
         }
         
-        view.addSubview(userNameLabel)
+        scrollView.addSubview(userNameLabel)
         userNameLabel.snp.makeConstraints { make in
             make.top.equalTo(changeUserImageView.snp.bottom).offset(15)
             make.centerX.equalToSuperview()
-            make.height.equalTo(50)
-            make.leading.trailing.equalToSuperview().inset(50)
+            make.height.equalTo(30)
+            make.leading.trailing.equalToSuperview().inset(20)
         }
         
-        view.addSubview(userMailLabel)
+        scrollView.addSubview(userMailLabel)
         userMailLabel.snp.makeConstraints { make in
             make.top.equalTo(userNameLabel.snp.bottom).offset(15)
             make.centerX.equalToSuperview()
-            make.leading.trailing.equalToSuperview().inset(50)
-            make.height.equalTo(40)
+            make.leading.trailing.equalToSuperview().inset(20)
+            make.height.equalTo(30)
         }
         
-        view.addSubview(settingsLabel)
+        scrollView.addSubview(settingsLabel)
         settingsLabel.snp.makeConstraints { make in
-            make.top.equalTo(userMailLabel.snp.bottom).offset(40)
+            make.top.equalTo(userMailLabel.snp.bottom).offset(15)
             make.centerX.equalToSuperview()
             make.leading.trailing.equalToSuperview().inset(50)
             make.height.equalTo(30)
         }
+        
+        scrollView.addSubview(tableView)
+        tableView.snp.makeConstraints { make in
+            make.top.equalTo(settingsLabel.snp.bottom).offset(10)
+            make.leading.trailing.equalToSuperview().inset(10)
+            
+        }
+        
+        
         // начать думать как хранить словарь в coredata (или в firebase)
     }
 }

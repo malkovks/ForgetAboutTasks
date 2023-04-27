@@ -27,7 +27,7 @@ class NewContactViewController: UIViewController {
     
     private let labelForImageView: UILabel = {
        let label = UILabel()
-        label.text = "Choose image:"
+        label.text = "Choose image"
         label.textColor = .systemGray
         label.font = .systemFont(ofSize: 16, weight: .semibold)
         return label
@@ -54,7 +54,6 @@ class NewContactViewController: UIViewController {
     @objc private func didTapOpenPhoto(){
         alertImagePicker { [weak self] sourceType in
             self?.chooseImagePicker(source: sourceType)
-//            self?.contactModel.contactImage =
         }
     }
     
@@ -85,8 +84,8 @@ class NewContactViewController: UIViewController {
     private func setupSelection(boolean: Bool){
         if !boolean {
             tableView.allowsSelection = false
-            labelForImageView.isHidden = true
-            viewForTable.isHidden = true
+            labelForImageView.isHidden = false
+            viewForTable.isHidden = false
             navigationItem.rightBarButtonItem?.isHidden = true
         } else {
             tableView.allowsSelection = true
@@ -105,12 +104,15 @@ class NewContactViewController: UIViewController {
     }
     
     private func customiseView(){
-        viewForTable.backgroundColor = .secondarySystemBackground
-        viewForTable.viewForImage.backgroundColor = .systemBackground
+        viewForTable.backgroundColor = .clear
+        viewForTable.viewForImage.backgroundColor = .clear
         
         let gesture = UITapGestureRecognizer(target: self, action: #selector(didTapOpenPhoto))
         gesture.numberOfTapsRequired = 1
-        viewForTable.addGestureRecognizer(gesture)
+        if isViewEdited {
+            viewForTable.addGestureRecognizer(gesture)
+        }
+        
         
     }
     //MARK: - Segue methods
@@ -135,6 +137,12 @@ extension NewContactViewController: UITableViewDelegate, UITableViewDataSource {
         cell.backgroundColor = .systemBackground
         if !isViewEdited {
 
+            if let image = contactModel.contactImage {
+                viewForTable.contactImageView.image = UIImage(data: image)
+                viewForTable.contactImageView.contentMode = .scaleAspectFit
+                viewForTable.contactImageView.clipsToBounds = true
+            }
+            
             switch indexPath {
             case [0,0]:
                 cell.textLabel?.text = contactModel.contactName
@@ -211,7 +219,9 @@ extension NewContactViewController: UIImagePickerControllerDelegate,UINavigation
         viewForTable.contactImageView.image = image
         viewForTable.contactImageView.contentMode = .scaleAspectFill
         viewForTable.contactImageView.clipsToBounds = true
-        guard let data = image?.pngData() else { print("Error converting"); return }
+        viewForTable.contactImageView.layer.cornerRadius = viewForTable.contactImageView.frame.size.width/2
+        let finalEditImage = viewForTable.contactImageView.image
+        guard let data = finalEditImage?.pngData() else { print("Error converting"); return }
         print("Data was saved successfully")
         contactModel.contactImage = data
         dismiss(animated: true)
@@ -222,23 +232,26 @@ extension NewContactViewController: UIImagePickerControllerDelegate,UINavigation
 
 extension NewContactViewController {
     private func setupConstraints(){
-        view.addSubview(tableView)
-        tableView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).inset(0)
-            make.leading.trailing.equalToSuperview().inset(10)
-            make.height.equalTo(view.frame.size.height/2)
-        }
+        
         view.addSubview(viewForTable)
         viewForTable.snp.makeConstraints { make in
-            make.top.equalTo(tableView.snp.bottom).offset(10)
-            make.leading.trailing.equalToSuperview().inset(10)
-            make.height.equalTo(180)
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10)
+            make.height.width.equalTo(180)
+            make.centerX.equalToSuperview()
         }
+        
         view.addSubview(labelForImageView)
         labelForImageView.snp.makeConstraints { make in
-            make.bottom.equalTo(viewForTable.snp.top).offset(-10)
+            make.top.equalTo(viewForTable.snp.bottom).offset(10)
             make.height.equalTo(25)
-            make.leading.equalToSuperview().offset(30)
+            make.centerX.equalToSuperview()
+        }
+        
+        view.addSubview(tableView)
+        tableView.snp.makeConstraints { make in
+            make.top.equalTo(labelForImageView.snp.bottom).offset(20)
+            make.leading.trailing.equalToSuperview().inset(10)
+            make.bottom.equalToSuperview().offset(10)
         }
         
     }
