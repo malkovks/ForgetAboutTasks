@@ -67,14 +67,14 @@ class NewContactViewController: UIViewController {
         setupConstraints()
         customiseView()
         setupSelection(boolean: isViewEdited)
-        view.backgroundColor = .secondarySystemBackground
+        view.backgroundColor = UIColor(named: "backgroundColor")
         title = "New Contact"
     }
     
     private func setupTableView(){
         tableView.isScrollEnabled = false
         tableView.bounces = false
-        tableView.backgroundColor = .secondarySystemBackground
+        tableView.backgroundColor = UIColor(named: "backgroundColor")
         tableView.delegate = self
         tableView.dataSource = self
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -98,7 +98,7 @@ class NewContactViewController: UIViewController {
     private func setupNavigationController(){
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(didTapSave))
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Contacts", style: .done, target: self, action: #selector(didTapDismiss))
-        navigationController?.navigationBar.tintColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
+        navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
         navigationController?.navigationItem.largeTitleDisplayMode = .never
         navigationController?.navigationBar.prefersLargeTitles = false
     }

@@ -31,7 +31,15 @@ class CreateTaskForDayController: UIViewController {
         calendar.headerHeight = 30
         calendar.pagingEnabled = true
         calendar.tintColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
-
+        calendar.appearance.titleFont = UIFont.systemFont(ofSize: 18)
+        
+        calendar.appearance.headerTitleFont = .systemFont(ofSize: 20)
+        calendar.appearance.borderDefaultColor = .clear
+        calendar.appearance.titleWeekendColor = #colorLiteral(red: 0.3826281726, green: 0.4247716069, blue: 0.4593068957, alpha: 0.916589598)
+        calendar.appearance.titleDefaultColor = UIColor(named: "textColor")
+        calendar.appearance.weekdayTextColor = UIColor(named: "calendarHeaderColor")
+        calendar.appearance.headerTitleColor = UIColor(named: "calendarHeaderColor")
+        calendar.tintColor = UIColor(named: "navigationControllerColor")
         calendar.locale = Locale(identifier: "en")
         calendar.translatesAutoresizingMaskIntoConstraints = false
         return calendar
@@ -39,8 +47,8 @@ class CreateTaskForDayController: UIViewController {
     
     private var segmentalController: UISegmentedControl = {
         let controller = UISegmentedControl(items: ["Time","Date","A-Z"])
-        controller.tintColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
-        controller.backgroundColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
+        controller.tintColor = UIColor(named: "navigationControllerColor")
+        controller.backgroundColor = UIColor(named: "navigationControllerColor")
         controller.selectedSegmentIndex = 0
         controller.translatesAutoresizingMaskIntoConstraints = false
         return controller
@@ -57,6 +65,8 @@ class CreateTaskForDayController: UIViewController {
         super.viewWillAppear(animated)
         tableView.reloadData()
         calendar.reloadData()
+        
+        
     }
 
     override func viewDidLoad() {
@@ -125,11 +135,10 @@ class CreateTaskForDayController: UIViewController {
     }
     
     private func setupView(){
-        view.backgroundColor = .systemBackground
-        
-        calendar.appearance.todayColor = UIColor.systemBlue
+        view.backgroundColor = UIColor(named: "backgroundColor")
         calendar.today =  choosenDate
         segmentalController.addTarget(self, action: #selector(didTapSegmentChanged(segment:)), for: .valueChanged)
+        calendar.reloadData()
     }
     
     private func setupTableViewAndDelegates(){
@@ -153,7 +162,7 @@ class CreateTaskForDayController: UIViewController {
         let firstBut = UIBarButtonItem(image: UIImage(systemName: "plus.circle.fill"), landscapeImagePhone: nil, style: .done, target: self, action: #selector(didTapCreate))
         let secondBut = UIBarButtonItem(title: "Edit", style: .done, target: self, action: #selector(didTapEditCell))
         navigationItem.rightBarButtonItems = [firstBut, secondBut]
-        navigationController?.navigationBar.tintColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
+        navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
     }
     
     //MARK: - logics methods
@@ -191,7 +200,9 @@ extension CreateTaskForDayController: UITableViewDelegate, UITableViewDataSource
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cell")
         cell.accessoryType = .disclosureIndicator
+        cell.backgroundColor = UIColor(named: "cellColor")
         let data = cellDataScheduleModel[indexPath.row]
+        
         let color = UIColor.color(withData: data.scheduleColor!) ?? #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
         
         if let date = data.scheduleDate, let time = data.scheduleTime {

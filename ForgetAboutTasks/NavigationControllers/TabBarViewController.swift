@@ -20,7 +20,7 @@ class TabBarViewController: UITabBarController {
         let scheduleVC = setupNavigationController(vc: ScheduleViewController(), itemName: "Schedule", image: "calendar.badge.clock")
         let allTasks = setupNavigationController(vc: AllTasksToDoViewController(), itemName: "All tasks", image: "list.clipboard.fill")
         let contactsVC = setupNavigationController(vc: ContactsViewController(), itemName: "Contacts", image: "rectangle.stack.person.crop")
-        let userVC = setupNavigationController(vc: UserProfileViewController(), itemName: "User Profile", image: "person.fill")
+        let userVC = setupNavWithoutNavBarEdgeAppearance(vc: UserProfileViewController(), itemName: "Settings", image: "gear")
         
         viewControllers = [scheduleVC, allTasks, contactsVC, userVC]
     }
@@ -34,7 +34,15 @@ class TabBarViewController: UITabBarController {
         navController.tabBarItem = item
         navController.navigationBar.scrollEdgeAppearance = navController.navigationBar.standardAppearance
         return navController
-        
+    }
+    
+    private func setupNavWithoutNavBarEdgeAppearance(vc: UIViewController,itemName: String,image: String) -> UINavigationController {
+        let imageConfig = UIImage(systemName: image)?.withAlignmentRectInsets(.init(top: 10, left: 0, bottom: 0, right: 0))
+        let item = UITabBarItem(title: itemName, image: imageConfig , tag: 0)
+        item.titlePositionAdjustment = .init(horizontal: 0, vertical: 10)//указание расположение тайтла
+        let navController = UINavigationController(rootViewController: vc)
+        navController.tabBarItem = item
+        return navController
     }
 
 

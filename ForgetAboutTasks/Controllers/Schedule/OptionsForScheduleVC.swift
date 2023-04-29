@@ -68,7 +68,7 @@ class OptionsForScheduleViewController: UIViewController {
         setupColorPicker()
         setupConstraints()
         basedValueForModel()
-        view.backgroundColor = .secondarySystemBackground
+        view.backgroundColor = UIColor(named: "backgroundColor")
         title = "Options"
         
     }
@@ -79,7 +79,7 @@ class OptionsForScheduleViewController: UIViewController {
     
     private func setupTableView(){
         view.addSubview(tableView)
-        tableView.backgroundColor = .secondarySystemBackground
+        tableView.backgroundColor = UIColor(named: "backgroundColor")
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
@@ -148,7 +148,7 @@ extension OptionsForScheduleViewController: UITableViewDelegate, UITableViewData
         
         cell.layer.cornerRadius = 10
         cell.contentView.layer.cornerRadius = 10
-        cell.backgroundColor = .systemBackground
+        cell.backgroundColor = UIColor(named: "backgroundColor")
         
         let switchButton = UISwitch(frame: .zero)
         switchButton.isOn = false

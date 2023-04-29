@@ -60,11 +60,11 @@ class ContactsViewController: UIViewController {
         setupConstraints()
         setupSearchController()
         loadingRealmData()
-        view.backgroundColor = .secondarySystemBackground
+        view.backgroundColor = UIColor(named: "backgroundColor")
     }
     
     private func setupTableView(){
-        tableView.backgroundColor = .secondarySystemBackground
+        tableView.backgroundColor = UIColor(named: "backgroundColor")
         tableView.delegate = self
         tableView.dataSource = self
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -79,9 +79,10 @@ class ContactsViewController: UIViewController {
     
     private func setupNavigationController(){
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(didTapCreateNewContact))
-        navigationController?.navigationBar.tintColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
+        navigationController?.navigationBar.tintColor = UIColor(named: "navigationController")
         navigationController?.navigationItem.largeTitleDisplayMode = .always
         navigationController?.navigationBar.prefersLargeTitles = true
+        navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
         title = "Contacts"
     }
     //MARK: -Loading methods
@@ -128,13 +129,14 @@ extension ContactsViewController: UITableViewDelegate, UITableViewDataSource {
         let data = (viewIsFiltered ? filteredContactData[indexPath.row] : contactData[indexPath.row])
         cell.layer.cornerRadius = 10
         cell.contentView.layer.cornerRadius = 10
-        cell.backgroundColor = .systemBackground
+        cell.backgroundColor = UIColor(named: "backgroundColor")
         cell.textLabel?.font = .systemFont(ofSize: 20,weight: .semibold)
         cell.accessoryType = .disclosureIndicator
 
         cell.imageView?.clipsToBounds = true
         cell.imageView?.frame = .zero
         cell.imageView?.contentMode = .scaleToFill
+        cell.imageView?.tintColor = UIColor(named: "navigationControllerColor")
         
         cell.textLabel?.text = data.contactName
         cell.detailTextLabel?.text = "Phone number: " + data.contactPhoneNumber
@@ -142,7 +144,7 @@ extension ContactsViewController: UITableViewDelegate, UITableViewDataSource {
             let image = UIImage(data: dataImage)
             cell.imageView?.layer.cornerRadius = (cell.imageView?.frame.size.width)!/2
             cell.imageView?.sizeThatFits(CGSize(width: 20, height: 20))
-            cell.imageView?.image = UIImage(data: dataImage)
+            cell.imageView?.image = image
         } else {
             cell.imageView?.image = UIImage(systemName: "person.crop.circle.fill")
             cell.imageView?.frame(forAlignmentRect: CGRect(x: 0, y: 0, width: 50, height: 50))

@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		00B260B35014A5CB26FCFA2A /* Pods_ForgetAboutTasksTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A2355D59545111B95037C74C /* Pods_ForgetAboutTasksTests.framework */; };
 		0A0CE6F729C461F600A14648 /* OptionsForScheduleVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A0CE6F629C461F600A14648 /* OptionsForScheduleVC.swift */; };
+		0A525DAF29FC3C3B009D116F /* AlertNewName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A525DAE29FC3C3B009D116F /* AlertNewName.swift */; };
+		0A525DB129FCA701009D116F /* SetupForDarkMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A525DB029FCA701009D116F /* SetupForDarkMode.swift */; };
 		0A7FFFB829EFD9E100CAC9DA /* ContactModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7FFFB729EFD9E100CAC9DA /* ContactModel.swift */; };
 		0A7FFFBA29EFDC0B00CAC9DA /* ContactRealmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7FFFB929EFDC0B00CAC9DA /* ContactRealmManager.swift */; };
 		0A7FFFBD29F1326A00CAC9DA /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7FFFBC29F1326A00CAC9DA /* StringExtension.swift */; };
@@ -88,6 +90,8 @@
 		081E2F7D28B71EC3AA3980C1 /* Pods_ForgetAboutTasks_ForgetAboutTasksUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ForgetAboutTasks_ForgetAboutTasksUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		08A4F059D6FFDCFE4C1DE90E /* Pods-ForgetAboutTasksTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ForgetAboutTasksTests.release.xcconfig"; path = "Target Support Files/Pods-ForgetAboutTasksTests/Pods-ForgetAboutTasksTests.release.xcconfig"; sourceTree = "<group>"; };
 		0A0CE6F629C461F600A14648 /* OptionsForScheduleVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionsForScheduleVC.swift; sourceTree = "<group>"; };
+		0A525DAE29FC3C3B009D116F /* AlertNewName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertNewName.swift; sourceTree = "<group>"; };
+		0A525DB029FCA701009D116F /* SetupForDarkMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupForDarkMode.swift; sourceTree = "<group>"; };
 		0A7FFFB729EFD9E100CAC9DA /* ContactModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactModel.swift; sourceTree = "<group>"; };
 		0A7FFFB929EFDC0B00CAC9DA /* ContactRealmManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactRealmManager.swift; sourceTree = "<group>"; };
 		0A7FFFBC29F1326A00CAC9DA /* StringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
@@ -301,6 +305,7 @@
 			isa = PBXGroup;
 			children = (
 				0A8AC19E29B9D00A00EA052B /* TabBarViewController.swift */,
+				0A525DB029FCA701009D116F /* SetupForDarkMode.swift */,
 			);
 			path = NavigationControllers;
 			sourceTree = "<group>";
@@ -472,6 +477,7 @@
 				0AA604DB29E03CB1007ACE58 /* AlertContacts.swift */,
 				0AA604DE29E04541007ACE58 /* AlertImagePicker.swift */,
 				0AB763B929E3FAC900BFDB0D /* AlertError.swift */,
+				0A525DAE29FC3C3B009D116F /* AlertNewName.swift */,
 			);
 			path = AlertControllers;
 			sourceTree = "<group>";
@@ -782,9 +788,11 @@
 				0A9E1C3F29D078BD000CC9A9 /* LogInView.swift in Sources */,
 				0ACE797829DECF3300599C19 /* NewContactVC.swift in Sources */,
 				0AA8EC6B29CAF469004DC6DD /* SetTimeViewController.swift in Sources */,
+				0A525DAF29FC3C3B009D116F /* AlertNewName.swift in Sources */,
 				0AA604EC29E16DC1007ACE58 /* PressButtonProtocols.swift in Sources */,
 				0ACE797A29DED2D400599C19 /* NewContactCustomView.swift in Sources */,
 				0AA8EC5D29C76968004DC6DD /* AlertDate.swift in Sources */,
+				0A525DB129FCA701009D116F /* SetupForDarkMode.swift in Sources */,
 				0AA8EC6629CAE9B0004DC6DD /* SetDateView.swift in Sources */,
 				0A8AC19F29B9D00A00EA052B /* TabBarViewController.swift in Sources */,
 				0A8DD8DB29BC8BEB00B2DDAB /* Formatters.swift in Sources */,

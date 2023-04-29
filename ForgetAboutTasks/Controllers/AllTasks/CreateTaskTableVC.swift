@@ -62,7 +62,7 @@ class CreateTaskTableViewController: UIViewController {
         setupDelegate()
         setupColorPicker()
         setupConstraints()
-        view.backgroundColor = .secondarySystemBackground
+        view.backgroundColor = UIColor(named: "backgroundColor")
         title = "New task"
     }
     
@@ -72,7 +72,7 @@ class CreateTaskTableViewController: UIViewController {
     
     private func setupTableView(){
         view.addSubview(tableView)
-        tableView.backgroundColor = .secondarySystemBackground
+        tableView.backgroundColor = UIColor(named: "backgroundColor")
         tableView.delegate = self
         tableView.dataSource = self
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -80,11 +80,11 @@ class CreateTaskTableViewController: UIViewController {
     }
     
     private func setupColorPicker(){
-        picker.selectedColor = self.view.backgroundColor ?? #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
+        picker.selectedColor = UIColor(named: "navigationControllerColor") ?? #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
     }
     
     private func setupNavigationController(){
-        navigationController?.navigationBar.tintColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
+        navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(didTapDismiss))
         if isCellSelectedFromTable == true {
             tableView.allowsSelection = false
@@ -119,7 +119,7 @@ extension CreateTaskTableViewController: UITableViewDelegate, UITableViewDataSou
         let cell = tableView.dequeueReusableCell(withIdentifier: "tasksCell", for: indexPath)
         cell.layer.cornerRadius = 10
         cell.contentView.layer.cornerRadius = 10
-        cell.backgroundColor = .systemBackground
+        cell.backgroundColor = UIColor(named: "cellColor")
         if isCellSelectedFromTable == false {
             let data = cellsName[indexPath.section][indexPath.row]
             cell.textLabel?.text = data

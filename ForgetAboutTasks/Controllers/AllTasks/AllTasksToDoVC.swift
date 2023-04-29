@@ -20,10 +20,10 @@ class AllTasksToDoViewController: UIViewController {
     private let tableView = UITableView()
     
     private var segmentalController: UISegmentedControl = {
-        let controller = UISegmentedControl(items: ["Date","Time","A-Z"])
+        let controller = UISegmentedControl(items: ["Date","A-Z"])
         controller.titleTextAttributes(for: .highlighted)
-        controller.tintColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
-        controller.backgroundColor = .secondarySystemBackground
+        controller.tintColor = UIColor(named: "navigationControllerColor")
+        controller.backgroundColor = UIColor(named: "navigationControllerColor")
         controller.selectedSegmentIndex = 0
         controller.translatesAutoresizingMaskIntoConstraints = false
         return controller
@@ -31,7 +31,7 @@ class AllTasksToDoViewController: UIViewController {
     
     private let refreshController: UIRefreshControl = {
        let controller = UIRefreshControl()
-        controller.tintColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+        controller.tintColor = UIColor(named: "navigationControllerColor")
         controller.attributedTitle = NSAttributedString(string: "Pull to refresh")
         return controller
     }()
@@ -70,8 +70,6 @@ class AllTasksToDoViewController: UIViewController {
         if segment.selectedSegmentIndex == 0 {
             loadingRealmData(typeOf: "allTaskDate")
         } else if segment.selectedSegmentIndex == 1 {
-            loadingRealmData(typeOf: "allTaskTime")
-        } else if segment.selectedSegmentIndex == 2 {
             loadingRealmData(typeOf: "allTaskNameEvent")
         }
     }
@@ -93,14 +91,14 @@ class AllTasksToDoViewController: UIViewController {
         setupNavigationController()
         setupTargetsAndDelegates()
         loadingRealmData()
-        view.backgroundColor = .secondarySystemBackground
+        view.backgroundColor = UIColor(named: "backgroundColor")
     }
     
     private func setupNavigationController(){
         title = "All tasks"
         navigationController?.navigationItem.largeTitleDisplayMode = .always
         navigationController?.navigationBar.prefersLargeTitles = true
-        navigationController?.navigationBar.tintColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
+        navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "folder.fill.badge.plus"), landscapeImagePhone: nil, style: .done, target: self, action: #selector(didTapCreateNewTask))
     }
     
@@ -113,21 +111,19 @@ class AllTasksToDoViewController: UIViewController {
         tableView.refreshControl = refreshController
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.backgroundColor = .secondarySystemBackground
+        tableView.backgroundColor = UIColor(named: "backgroundColor")
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cellIdentifier")
     }
     //MARK: - Logic methods
     private func loadingRealmData(typeOf sort: String = "allTaskDate") {
         let secValue = localRealmData.objects(AllTaskModel.self).sorted(byKeyPath: sort)
         allTasksData = secValue
-//        allTasksDataSections = secValue
         self.tableView.reloadData()
     }
     
     private func setupCategories(model: AllTaskModel) {
         allTasksDataSections.append(model.allTaskDate ?? Date())
         self.tableView.reloadData()
-//        taskDate.insert(model.allTaskDate)
     }
     
    
@@ -140,25 +136,15 @@ extension AllTasksToDoViewController: UITableViewDelegate, UITableViewDataSource
         return allTasksData.count
     }
     
-//    func numberOfSections(in tableView: UITableView) -> Int {
-//        allTasksDataSections.count
-//    }
-//
-//    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-//        let title = allTasksDataSections[section]
-//        let date = DateFormatter.localizedString(from: title, dateStyle: .medium, timeStyle: .none)
-//        return date
-//    }
-    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cellIdentifier")
         let data = allTasksData[indexPath.row]
         let color = UIColor.color(withData: data.allTaskColor!)
-        cell.backgroundColor = .secondarySystemBackground
+        cell.backgroundColor = UIColor(named: "backgroundColor")
 //        setupCategories(model: data)
         
         let button = UIButton(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
-        button.tintColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
+        button.tintColor = UIColor(named: "navigationControllerColor")
         button.addTarget(self, action: #selector(didTapChangeCell), for: .touchUpInside)
         button.sizeToFit()
         button.tag = indexPath.row
@@ -171,8 +157,7 @@ extension AllTasksToDoViewController: UITableViewDelegate, UITableViewDataSource
 //            if allTasksDataSections[indexPath.section] == date {
                 let timeFF = Formatters.instance.timeStringFromDate(date: time)
                 let dateF = DateFormatter.localizedString(from: date, dateStyle: .medium, timeStyle: .none)
-            
-                cell.textLabel?.textColor = .black
+    
                 cell.textLabel?.text = data.allTaskNameEvent
                 cell.detailTextLabel?.text = dateF + "   " + timeFF
                 cell.imageView?.image = UIImage(systemName: "circle.fill")
@@ -186,8 +171,8 @@ extension AllTasksToDoViewController: UITableViewDelegate, UITableViewDataSource
             cell.imageView?.tintColor = .lightGray
         } else {
             button.setImage(UIImage(systemName: "circle"), for: .normal)
-            cell.textLabel?.textColor = .black
-            cell.detailTextLabel?.textColor = .black
+            cell.textLabel?.textColor = UIColor(named: "textColor")
+            cell.detailTextLabel?.textColor = UIColor(named: "textColor")
             cell.imageView?.tintColor = color
         }
         return cell

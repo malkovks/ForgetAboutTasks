@@ -26,7 +26,7 @@ class CheckAuth: UIViewController {
         UserDefaults.standard.set(true, forKey: "isAuthorised")
     }
     
-    func loadData() -> (String,String,UIImage) {
+    func loadData() -> (String,String,String,UIImage) {
         var image = UIImage()
         if let data = UserDefaults.standard.data(forKey: "userImage") {
             let decode = try! PropertyListDecoder().decode(Data.self, from: data)
@@ -34,12 +34,13 @@ class CheckAuth: UIViewController {
         }
         let name = UserDefaults.standard.string(forKey: "userName") ?? "Error loading name"
         let mail = UserDefaults.standard.string(forKey: "userMail") ?? "Error loading email"
-        return (name,mail,image)
+        let age = UserDefaults.standard.string(forKey: "userAge") ?? "Not indicated"
+        return (name,mail,age,image)
     }
     
     func saveData(result: AuthDataResult) {
         guard let imageURL = result.user.photoURL else { print("Error");return}
-        downloadImage(url: imageURL) { [weak self] data in
+        downloadImage(url: imageURL) { data in
             UserDefaults.standard.set(data, forKey: "userImage")
         }
         UserDefaults.standard.setValue(result.user.displayName, forKey: "userName")

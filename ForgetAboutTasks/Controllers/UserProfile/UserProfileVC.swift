@@ -9,11 +9,32 @@ import UIKit
 import FirebaseAuth
 import SnapKit
 
+struct UserProfileData {
+    var cellName: String
+    var cellImage: UIImage
+}
+
 class UserProfileViewController: UIViewController {
+    
+//    var cellArray = [["Dark Mode","Background Color","Access to Notifications"],["Language","In future test variations","Information"]]
+    
+    var cellArray = [[UserProfileData(cellName: "Dark Mode", cellImage: UIImage(systemName: "moon.fill")!),
+                     UserProfileData(cellName: "Background Color", cellImage: UIImage(systemName: "circle.fill")!),
+                     UserProfileData(cellName: "Access to Notifications", cellImage: UIImage(systemName: "headphones.circle.fill")!)],[
+                        UserProfileData(cellName: "Language", cellImage: UIImage(systemName: "keyboard.fill")!),
+                     UserProfileData(cellName: "Futures", cellImage: UIImage(systemName: "clock.fill")!),
+                     UserProfileData(cellName: "Information", cellImage: UIImage(systemName: "info.circle.fill")!)]]
     
     private var imagePicker = UIImagePickerController()
     private let scrollView = UIScrollView()
     private let tableView = UITableView()
+    
+    private let profileView: UIView = {
+       let view = UIView()
+        view.backgroundColor = #colorLiteral(red: 0.3920767307, green: 0.5687371492, blue: 0.998278439, alpha: 1)
+        view.layer.cornerRadius = 8
+        return view
+    }()
     
     private let userImageView: UIImageView = {
         let image = UIImageView(frame: .zero)
@@ -36,39 +57,38 @@ class UserProfileViewController: UIViewController {
     }()
     
     private let userNameLabel: UILabel = {
-       let label = UILabel()
+        let label = UILabel()
         label.text = "Press to set name of user"
         label.numberOfLines = 2
         label.textAlignment = .center
-        label.font = .systemFont(ofSize: 20, weight: .semibold)
-        label.backgroundColor = .secondarySystemBackground
+        label.font = .systemFont(ofSize: 24, weight: .medium)
+        label.backgroundColor = .clear
         label.layer.cornerRadius = 12
         return label
     }()
     
-    
-    
-    private let userMailLabel: UILabel = {
-       let label = UILabel()
+    private let mailLabel: UILabel = {
+        let label = UILabel()
+        label.text = "User email"
+        label.numberOfLines = 2
         label.textAlignment = .center
-        label.numberOfLines = 1
-        label.font = .systemFont(ofSize: 20, weight: .thin)
-        label.text = "User's email address"
-        label.backgroundColor = .secondarySystemBackground
+        label.font = .systemFont(ofSize: 16, weight: .light)
+        label.backgroundColor = .clear
         label.layer.cornerRadius = 12
         return label
     }()
     
-    private let settingsLabel: UILabel = {
-       let label = UILabel()
-        label.text = "Settings"
-        label.font = .systemFont(ofSize: 24, weight: .bold)
+    private let ageLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Press to set user's age"
+        label.numberOfLines = 2
         label.textAlignment = .center
-        label.backgroundColor = .secondarySystemBackground
-        label.numberOfLines = 1
+        label.font = .systemFont(ofSize: 16, weight: .light)
+        label.backgroundColor = .clear
+        label.layer.cornerRadius = 12
         return label
     }()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
@@ -77,6 +97,7 @@ class UserProfileViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         userImageView.layer.cornerRadius = 0.5 * userImageView.bounds.size.width
+        scrollView.frame = view.bounds
     }
     
     @objc private func didTapLogout(){
@@ -124,13 +145,32 @@ class UserProfileViewController: UIViewController {
         }))
         alert.addAction(UIAlertAction(title: "Delete image", style: .destructive,handler: { _ in
             self.userImageView.image = UIImage(systemName: "photo.circle")
+            self.userImageView.sizeToFit()
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         present(alert, animated: true)
     }
     
     @objc private func didTapTapOnLabel(sender: UITapGestureRecognizer){
-        print("Label selected")
+        alertNewName(title: "Enter new name and second name", placeholder: "Enter the text") { [weak self] text in
+            self?.userNameLabel.text = text
+            UserDefaults.standard.set(text, forKey: "userName")
+        }
+    }
+    
+    @objc private func didTapOnAge(sender: UITapGestureRecognizer){
+        alertNewName(title: "Enter your age", placeholder: "Enter age number") { [weak self] text in
+            self?.ageLabel.text = text
+            UserDefaults.standard.set(text, forKey: "userAge")
+        }
+    }
+    
+    @objc private func didTapSwitch(sender: UISwitch){
+        if sender.isOn {
+            print("is on")
+        } else {
+            print("is off")
+        }
     }
     
     
@@ -142,6 +182,7 @@ class UserProfileViewController: UIViewController {
         setupTapGestureForImage()
         setupTargets()
         setTapGestureForLabel()
+        setTapGestureForAgeLabel()
         loadingData()
         setupScrollView()
         setupTableView()
@@ -156,21 +197,23 @@ class UserProfileViewController: UIViewController {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "settingsIdentifier")
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.layer.cornerRadius = 8
     }
     
     private func loadingData(){
-        let (name,mail,image) = CheckAuth.shared.loadData()
+        let (name,mail,age,image) = CheckAuth.shared.loadData()
         userImageView.image = image
+        mailLabel.text = mail
+        ageLabel.text = "User's age: \(age)"
         userNameLabel.text = name
-        userMailLabel.text = mail
     }
     
     private func setupNavigationController(){
         title = "My Profile"
-        navigationController?.navigationBar.tintColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
+        navigationController?.navigationBar.tintColor = #colorLiteral(red: 0.9751130939, green: 0.9366052747, blue: 0.9639498591, alpha: 1)
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "arrow.uturn.right.square"), style: .done, target: self, action: #selector(didTapLogout))
     }
-
+    
     private func setupDelegates(){
         let vc = UserAuthViewController()
         vc.delegate = self
@@ -186,15 +229,19 @@ class UserProfileViewController: UIViewController {
     
     private func setTapGestureForLabel(){
         let tap = UITapGestureRecognizer(target: self, action: #selector(didTapTapOnLabel))
-        userMailLabel.isUserInteractionEnabled = true
-        userMailLabel.addGestureRecognizer(tap)
+        userNameLabel.isUserInteractionEnabled = true
+        userNameLabel.addGestureRecognizer(tap)
+    }
+    
+    private func setTapGestureForAgeLabel(){
+        let tap = UITapGestureRecognizer(target: self, action: #selector(didTapOnAge))
+        ageLabel.isUserInteractionEnabled = true
+        ageLabel.addGestureRecognizer(tap)
     }
     
     private func setupTargets(){
         changeUserImageView.addTarget(self, action: #selector(didTapImagePicker), for: .touchUpInside)
     }
-    
-
 }
 
 extension UserProfileViewController: UserAuthProtocol {
@@ -206,18 +253,50 @@ extension UserProfileViewController: UserAuthProtocol {
             self?.userImageView.image = image
         }
         self.userNameLabel.text = result.user.displayName ?? "Unavaliable name"
-        self.userMailLabel.text = result.user.email ?? ""
+        self.mailLabel.text = result.user.email ?? ""
     }
 }
 
 extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource {
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        10
+        switch section {
+        case 0: return 3
+        case 1: return 3
+        default: return 0
+        }
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 2
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        switch section {
+        case 0: return "Main setups"
+        case 1: return "Secondary setups"
+        default: return "Error"
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "settingsIdentifier", for: indexPath)
-        cell.textLabel?.text = "cell"
+        let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "settingsIdentifier")
+        let data = cellArray[indexPath.section][indexPath.row]
+        let switchButton = UISwitch()
+        switchButton.isOn = false
+        switchButton.onTintColor = #colorLiteral(red: 0.3920767307, green: 0.5687371492, blue: 0.998278439, alpha: 1)
+        switchButton.isHidden = true
+        switchButton.addTarget(self, action: #selector(self.didTapSwitch(sender: )), for: .touchUpInside)
+        cell.accessoryView = switchButton
+        if indexPath.section == 0 {
+            switchButton.isHidden = false
+        } else {
+            cell.accessoryType = .detailDisclosureButton
+        }
+        
+        cell.layer.cornerRadius = 10
+        cell.textLabel?.text = data.cellName
+        cell.imageView?.image = data.cellImage
         return cell
     }
     
@@ -245,61 +324,47 @@ extension UserProfileViewController: UIImagePickerControllerDelegate,UINavigatio
 extension UserProfileViewController  {
     private func configureConstraints(){
         
+        let imageStackView = UIStackView(arrangedSubviews: [userImageView,changeUserImageView])
+        imageStackView.spacing = 10
+        imageStackView.alignment = .center
+        imageStackView.contentMode = .center
+        imageStackView.axis = .vertical
+
+        let infoStack = UIStackView(arrangedSubviews: [userNameLabel,mailLabel,ageLabel])
+        infoStack.alignment = .leading
+        infoStack.contentMode = .scaleAspectFit
+        infoStack.axis = .vertical
+        infoStack.spacing = 20
         
-        view.addSubview(scrollView)
-        scrollView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
-            make.leading.trailing.bottom.equalToSuperview()
+        view.addSubview(profileView)
+        profileView.snp.makeConstraints { make in
+            make.top.leading.trailing.equalToSuperview()
+            make.height.equalTo(300)
         }
         
-        scrollView.addSubview(userImageView)
-        userImageView.snp.makeConstraints { make in
+        profileView.addSubview(imageStackView)
+        imageStackView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(20)
-            make.height.width.equalTo(100)
-            make.centerX.equalToSuperview()
-            
+            make.leading.equalTo(10)
+            make.width.equalTo(110)
+            make.height.equalTo(150)
         }
         
-        scrollView.addSubview(changeUserImageView)
-        changeUserImageView.snp.makeConstraints { make in
-            make.top.equalTo(userImageView.snp.bottom).offset(5)
-            make.height.equalTo(30)
-            make.centerX.equalToSuperview()
-            make.leading.trailing.equalToSuperview().inset(100)
+        profileView.addSubview(infoStack)
+        infoStack.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(20)
+            make.trailing.equalToSuperview().inset(-10)
+            make.leading.equalTo(imageStackView.snp.trailing).offset(30)
+            make.height.equalTo(110)
         }
         
-        scrollView.addSubview(userNameLabel)
-        userNameLabel.snp.makeConstraints { make in
-            make.top.equalTo(changeUserImageView.snp.bottom).offset(15)
-            make.centerX.equalToSuperview()
-            make.height.equalTo(30)
-            make.leading.trailing.equalToSuperview().inset(20)
-        }
-        
-        scrollView.addSubview(userMailLabel)
-        userMailLabel.snp.makeConstraints { make in
-            make.top.equalTo(userNameLabel.snp.bottom).offset(15)
-            make.centerX.equalToSuperview()
-            make.leading.trailing.equalToSuperview().inset(20)
-            make.height.equalTo(30)
-        }
-        
-        scrollView.addSubview(settingsLabel)
-        settingsLabel.snp.makeConstraints { make in
-            make.top.equalTo(userMailLabel.snp.bottom).offset(15)
-            make.centerX.equalToSuperview()
-            make.leading.trailing.equalToSuperview().inset(50)
-            make.height.equalTo(30)
-        }
-        
-        scrollView.addSubview(tableView)
+        view.addSubview(tableView)
         tableView.snp.makeConstraints { make in
-            make.top.equalTo(settingsLabel.snp.bottom).offset(10)
-            make.leading.trailing.equalToSuperview().inset(10)
-            
+            make.top.equalTo(profileView.snp.bottom).offset(10)
+            make.left.right.equalToSuperview().inset(10)
+            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-10)
         }
+
         
-        
-        // начать думать как хранить словарь в coredata (или в firebase)
     }
 }

@@ -23,12 +23,21 @@ class ScheduleViewController: UIViewController {
     private var calendar: FSCalendar = {
        let calendar = FSCalendar()
         calendar.scrollDirection = .vertical
+        calendar.backgroundColor = UIColor(named: "backgroundColor")
+        calendar.tintColor = UIColor(named: "navigationControllerColor")
         calendar.locale = Locale(identifier: "en")
         calendar.pagingEnabled = false
         calendar.weekdayHeight = 30
         calendar.headerHeight = 50
         calendar.firstWeekday = 2
-        calendar.tintColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
+        calendar.appearance.titleFont = UIFont.systemFont(ofSize: 18)
+        calendar.appearance.headerTitleFont = .systemFont(ofSize: 20)
+        calendar.appearance.borderDefaultColor = .clear
+        calendar.appearance.titleWeekendColor = #colorLiteral(red: 0.3826281726, green: 0.4247716069, blue: 0.4593068957, alpha: 0.916589598)
+        calendar.appearance.titleDefaultColor = UIColor(named: "textColor")
+        calendar.appearance.weekdayTextColor = UIColor(named: "calendarHeaderColor")
+        calendar.appearance.headerTitleColor = UIColor(named: "calendarHeaderColor")
+        calendar.tintColor = UIColor(named: "navigationControllerColor")
         calendar.translatesAutoresizingMaskIntoConstraints = false
         return calendar
     }()
@@ -39,6 +48,7 @@ class ScheduleViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupAuthentification()
+        //добавить поиск по дате при помощи скролла
     }
     
    //MARK: - target methods
@@ -77,7 +87,7 @@ class ScheduleViewController: UIViewController {
         setupConstraints()
         loadingRealmData()
         loadingDataByDate(date: Date(), at: .current, is: true)
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = UIColor(named: "backgroundColor")
     }
     
     private func setupNavigationController(){
@@ -134,8 +144,6 @@ extension ScheduleViewController: FSCalendarDelegate, FSCalendarDataSource {
     
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
         loadingDataByDate(date: date, at: monthPosition, is: false)
-        print(calendar.selectedDate)
-         
     }
     
     func calendar(_ calendar: FSCalendar, numberOfEventsFor date: Date) -> Int {
