@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		00B260B35014A5CB26FCFA2A /* Pods_ForgetAboutTasksTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A2355D59545111B95037C74C /* Pods_ForgetAboutTasksTests.framework */; };
 		0A0CE6F729C461F600A14648 /* OptionsForScheduleVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A0CE6F629C461F600A14648 /* OptionsForScheduleVC.swift */; };
+		0A2717B829FE518000EFBC11 /* OpenTaskDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2717B729FE518000EFBC11 /* OpenTaskDetailVC.swift */; };
+		0A2717BA2A01F7FE00EFBC11 /* AllTasksDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2717B92A01F7FE00EFBC11 /* AllTasksDetailVC.swift */; };
 		0A525DAF29FC3C3B009D116F /* AlertNewName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A525DAE29FC3C3B009D116F /* AlertNewName.swift */; };
 		0A525DB129FCA701009D116F /* SetupForDarkMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A525DB029FCA701009D116F /* SetupForDarkMode.swift */; };
 		0A7FFFB829EFD9E100CAC9DA /* ContactModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7FFFB729EFD9E100CAC9DA /* ContactModel.swift */; };
@@ -90,6 +92,8 @@
 		081E2F7D28B71EC3AA3980C1 /* Pods_ForgetAboutTasks_ForgetAboutTasksUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ForgetAboutTasks_ForgetAboutTasksUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		08A4F059D6FFDCFE4C1DE90E /* Pods-ForgetAboutTasksTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ForgetAboutTasksTests.release.xcconfig"; path = "Target Support Files/Pods-ForgetAboutTasksTests/Pods-ForgetAboutTasksTests.release.xcconfig"; sourceTree = "<group>"; };
 		0A0CE6F629C461F600A14648 /* OptionsForScheduleVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionsForScheduleVC.swift; sourceTree = "<group>"; };
+		0A2717B729FE518000EFBC11 /* OpenTaskDetailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenTaskDetailVC.swift; sourceTree = "<group>"; };
+		0A2717B92A01F7FE00EFBC11 /* AllTasksDetailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllTasksDetailVC.swift; sourceTree = "<group>"; };
 		0A525DAE29FC3C3B009D116F /* AlertNewName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertNewName.swift; sourceTree = "<group>"; };
 		0A525DB029FCA701009D116F /* SetupForDarkMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupForDarkMode.swift; sourceTree = "<group>"; };
 		0A7FFFB729EFD9E100CAC9DA /* ContactModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactModel.swift; sourceTree = "<group>"; };
@@ -335,6 +339,7 @@
 			children = (
 				0A8AC1A029B9D46D00EA052B /* ScheduleVC.swift */,
 				0A8AC1A329B9D4EB00EA052B /* CreateTaskForDayVC.swift */,
+				0A2717B729FE518000EFBC11 /* OpenTaskDetailVC.swift */,
 				0A0CE6F629C461F600A14648 /* OptionsForScheduleVC.swift */,
 				0ACE797629DDA0CC00599C19 /* Model */,
 			);
@@ -345,6 +350,7 @@
 			isa = PBXGroup;
 			children = (
 				0A99A8FE29CD8FE000CC5A42 /* AllTasksToDoVC.swift */,
+				0A2717B92A01F7FE00EFBC11 /* AllTasksDetailVC.swift */,
 				0ACE797129DD95C600599C19 /* CreateTaskTableVC.swift */,
 			);
 			path = AllTasks;
@@ -354,7 +360,8 @@
 			isa = PBXGroup;
 			children = (
 				0A8AC1A529B9D4FA00EA052B /* ContactsVC.swift */,
-				0AA604DD29E04042007ACE58 /* NewContact */,
+				0ACE797729DECF3300599C19 /* NewContactVC.swift */,
+				0AA604DD29E04042007ACE58 /* NewContactView */,
 			);
 			path = Contacts;
 			sourceTree = "<group>";
@@ -403,13 +410,12 @@
 			path = LogInView;
 			sourceTree = "<group>";
 		};
-		0AA604DD29E04042007ACE58 /* NewContact */ = {
+		0AA604DD29E04042007ACE58 /* NewContactView */ = {
 			isa = PBXGroup;
 			children = (
-				0ACE797729DECF3300599C19 /* NewContactVC.swift */,
 				0ACE797929DED2D400599C19 /* NewContactCustomView.swift */,
 			);
-			path = NewContact;
+			path = NewContactView;
 			sourceTree = "<group>";
 		};
 		0AA604E029E1460E007ACE58 /* Model */ = {
@@ -796,6 +802,7 @@
 				0AA8EC6629CAE9B0004DC6DD /* SetDateView.swift in Sources */,
 				0A8AC19F29B9D00A00EA052B /* TabBarViewController.swift in Sources */,
 				0A8DD8DB29BC8BEB00B2DDAB /* Formatters.swift in Sources */,
+				0A2717B829FE518000EFBC11 /* OpenTaskDetailVC.swift in Sources */,
 				0AA8EC6F29CAF4D2004DC6DD /* SetTimeProtocol.swift in Sources */,
 				0A99A90B29CD9CB300CC5A42 /* CheckAuth.swift in Sources */,
 				0A8AC1A829B9DBD300EA052B /* UserProfileVC.swift in Sources */,
@@ -821,6 +828,7 @@
 				0ACE796B29D9EEAA00599C19 /* AlertSpinner.swift in Sources */,
 				0ACE797529DDA0C900599C19 /* CreateTaskModel.swift in Sources */,
 				0A99A90729CD99CA00CC5A42 /* UserAuthController.swift in Sources */,
+				0A2717BA2A01F7FE00EFBC11 /* AllTasksDetailVC.swift in Sources */,
 				0ACE797229DD95C600599C19 /* CreateTaskTableVC.swift in Sources */,
 				0AA8EC6829CAF192004DC6DD /* SetDateProtocol.swift in Sources */,
 				0A86ED1029B5D97F001C9BAF /* AppDelegate.swift in Sources */,

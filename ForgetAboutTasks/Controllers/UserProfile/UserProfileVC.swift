@@ -16,8 +16,6 @@ struct UserProfileData {
 
 class UserProfileViewController: UIViewController {
     
-//    var cellArray = [["Dark Mode","Background Color","Access to Notifications"],["Language","In future test variations","Information"]]
-    
     var cellArray = [[UserProfileData(cellName: "Dark Mode", cellImage: UIImage(systemName: "moon.fill")!),
                      UserProfileData(cellName: "Background Color", cellImage: UIImage(systemName: "circle.fill")!),
                      UserProfileData(cellName: "Access to Notifications", cellImage: UIImage(systemName: "headphones.circle.fill")!)],[
@@ -27,7 +25,7 @@ class UserProfileViewController: UIViewController {
     
     private var imagePicker = UIImagePickerController()
     private let scrollView = UIScrollView()
-    private let tableView = UITableView()
+    private let tableView = UITableView(frame: CGRectZero, style: .insetGrouped)
     
     private let profileView: UIView = {
        let view = UIView()
@@ -186,7 +184,7 @@ class UserProfileViewController: UIViewController {
         loadingData()
         setupScrollView()
         setupTableView()
-        view.backgroundColor = .secondarySystemBackground
+        view.backgroundColor = UIColor(named: "backgroundColor")
     }
     
     private func setupScrollView(){
@@ -198,6 +196,9 @@ class UserProfileViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.layer.cornerRadius = 8
+        
+        tableView.backgroundColor = UIColor(named: "backgroundColor")
+        
     }
     
     private func loadingData(){
@@ -280,8 +281,9 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "settingsIdentifier")
+        var cell = UITableViewCell(style: .subtitle, reuseIdentifier: "settingsIdentifier")
         let data = cellArray[indexPath.section][indexPath.row]
+        cell.backgroundColor = UIColor(named: "cellColor")
         let switchButton = UISwitch()
         switchButton.isOn = false
         switchButton.onTintColor = #colorLiteral(red: 0.3920767307, green: 0.5687371492, blue: 0.998278439, alpha: 1)
@@ -294,7 +296,6 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
             cell.accessoryType = .detailDisclosureButton
         }
         
-        cell.layer.cornerRadius = 10
         cell.textLabel?.text = data.cellName
         cell.imageView?.image = data.cellImage
         return cell
@@ -361,7 +362,7 @@ extension UserProfileViewController  {
         view.addSubview(tableView)
         tableView.snp.makeConstraints { make in
             make.top.equalTo(profileView.snp.bottom).offset(10)
-            make.left.right.equalToSuperview().inset(10)
+            make.left.right.equalToSuperview()
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-10)
         }
 

@@ -25,6 +25,8 @@ class CreateTaskForDayController: UIViewController {
     private var calendar: FSCalendar = {
         let calendar = FSCalendar()
         calendar.scrollDirection = .vertical
+        calendar.appearance.todayColor = UIColor(named: "calendarHeaderColor")
+        
         calendar.scope = .week
         calendar.firstWeekday = 2
         calendar.weekdayHeight = 20
@@ -75,7 +77,6 @@ class CreateTaskForDayController: UIViewController {
         setupNavigationController()
         setupTableViewAndDelegates()
         setupConstraintsForCalendar()
-        print(Realm.Configuration.defaultConfiguration.fileURL)
     }
 
  //MARK: -  actions targets methods
@@ -90,20 +91,12 @@ class CreateTaskForDayController: UIViewController {
     
     @objc private func didTapCreate(){
         let vc = OptionsForScheduleViewController()
+        vc.choosenDate = choosenDate
         let navVC = UINavigationController(rootViewController: vc)
         navVC.modalTransitionStyle = .flipHorizontal
         navVC.modalPresentationStyle = .fullScreen
         navVC.isNavigationBarHidden = false
         present(navVC, animated: true)
-    }
-    
-    @objc private func didTapEditCell(){
-        if self.tableView.isEditing == true {
-            tableView.isEditing = false
-            
-        } else {
-            tableView.isEditing = true
-        }
     }
     
     @objc private func didTapSegmentChanged(segment: UISegmentedControl) {
@@ -139,6 +132,7 @@ class CreateTaskForDayController: UIViewController {
         calendar.today =  choosenDate
         segmentalController.addTarget(self, action: #selector(didTapSegmentChanged(segment:)), for: .valueChanged)
         calendar.reloadData()
+        setupTitleView(date: choosenDate)
     }
     
     private func setupTableViewAndDelegates(){
@@ -153,16 +147,17 @@ class CreateTaskForDayController: UIViewController {
     
     
     private func setupNavigationController(){
-        let convertDate = Formatters.instance.stringFromDate(date: choosenDate)
-        title = "Задачи на \(convertDate)"
-        
         navigationController?.navigationItem.largeTitleDisplayMode = .never
         navigationController?.navigationBar.prefersLargeTitles = false
         navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "arrow.backward.circle.fill"), landscapeImagePhone: nil, style: .done, target: self, action: #selector(didTapTapped))
         let firstBut = UIBarButtonItem(image: UIImage(systemName: "plus.circle.fill"), landscapeImagePhone: nil, style: .done, target: self, action: #selector(didTapCreate))
-        let secondBut = UIBarButtonItem(title: "Edit", style: .done, target: self, action: #selector(didTapEditCell))
-        navigationItem.rightBarButtonItems = [firstBut, secondBut]
+        navigationItem.rightBarButtonItems = [firstBut]
         navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
+    }
+    
+    private func setupTitleView(date: Date){
+        let convertDate = Formatters.instance.stringFromDate(date: date)
+        title = "Задачи на \(convertDate)"
     }
     
     //MARK: - logics methods
@@ -189,6 +184,7 @@ class CreateTaskForDayController: UIViewController {
             .sorted(byKeyPath: sort)
         cellDataScheduleModel = value
         self.tableView.reloadData()
+        self.calendar.reloadData()
     }
 }
 //MARK: - table delegates and datasource
@@ -200,7 +196,7 @@ extension CreateTaskForDayController: UITableViewDelegate, UITableViewDataSource
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cell")
         cell.accessoryType = .disclosureIndicator
-        cell.backgroundColor = UIColor(named: "cellColor")
+        cell.backgroundColor = UIColor(named: "backgroundColor")
         let data = cellDataScheduleModel[indexPath.row]
         
         let color = UIColor.color(withData: data.scheduleColor!) ?? #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
@@ -221,9 +217,8 @@ extension CreateTaskForDayController: UITableViewDelegate, UITableViewDataSource
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let data = cellDataScheduleModel[indexPath.row]
-        let vc = OptionsForScheduleViewController()
-        vc.isEditingView = true
-        vc.testScheduleModel = data
+        let vc = OpenTaskDetailViewController()
+        vc.selectedScheduleModel = data
         let nav = UINavigationController(rootViewController: vc)
         nav.modalPresentationStyle = .fullScreen
         nav.isNavigationBarHidden = false
@@ -251,7 +246,7 @@ extension CreateTaskForDayController: UITableViewDelegate, UITableViewDataSource
         let actionInstance = UIContextualAction(style: .normal, title: "") { [weak self] _, _, completionHandler in
             let vc = OptionsForScheduleViewController()
             vc.isEditingView = true
-            vc.testScheduleModel = cellData
+            vc.selectedScheduleModel = cellData
             let nav = UINavigationController(rootViewController: vc)
             nav.modalPresentationStyle = .fullScreen
             nav.isNavigationBarHidden = false
@@ -280,6 +275,7 @@ extension CreateTaskForDayController: UITableViewDelegate, UITableViewDataSource
 extension CreateTaskForDayController: FSCalendarDelegate, FSCalendarDataSource {
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
         choosenDate = date
+        setupTitleView(date: date)
         let predicate = setupRealmData(date: date)
         loadingRealmData(predicate: predicate)
     }
@@ -297,7 +293,7 @@ extension CreateTaskForDayController {
         calendar.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
             make.leading.trailing.equalToSuperview()
-            make.height.equalTo(200)
+            make.height.equalTo(view.frame.size.height/4+view.frame.size.height/8)
         }
         
         view.addSubview(segmentalController)

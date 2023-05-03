@@ -9,10 +9,13 @@ import UIKit
 import SnapKit
 
 extension UIViewController {
-    func alertDate(table: UITableView, completiongHandler: @escaping (Int,Date,String) -> Void) {
+    func alertDate(table: UITableView,choosenDate: Date?, completiongHandler: @escaping (Int,Date,String) -> Void) {
         let alert = UIAlertController(title: "", message: nil, preferredStyle: .actionSheet)
         let datePicker = UIDatePicker()
+        datePicker.timeZone = .current
+        datePicker.locale = .current
         datePicker.datePickerMode = .date
+        datePicker.date = choosenDate ?? Date()
         datePicker.preferredDatePickerStyle = .wheels
         alert.view.addSubview(datePicker)
         

@@ -134,7 +134,7 @@ extension NewContactViewController: UITableViewDelegate, UITableViewDataSource {
         let data = cellsName[indexPath.section][indexPath.row]
         cell.layer.cornerRadius = 10
         cell.contentView.layer.cornerRadius = 10
-        cell.backgroundColor = .systemBackground
+        cell.backgroundColor = UIColor(named: "cellColor")
         if !isViewEdited {
 
             if let image = contactModel.contactImage {

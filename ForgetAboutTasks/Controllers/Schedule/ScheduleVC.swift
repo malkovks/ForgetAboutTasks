@@ -30,6 +30,7 @@ class ScheduleViewController: UIViewController {
         calendar.weekdayHeight = 30
         calendar.headerHeight = 50
         calendar.firstWeekday = 2
+        calendar.placeholderType = .none //remove past and future dates of months
         calendar.appearance.titleFont = UIFont.systemFont(ofSize: 18)
         calendar.appearance.headerTitleFont = .systemFont(ofSize: 20)
         calendar.appearance.borderDefaultColor = .clear
@@ -144,37 +145,6 @@ extension ScheduleViewController: FSCalendarDelegate, FSCalendarDataSource {
     
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
         loadingDataByDate(date: date, at: monthPosition, is: false)
-    }
-    
-    func calendar(_ calendar: FSCalendar, numberOfEventsFor date: Date) -> Int {
-        
-        return 0
-//        let calendar = Calendar.current
-//        let components = calendar.dateComponents([.weekday], from: date)
-//        let weekday = components.weekday
-//        let predicate = NSPredicate(format: "scheduleWeekday = \(weekday ?? 0) AND scheduleRepeat = true")
-//        let secondPredicate = NSPredicate(format: "scheduleWeekday = \(weekday ?? 0)")
-//        scheduleModel = localRealm.objects(ScheduleModel.self).filter(predicate)
-//        let valueCount = localRealm.objects(ScheduleModel.self).filter(secondPredicate).count
-//        return valueCount
-        
-        
-        
-       
-        
-        
-        /* let string = formatter.stringFromDate(date: date)
-        if self.dateDictionary[string] != nil && self.dateDictionary[string]?.count == 1 {
-            return 1
-        } else if self.dateDictionary[string]?.count == 2 {
-            return 2
-        } else if let count = self.dateDictionary[string]?.count   {
-            if count >= 3 {
-                return 3
-            }
-        }
-        return 0
-         */
     }
 }
 

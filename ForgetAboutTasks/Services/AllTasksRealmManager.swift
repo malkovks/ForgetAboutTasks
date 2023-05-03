@@ -26,21 +26,6 @@ class AllTasksRealmManager {
         try! localRealm.write {
             model.allTaskCompleted = boolean
         }
-        
-//        let mainModel =  localRealm.objects(AllTaskModel.self)
-//        let taskModel = mainModel[index]
-//        if boolean == true {
-//            try! localRealm.write {
-//                taskModel.allTaskCompleted = false
-//                print("value was changed to false")
-//            }
-//        } else if boolean == false {
-//            try! localRealm.write {
-//                taskModel.allTaskCompleted = true
-//                print("value was cnanged to true")
-//            }
-//        }
-        
     }
     
     
@@ -50,14 +35,6 @@ class AllTasksRealmManager {
         }
     }
     
-//    func editScheduleModel(model: ScheduleModel,selected row: String){
-//        let results = localRealm.objects(ScheduleModel.self).filter("scheduleName == %@", row)
-//        guard var result = results.first else { return }
-//        try! localRealm.write {
-//            result = model
-//            print("Data was changed")
-//        }
-//    }
     
     
 }

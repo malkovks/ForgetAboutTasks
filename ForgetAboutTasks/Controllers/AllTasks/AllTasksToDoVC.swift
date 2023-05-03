@@ -181,9 +181,8 @@ extension AllTasksToDoViewController: UITableViewDelegate, UITableViewDataSource
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let model = allTasksData[indexPath.row]
-        let vc = CreateTaskTableViewController()
+        let vc = AllTasksDetailViewController()
         vc.tasksModel = model
-        vc.isCellSelectedFromTable = true
         
         let nav = UINavigationController(rootViewController: vc)
         nav.modalPresentationStyle = .pageSheet

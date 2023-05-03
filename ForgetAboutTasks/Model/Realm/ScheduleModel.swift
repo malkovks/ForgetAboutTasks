@@ -16,7 +16,7 @@ class ScheduleModel: Object {
     @Persisted var scheduleCategoryType: String = ""
     @Persisted var scheduleCategoryURL: String = ""
     @Persisted var scheduleCategoryNote: String = ""
-    @Persisted var scheduleColor: Data? //по этому вопрос, тк  мы делаем разные цвета
+    @Persisted var scheduleColor: Data? 
     @Persisted var scheduleRepeat: Bool = false
     @Persisted var scheduleWeekday: Int = 1
     

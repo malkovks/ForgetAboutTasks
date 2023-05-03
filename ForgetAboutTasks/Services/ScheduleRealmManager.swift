@@ -27,15 +27,20 @@ class ScheduleRealmManager {
             localRealm.delete(model)
         }
     }
-//    
-//    func editScheduleModel(model: ScheduleModel,selected row: String){
-//        let results = localRealm.objects(ScheduleModel.self).filter("scheduleName == %@", row)
-//        guard var result = results.first else { return }
-//        try! localRealm.write {
-//            result = model
-//            print("Data was changed")
-//        }
-//    }
-    
+
+    func changeScheduleModel(model: ScheduleModel,changes: ScheduleModel){
+        try! localRealm.write {
+            model.scheduleCategoryURL = changes.scheduleCategoryURL
+            model.scheduleCategoryName = changes.scheduleCategoryName
+            model.scheduleCategoryNote = changes.scheduleCategoryNote
+            model.scheduleCategoryType = changes.scheduleCategoryType
+            model.scheduleName = changes.scheduleName
+            model.scheduleDate = changes.scheduleDate
+            model.scheduleTime = changes.scheduleTime
+            model.scheduleColor = changes.scheduleColor
+            model.scheduleRepeat = changes.scheduleRepeat
+            model.scheduleWeekday = changes.scheduleWeekday
+        }
+    }
     
 }

@@ -9,15 +9,23 @@ import UIKit
 import CoreData
 import Firebase
 import GoogleSignIn
+import UserNotifications
 
 @main
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate,UNUserNotificationCenterDelegate {
 
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         FirebaseApp.configure()
-        
+        UNUserNotificationCenter.current().delegate = self
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert,.badge,.sound]) { success, error in
+            if !success {
+                print("Error successing to send notifications")
+            } else {
+                print("Success to get user notification")
+            }
+        }
         
         return true
     }
