@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 import RealmSwift
+import MessageUI
 
 
 class ContactsViewController: UIViewController {
@@ -103,6 +104,33 @@ class ContactsViewController: UIViewController {
         nav.sheetPresentationController?.prefersGrabberVisible = true
         present(nav, animated: true)
     }
+    
+    private func actionsWithContact(model: ContactModel){
+        let alert = UIAlertController(title: nil, message: "What exactly do you want?", preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction(title: "Contact Details", style: .default,handler: { [weak self] _ in
+            self?.openCurrentContact(model: model)
+        }))
+        alert.addAction(UIAlertAction(title: "Call to \(model.contactName)", style: .default,handler: { [weak self] _ in
+            guard let url = URL(string: "tel://\(model.contactPhoneNumber)") else { self?.alertError();return}
+            if UIApplication.shared.canOpenURL(url){
+                UIApplication.shared.open(url)
+            }
+        }))
+        alert.addAction(UIAlertAction(title: "Write message", style: .default,handler: { [weak self] _ in
+            if MFMessageComposeViewController.canSendText() {
+                let vc = MFMessageComposeViewController()
+                vc.body = "Hello!"
+                vc.recipients = ["\(model.contactPhoneNumber)"]
+                vc.messageComposeDelegate = self
+                
+                self?.present(vc, animated: true)
+            } else {
+                print("Error")
+            }
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        present(alert, animated: true)
+    }
 }
 
 extension ContactsViewController: UISearchResultsUpdating {
@@ -138,17 +166,12 @@ extension ContactsViewController: UITableViewDelegate, UITableViewDataSource {
         cell.imageView?.contentMode = .scaleToFill
         cell.imageView?.tintColor = UIColor(named: "navigationControllerColor")
         
+        let number = String.format(with: "+X (XXX) XXX-XXXX", phone: data.contactPhoneNumber)
+        
         cell.textLabel?.text = data.contactName
-        cell.detailTextLabel?.text = "Phone number: " + data.contactPhoneNumber
-        if let dataImage = data.contactImage {
-            let image = UIImage(data: dataImage)
-            cell.imageView?.layer.cornerRadius = (cell.imageView?.frame.size.width)!/2
-            cell.imageView?.sizeThatFits(CGSize(width: 20, height: 20))
-            cell.imageView?.image = image
-        } else {
-            cell.imageView?.image = UIImage(systemName: "person.crop.circle.fill")
-            cell.imageView?.frame(forAlignmentRect: CGRect(x: 0, y: 0, width: 50, height: 50))
-        }
+        cell.detailTextLabel?.text = "Phone number: " + number
+        cell.imageView?.image = UIImage(systemName: "person.crop.circle.fill")
+        cell.imageView?.frame(forAlignmentRect: CGRect(x: 0, y: 0, width: 50, height: 50))
         
         return cell
     }
@@ -198,7 +221,7 @@ extension ContactsViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let model = contactData[indexPath.row]
-        openCurrentContact(model: model)
+        actionsWithContact(model: model)
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -206,12 +229,22 @@ extension ContactsViewController: UITableViewDelegate, UITableViewDataSource {
     }
 }
 
+extension ContactsViewController: MFMessageComposeViewControllerDelegate {
+    func messageComposeViewController(_ controller: MFMessageComposeViewController, didFinishWith result: MessageComposeResult) {
+        if result == .cancelled {
+            self.dismiss(animated: true)
+        }
+    }
+    
+    
+}
+
 extension ContactsViewController {
         private func setupConstraints(){
         view.addSubview(tableView)
         tableView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).inset(0)
-            make.leading.trailing.equalToSuperview().inset(10)
+            make.leading.trailing.equalToSuperview()
             make.bottom.equalToSuperview().inset(0)
         }
     }

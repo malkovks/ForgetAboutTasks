@@ -21,7 +21,10 @@ class UserProfileViewController: UIViewController {
                      UserProfileData(cellName: "Access to Notifications", cellImage: UIImage(systemName: "headphones.circle.fill")!)],[
                         UserProfileData(cellName: "Language", cellImage: UIImage(systemName: "keyboard.fill")!),
                      UserProfileData(cellName: "Futures", cellImage: UIImage(systemName: "clock.fill")!),
-                     UserProfileData(cellName: "Information", cellImage: UIImage(systemName: "info.circle.fill")!)]]
+                     UserProfileData(cellName: "Information", cellImage: UIImage(systemName: "info.circle.fill")!)],[
+                     UserProfileData(cellName: "Delete Account", cellImage: UIImage(systemName: "trash.fill")!),
+                     UserProfileData(cellName: "Log Out", cellImage: UIImage(systemName: "arrow.uturn.right.square.fill")!)
+                     ]]
     
     private var imagePicker = UIImagePickerController()
     private let scrollView = UIScrollView()
@@ -39,7 +42,10 @@ class UserProfileViewController: UIViewController {
         image.translatesAutoresizingMaskIntoConstraints = false
         image.backgroundColor = .secondarySystemBackground
         image.layer.cornerRadius = image.frame.size.width/2
+        image.layer.masksToBounds = true
         image.clipsToBounds = true
+        image.layer.borderWidth = 1.0
+        image.layer.borderColor = UIColor(named: "textColor")?.cgColor
         image.image = UIImage(systemName: "photo.circle")
         image.tintColor = .black
         return image
@@ -47,8 +53,8 @@ class UserProfileViewController: UIViewController {
     
     private let changeUserImageView: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Change image", for: .normal)
-        button.setTitleColor(.black, for: .normal)
+        button.setTitle("Set new image", for: .normal)
+        button.setTitleColor(UIColor(named: "textColor"), for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.backgroundColor = .clear
         return button
@@ -105,6 +111,7 @@ class UserProfileViewController: UIViewController {
                 UserDefaults.standard.set(false, forKey: "isAuthorised")
                 do {
                     try FirebaseAuth.Auth.auth().signOut()
+                    CheckAuth.shared.signOut()
                 } catch let error {
                     print("Error signing out from Firebase \(error)")
                 }
@@ -144,6 +151,7 @@ class UserProfileViewController: UIViewController {
         alert.addAction(UIAlertAction(title: "Delete image", style: .destructive,handler: { _ in
             self.userImageView.image = UIImage(systemName: "photo.circle")
             self.userImageView.sizeToFit()
+            UserDefaults.standard.set(nil,forKey: "userImage")
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         present(alert, animated: true)
@@ -151,7 +159,7 @@ class UserProfileViewController: UIViewController {
     
     @objc private func didTapTapOnLabel(sender: UITapGestureRecognizer){
         alertNewName(title: "Enter new name and second name", placeholder: "Enter the text") { [weak self] text in
-            self?.userNameLabel.text = text
+            self?.userNameLabel.text = "User's age: " + text
             UserDefaults.standard.set(text, forKey: "userName")
         }
     }
@@ -211,7 +219,7 @@ class UserProfileViewController: UIViewController {
     
     private func setupNavigationController(){
         title = "My Profile"
-        navigationController?.navigationBar.tintColor = #colorLiteral(red: 0.9751130939, green: 0.9366052747, blue: 0.9639498591, alpha: 1)
+        navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "arrow.uturn.right.square"), style: .done, target: self, action: #selector(didTapLogout))
     }
     
@@ -248,7 +256,7 @@ class UserProfileViewController: UIViewController {
 extension UserProfileViewController: UserAuthProtocol {
     func userData(result: AuthDataResult) {
         CheckAuth.shared.saveData(result: result)
-        guard let imageURL = result.user.photoURL else { print("Error");return}
+        guard let imageURL = result.user.photoURL else { alertError(text: "Error getting user's image", mainTitle: "Warning!");return}
         downloadImage(url: imageURL) { [weak self] data in
             let image = UIImage(data: data)
             self?.userImageView.image = image
@@ -264,24 +272,26 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
         switch section {
         case 0: return 3
         case 1: return 3
+        case 2: return 2
         default: return 0
         }
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+        return 3
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch section {
         case 0: return "Main setups"
         case 1: return "Secondary setups"
+        case 2: return ""
         default: return "Error"
         }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        var cell = UITableViewCell(style: .subtitle, reuseIdentifier: "settingsIdentifier")
+        let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "settingsIdentifier")
         let data = cellArray[indexPath.section][indexPath.row]
         cell.backgroundColor = UIColor(named: "cellColor")
         let switchButton = UISwitch()
@@ -292,13 +302,32 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
         cell.accessoryView = switchButton
         if indexPath.section == 0 {
             switchButton.isHidden = false
-        } else {
+            cell.accessoryType = .none
+        } else if indexPath.section == 1 {
             cell.accessoryType = .detailDisclosureButton
+            cell.imageView?.tintColor = #colorLiteral(red: 0.6036810875, green: 0.7805308104, blue: 1, alpha: 1)
+            
+        } else if indexPath == [2,0] {
+            cell.imageView?.tintColor = .systemRed
+        } else if indexPath == [2,1] {
+            cell.imageView?.tintColor = UIColor(named: "textColor")
         }
         
         cell.textLabel?.text = data.cellName
         cell.imageView?.image = data.cellImage
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        switch indexPath {
+        case [2,0]:
+            print("Delete")
+        case [2,1]:
+            didTapLogout()
+        default:
+            print("Error")
+        }
     }
     
     
@@ -361,9 +390,9 @@ extension UserProfileViewController  {
         
         view.addSubview(tableView)
         tableView.snp.makeConstraints { make in
-            make.top.equalTo(profileView.snp.bottom).offset(10)
+            make.top.equalTo(profileView.snp.bottom)
             make.left.right.equalToSuperview()
-            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-10)
+            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
         }
 
         

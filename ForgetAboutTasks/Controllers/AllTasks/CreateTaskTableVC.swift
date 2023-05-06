@@ -44,6 +44,7 @@ class CreateTaskTableViewController: UIViewController {
     
     @objc private func didTapSave(){
         if !(tasksModel.allTaskNameEvent.isEmpty) {
+            tasksModel.allTaskColor = cellBackgroundColor.encode()
             AllTasksRealmManager.shared.saveAllTasksModel(model: tasksModel)
             tasksModel = AllTaskModel()
             self.dismiss(animated: true)

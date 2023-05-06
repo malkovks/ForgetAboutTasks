@@ -7,28 +7,31 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		00B260B35014A5CB26FCFA2A /* Pods_ForgetAboutTasksTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A2355D59545111B95037C74C /* Pods_ForgetAboutTasksTests.framework */; };
+		0A0A49C32A02D22300517E6F /* FSCalendar in Frameworks */ = {isa = PBXBuildFile; productRef = 0A0A49C22A02D22300517E6F /* FSCalendar */; };
+		0A0A49C62A02D23900517E6F /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 0A0A49C52A02D23900517E6F /* SnapKit */; };
+		0A0A49D02A02D30F00517E6F /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 0A0A49CF2A02D30F00517E6F /* GoogleSignIn */; };
+		0A0A49D22A02D30F00517E6F /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 0A0A49D12A02D30F00517E6F /* GoogleSignInSwift */; };
+		0A0A49D52A02D3A100517E6F /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 0A0A49D42A02D3A100517E6F /* Realm */; };
+		0A0A49D72A02D3A100517E6F /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 0A0A49D62A02D3A100517E6F /* RealmSwift */; };
+		0A0A49DA2A04E64F00517E6F /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 0A0A49D92A04E64F00517E6F /* FirebaseAuth */; };
+		0A0A49DC2A04E64F00517E6F /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 0A0A49DB2A04E64F00517E6F /* FirebaseDatabase */; };
+		0A0A49DE2A04E64F00517E6F /* FirebaseDatabaseSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 0A0A49DD2A04E64F00517E6F /* FirebaseDatabaseSwift */; };
 		0A0CE6F729C461F600A14648 /* OptionsForScheduleVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A0CE6F629C461F600A14648 /* OptionsForScheduleVC.swift */; };
 		0A2717B829FE518000EFBC11 /* OpenTaskDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2717B729FE518000EFBC11 /* OpenTaskDetailVC.swift */; };
 		0A2717BA2A01F7FE00EFBC11 /* AllTasksDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2717B92A01F7FE00EFBC11 /* AllTasksDetailVC.swift */; };
 		0A525DAF29FC3C3B009D116F /* AlertNewName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A525DAE29FC3C3B009D116F /* AlertNewName.swift */; };
-		0A525DB129FCA701009D116F /* SetupForDarkMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A525DB029FCA701009D116F /* SetupForDarkMode.swift */; };
 		0A7FFFB829EFD9E100CAC9DA /* ContactModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7FFFB729EFD9E100CAC9DA /* ContactModel.swift */; };
 		0A7FFFBA29EFDC0B00CAC9DA /* ContactRealmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7FFFB929EFDC0B00CAC9DA /* ContactRealmManager.swift */; };
 		0A7FFFBD29F1326A00CAC9DA /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7FFFBC29F1326A00CAC9DA /* StringExtension.swift */; };
 		0A7FFFC029F1BA1800CAC9DA /* DownloadImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7FFFBF29F1BA1800CAC9DA /* DownloadImage.swift */; };
 		0A86ED1029B5D97F001C9BAF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A86ED0F29B5D97F001C9BAF /* AppDelegate.swift */; };
 		0A86ED1229B5D97F001C9BAF /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A86ED1129B5D97F001C9BAF /* SceneDelegate.swift */; };
-		0A86ED1429B5D97F001C9BAF /* CalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A86ED1329B5D97F001C9BAF /* CalendarViewController.swift */; };
 		0A86ED1A29B5D97F001C9BAF /* ForgetAboutTasks.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 0A86ED1829B5D97F001C9BAF /* ForgetAboutTasks.xcdatamodeld */; };
 		0A86ED1C29B5D981001C9BAF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0A86ED1B29B5D981001C9BAF /* Assets.xcassets */; };
 		0A86ED1F29B5D981001C9BAF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0A86ED1D29B5D981001C9BAF /* LaunchScreen.storyboard */; };
 		0A86ED2A29B5D981001C9BAF /* ForgetAboutTasksTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A86ED2929B5D981001C9BAF /* ForgetAboutTasksTests.swift */; };
 		0A86ED3429B5D981001C9BAF /* ForgetAboutTasksUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A86ED3329B5D981001C9BAF /* ForgetAboutTasksUITests.swift */; };
 		0A86ED3629B5D981001C9BAF /* ForgetAboutTasksUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A86ED3529B5D981001C9BAF /* ForgetAboutTasksUITestsLaunchTests.swift */; };
-		0A8AC19429B7A31500EA052B /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8AC19329B7A31500EA052B /* SecondViewController.swift */; };
-		0A8AC19629B7B58300EA052B /* EKWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8AC19529B7B58300EA052B /* EKWrapper.swift */; };
-		0A8AC19829B8309F00EA052B /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8AC19729B8309F00EA052B /* MainViewController.swift */; };
 		0A8AC19F29B9D00A00EA052B /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8AC19E29B9D00A00EA052B /* TabBarViewController.swift */; };
 		0A8AC1A129B9D46D00EA052B /* ScheduleVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8AC1A029B9D46D00EA052B /* ScheduleVC.swift */; };
 		0A8AC1A429B9D4EB00EA052B /* CreateTaskForDayVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8AC1A329B9D4EB00EA052B /* CreateTaskForDayVC.swift */; };
@@ -55,20 +58,11 @@
 		0AA74A2829EC524200F01532 /* AllTaskModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA74A2729EC524200F01532 /* AllTaskModel.swift */; };
 		0AA8EC5D29C76968004DC6DD /* AlertDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA8EC5C29C76968004DC6DD /* AlertDate.swift */; };
 		0AA8EC5F29C7AA56004DC6DD /* AlertTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA8EC5E29C7AA56004DC6DD /* AlertTime.swift */; };
-		0AA8EC6429CAE690004DC6DD /* SetDateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA8EC6329CAE690004DC6DD /* SetDateViewController.swift */; };
-		0AA8EC6629CAE9B0004DC6DD /* SetDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA8EC6529CAE9B0004DC6DD /* SetDateView.swift */; };
-		0AA8EC6829CAF192004DC6DD /* SetDateProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA8EC6729CAF192004DC6DD /* SetDateProtocol.swift */; };
-		0AA8EC6B29CAF469004DC6DD /* SetTimeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA8EC6A29CAF469004DC6DD /* SetTimeViewController.swift */; };
-		0AA8EC6D29CAF4A0004DC6DD /* SetTimeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA8EC6C29CAF4A0004DC6DD /* SetTimeView.swift */; };
-		0AA8EC6F29CAF4D2004DC6DD /* SetTimeProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA8EC6E29CAF4D2004DC6DD /* SetTimeProtocol.swift */; };
 		0AB763BA29E3FAC900BFDB0D /* AlertError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB763B929E3FAC900BFDB0D /* AlertError.swift */; };
 		0ACE796B29D9EEAA00599C19 /* AlertSpinner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE796A29D9EEAA00599C19 /* AlertSpinner.swift */; };
 		0ACE797229DD95C600599C19 /* CreateTaskTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE797129DD95C600599C19 /* CreateTaskTableVC.swift */; };
-		0ACE797529DDA0C900599C19 /* CreateTaskModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE797429DDA0C900599C19 /* CreateTaskModel.swift */; };
 		0ACE797829DECF3300599C19 /* NewContactVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE797729DECF3300599C19 /* NewContactVC.swift */; };
 		0ACE797A29DED2D400599C19 /* NewContactCustomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE797929DED2D400599C19 /* NewContactCustomView.swift */; };
-		8186764FB1BB2084EBD6465F /* Pods_ForgetAboutTasks_ForgetAboutTasksUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 081E2F7D28B71EC3AA3980C1 /* Pods_ForgetAboutTasks_ForgetAboutTasksUITests.framework */; };
-		A469AD9F86D4E441D8D2A55E /* Pods_ForgetAboutTasks.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC2C5346B0F22B63FF2E08B1 /* Pods_ForgetAboutTasks.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -89,13 +83,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		081E2F7D28B71EC3AA3980C1 /* Pods_ForgetAboutTasks_ForgetAboutTasksUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ForgetAboutTasks_ForgetAboutTasksUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		08A4F059D6FFDCFE4C1DE90E /* Pods-ForgetAboutTasksTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ForgetAboutTasksTests.release.xcconfig"; path = "Target Support Files/Pods-ForgetAboutTasksTests/Pods-ForgetAboutTasksTests.release.xcconfig"; sourceTree = "<group>"; };
 		0A0CE6F629C461F600A14648 /* OptionsForScheduleVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionsForScheduleVC.swift; sourceTree = "<group>"; };
 		0A2717B729FE518000EFBC11 /* OpenTaskDetailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenTaskDetailVC.swift; sourceTree = "<group>"; };
 		0A2717B92A01F7FE00EFBC11 /* AllTasksDetailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllTasksDetailVC.swift; sourceTree = "<group>"; };
 		0A525DAE29FC3C3B009D116F /* AlertNewName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertNewName.swift; sourceTree = "<group>"; };
-		0A525DB029FCA701009D116F /* SetupForDarkMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupForDarkMode.swift; sourceTree = "<group>"; };
 		0A7FFFB729EFD9E100CAC9DA /* ContactModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactModel.swift; sourceTree = "<group>"; };
 		0A7FFFB929EFDC0B00CAC9DA /* ContactRealmManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactRealmManager.swift; sourceTree = "<group>"; };
 		0A7FFFBC29F1326A00CAC9DA /* StringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
@@ -103,7 +94,6 @@
 		0A86ED0C29B5D97F001C9BAF /* ForgetAboutTasks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ForgetAboutTasks.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A86ED0F29B5D97F001C9BAF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0A86ED1129B5D97F001C9BAF /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		0A86ED1329B5D97F001C9BAF /* CalendarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewController.swift; sourceTree = "<group>"; };
 		0A86ED1929B5D97F001C9BAF /* ForgetAboutTasks.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ForgetAboutTasks.xcdatamodel; sourceTree = "<group>"; };
 		0A86ED1B29B5D981001C9BAF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0A86ED1E29B5D981001C9BAF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -113,9 +103,6 @@
 		0A86ED2F29B5D981001C9BAF /* ForgetAboutTasksUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ForgetAboutTasksUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A86ED3329B5D981001C9BAF /* ForgetAboutTasksUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgetAboutTasksUITests.swift; sourceTree = "<group>"; };
 		0A86ED3529B5D981001C9BAF /* ForgetAboutTasksUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgetAboutTasksUITestsLaunchTests.swift; sourceTree = "<group>"; };
-		0A8AC19329B7A31500EA052B /* SecondViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondViewController.swift; sourceTree = "<group>"; };
-		0A8AC19529B7B58300EA052B /* EKWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EKWrapper.swift; sourceTree = "<group>"; };
-		0A8AC19729B8309F00EA052B /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		0A8AC19E29B9D00A00EA052B /* TabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
 		0A8AC1A029B9D46D00EA052B /* ScheduleVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleVC.swift; sourceTree = "<group>"; };
 		0A8AC1A329B9D4EB00EA052B /* CreateTaskForDayVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTaskForDayVC.swift; sourceTree = "<group>"; };
@@ -143,25 +130,11 @@
 		0AA74A2729EC524200F01532 /* AllTaskModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllTaskModel.swift; sourceTree = "<group>"; };
 		0AA8EC5C29C76968004DC6DD /* AlertDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertDate.swift; sourceTree = "<group>"; };
 		0AA8EC5E29C7AA56004DC6DD /* AlertTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertTime.swift; sourceTree = "<group>"; };
-		0AA8EC6329CAE690004DC6DD /* SetDateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetDateViewController.swift; sourceTree = "<group>"; };
-		0AA8EC6529CAE9B0004DC6DD /* SetDateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetDateView.swift; sourceTree = "<group>"; };
-		0AA8EC6729CAF192004DC6DD /* SetDateProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetDateProtocol.swift; sourceTree = "<group>"; };
-		0AA8EC6A29CAF469004DC6DD /* SetTimeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetTimeViewController.swift; sourceTree = "<group>"; };
-		0AA8EC6C29CAF4A0004DC6DD /* SetTimeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetTimeView.swift; sourceTree = "<group>"; };
-		0AA8EC6E29CAF4D2004DC6DD /* SetTimeProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetTimeProtocol.swift; sourceTree = "<group>"; };
 		0AB763B929E3FAC900BFDB0D /* AlertError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertError.swift; sourceTree = "<group>"; };
 		0ACE796A29D9EEAA00599C19 /* AlertSpinner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertSpinner.swift; sourceTree = "<group>"; };
 		0ACE797129DD95C600599C19 /* CreateTaskTableVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTaskTableVC.swift; sourceTree = "<group>"; };
-		0ACE797429DDA0C900599C19 /* CreateTaskModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTaskModel.swift; sourceTree = "<group>"; };
 		0ACE797729DECF3300599C19 /* NewContactVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewContactVC.swift; sourceTree = "<group>"; };
 		0ACE797929DED2D400599C19 /* NewContactCustomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewContactCustomView.swift; sourceTree = "<group>"; };
-		3015CC6C7F05EBB6BF73F999 /* Pods-ForgetAboutTasks.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ForgetAboutTasks.release.xcconfig"; path = "Target Support Files/Pods-ForgetAboutTasks/Pods-ForgetAboutTasks.release.xcconfig"; sourceTree = "<group>"; };
-		5BFA5F0DDDDE5DC52FB7B995 /* Pods-ForgetAboutTasks-ForgetAboutTasksUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ForgetAboutTasks-ForgetAboutTasksUITests.debug.xcconfig"; path = "Target Support Files/Pods-ForgetAboutTasks-ForgetAboutTasksUITests/Pods-ForgetAboutTasks-ForgetAboutTasksUITests.debug.xcconfig"; sourceTree = "<group>"; };
-		A2355D59545111B95037C74C /* Pods_ForgetAboutTasksTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ForgetAboutTasksTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		A82490B7E4C862AF650DAEC1 /* Pods-ForgetAboutTasks-ForgetAboutTasksUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ForgetAboutTasks-ForgetAboutTasksUITests.release.xcconfig"; path = "Target Support Files/Pods-ForgetAboutTasks-ForgetAboutTasksUITests/Pods-ForgetAboutTasks-ForgetAboutTasksUITests.release.xcconfig"; sourceTree = "<group>"; };
-		CAE3B317DD81E235948CF980 /* Pods-ForgetAboutTasks.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ForgetAboutTasks.debug.xcconfig"; path = "Target Support Files/Pods-ForgetAboutTasks/Pods-ForgetAboutTasks.debug.xcconfig"; sourceTree = "<group>"; };
-		F6583D9F385144B8A1150E62 /* Pods-ForgetAboutTasksTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ForgetAboutTasksTests.debug.xcconfig"; path = "Target Support Files/Pods-ForgetAboutTasksTests/Pods-ForgetAboutTasksTests.debug.xcconfig"; sourceTree = "<group>"; };
-		FC2C5346B0F22B63FF2E08B1 /* Pods_ForgetAboutTasks.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ForgetAboutTasks.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -169,7 +142,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A469AD9F86D4E441D8D2A55E /* Pods_ForgetAboutTasks.framework in Frameworks */,
+				0A0A49C32A02D22300517E6F /* FSCalendar in Frameworks */,
+				0A0A49D22A02D30F00517E6F /* GoogleSignInSwift in Frameworks */,
+				0A0A49D72A02D3A100517E6F /* RealmSwift in Frameworks */,
+				0A0A49DE2A04E64F00517E6F /* FirebaseDatabaseSwift in Frameworks */,
+				0A0A49C62A02D23900517E6F /* SnapKit in Frameworks */,
+				0A0A49D52A02D3A100517E6F /* Realm in Frameworks */,
+				0A0A49DA2A04E64F00517E6F /* FirebaseAuth in Frameworks */,
+				0A0A49DC2A04E64F00517E6F /* FirebaseDatabase in Frameworks */,
+				0A0A49D02A02D30F00517E6F /* GoogleSignIn in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -177,7 +158,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				00B260B35014A5CB26FCFA2A /* Pods_ForgetAboutTasksTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -185,7 +165,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8186764FB1BB2084EBD6465F /* Pods_ForgetAboutTasks_ForgetAboutTasksUITests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -215,8 +194,6 @@
 				0A86ED2829B5D981001C9BAF /* ForgetAboutTasksTests */,
 				0A86ED3229B5D981001C9BAF /* ForgetAboutTasksUITests */,
 				0A86ED0D29B5D97F001C9BAF /* Products */,
-				FB77233B61ED3BD377BA5DED /* Pods */,
-				323A8B5E5503D5EEE0EAABE3 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -239,12 +216,9 @@
 				0AA604E429E14805007ACE58 /* Services */,
 				0AA604EA29E16DA1007ACE58 /* Protocols */,
 				0AA8EC7029CAF52E004DC6DD /* Extensions */,
-				0A8AC19D29B9CFCF00EA052B /* NavigationControllers */,
 				0A8AC19C29B9C8A400EA052B /* Resources */,
 				0A8AC19929B9C87300EA052B /* System Delegates */,
-				0A99A90C29CD9E1900CC5A42 /* Managers */,
 				0A86ED1829B5D97F001C9BAF /* ForgetAboutTasks.xcdatamodeld */,
-				0A8AC19A29B9C88100EA052B /* AlternativeControllers */,
 			);
 			path = ForgetAboutTasks;
 			sourceTree = "<group>";
@@ -275,25 +249,6 @@
 			path = "System Delegates";
 			sourceTree = "<group>";
 		};
-		0A8AC19A29B9C88100EA052B /* AlternativeControllers */ = {
-			isa = PBXGroup;
-			children = (
-				0A8AC19729B8309F00EA052B /* MainViewController.swift */,
-				0A86ED1329B5D97F001C9BAF /* CalendarViewController.swift */,
-				0A8AC19329B7A31500EA052B /* SecondViewController.swift */,
-				0A8AC19B29B9C89900EA052B /* Models */,
-			);
-			path = AlternativeControllers;
-			sourceTree = "<group>";
-		};
-		0A8AC19B29B9C89900EA052B /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				0A8AC19529B7B58300EA052B /* EKWrapper.swift */,
-			);
-			path = Models;
-			sourceTree = "<group>";
-		};
 		0A8AC19C29B9C8A400EA052B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -305,23 +260,15 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
-		0A8AC19D29B9CFCF00EA052B /* NavigationControllers */ = {
-			isa = PBXGroup;
-			children = (
-				0A8AC19E29B9D00A00EA052B /* TabBarViewController.swift */,
-				0A525DB029FCA701009D116F /* SetupForDarkMode.swift */,
-			);
-			path = NavigationControllers;
-			sourceTree = "<group>";
-		};
 		0A8AC1A229B9D4D700EA052B /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				0A8AC19E29B9D00A00EA052B /* TabBarViewController.swift */,
 				0A99A90529CD99B400CC5A42 /* UserAuth */,
-				0A99A90329CD98E600CC5A42 /* UserProfile */,
-				0A99A90129CD98CE00CC5A42 /* AllTasks */,
 				0A99A90029CD98C600CC5A42 /* Schedule */,
+				0A99A90129CD98CE00CC5A42 /* AllTasks */,
 				0A99A90229CD98DD00CC5A42 /* Contacts */,
+				0A99A90329CD98E600CC5A42 /* UserProfile */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -341,7 +288,6 @@
 				0A8AC1A329B9D4EB00EA052B /* CreateTaskForDayVC.swift */,
 				0A2717B729FE518000EFBC11 /* OpenTaskDetailVC.swift */,
 				0A0CE6F629C461F600A14648 /* OptionsForScheduleVC.swift */,
-				0ACE797629DDA0CC00599C19 /* Model */,
 			);
 			path = Schedule;
 			sourceTree = "<group>";
@@ -391,15 +337,6 @@
 				0A99A90A29CD9CB300CC5A42 /* CheckAuth.swift */,
 			);
 			path = CoreChecking;
-			sourceTree = "<group>";
-		};
-		0A99A90C29CD9E1900CC5A42 /* Managers */ = {
-			isa = PBXGroup;
-			children = (
-				0AA8EC6229CAE5E6004DC6DD /* SetDateViewController */,
-				0AA8EC6929CAF409004DC6DD /* SetTImeViewController */,
-			);
-			path = Managers;
 			sourceTree = "<group>";
 		};
 		0A9E1C3D29D078A0000CC9A9 /* LogInView */ = {
@@ -488,26 +425,6 @@
 			path = AlertControllers;
 			sourceTree = "<group>";
 		};
-		0AA8EC6229CAE5E6004DC6DD /* SetDateViewController */ = {
-			isa = PBXGroup;
-			children = (
-				0AA8EC6329CAE690004DC6DD /* SetDateViewController.swift */,
-				0AA8EC6529CAE9B0004DC6DD /* SetDateView.swift */,
-				0AA8EC6729CAF192004DC6DD /* SetDateProtocol.swift */,
-			);
-			path = SetDateViewController;
-			sourceTree = "<group>";
-		};
-		0AA8EC6929CAF409004DC6DD /* SetTImeViewController */ = {
-			isa = PBXGroup;
-			children = (
-				0AA8EC6A29CAF469004DC6DD /* SetTimeViewController.swift */,
-				0AA8EC6C29CAF4A0004DC6DD /* SetTimeView.swift */,
-				0AA8EC6E29CAF4D2004DC6DD /* SetTimeProtocol.swift */,
-			);
-			path = SetTImeViewController;
-			sourceTree = "<group>";
-		};
 		0AA8EC7029CAF52E004DC6DD /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -520,37 +437,6 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
-		0ACE797629DDA0CC00599C19 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				0ACE797429DDA0C900599C19 /* CreateTaskModel.swift */,
-			);
-			path = Model;
-			sourceTree = "<group>";
-		};
-		323A8B5E5503D5EEE0EAABE3 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				FC2C5346B0F22B63FF2E08B1 /* Pods_ForgetAboutTasks.framework */,
-				081E2F7D28B71EC3AA3980C1 /* Pods_ForgetAboutTasks_ForgetAboutTasksUITests.framework */,
-				A2355D59545111B95037C74C /* Pods_ForgetAboutTasksTests.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		FB77233B61ED3BD377BA5DED /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				CAE3B317DD81E235948CF980 /* Pods-ForgetAboutTasks.debug.xcconfig */,
-				3015CC6C7F05EBB6BF73F999 /* Pods-ForgetAboutTasks.release.xcconfig */,
-				5BFA5F0DDDDE5DC52FB7B995 /* Pods-ForgetAboutTasks-ForgetAboutTasksUITests.debug.xcconfig */,
-				A82490B7E4C862AF650DAEC1 /* Pods-ForgetAboutTasks-ForgetAboutTasksUITests.release.xcconfig */,
-				F6583D9F385144B8A1150E62 /* Pods-ForgetAboutTasksTests.debug.xcconfig */,
-				08A4F059D6FFDCFE4C1DE90E /* Pods-ForgetAboutTasksTests.release.xcconfig */,
-			);
-			path = Pods;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -558,17 +444,26 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0A86ED3929B5D981001C9BAF /* Build configuration list for PBXNativeTarget "ForgetAboutTasks" */;
 			buildPhases = (
-				1E183E221F3CE31C8C204A4B /* [CP] Check Pods Manifest.lock */,
 				0A86ED0829B5D97F001C9BAF /* Sources */,
 				0A86ED0929B5D97F001C9BAF /* Frameworks */,
 				0A86ED0A29B5D97F001C9BAF /* Resources */,
-				9212ADE824D05FD4D19A0CFF /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = ForgetAboutTasks;
+			packageProductDependencies = (
+				0A0A49C22A02D22300517E6F /* FSCalendar */,
+				0A0A49C52A02D23900517E6F /* SnapKit */,
+				0A0A49CF2A02D30F00517E6F /* GoogleSignIn */,
+				0A0A49D12A02D30F00517E6F /* GoogleSignInSwift */,
+				0A0A49D42A02D3A100517E6F /* Realm */,
+				0A0A49D62A02D3A100517E6F /* RealmSwift */,
+				0A0A49D92A04E64F00517E6F /* FirebaseAuth */,
+				0A0A49DB2A04E64F00517E6F /* FirebaseDatabase */,
+				0A0A49DD2A04E64F00517E6F /* FirebaseDatabaseSwift */,
+			);
 			productName = ForgetAboutTasks;
 			productReference = 0A86ED0C29B5D97F001C9BAF /* ForgetAboutTasks.app */;
 			productType = "com.apple.product-type.application";
@@ -577,7 +472,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0A86ED3C29B5D981001C9BAF /* Build configuration list for PBXNativeTarget "ForgetAboutTasksTests" */;
 			buildPhases = (
-				9F220AC03A0E44A8FC9541C1 /* [CP] Check Pods Manifest.lock */,
 				0A86ED2129B5D981001C9BAF /* Sources */,
 				0A86ED2229B5D981001C9BAF /* Frameworks */,
 				0A86ED2329B5D981001C9BAF /* Resources */,
@@ -596,11 +490,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0A86ED3F29B5D981001C9BAF /* Build configuration list for PBXNativeTarget "ForgetAboutTasksUITests" */;
 			buildPhases = (
-				AD5F7710F2E37EB5688C73BB /* [CP] Check Pods Manifest.lock */,
 				0A86ED2B29B5D981001C9BAF /* Sources */,
 				0A86ED2C29B5D981001C9BAF /* Frameworks */,
 				0A86ED2D29B5D981001C9BAF /* Resources */,
-				D9010490B09261661B475D28 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -644,6 +536,13 @@
 				Base,
 			);
 			mainGroup = 0A86ED0329B5D97F001C9BAF;
+			packageReferences = (
+				0A0A49C12A02D22300517E6F /* XCRemoteSwiftPackageReference "FSCalendar" */,
+				0A0A49C42A02D23900517E6F /* XCRemoteSwiftPackageReference "SnapKit" */,
+				0A0A49CE2A02D30F00517E6F /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+				0A0A49D32A02D3A100517E6F /* XCRemoteSwiftPackageReference "realm-swift" */,
+				0A0A49D82A04E64F00517E6F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			productRefGroup = 0A86ED0D29B5D97F001C9BAF /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -682,109 +581,6 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		1E183E221F3CE31C8C204A4B /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-ForgetAboutTasks-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		9212ADE824D05FD4D19A0CFF /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ForgetAboutTasks/Pods-ForgetAboutTasks-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ForgetAboutTasks/Pods-ForgetAboutTasks-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ForgetAboutTasks/Pods-ForgetAboutTasks-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		9F220AC03A0E44A8FC9541C1 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-ForgetAboutTasksTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		AD5F7710F2E37EB5688C73BB /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-ForgetAboutTasks-ForgetAboutTasksUITests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		D9010490B09261661B475D28 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ForgetAboutTasks-ForgetAboutTasksUITests/Pods-ForgetAboutTasks-ForgetAboutTasksUITests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ForgetAboutTasks-ForgetAboutTasksUITests/Pods-ForgetAboutTasks-ForgetAboutTasksUITests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ForgetAboutTasks-ForgetAboutTasksUITests/Pods-ForgetAboutTasks-ForgetAboutTasksUITests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
 		0A86ED0829B5D97F001C9BAF /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -793,28 +589,20 @@
 				0AA74A2629EC521800F01532 /* AllTasksRealmManager.swift in Sources */,
 				0A9E1C3F29D078BD000CC9A9 /* LogInView.swift in Sources */,
 				0ACE797829DECF3300599C19 /* NewContactVC.swift in Sources */,
-				0AA8EC6B29CAF469004DC6DD /* SetTimeViewController.swift in Sources */,
 				0A525DAF29FC3C3B009D116F /* AlertNewName.swift in Sources */,
 				0AA604EC29E16DC1007ACE58 /* PressButtonProtocols.swift in Sources */,
 				0ACE797A29DED2D400599C19 /* NewContactCustomView.swift in Sources */,
 				0AA8EC5D29C76968004DC6DD /* AlertDate.swift in Sources */,
-				0A525DB129FCA701009D116F /* SetupForDarkMode.swift in Sources */,
-				0AA8EC6629CAE9B0004DC6DD /* SetDateView.swift in Sources */,
 				0A8AC19F29B9D00A00EA052B /* TabBarViewController.swift in Sources */,
 				0A8DD8DB29BC8BEB00B2DDAB /* Formatters.swift in Sources */,
 				0A2717B829FE518000EFBC11 /* OpenTaskDetailVC.swift in Sources */,
-				0AA8EC6F29CAF4D2004DC6DD /* SetTimeProtocol.swift in Sources */,
 				0A99A90B29CD9CB300CC5A42 /* CheckAuth.swift in Sources */,
 				0A8AC1A829B9DBD300EA052B /* UserProfileVC.swift in Sources */,
 				0AA604E629E14814007ACE58 /* ScheduleRealmManager.swift in Sources */,
-				0AA8EC6D29CAF4A0004DC6DD /* SetTimeView.swift in Sources */,
 				0A8AC1A629B9D4FA00EA052B /* ContactsVC.swift in Sources */,
 				0AA604E929E16C05007ACE58 /* ColorExtensions.swift in Sources */,
-				0AA8EC6429CAE690004DC6DD /* SetDateViewController.swift in Sources */,
 				0AA604DF29E04541007ACE58 /* AlertImagePicker.swift in Sources */,
-				0A8AC19829B8309F00EA052B /* MainViewController.swift in Sources */,
 				0AA74A2429E715ED00F01532 /* DateFormatters.swift in Sources */,
-				0A86ED1429B5D97F001C9BAF /* CalendarViewController.swift in Sources */,
 				0A0CE6F729C461F600A14648 /* OptionsForScheduleVC.swift in Sources */,
 				0AA8EC5F29C7AA56004DC6DD /* AlertTime.swift in Sources */,
 				0AB763BA29E3FAC900BFDB0D /* AlertError.swift in Sources */,
@@ -826,18 +614,14 @@
 				0A7FFFC029F1BA1800CAC9DA /* DownloadImage.swift in Sources */,
 				0A7FFFBD29F1326A00CAC9DA /* StringExtension.swift in Sources */,
 				0ACE796B29D9EEAA00599C19 /* AlertSpinner.swift in Sources */,
-				0ACE797529DDA0C900599C19 /* CreateTaskModel.swift in Sources */,
 				0A99A90729CD99CA00CC5A42 /* UserAuthController.swift in Sources */,
 				0A2717BA2A01F7FE00EFBC11 /* AllTasksDetailVC.swift in Sources */,
 				0ACE797229DD95C600599C19 /* CreateTaskTableVC.swift in Sources */,
-				0AA8EC6829CAF192004DC6DD /* SetDateProtocol.swift in Sources */,
 				0A86ED1029B5D97F001C9BAF /* AppDelegate.swift in Sources */,
-				0A8AC19629B7B58300EA052B /* EKWrapper.swift in Sources */,
 				0A9E1C3A29CEEDCE000CC9A9 /* LoginController.swift in Sources */,
 				0A8AC1A429B9D4EB00EA052B /* CreateTaskForDayVC.swift in Sources */,
 				0A7FFFBA29EFDC0B00CAC9DA /* ContactRealmManager.swift in Sources */,
 				0A9E1C3C29D0778F000CC9A9 /* RegisterAccountController.swift in Sources */,
-				0A8AC19429B7A31500EA052B /* SecondViewController.swift in Sources */,
 				0A86ED1229B5D97F001C9BAF /* SceneDelegate.swift in Sources */,
 				0AA604DC29E03CB1007ACE58 /* AlertContacts.swift in Sources */,
 				0AA74A2829EC524200F01532 /* AllTaskModel.swift in Sources */,
@@ -1006,7 +790,6 @@
 		};
 		0A86ED3A29B5D981001C9BAF /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CAE3B317DD81E235948CF980 /* Pods-ForgetAboutTasks.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -1040,7 +823,6 @@
 		};
 		0A86ED3B29B5D981001C9BAF /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3015CC6C7F05EBB6BF73F999 /* Pods-ForgetAboutTasks.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -1074,7 +856,6 @@
 		};
 		0A86ED3D29B5D981001C9BAF /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F6583D9F385144B8A1150E62 /* Pods-ForgetAboutTasksTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -1095,7 +876,6 @@
 		};
 		0A86ED3E29B5D981001C9BAF /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 08A4F059D6FFDCFE4C1DE90E /* Pods-ForgetAboutTasksTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -1116,7 +896,6 @@
 		};
 		0A86ED4029B5D981001C9BAF /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5BFA5F0DDDDE5DC52FB7B995 /* Pods-ForgetAboutTasks-ForgetAboutTasksUITests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1135,7 +914,6 @@
 		};
 		0A86ED4129B5D981001C9BAF /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A82490B7E4C862AF650DAEC1 /* Pods-ForgetAboutTasks-ForgetAboutTasksUITests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1192,6 +970,97 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		0A0A49C12A02D22300517E6F /* XCRemoteSwiftPackageReference "FSCalendar" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/WenchaoD/FSCalendar";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
+		0A0A49C42A02D23900517E6F /* XCRemoteSwiftPackageReference "SnapKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SnapKit/SnapKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.0;
+			};
+		};
+		0A0A49CE2A02D30F00517E6F /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.0.0;
+			};
+		};
+		0A0A49D32A02D3A100517E6F /* XCRemoteSwiftPackageReference "realm-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/realm/realm-swift.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+		0A0A49D82A04E64F00517E6F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 10.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		0A0A49C22A02D22300517E6F /* FSCalendar */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0A0A49C12A02D22300517E6F /* XCRemoteSwiftPackageReference "FSCalendar" */;
+			productName = FSCalendar;
+		};
+		0A0A49C52A02D23900517E6F /* SnapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0A0A49C42A02D23900517E6F /* XCRemoteSwiftPackageReference "SnapKit" */;
+			productName = SnapKit;
+		};
+		0A0A49CF2A02D30F00517E6F /* GoogleSignIn */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0A0A49CE2A02D30F00517E6F /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignIn;
+		};
+		0A0A49D12A02D30F00517E6F /* GoogleSignInSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0A0A49CE2A02D30F00517E6F /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignInSwift;
+		};
+		0A0A49D42A02D3A100517E6F /* Realm */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0A0A49D32A02D3A100517E6F /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = Realm;
+		};
+		0A0A49D62A02D3A100517E6F /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0A0A49D32A02D3A100517E6F /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
+		};
+		0A0A49D92A04E64F00517E6F /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0A0A49D82A04E64F00517E6F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		0A0A49DB2A04E64F00517E6F /* FirebaseDatabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0A0A49D82A04E64F00517E6F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDatabase;
+		};
+		0A0A49DD2A04E64F00517E6F /* FirebaseDatabaseSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0A0A49D82A04E64F00517E6F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDatabaseSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		0A86ED1829B5D97F001C9BAF /* ForgetAboutTasks.xcdatamodeld */ = {

@@ -8,6 +8,8 @@
 import UIKit
 import SnapKit
 import FirebaseAuth
+import FirebaseDatabase
+
 
 class RegisterAccountViewController: UIViewController {
     
@@ -44,6 +46,17 @@ class RegisterAccountViewController: UIViewController {
         field.layer.borderWidth = 1
         field.autocapitalizationType = .none
         field.passwordRules = UITextInputPasswordRules(descriptor: "No matter how and what")
+        field.layer.cornerRadius = 12
+        field.layer.borderColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
+        return field
+    }()
+    
+    private let userNameField: UITextField = {
+       let field = UITextField()
+        field.placeholder = " Enter your name"
+        field.isSecureTextEntry = false
+        field.layer.borderWidth = 1
+        field.autocapitalizationType = .words
         field.layer.cornerRadius = 12
         field.layer.borderColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
         return field
@@ -102,21 +115,32 @@ class RegisterAccountViewController: UIViewController {
         }
         isPasswordHidden = !isPasswordHidden
     }
-    
+    //Добавить функцию создания имени фамилии и базовых данных и привязки данных к аккаунту
     @objc private func didTapCreateNewAccount(){
-        guard let field = emailField.text, !field.isEmpty,
+        guard let mailField = emailField.text, !mailField.isEmpty,
               let firstPassword = passwordField.text, !firstPassword.isEmpty,
-              let secondPassword = secondPasswordField.text, !secondPassword.isEmpty else {
+              let secondPassword = secondPasswordField.text, !secondPassword.isEmpty,
+              let userName = userNameField.text, !userName.isEmpty else {
             setupAlert(title: "Error!", subtitle: "Some of the text fields is empty.\nEnter value in all fields")
             return
         }
         if firstPassword.elementsEqual(secondPassword) {
             print("Equal and creating new account")
             if secondPassword.count >= 8 {
-                FirebaseAuth.Auth.auth().createUser(withEmail: field, password: secondPassword) { result, error in
-                    guard error == nil else { self.setupAlert(); return }
+                FirebaseAuth.Auth.auth().createUser(withEmail: mailField, password: secondPassword) { result, error in
+                    guard error == nil, let result = result else { self.setupAlert(); return }
+                    
+                    let ref = Database.database().reference().child("users")
+                    ref.child(result.user.uid).updateChildValues(["name" : userName,"email": mailField]) { error, _ in
+                        if error != nil {
+                            print("Error saving data")
+                        }
+                    }
+                    UserDefaults.standard.setValue(userName, forKey: "userName")
+                    UserDefaults.standard.setValue(mailField, forKey: "userMail")
                     self.view.window?.rootViewController?.dismiss(animated: true)
                     CheckAuth.shared.setupForAuth()
+                    
                 }
             } else {
                 setupAlert(title: "Alert!", subtitle: "Password must contains at least 8 letters.\nChange size of your password!")
@@ -179,6 +203,13 @@ extension RegisterAccountViewController {
             make.height.equalTo(40)
         }
         
+        view.addSubview(userNameField)
+        userNameField.snp.makeConstraints { make in
+            make.top.equalTo(secondPasswordField.snp.bottom).offset(20)
+            make.leading.trailing.equalToSuperview().inset(20)
+            make.height.equalTo(40)
+        }
+        
         view.addSubview(isPasswordHiddenButton)
         isPasswordHiddenButton.snp.makeConstraints { make in
             make.top.equalTo(emailField.snp.bottom).offset(25)
@@ -197,7 +228,7 @@ extension RegisterAccountViewController {
         
         view.addSubview(configureUserButton)
         configureUserButton.snp.makeConstraints { make in
-            make.top.equalTo(secondPasswordField.snp.bottom).offset(20)
+            make.top.equalTo(userNameField.snp.bottom).offset(20)
             make.leading.trailing.equalToSuperview().inset(60)
             make.height.equalTo(40)
         }

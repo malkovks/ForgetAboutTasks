@@ -18,6 +18,8 @@ class UserAuthViewController: UIViewController {
     
     weak var delegate: UserAuthProtocol?
     
+    weak var userDelegate: ScheduleUserIdProtocol?
+    
     private let spinner = UIActivityIndicatorView()
     
     //MARK: - UI views
@@ -60,23 +62,13 @@ class UserAuthViewController: UIViewController {
         button.tintColor = .systemBackground
         return button
     }()
-    //начать делать авторизацию через гитхаб
-    private let signInWithGitHub: UIButton = {
-        let button = UIButton()
-        button.configuration = .tinted()
-        button.configuration?.title = "Sign in with GitHub"
-        button.configuration?.image = UIImage(named: "github_logo")?.withTintColor(.systemBackground,renderingMode: .alwaysOriginal)
-        button.configuration?.imagePadding = 8
-        button.layer.cornerRadius = 8
-        button.backgroundColor = #colorLiteral(red: 0.06544024497, green: 0.06544024497, blue: 0.06544024497, alpha: 1)
-        button.tintColor = .systemBackground
-        return button
-    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
     }
+    
+    
     //MARK: - Targets methods
     @objc private func didTapLogin(){
         spinner.startAnimating()
@@ -109,7 +101,6 @@ class UserAuthViewController: UIViewController {
             return
         }
         
-        //разобраться с авторизацией и с отображением загрузочного спинера
         //
         //create google sign in configuration object
         let config = GIDConfiguration(clientID: client)
@@ -134,14 +125,11 @@ class UserAuthViewController: UIViewController {
                     return
                 }
                 CheckAuth.shared.setupForAuth()
-                self.delegate?.userData(result: result)
+                CheckAuth.shared.saveData(result: result)
+//                self.delegate?.userData(result: result)
                 self.dismiss(animated: true)
-                self.tabBarController?.selectedIndex = 3
                 self.spinner.stopAnimating()
                 self.view.alpha = 1.0
-                
-                
-                
             }
         }
     }

@@ -8,15 +8,17 @@
 import UIKit
 import SnapKit
 import Combine
+import MessageUI
+
 
 class NewContactViewController: UIViewController {
     
     private let headerArray = ["Name","Phone","Mail","Type"]
     
     private var cellsName = [["Name"],
-                     ["Phone number"],
-                     ["Mail"],
-                     ["Type of contact"]]
+                             ["Phone number"],
+                             ["Mail"],
+                             ["Type of contact"]]
     
     var contactModel = ContactModel()
     
@@ -26,7 +28,7 @@ class NewContactViewController: UIViewController {
     private let viewForTable = NewContactCustomView()
     
     private let labelForImageView: UILabel = {
-       let label = UILabel()
+        let label = UILabel()
         label.text = "Choose image"
         label.textColor = .systemGray
         label.font = .systemFont(ofSize: 16, weight: .semibold)
@@ -38,7 +40,7 @@ class NewContactViewController: UIViewController {
         setupTableView()
         setupView()
     }
-
+    
     //MARK: - Targets methods
     @objc private func didTapSave(){
         if !contactModel.contactName.isEmpty && !contactModel.contactPhoneNumber.isEmpty {
@@ -83,12 +85,10 @@ class NewContactViewController: UIViewController {
     
     private func setupSelection(boolean: Bool){
         if !boolean {
-            tableView.allowsSelection = false
             labelForImageView.isHidden = false
             viewForTable.isHidden = false
             navigationItem.rightBarButtonItem?.isHidden = true
         } else {
-            tableView.allowsSelection = true
             labelForImageView.isHidden = false
             viewForTable.isHidden = false
             navigationItem.rightBarButtonItem?.isHidden = false
@@ -112,12 +112,29 @@ class NewContactViewController: UIViewController {
         if isViewEdited {
             viewForTable.addGestureRecognizer(gesture)
         }
-        
+    }
+    
+    private func setupComposeView(model: ContactModel){
+        if MFMailComposeViewController.canSendMail() {
+            let vc = MFMailComposeViewController()
+            vc.mailComposeDelegate = self
+            
+            vc.setToRecipients([model.contactMail])
+            vc.setSubject("Hello from Developers, \(model.contactName)")
+            vc.setMessageBody("Hello \(model.contactName)", isHTML: false)
+            
+            self.present(vc, animated: true)
+        } else {
+            alertError(text: "Error sending mail")
+        }
         
     }
+}
     //MARK: - Segue methods
-    
-
+extension NewContactViewController: MFMailComposeViewControllerDelegate{
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        controller.dismiss(animated: true)
+    }
 }
 
 extension NewContactViewController: UITableViewDelegate, UITableViewDataSource {
@@ -136,18 +153,19 @@ extension NewContactViewController: UITableViewDelegate, UITableViewDataSource {
         cell.contentView.layer.cornerRadius = 10
         cell.backgroundColor = UIColor(named: "cellColor")
         if !isViewEdited {
-
             if let image = contactModel.contactImage {
                 viewForTable.contactImageView.image = UIImage(data: image)
+                viewForTable.contactImageView.layer.cornerRadius = 0.5 * viewForTable.contactImageView.bounds.size.width
                 viewForTable.contactImageView.contentMode = .scaleAspectFit
                 viewForTable.contactImageView.clipsToBounds = true
+                labelForImageView.isHidden = true
             }
-            
             switch indexPath {
             case [0,0]:
                 cell.textLabel?.text = contactModel.contactName
             case [1,0]:
-                cell.textLabel?.text = contactModel.contactPhoneNumber
+                let phoneNumber = String.format(with: "+X (XXX) XXX-XXXX", phone: contactModel.contactPhoneNumber)
+                cell.textLabel?.text = phoneNumber
             case [2,0]:
                 cell.textLabel?.text = contactModel.contactMail
             case [3,0]:
@@ -157,41 +175,56 @@ extension NewContactViewController: UITableViewDelegate, UITableViewDataSource {
             }
         } else {
             cell.textLabel?.text = data
+            labelForImageView.isHidden = false
         }
-        
-        
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let cellName = cellsName[indexPath.section][indexPath.row]
-        switch indexPath.section {
-        case 0:
-            alertTextField(cell: cellName, placeholder: "Enter name of contact", keyboard: .default, table: tableView) { [unowned self] text in
-                self.cellsName[indexPath.section][indexPath.row] = text
-                contactModel.contactName = text
+        if isViewEdited {
+            switch indexPath.section {
+            case 0:
+                alertTextField(cell: cellName, placeholder: "Enter name of contact", keyboard: .default, table: tableView) { [unowned self] text in
+                    self.cellsName[indexPath.section][indexPath.row] = text
+                    contactModel.contactName = text
+                }
+            case 1:
+                alertTextField(cell: cellName, placeholder: "Enter number of contact", keyboard: .numberPad, table: tableView) { [unowned self] text in
+                    self.cellsName[indexPath.section][indexPath.row] = text
+                    contactModel.contactPhoneNumber = text
+                }
+            case 2:
+                alertTextField(cell: cellName, placeholder: "Enter mail", keyboard: .emailAddress, table: tableView) { [weak self] text in
+                    self?.cellsName[indexPath.section][indexPath.row] = text
+                    self?.contactModel.contactMail = text
+                }
+            case 3:
+                alertFriends(tableView: tableView) { [ weak self] text in
+                    self?.cellsName[indexPath.section][indexPath.row] = text
+                    self?.contactModel.contactType = text
+                }
+            default:
+                print("error")
             }
-        case 1:
-            alertTextField(cell: cellName, placeholder: "Enter number of contact", keyboard: .numberPad, table: tableView) { [unowned self] text in
-                let phoneNumber = String.format(with: "+X (XXX) XXX-XXXX", phone: text)
-                self.cellsName[indexPath.section][indexPath.row] = phoneNumber
-                
-                contactModel.contactPhoneNumber = phoneNumber
+        } else {
+            switch indexPath.section {
+            case 1:
+                print("phone number")
+                guard let url = URL(string: "tel://\(contactModel.contactPhoneNumber)") else { self.alertError();return}
+                if UIApplication.shared.canOpenURL(url){
+                    UIApplication.shared.open(url)
+                } else {
+                    alertError(text: "", mainTitle: "Can't call to user!")
+                }
+            case 2:
+                setupComposeView(model: contactModel)
+            default:
+                print("Error")
             }
-        case 2:
-            alertTextField(cell: cellName, placeholder: "Enter mail", keyboard: .emailAddress, table: tableView) { [weak self] text in
-                self?.cellsName[indexPath.section][indexPath.row] = text
-                self?.contactModel.contactMail = text
-            }
-        case 3:
-            alertFriends(tableView: tableView) { [ weak self] text in
-                self?.cellsName[indexPath.section][indexPath.row] = text
-                self?.contactModel.contactType = text
-            }
-        default:
-            print("error")
         }
+        
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {

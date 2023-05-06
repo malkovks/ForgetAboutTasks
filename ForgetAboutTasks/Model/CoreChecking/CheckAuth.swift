@@ -26,6 +26,15 @@ class CheckAuth: UIViewController {
         UserDefaults.standard.set(true, forKey: "isAuthorised")
     }
     
+    func signOut(){
+        UserDefaults.standard.setValue("Set your name", forKey: "userName")
+        UserDefaults.standard.setValue("No email", forKey: "userMail")
+        UserDefaults.standard.setValue(nil, forKey: "userImage")
+        UserDefaults.standard.setValue("", forKey: "userAge")
+    }
+    
+    
+    
     func loadData() -> (String,String,String,UIImage) {
         var image = UIImage()
         if let data = UserDefaults.standard.data(forKey: "userImage") {

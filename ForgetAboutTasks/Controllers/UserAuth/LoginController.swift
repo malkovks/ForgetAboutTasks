@@ -77,7 +77,7 @@ class LogInViewController: UIViewController {
         }
         isPasswordHidden = !isPasswordHidden
     }
-    
+    //при входе в аккаунт выгружать также имя фамилию и прочее
     @objc private func didTapContinue(){
         guard let email = emailField.text, !email.isEmpty,
               let password = passwordField.text, !password.isEmpty else {
@@ -94,6 +94,7 @@ class LogInViewController: UIViewController {
             }
             self?.view.window?.rootViewController?.dismiss(animated: true)
             self?.setupLoadingSpinner()
+            UserDefaults.standard.setValue(email, forKey: "userMail")
             CheckAuth.shared.setupForAuth()
             
             

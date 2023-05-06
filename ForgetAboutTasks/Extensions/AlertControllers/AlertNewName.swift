@@ -12,6 +12,7 @@ extension UIViewController {
         let alert = UIAlertController(title: "", message: title, preferredStyle: .alert)
         alert.addTextField(configurationHandler: { text in
             text.placeholder = placeholder
+            text.autocapitalizationType = .words
         })
         alert.addAction(UIAlertAction(title: "Save", style: .default,handler: { _ in
             DispatchQueue.main.async {

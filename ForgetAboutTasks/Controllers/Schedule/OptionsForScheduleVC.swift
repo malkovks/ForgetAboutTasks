@@ -194,8 +194,7 @@ extension OptionsForScheduleViewController: UITableViewDelegate, UITableViewData
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         let inheritedData = selectedScheduleModel
         let data = cellsName[indexPath.section][indexPath.row]
-        let date = inheritedData?.scheduleDate ?? Date()
-        let time = inheritedData?.scheduleTime ?? Date()
+        let dateAndTime = inheritedData?.scheduleTime ?? Date()
         
         cell.layer.cornerRadius = 10
         cell.contentView.layer.cornerRadius = 10
@@ -212,7 +211,7 @@ extension OptionsForScheduleViewController: UITableViewDelegate, UITableViewData
             case [0,0]:
                 cell.textLabel?.text = inheritedData?.scheduleName
             case [1,0]:
-                let time = DateFormatter.localizedString(from: time, dateStyle: .medium, timeStyle: .medium)
+                let time = DateFormatter.localizedString(from: dateAndTime, dateStyle: .medium, timeStyle: .medium)
                 cell.textLabel?.text = time
             case [1,1]:
                 cell.textLabel?.text = data
@@ -257,7 +256,6 @@ extension OptionsForScheduleViewController: UITableViewDelegate, UITableViewData
     
         if isEditingView {
             let realm = try! Realm()
-            let model = realm.objects(ScheduleModel.self)
             switch indexPath {
             case [0,0]:
                 alertTextField(cell: cellName, placeholder: "Enter text", keyboard: .default, table: tableView) {[self] text in
@@ -265,7 +263,7 @@ extension OptionsForScheduleViewController: UITableViewDelegate, UITableViewData
                     cellsName[indexPath.section][indexPath.row] = text
                 }
             case [1,0]:
-                alertTime(table: tableView, choosenDate: choosenDate) { [self] date, timeString in
+                alertTimeInline(table: tableView, choosenDate: choosenDate) { [self] date, timeString in
                     selectedScheduleModel?.scheduleTime = date
                     selectedScheduleModel?.scheduleDate = date
                     cellsName[indexPath.section][indexPath.row] = timeString
@@ -304,7 +302,7 @@ extension OptionsForScheduleViewController: UITableViewDelegate, UITableViewData
                     cellsName[indexPath.section][indexPath.row] = text
                 }
             case [1,0]:
-                alertTime(table: tableView, choosenDate: choosenDate) { [self] date, timeString in
+                alertTimeInline(table: tableView, choosenDate: choosenDate) { [self] date, timeString in
                     scheduleModel.scheduleTime = date
                     scheduleModel.scheduleDate = date
                     cellsName[indexPath.section][indexPath.row] = timeString

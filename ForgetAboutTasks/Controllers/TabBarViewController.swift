@@ -22,7 +22,8 @@ class TabBarViewController: UITabBarController {
         let contactsVC = setupNavigationController(vc: ContactsViewController(), itemName: "Contacts", image: "rectangle.stack.person.crop")
         let userVC = setupNavWithoutNavBarEdgeAppearance(vc: UserProfileViewController(), itemName: "Settings", image: "gear")
         
-        viewControllers = [scheduleVC, allTasks, contactsVC, userVC]
+//        viewControllers = [scheduleVC, allTasks, contactsVC, userVC]
+        setViewControllers([scheduleVC,allTasks,contactsVC,userVC], animated: true)
     }
     
     //настройка таб бара

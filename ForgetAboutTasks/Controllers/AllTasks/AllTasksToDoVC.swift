@@ -13,11 +13,22 @@ import RealmSwift
 class AllTasksToDoViewController: UIViewController {
     
     var allTasksData: Results<AllTaskModel>!
+    private var allTasksDataFiltered: Results<AllTaskModel>!
     private var localRealmData = try! Realm()
     var allTasksDataSections = [Date]()
     var taskDate = Set<Date>()
     
+    private var viewIsFiltered: Bool {
+        return searchController.isActive && !searchBarIsEmpty
+    }
+    
+    private var searchBarIsEmpty: Bool {
+        guard let text = searchController.searchBar.text else { return true }
+        return text.isEmpty
+    }
+    
     private let tableView = UITableView()
+    private let searchController = UISearchController()
     
     private var segmentalController: UISegmentedControl = {
         let controller = UISegmentedControl(items: ["Date","A-Z"])
@@ -35,12 +46,14 @@ class AllTasksToDoViewController: UIViewController {
         controller.attributedTitle = NSAttributedString(string: "Pull to refresh")
         return controller
     }()
+    
 
     //MARK: - Views loading
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -74,6 +87,12 @@ class AllTasksToDoViewController: UIViewController {
         }
     }
     
+    @objc private func didTapSearch(){
+        navigationItem.searchController = searchController
+        searchController.isActive = true
+//        navigationItem.searchController?.isActive = true
+    }
+    
     @objc private func didTapChangeCell(sender tag: AnyObject) {
         
         let button = tag as! UIButton
@@ -91,6 +110,7 @@ class AllTasksToDoViewController: UIViewController {
         setupNavigationController()
         setupTargetsAndDelegates()
         loadingRealmData()
+        setupSearchController()
         view.backgroundColor = UIColor(named: "backgroundColor")
     }
     
@@ -100,11 +120,22 @@ class AllTasksToDoViewController: UIViewController {
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "folder.fill.badge.plus"), landscapeImagePhone: nil, style: .done, target: self, action: #selector(didTapCreateNewTask))
+        
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "magnifyingglass.circle.fill"), style: .done, target: self, action: #selector(didTapSearch))
     }
     
     private func setupTargetsAndDelegates(){
         refreshController.addTarget(self, action: #selector(didTapRefresh), for: .valueChanged)
         segmentalController.addTarget(self, action: #selector(didTapSegmentChanged), for: .valueChanged)
+    }
+    
+    private func setupSearchController(){
+        searchController.searchBar.placeholder = "Enter text"
+        searchController.searchResultsUpdater = self
+        searchController.searchBar.delegate = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        navigationItem.searchController = nil
+        navigationItem.hidesSearchBarWhenScrolling = true
     }
     
     private func setupTableView(){
@@ -125,44 +156,42 @@ class AllTasksToDoViewController: UIViewController {
         allTasksDataSections.append(model.allTaskDate ?? Date())
         self.tableView.reloadData()
     }
-    
-   
 }
-//MARK: - Task model protocol
+//MARK: - Search Controller
+
 
 //MARK: - Table view delegates
 extension AllTasksToDoViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return allTasksData.count
+        return viewIsFiltered ? allTasksDataFiltered.count : allTasksData.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cellIdentifier")
-        let data = allTasksData[indexPath.row]
+        let data = viewIsFiltered ? allTasksDataFiltered[indexPath.row] : allTasksData[indexPath.row]
         let color = UIColor.color(withData: data.allTaskColor!)
         cell.backgroundColor = UIColor(named: "backgroundColor")
-//        setupCategories(model: data)
-        
+
         let button = UIButton(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
         button.tintColor = UIColor(named: "navigationControllerColor")
         button.addTarget(self, action: #selector(didTapChangeCell), for: .touchUpInside)
         button.sizeToFit()
         button.tag = indexPath.row
-        
+
         cell.accessoryView = button as UIView
-        
-        
-        
+
+
+
         if let date = data.allTaskDate, let time = data.allTaskTime {
 //            if allTasksDataSections[indexPath.section] == date {
                 let timeFF = Formatters.instance.timeStringFromDate(date: time)
                 let dateF = DateFormatter.localizedString(from: date, dateStyle: .medium, timeStyle: .none)
-    
+
                 cell.textLabel?.text = data.allTaskNameEvent
                 cell.detailTextLabel?.text = dateF + "   " + timeFF
                 cell.imageView?.image = UIImage(systemName: "circle.fill")
 //            }
-            
+
         }
         if data.allTaskCompleted {
             button.setImage(UIImage(systemName: "circle.fill"), for: .normal)
@@ -204,6 +233,22 @@ extension AllTasksToDoViewController: UITableViewDelegate, UITableViewDataSource
         let action = UISwipeActionsConfiguration(actions: [deleteInstance])
         
         return action
+    }
+}
+
+extension AllTasksToDoViewController: UISearchResultsUpdating ,UISearchBarDelegate{
+    func updateSearchResults(for searchController: UISearchController) {
+        filterTable(searchController.searchBar.text ?? "Empty value")
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        navigationItem.searchController?.isActive = false
+        navigationItem.searchController = nil
+    }
+    
+    private func filterTable(_ searchText: String) {
+        allTasksDataFiltered = allTasksData.filter("allTaskNameEvent CONTAINS[c] %@ ",searchText)
+        tableView.reloadData()
     }
 }
 
@@ -252,3 +297,33 @@ extension AllTasksToDoViewController {
 //        let action = UISwipeActionsConfiguration(actions: [actionInstance])
 //        return action
 //    }
+//MARK: - Setup for sections
+//private func setupObjects() -> Results<AllTaskModel> {
+//    let objects = localRealmData.objects(AllTaskModel.self).sorted(byKeyPath: "allTaskDate")
+//    return objects
+//}
+//
+//private func setupTitles(objects: Results<AllTaskModel>) -> ([String],[Date]) {
+//    let dates = objects.map({ $0.allTaskDate! })
+//    let uniqueDates = Array(Set(dates))
+//    let sortedDates = uniqueDates.sorted(by: >)
+//    let formatter = DateFormatter()
+//    formatter.dateFormat = "dd MMMM yyyy"
+//    let titles = sortedDates.map { formatter.string(from: $0) }
+//    return (titles,sortedDates)
+//}
+//
+//private func setupSectionsCategories(objects: Results<AllTaskModel>) -> [Date: [AllTaskModel]]  {
+//    let objects = objects
+//    var groupedObjects = [Date: [AllTaskModel]]()
+//    for n in objects {
+//        let date = n.allTaskDate ?? Date()
+//        if groupedObjects[date] == nil {
+//            groupedObjects[date] = [n]
+//        } else {
+//            groupedObjects[date]?.append(n)
+//        }
+//    }
+//    return groupedObjects
+//}
+//

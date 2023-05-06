@@ -13,7 +13,7 @@ class AllTaskModel: Object {
     @Persisted var allTaskNameEvent: String
     @Persisted var allTaskDate: Date?
     @Persisted var allTaskTime: Date?
-    @Persisted var allTaskNotes: String = "Unknown datqa"
+    @Persisted var allTaskNotes: String = "Unknown data"
     @Persisted var allTaskURL: String = "Unknown URL"
     @Persisted var allTaskColor: Data?
     @Persisted var allTaskCompleted: Bool = false

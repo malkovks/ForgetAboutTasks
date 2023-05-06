@@ -49,6 +49,8 @@ class ScheduleViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupAuthentification()
+//        setupView()
+//        setupNavigationController()
         //добавить поиск по дате при помощи скролла
     }
     
@@ -77,6 +79,8 @@ class ScheduleViewController: UIViewController {
             navVC.modalPresentationStyle = .fullScreen
             navVC.isNavigationBarHidden = false
             present(navVC, animated: true)
+            setupView()
+            setupNavigationController()
         } else {
             setupView()
             setupNavigationController()
@@ -84,6 +88,7 @@ class ScheduleViewController: UIViewController {
     }
     
     private func setupView(){
+        calendar.reloadData()
         setupDelegates()
         setupConstraints()
         loadingRealmData()

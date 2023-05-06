@@ -10,6 +10,20 @@ import FSCalendar
 import SnapKit
 import RealmSwift
 
+class ScheduleUserID {
+    var userID : String
+    
+    init(userID: String){
+        self.userID = userID
+    }
+    
+    deinit {}
+}
+
+protocol ScheduleUserIdProtocol: AnyObject {
+    func sendUserID(id:String)
+}
+
 class CreateTaskForDayController: UIViewController {
     
     var cellDataScheduleModel: Results<ScheduleModel>!
@@ -133,6 +147,7 @@ class CreateTaskForDayController: UIViewController {
         segmentalController.addTarget(self, action: #selector(didTapSegmentChanged(segment:)), for: .valueChanged)
         calendar.reloadData()
         setupTitleView(date: choosenDate)
+        
     }
     
     private func setupTableViewAndDelegates(){
