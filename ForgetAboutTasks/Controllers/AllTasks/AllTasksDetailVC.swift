@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 import Combine
+import SafariServices
 
 
 class AllTasksDetailViewController: UIViewController {
@@ -30,6 +31,10 @@ class AllTasksDetailViewController: UIViewController {
     
     private let tableView = UITableView()
     
+    private lazy var shareTableInfo: UIBarButtonItem = {
+        return UIBarButtonItem(image: UIImage(systemName: "square.and.arrow.up.fill"), style: .bordered, target: self, action: #selector(didTapShareTable))
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTableView()
@@ -42,15 +47,26 @@ class AllTasksDetailViewController: UIViewController {
     }
     
     @objc private func didTapEdit(){
-        print("Edit")
-//        if !(tasksModel.allTaskNameEvent.isEmpty) {
-//            AllTasksRealmManager.shared.saveAllTasksModel(model: tasksModel)
-//            tasksModel = AllTaskModel()
-//            self.dismiss(animated: true)
-//        } else {
-//            alertError(text: "Enter value in Name cell", mainTitle: "Error saving!")
-//        }
-        
+        let vc = CreateTaskTableViewController()
+        vc.tasksModel = self.tasksModel
+//        vc.editedTaskModel = tasksModel
+        vc.isUserPressedToChangeModel = true
+        vc.title = "Editing event"
+        vc.cellBackgroundColor = UIColor.color(withData: tasksModel.allTaskColor!) ?? #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
+        let navVC = UINavigationController(rootViewController: vc)
+        navVC.modalPresentationStyle = .formSheet
+        navVC.sheetPresentationController?.detents = [.large()]
+        navVC.sheetPresentationController?.prefersGrabberVisible = true
+        navVC.isNavigationBarHidden = false
+        present(navVC, animated: true)
+    }
+    
+    @objc private func didTapShareTable(_ sender: Any){
+        let vc = UIActivityViewController(activityItems: [tableView], applicationActivities: nil)
+        vc.popoverPresentationController?.barButtonItem = sender as? UIBarButtonItem
+        vc.setValue("Table title", forKey: "subject")
+        vc.excludedActivityTypes = [.markupAsPDF,.airDrop,.mail,.openInIBooks]
+        present(vc, animated: true)
     }
     //MARK: - Setup methods
     private func setupView() {
@@ -59,7 +75,6 @@ class AllTasksDetailViewController: UIViewController {
         setupColorPicker()
         setupConstraints()
         view.backgroundColor = UIColor(named: "backgroundColor")
-        title = "New task"
     }
     
     private func setupDelegate(){
@@ -82,7 +97,8 @@ class AllTasksDetailViewController: UIViewController {
     private func setupNavigationController(){
         navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(didTapDismiss))
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(didTapEdit))
+        let editButton = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(didTapEdit))
+        navigationItem.rightBarButtonItems = [editButton,shareTableInfo]
         
         
     }
@@ -134,39 +150,15 @@ extension AllTasksDetailViewController: UITableViewDelegate, UITableViewDataSour
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-//        let cellName = cellsName[indexPath.section][indexPath.row]
-//        switch indexPath {
-//        case [0,0]:
-//            alertTextField(cell: cellName, placeholder: "Enter title of event", keyboard: .default, table: tableView) { [self] text in
-//                cellsName[indexPath.section][indexPath.row] = text
-//                tasksModel.allTaskNameEvent = text
-//            }
-//        case [1,0]:
-//            alertDate(table: tableView, choosenDate: nil) { [self] _ , date, dateString in
-//                cellsName[indexPath.section][indexPath.row] += ": " + dateString
-//                tasksModel.allTaskDate = date
-//            }
-//        case [2,0]:
-//            alertTime(table: tableView, choosenDate: Date()) {  [self] date, timeString in
-//                cellsName[indexPath.section][indexPath.row] += ": " + timeString
-//                tasksModel.allTaskTime = date
-//            }
-//        case [3,0]:
-//            alertTextField(cell: cellName, placeholder: "Enter notes value", keyboard: .default, table: tableView) { [self] text in
-//                cellsName[indexPath.section][indexPath.row] = text
-//                tasksModel.allTaskNotes = text
-//            }
-//        case [4,0]:
-//            alertTextField(cell: cellName, placeholder: "Enter URL value", keyboard: .default, table: tableView, completion: { [self] text in
-//                cellsName[indexPath.section][indexPath.row] = text
-//                tasksModel.allTaskURL = text
-//            })
-//        case [5,0]:
-//            openColorPicker()
-//        default:
-//            print("error")
-//        }
+        if indexPath.section == 4 {
+            let url = tasksModel.allTaskURL ?? "Empty URL"
+            if url.isURLValid(text: url) {
+                futureUserActions(link: url)
+            }
+        }
     }
+    
+
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return headerArray[section]

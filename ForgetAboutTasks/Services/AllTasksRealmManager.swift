@@ -6,6 +6,7 @@
 //
 
 import RealmSwift
+import Foundation
 
 class AllTasksRealmManager {
     
@@ -18,13 +19,24 @@ class AllTasksRealmManager {
     func saveAllTasksModel(model: AllTaskModel){
         try! localRealm.write {
             localRealm.add(model)
-            print("Tasks saved in realm")
         }
     }
     
-    func changeAllTasksModel(model: AllTaskModel,boolean: Bool){
+    func changeCompleteStatus(model: AllTaskModel,boolean: Bool){
         try! localRealm.write {
             model.allTaskCompleted = boolean
+        }
+    }
+    
+    func editAllTasksModel(oldModelDate: String,newModel:AllTaskModel){
+        let model = localRealm.objects(AllTaskModel.self).filter("allTaskNameEvent = %@",oldModelDate).first!
+        try! localRealm.write {
+            model.allTaskColor = newModel.allTaskColor 
+            model.allTaskNameEvent = newModel.allTaskNameEvent 
+            model.allTaskURL = newModel.allTaskURL ?? model.allTaskURL
+            model.allTaskDate = newModel.allTaskDate ?? model.allTaskDate
+            model.allTaskTime = newModel.allTaskTime ?? model.allTaskTime
+            model.allTaskCompleted = newModel.allTaskCompleted
         }
     }
     

@@ -128,8 +128,7 @@ class RegisterAccountViewController: UIViewController {
             print("Equal and creating new account")
             if secondPassword.count >= 8 {
                 FirebaseAuth.Auth.auth().createUser(withEmail: mailField, password: secondPassword) { result, error in
-                    guard error == nil, let result = result else { self.setupAlert(); return }
-                    
+                    guard error == nil, let result = result else { self.setupAlert(); return } 
                     let ref = Database.database().reference().child("users")
                     ref.child(result.user.uid).updateChildValues(["name" : userName,"email": mailField]) { error, _ in
                         if error != nil {

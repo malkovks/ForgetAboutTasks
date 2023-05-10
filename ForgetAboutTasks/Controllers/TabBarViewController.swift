@@ -18,7 +18,7 @@ class TabBarViewController: UITabBarController {
     
     private func setupTabBar() {
         let scheduleVC = setupNavigationController(vc: ScheduleViewController(), itemName: "Schedule", image: "calendar.badge.clock")
-        let allTasks = setupNavigationController(vc: AllTasksToDoViewController(), itemName: "All tasks", image: "list.clipboard.fill")
+        let allTasks = setupNavigationController(vc: AllTasksToDoViewController(), itemName: "All Tasks", image: "list.clipboard.fill")
         let contactsVC = setupNavigationController(vc: ContactsViewController(), itemName: "Contacts", image: "rectangle.stack.person.crop")
         let userVC = setupNavWithoutNavBarEdgeAppearance(vc: UserProfileViewController(), itemName: "Settings", image: "gear")
         

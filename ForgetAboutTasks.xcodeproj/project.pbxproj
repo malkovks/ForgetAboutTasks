@@ -20,9 +20,11 @@
 		0A2717B829FE518000EFBC11 /* OpenTaskDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2717B729FE518000EFBC11 /* OpenTaskDetailVC.swift */; };
 		0A2717BA2A01F7FE00EFBC11 /* AllTasksDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2717B92A01F7FE00EFBC11 /* AllTasksDetailVC.swift */; };
 		0A525DAF29FC3C3B009D116F /* AlertNewName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A525DAE29FC3C3B009D116F /* AlertNewName.swift */; };
+		0A6152122A09D57000A26792 /* AlertDismissed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A6152112A09D57000A26792 /* AlertDismissed.swift */; };
+		0A6152142A09E57700A26792 /* AlertActionWithURL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A6152132A09E57700A26792 /* AlertActionWithURL.swift */; };
 		0A7FFFB829EFD9E100CAC9DA /* ContactModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7FFFB729EFD9E100CAC9DA /* ContactModel.swift */; };
 		0A7FFFBA29EFDC0B00CAC9DA /* ContactRealmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7FFFB929EFDC0B00CAC9DA /* ContactRealmManager.swift */; };
-		0A7FFFBD29F1326A00CAC9DA /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7FFFBC29F1326A00CAC9DA /* StringExtension.swift */; };
+		0A7FFFBD29F1326A00CAC9DA /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7FFFBC29F1326A00CAC9DA /* String+Extension.swift */; };
 		0A7FFFC029F1BA1800CAC9DA /* DownloadImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7FFFBF29F1BA1800CAC9DA /* DownloadImage.swift */; };
 		0A86ED1029B5D97F001C9BAF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A86ED0F29B5D97F001C9BAF /* AppDelegate.swift */; };
 		0A86ED1229B5D97F001C9BAF /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A86ED1129B5D97F001C9BAF /* SceneDelegate.swift */; };
@@ -87,9 +89,11 @@
 		0A2717B729FE518000EFBC11 /* OpenTaskDetailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenTaskDetailVC.swift; sourceTree = "<group>"; };
 		0A2717B92A01F7FE00EFBC11 /* AllTasksDetailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllTasksDetailVC.swift; sourceTree = "<group>"; };
 		0A525DAE29FC3C3B009D116F /* AlertNewName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertNewName.swift; sourceTree = "<group>"; };
+		0A6152112A09D57000A26792 /* AlertDismissed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertDismissed.swift; sourceTree = "<group>"; };
+		0A6152132A09E57700A26792 /* AlertActionWithURL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertActionWithURL.swift; sourceTree = "<group>"; };
 		0A7FFFB729EFD9E100CAC9DA /* ContactModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactModel.swift; sourceTree = "<group>"; };
 		0A7FFFB929EFDC0B00CAC9DA /* ContactRealmManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactRealmManager.swift; sourceTree = "<group>"; };
-		0A7FFFBC29F1326A00CAC9DA /* StringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
+		0A7FFFBC29F1326A00CAC9DA /* String+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
 		0A7FFFBF29F1BA1800CAC9DA /* DownloadImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadImage.swift; sourceTree = "<group>"; };
 		0A86ED0C29B5D97F001C9BAF /* ForgetAboutTasks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ForgetAboutTasks.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A86ED0F29B5D97F001C9BAF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -174,7 +178,7 @@
 		0A7FFFBB29F1325500CAC9DA /* String */ = {
 			isa = PBXGroup;
 			children = (
-				0A7FFFBC29F1326A00CAC9DA /* StringExtension.swift */,
+				0A7FFFBC29F1326A00CAC9DA /* String+Extension.swift */,
 			);
 			path = String;
 			sourceTree = "<group>";
@@ -421,6 +425,8 @@
 				0AA604DE29E04541007ACE58 /* AlertImagePicker.swift */,
 				0AB763B929E3FAC900BFDB0D /* AlertError.swift */,
 				0A525DAE29FC3C3B009D116F /* AlertNewName.swift */,
+				0A6152112A09D57000A26792 /* AlertDismissed.swift */,
+				0A6152132A09E57700A26792 /* AlertActionWithURL.swift */,
 			);
 			path = AlertControllers;
 			sourceTree = "<group>";
@@ -594,6 +600,8 @@
 				0ACE797A29DED2D400599C19 /* NewContactCustomView.swift in Sources */,
 				0AA8EC5D29C76968004DC6DD /* AlertDate.swift in Sources */,
 				0A8AC19F29B9D00A00EA052B /* TabBarViewController.swift in Sources */,
+				0A6152142A09E57700A26792 /* AlertActionWithURL.swift in Sources */,
+				0A6152122A09D57000A26792 /* AlertDismissed.swift in Sources */,
 				0A8DD8DB29BC8BEB00B2DDAB /* Formatters.swift in Sources */,
 				0A2717B829FE518000EFBC11 /* OpenTaskDetailVC.swift in Sources */,
 				0A99A90B29CD9CB300CC5A42 /* CheckAuth.swift in Sources */,
@@ -612,7 +620,7 @@
 				0A8AC1A129B9D46D00EA052B /* ScheduleVC.swift in Sources */,
 				0A86ED1A29B5D97F001C9BAF /* ForgetAboutTasks.xcdatamodeld in Sources */,
 				0A7FFFC029F1BA1800CAC9DA /* DownloadImage.swift in Sources */,
-				0A7FFFBD29F1326A00CAC9DA /* StringExtension.swift in Sources */,
+				0A7FFFBD29F1326A00CAC9DA /* String+Extension.swift in Sources */,
 				0ACE796B29D9EEAA00599C19 /* AlertSpinner.swift in Sources */,
 				0A99A90729CD99CA00CC5A42 /* UserAuthController.swift in Sources */,
 				0A2717BA2A01F7FE00EFBC11 /* AllTasksDetailVC.swift in Sources */,

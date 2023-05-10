@@ -197,8 +197,12 @@ extension NewContactViewController: UITableViewDelegate, UITableViewDataSource {
                 }
             case 2:
                 alertTextField(cell: cellName, placeholder: "Enter mail", keyboard: .emailAddress, table: tableView) { [weak self] text in
-                    self?.cellsName[indexPath.section][indexPath.row] = text
-                    self?.contactModel.contactMail = text
+                    if text.isEmailValid() {
+                        self?.cellsName[indexPath.section][indexPath.row] = text.lowercased()
+                        self?.contactModel.contactMail = text
+                    } else {
+                        self?.alertError(text: "Enter the @ domain and country domain", mainTitle: "Warning")
+                    }
                 }
             case 3:
                 alertFriends(tableView: tableView) { [ weak self] text in
@@ -211,7 +215,6 @@ extension NewContactViewController: UITableViewDelegate, UITableViewDataSource {
         } else {
             switch indexPath.section {
             case 1:
-                print("phone number")
                 guard let url = URL(string: "tel://\(contactModel.contactPhoneNumber)") else { self.alertError();return}
                 if UIApplication.shared.canOpenURL(url){
                     UIApplication.shared.open(url)

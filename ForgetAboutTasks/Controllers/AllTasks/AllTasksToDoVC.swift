@@ -53,7 +53,7 @@ class AllTasksToDoViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
-        
+        print(Realm.Configuration.defaultConfiguration.fileURL)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -64,6 +64,7 @@ class AllTasksToDoViewController: UIViewController {
     //MARK: - Targets methods
     @objc private func didTapCreateNewTask(){
         let vc = CreateTaskTableViewController()
+        vc.title = "New event"
         let navVC = UINavigationController(rootViewController: vc)
         navVC.modalPresentationStyle = .formSheet
         navVC.sheetPresentationController?.detents = [.large()]
@@ -99,7 +100,7 @@ class AllTasksToDoViewController: UIViewController {
         let indexPath = IndexPath(row: button.tag, section: 0)
         let model = allTasksData[indexPath.row]
         let booleanValue = !model.allTaskCompleted
-        AllTasksRealmManager.shared.changeAllTasksModel(model: model, boolean: booleanValue)
+        AllTasksRealmManager.shared.changeCompleteStatus(model: model, boolean: booleanValue)
         tableView.reloadData()
     }
     
@@ -115,7 +116,7 @@ class AllTasksToDoViewController: UIViewController {
     }
     
     private func setupNavigationController(){
-        title = "All tasks"
+        title = "All Tasks"
         navigationController?.navigationItem.largeTitleDisplayMode = .always
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
@@ -157,8 +158,6 @@ class AllTasksToDoViewController: UIViewController {
         self.tableView.reloadData()
     }
 }
-//MARK: - Search Controller
-
 
 //MARK: - Table view delegates
 extension AllTasksToDoViewController: UITableViewDelegate, UITableViewDataSource {
@@ -168,7 +167,7 @@ extension AllTasksToDoViewController: UITableViewDelegate, UITableViewDataSource
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cellIdentifier")
-        let data = viewIsFiltered ? allTasksDataFiltered[indexPath.row] : allTasksData[indexPath.row]
+        let data = viewIsFiltered ?  allTasksDataFiltered[indexPath.row] : allTasksData[indexPath.row]
         let color = UIColor.color(withData: data.allTaskColor!)
         cell.backgroundColor = UIColor(named: "backgroundColor")
 
@@ -179,20 +178,13 @@ extension AllTasksToDoViewController: UITableViewDelegate, UITableViewDataSource
         button.tag = indexPath.row
 
         cell.accessoryView = button as UIView
-
-
-
-        if let date = data.allTaskDate, let time = data.allTaskTime {
-//            if allTasksDataSections[indexPath.section] == date {
-                let timeFF = Formatters.instance.timeStringFromDate(date: time)
-                let dateF = DateFormatter.localizedString(from: date, dateStyle: .medium, timeStyle: .none)
-
-                cell.textLabel?.text = data.allTaskNameEvent
-                cell.detailTextLabel?.text = dateF + "   " + timeFF
-                cell.imageView?.image = UIImage(systemName: "circle.fill")
-//            }
-
-        }
+        
+        let timeFF = Formatters.instance.timeStringFromDate(date: data.allTaskTime ?? Date())
+        let dateF = DateFormatter.localizedString(from: data.allTaskDate ?? Date(), dateStyle: .medium, timeStyle: .none)
+        cell.textLabel?.text = data.allTaskNameEvent
+        cell.detailTextLabel?.text = dateF + " Time: " + timeFF
+        cell.imageView?.image = UIImage(systemName: "circle.fill")
+        
         if data.allTaskCompleted {
             button.setImage(UIImage(systemName: "circle.fill"), for: .normal)
             cell.textLabel?.textColor = .lightGray
@@ -212,7 +204,7 @@ extension AllTasksToDoViewController: UITableViewDelegate, UITableViewDataSource
         let model = allTasksData[indexPath.row]
         let vc = AllTasksDetailViewController()
         vc.tasksModel = model
-        
+        vc.title = "Event details"
         let nav = UINavigationController(rootViewController: vc)
         nav.modalPresentationStyle = .pageSheet
         nav.isNavigationBarHidden = false
@@ -235,7 +227,7 @@ extension AllTasksToDoViewController: UITableViewDelegate, UITableViewDataSource
         return action
     }
 }
-
+//MARK: - Search Controller:
 extension AllTasksToDoViewController: UISearchResultsUpdating ,UISearchBarDelegate{
     func updateSearchResults(for searchController: UISearchController) {
         filterTable(searchController.searchBar.text ?? "Empty value")
@@ -251,7 +243,7 @@ extension AllTasksToDoViewController: UISearchResultsUpdating ,UISearchBarDelega
         tableView.reloadData()
     }
 }
-
+//MARK: Contraints
 extension AllTasksToDoViewController {
     private func setupConstraints(){
         
@@ -259,7 +251,7 @@ extension AllTasksToDoViewController {
         segmentalController.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(5)
             make.leading.trailing.equalToSuperview().inset(20)
-            make.height.equalTo(40)
+            make.height.equalTo(30)
         }
         
         view.addSubview(tableView)

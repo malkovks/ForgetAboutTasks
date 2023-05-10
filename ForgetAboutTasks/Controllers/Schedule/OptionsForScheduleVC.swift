@@ -194,8 +194,10 @@ extension OptionsForScheduleViewController: UITableViewDelegate, UITableViewData
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         let inheritedData = selectedScheduleModel
         let data = cellsName[indexPath.section][indexPath.row]
+        
         let dateAndTime = inheritedData?.scheduleTime ?? Date()
         
+        cell.textLabel?.numberOfLines = 0
         cell.layer.cornerRadius = 10
         cell.contentView.layer.cornerRadius = 10
         cell.backgroundColor = UIColor(named: "cellColor")
@@ -210,31 +212,39 @@ extension OptionsForScheduleViewController: UITableViewDelegate, UITableViewData
             switch indexPath {
             case [0,0]:
                 cell.textLabel?.text = inheritedData?.scheduleName
+                cell.accessoryView = nil
             case [1,0]:
                 let time = DateFormatter.localizedString(from: dateAndTime, dateStyle: .medium, timeStyle: .medium)
                 cell.textLabel?.text = time
+                cell.accessoryView = nil
             case [1,1]:
                 cell.textLabel?.text = data
                 cell.accessoryView?.isHidden = false
                 switchButton.isOn = false
             case[2,0]:
                 cell.textLabel?.text = inheritedData?.scheduleCategoryName ?? data
+                cell.accessoryView = nil
             case [2,1]:
                 cell.textLabel?.text = inheritedData?.scheduleCategoryType ?? data
+                cell.accessoryView = nil
             case [2,2]:
                 cell.textLabel?.text = inheritedData?.scheduleCategoryURL ?? data
+                cell.accessoryView = nil
             case [2,3]:
                 cell.textLabel?.text = inheritedData?.scheduleCategoryNote ?? data
+                cell.accessoryView = nil
             case [3,0]:
                 cell.backgroundColor = UIColor.color(withData: (inheritedData?.scheduleColor)!)
             case [4,0]:
                 cell.textLabel?.text = data
                 cell.accessoryView?.isHidden = false
+                
                 switchButton.isOn = ((inheritedData?.scheduleRepeat) != nil)
             default:
                 alertError(text: "Please,try again later\nError getting data", mainTitle: "Error!!")
             }
         } else {
+            
             cell.textLabel?.text = data
             if indexPath == [3,0] {
                 cell.backgroundColor = cellBackgroundColor
@@ -244,9 +254,10 @@ extension OptionsForScheduleViewController: UITableViewDelegate, UITableViewData
             } else if indexPath == [4,0] {
                 cell.accessoryView?.isHidden = false
                 switchButton.addTarget(self, action: #selector(didTapSwitch), for: .touchUpInside)
+            } else {
+                cell.accessoryView = nil
             }
         }
-    
         return cell
     }
     
@@ -286,8 +297,12 @@ extension OptionsForScheduleViewController: UITableViewDelegate, UITableViewData
                 }
             case [2,3]:
                 alertTextField(cell: "Enter Notes of event", placeholder: "Enter the text", keyboard: .default,table: tableView) { [self] text in
-                    selectedScheduleModel?.scheduleCategoryNote = text
-                    cellsName[indexPath.section][indexPath.row] = text
+                    if (text.contains("www.") || text.contains("https://")) && text.contains(".") {
+                        cellsName[indexPath.section][indexPath.row] = text
+                        selectedScheduleModel?.scheduleCategoryURL = text
+                    } else {
+                        alertError(text: "Try again!\nEnter www. in URL link and pick a domain", mainTitle: "Warning!")
+                    }
                 }
             case [3,0]:
                 openColorPicker()
@@ -320,8 +335,12 @@ extension OptionsForScheduleViewController: UITableViewDelegate, UITableViewData
                 }
             case [2,2]:
                 alertTextField(cell: "Enter URL of event", placeholder: "Enter the text", keyboard: .emailAddress,table: tableView) { [self] text in
-                    scheduleModel.scheduleCategoryURL = text
-                    cellsName[indexPath.section][indexPath.row] = text
+                    if (text.contains("www.") || text.contains("https://")) && text.contains(".") {
+                        cellsName[indexPath.section][indexPath.row] = text
+                        scheduleModel.scheduleCategoryURL = text
+                    } else {
+                        alertError(text: "Try again!\nEnter www. in URL link and pick a domain", mainTitle: "Warning!")
+                    }
                 }
             case [2,3]:
                 alertTextField(cell: "Enter Notes of event", placeholder: "Enter the text", keyboard: .default,table: tableView) { [self] text in
@@ -334,17 +353,21 @@ extension OptionsForScheduleViewController: UITableViewDelegate, UITableViewData
                 print("error")
             }
         }
-        
-        
-    
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return headerArray[section]
     }
     
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableView.automaticDimension
+    }
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        45
+        if indexPath == [2,3] {
+            return UITableView.automaticDimension
+        }
+        return 45
     }
     
     
@@ -374,8 +397,8 @@ extension OptionsForScheduleViewController: UIAdaptivePresentationControllerDele
 extension OptionsForScheduleViewController {
     private func setupConstraints(){
         tableView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).inset(0)
-            make.leading.trailing.equalToSuperview().inset(10)
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
+            make.leading.trailing.equalToSuperview()
             make.bottom.equalToSuperview().inset(0)
         }
     }
