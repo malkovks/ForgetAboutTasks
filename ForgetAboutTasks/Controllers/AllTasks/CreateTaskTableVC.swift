@@ -65,7 +65,8 @@ class CreateTaskTableViewController: UIViewController {
         if isUserPressedToChangeModel == true {
             if !editedTaskModel.allTaskNameEvent.isEmpty {
                 editedTaskModel.allTaskColor = cellBackgroundColor.encode()
-                let date = tasksModel.allTaskNameEvent
+                let date = tasksModel.allTaskDate ?? Date()
+                print(date)
                 AllTasksRealmManager.shared.editAllTasksModel(oldModelDate: date, newModel: editedTaskModel)
                 self.view.window?.rootViewController?.dismiss(animated: true)
             } else {
@@ -213,36 +214,27 @@ extension CreateTaskTableViewController: UITableViewDelegate, UITableViewDataSou
                     cellsName[indexPath.section][indexPath.row] = text
                     editedTaskModel.allTaskNameEvent = text
                     navigationButton.isEnabled = true
-//                    tasksModel = editedTaskModel
                 }
             case [1,0]:
                 alertDate(table: tableView, choosenDate: nil) { [self] _ , date, dateString in
                     cellsName[indexPath.section][indexPath.row] += ": " + dateString
                     editedTaskModel.allTaskDate = date
-//                    tasksModel.allTaskDate = date
-//                    tasksModel = editedTaskModel
                 }
             case [2,0]:
                 alertTime(table: tableView, choosenDate: Date()) {  [self] date, timeString in
                     cellsName[indexPath.section][indexPath.row] += ": " + timeString
                     editedTaskModel.allTaskTime = date
-//                    tasksModel.allTaskTime = date
-//                    tasksModel = editedTaskModel
-                    
                 }
             case [3,0]:
                 alertTextField(cell: cellName, placeholder: "Enter notes value", keyboard: .default, table:tableView) { [self] text in
                     cellsName[indexPath.section][indexPath.row] = text
                     editedTaskModel.allTaskNotes = text
-//                    tasksModel.allTaskNotes = text
-                    
                 }
             case [4,0]:
                 alertTextField(cell: cellName, placeholder: "Enter URL value", keyboard: .URL, table: tableView, completion: { [self] text in
                     if text.isURLValid(text: text){
                         cellsName[indexPath.section][indexPath.row] = text
                         editedTaskModel.allTaskURL = text
-//                        tasksModel.allTaskURL = text
                     } else {
                         alertError(text: "Try again!\nEnter www. in URL link and pick a domain", mainTitle: "Warning!")
                     }

@@ -22,6 +22,7 @@ class ScheduleViewController: UIViewController {
     
     private var calendar: FSCalendar = {
        let calendar = FSCalendar()
+        calendar.formatter.timeZone = TimeZone.current
         calendar.scrollDirection = .vertical
         calendar.backgroundColor = UIColor(named: "backgroundColor")
         calendar.tintColor = UIColor(named: "navigationControllerColor")

@@ -6,6 +6,7 @@
 //
 
 import RealmSwift
+import Foundation
 
 class ScheduleRealmManager {
     
@@ -18,7 +19,6 @@ class ScheduleRealmManager {
     func saveScheduleModel(model: ScheduleModel){
         try! localRealm.write {
             localRealm.add(model)
-            print("Data was saved in realm")
         }
     }
     
@@ -28,18 +28,19 @@ class ScheduleRealmManager {
         }
     }
 
-    func changeScheduleModel(model: ScheduleModel,changes: ScheduleModel){
+    func editScheduleModel(filterDate: Date,filterName: String,changes: ScheduleModel){
+        let model = localRealm.objects(ScheduleModel.self).filter("scheduleDate == %@ AND scheduleName == %@",filterDate,filterName).first
         try! localRealm.write {
-            model.scheduleCategoryURL = changes.scheduleCategoryURL
-            model.scheduleCategoryName = changes.scheduleCategoryName
-            model.scheduleCategoryNote = changes.scheduleCategoryNote
-            model.scheduleCategoryType = changes.scheduleCategoryType
-            model.scheduleName = changes.scheduleName
-            model.scheduleDate = changes.scheduleDate
-            model.scheduleTime = changes.scheduleTime
-            model.scheduleColor = changes.scheduleColor
-            model.scheduleRepeat = changes.scheduleRepeat
-            model.scheduleWeekday = changes.scheduleWeekday
+            model?.scheduleCategoryURL = changes.scheduleCategoryURL ?? model?.scheduleCategoryURL
+            model?.scheduleCategoryName = changes.scheduleCategoryName ?? model?.scheduleCategoryName
+            model?.scheduleCategoryNote = changes.scheduleCategoryNote ?? model?.scheduleCategoryNote
+            model?.scheduleCategoryType = changes.scheduleCategoryType ?? model?.scheduleCategoryType
+            model?.scheduleName = changes.scheduleName
+            model?.scheduleDate = changes.scheduleDate ?? model?.scheduleDate
+            model?.scheduleTime = changes.scheduleTime ?? model?.scheduleTime
+            model?.scheduleColor = changes.scheduleColor ?? model?.scheduleColor
+            model?.scheduleRepeat = ((changes.scheduleRepeat ?? model?.scheduleRepeat) != nil)
+            model?.scheduleWeekday = changes.scheduleWeekday ?? model?.scheduleWeekday
         }
     }
     

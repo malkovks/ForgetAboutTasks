@@ -175,12 +175,12 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		0A7FFFBB29F1325500CAC9DA /* String */ = {
+		0A7FFFBB29F1325500CAC9DA /* String+Extensions */ = {
 			isa = PBXGroup;
 			children = (
 				0A7FFFBC29F1326A00CAC9DA /* String+Extension.swift */,
 			);
-			path = String;
+			path = "String+Extensions";
 			sourceTree = "<group>";
 		};
 		0A7FFFBE29F1B9F700CAC9DA /* DownloadImage */ = {
@@ -389,13 +389,13 @@
 			path = Services;
 			sourceTree = "<group>";
 		};
-		0AA604E729E16BF6007ACE58 /* UIColor */ = {
+		0AA604E729E16BF6007ACE58 /* UIColor+Extensions */ = {
 			isa = PBXGroup;
 			children = (
 				0AA604E829E16C05007ACE58 /* ColorExtensions.swift */,
 				0AA74A2029E6EAB200F01532 /* ColorConverters.swift */,
 			);
-			path = UIColor;
+			path = "UIColor+Extensions";
 			sourceTree = "<group>";
 		};
 		0AA604EA29E16DA1007ACE58 /* Protocols */ = {
@@ -414,7 +414,7 @@
 			path = Date;
 			sourceTree = "<group>";
 		};
-		0AA8EC5B29C76897004DC6DD /* AlertControllers */ = {
+		0AA8EC5B29C76897004DC6DD /* AlertControllers+Extensions */ = {
 			isa = PBXGroup;
 			children = (
 				0ACE796A29D9EEAA00599C19 /* AlertSpinner.swift */,
@@ -428,17 +428,17 @@
 				0A6152112A09D57000A26792 /* AlertDismissed.swift */,
 				0A6152132A09E57700A26792 /* AlertActionWithURL.swift */,
 			);
-			path = AlertControllers;
+			path = "AlertControllers+Extensions";
 			sourceTree = "<group>";
 		};
 		0AA8EC7029CAF52E004DC6DD /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
 				0A7FFFBE29F1B9F700CAC9DA /* DownloadImage */,
-				0A7FFFBB29F1325500CAC9DA /* String */,
+				0A7FFFBB29F1325500CAC9DA /* String+Extensions */,
 				0AA74A2229E715DA00F01532 /* Date */,
-				0AA604E729E16BF6007ACE58 /* UIColor */,
-				0AA8EC5B29C76897004DC6DD /* AlertControllers */,
+				0AA604E729E16BF6007ACE58 /* UIColor+Extensions */,
+				0AA8EC5B29C76897004DC6DD /* AlertControllers+Extensions */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";

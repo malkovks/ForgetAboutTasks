@@ -49,7 +49,6 @@ class AllTasksDetailViewController: UIViewController {
     @objc private func didTapEdit(){
         let vc = CreateTaskTableViewController()
         vc.tasksModel = self.tasksModel
-//        vc.editedTaskModel = tasksModel
         vc.isUserPressedToChangeModel = true
         vc.title = "Editing event"
         vc.cellBackgroundColor = UIColor.color(withData: tasksModel.allTaskColor!) ?? #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)

@@ -28,8 +28,8 @@ class AllTasksRealmManager {
         }
     }
     
-    func editAllTasksModel(oldModelDate: String,newModel:AllTaskModel){
-        let model = localRealm.objects(AllTaskModel.self).filter("allTaskNameEvent = %@",oldModelDate).first!
+    func editAllTasksModel(oldModelDate: Date,newModel:AllTaskModel){
+        let model = localRealm.objects(AllTaskModel.self).filter("allTaskDate == %@",oldModelDate).first!
         try! localRealm.write {
             model.allTaskColor = newModel.allTaskColor 
             model.allTaskNameEvent = newModel.allTaskNameEvent 

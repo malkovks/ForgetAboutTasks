@@ -15,7 +15,7 @@ extension UIViewController {
         datePicker.locale = .current
         datePicker.datePickerMode = .time
         datePicker.preferredDatePickerStyle = .wheels
-//        datePicker.locale = NSLocale(localeIdentifier: "Ru_ru") as Locale
+        datePicker.calendar.firstWeekday = 2
         alert.view.addSubview(datePicker)
         
         
@@ -24,7 +24,9 @@ extension UIViewController {
             dateFormatter.locale = .current
             dateFormatter.dateFormat = "HH:mm"
             let timeString = dateFormatter.string(from: datePicker.date)
+            
             let date = datePicker.date
+
             completiongHandler(date,timeString)
             
             DispatchQueue.main.async {
@@ -46,11 +48,14 @@ extension UIViewController {
     }
     
     
-    func alertTimeInline(table: UITableView, choosenDate: Date, completionHandler: @escaping (Date,String) -> Void) {
+    func alertTimeInline(table: UITableView, choosenDate: Date, completionHandler: @escaping (Date,String,Int) -> Void) {
+        let calendar = Calendar.current
+        let currentDay = calendar.date(byAdding: .day, value: 1, to: choosenDate)
         let alert = UIAlertController(title: "", message: nil, preferredStyle: .actionSheet)
         let datePicker = UIDatePicker()
         datePicker.locale = .current
         datePicker.datePickerMode = .dateAndTime
+        datePicker.date = choosenDate
         datePicker.preferredDatePickerStyle = .inline
 //        datePicker.locale = NSLocale(localeIdentifier: "Ru_ru") as Locale
         alert.view.addSubview(datePicker)
@@ -62,7 +67,12 @@ extension UIViewController {
             dateFormatter.dateFormat = "dd.MM.yyyy HH:mm"
             let timeString = dateFormatter.string(from: datePicker.date)
             let date = datePicker.date
-            completionHandler(date,timeString)
+            
+            let calendar = Calendar.current
+            let comp = calendar.dateComponents([.weekday], from: date)
+            guard let weekdayComp = comp.weekday else { return }
+            let weekday = weekdayComp
+            completionHandler(date,timeString,weekday)
             
             DispatchQueue.main.async {
                 table.reloadData()

@@ -38,6 +38,7 @@ class CreateTaskForDayController: UIViewController {
 
     private var calendar: FSCalendar = {
         let calendar = FSCalendar()
+        calendar.formatter.timeZone = TimeZone.current
         calendar.scrollDirection = .vertical
         calendar.appearance.todayColor = UIColor(named: "calendarHeaderColor")
         
@@ -47,6 +48,8 @@ class CreateTaskForDayController: UIViewController {
         calendar.headerHeight = 30
         calendar.pagingEnabled = true
         calendar.tintColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
+        calendar.locale = .current
+        
         calendar.appearance.titleFont = UIFont.systemFont(ofSize: 18)
         
         calendar.appearance.headerTitleFont = .systemFont(ofSize: 20)
@@ -56,7 +59,6 @@ class CreateTaskForDayController: UIViewController {
         calendar.appearance.weekdayTextColor = UIColor(named: "calendarHeaderColor")
         calendar.appearance.headerTitleColor = UIColor(named: "calendarHeaderColor")
         calendar.tintColor = UIColor(named: "navigationControllerColor")
-        calendar.locale = Locale(identifier: "en")
         calendar.translatesAutoresizingMaskIntoConstraints = false
         return calendar
     }()
@@ -220,7 +222,7 @@ extension CreateTaskForDayController: UITableViewDelegate, UITableViewDataSource
             let date = DateFormatter.localizedString(from: date, dateStyle: .medium, timeStyle: .none)
             let time = Formatters.instance.timeStringFromDate(date: time)
             cell.textLabel?.text = data.scheduleName
-            cell.detailTextLabel?.text = date + "time: " + time
+            cell.detailTextLabel?.text = date + ". Time: " + time
             cell.imageView?.image = UIImage(systemName: "circle.fill")
             cell.imageView?.tintColor = color
         } else {
@@ -261,7 +263,7 @@ extension CreateTaskForDayController: UITableViewDelegate, UITableViewDataSource
         let actionInstance = UIContextualAction(style: .normal, title: "") { [weak self] _, _, completionHandler in
             let vc = OptionsForScheduleViewController()
             vc.isEditingView = true
-            vc.selectedScheduleModel = cellData
+            vc.editedScheduleModel = cellData
             let nav = UINavigationController(rootViewController: vc)
             nav.modalPresentationStyle = .fullScreen
             nav.isNavigationBarHidden = false

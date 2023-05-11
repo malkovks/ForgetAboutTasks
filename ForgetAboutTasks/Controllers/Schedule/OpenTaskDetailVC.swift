@@ -22,7 +22,7 @@ class OpenTaskDetailViewController: UIViewController {
     var cellBackgroundColor =  #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
     
     private var scheduleModel = ScheduleModel()
-    var selectedScheduleModel: ScheduleModel?
+    var selectedScheduleModel = ScheduleModel()
     
     private let tableView = UITableView(frame: CGRectZero, style: .insetGrouped)
     //MARK: - viewDidLoad
@@ -38,15 +38,16 @@ class OpenTaskDetailViewController: UIViewController {
     }
     
     @objc private func didTapEdit(){
-        alertError(text: "This function in work progress", mainTitle: "Try again later!")
-//        let vc = OptionsForScheduleViewController()
-//        vc.selectedScheduleModel = selectedScheduleModel
-//        vc.isEditingView = true
-//        let nav = UINavigationController(rootViewController: vc)
-//        nav.modalPresentationStyle = .fullScreen
-//        nav.modalTransitionStyle = .crossDissolve
-//        nav.isNavigationBarHidden = false
-//        present(nav, animated: true)
+        let vc = OptionsForScheduleViewController()
+        vc.scheduleModel = selectedScheduleModel
+        vc.choosenDate = selectedScheduleModel.scheduleDate ?? Date()
+        vc.isEditingView = true
+        vc.cellBackgroundColor = UIColor.color(withData: selectedScheduleModel.scheduleColor!) ?? #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
+        let nav = UINavigationController(rootViewController: vc)
+        nav.modalPresentationStyle = .fullScreen
+        nav.modalTransitionStyle = .crossDissolve
+        nav.isNavigationBarHidden = false
+        present(nav, animated: true)
     }
     //MARK: - Setup Views and secondary methods
     private func setupView() {
@@ -68,7 +69,7 @@ class OpenTaskDetailViewController: UIViewController {
         let saveButton = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(didTapEdit))
         navigationItem.rightBarButtonItems = [saveButton]
         navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
-        title = selectedScheduleModel?.scheduleCategoryName
+        title = selectedScheduleModel.scheduleCategoryName
     }
 }
 //MARK: - table view delegates and data sources
@@ -87,8 +88,8 @@ extension OpenTaskDetailViewController: UITableViewDelegate, UITableViewDataSour
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         let inheritedData = selectedScheduleModel
         let data = cellsName[indexPath.section][indexPath.row]
-        let time = DateFormatter.localizedString(from: inheritedData?.scheduleTime ?? Date(), dateStyle: .none, timeStyle:.short)
-        let date = DateFormatter.localizedString(from: inheritedData?.scheduleDate ?? Date(), dateStyle: .medium, timeStyle:.none)
+        let time = DateFormatter.localizedString(from: inheritedData.scheduleTime ?? Date(), dateStyle: .none, timeStyle:.short)
+        let date = DateFormatter.localizedString(from: inheritedData.scheduleDate ?? Date(), dateStyle: .medium, timeStyle:.none)
         
         cell.layer.cornerRadius = 10
         cell.contentView.layer.cornerRadius = 10
@@ -102,36 +103,41 @@ extension OpenTaskDetailViewController: UITableViewDelegate, UITableViewDataSour
         
         switch indexPath {
         case [0,0]:
-            cell.textLabel?.text = inheritedData?.scheduleName
+            cell.textLabel?.text = inheritedData.scheduleName
         case [1,0]:
             cell.textLabel?.text = date + " Time: " + time
         case [1,1]:
             let content = UNMutableNotificationContent()
-            print(date)
             if content.userInfo["userNotification"] as? String == date {
                 switchButton.isOn = true
             } else {
-                print("No data")
                 switchButton.isOn = false
             }
             cell.textLabel?.text = "Reminder status"
             cell.accessoryView?.isHidden = false
             switchButton.isEnabled = false
         case[2,0]:
-            cell.textLabel?.text = inheritedData?.scheduleCategoryName ?? data
+            cell.textLabel?.text = inheritedData.scheduleCategoryName ?? data
         case [2,1]:
-            cell.textLabel?.text = inheritedData?.scheduleCategoryType ?? data
+            cell.textLabel?.text = inheritedData.scheduleCategoryType ?? data
         case [2,2]:
-            cell.textLabel?.text = inheritedData?.scheduleCategoryURL ?? data
-            cell.textLabel?.textColor = .systemBlue
+            cell.textLabel?.text = inheritedData.scheduleCategoryURL ?? data
+            let text = inheritedData.scheduleCategoryURL
+            let success = text?.isURLValid(text: text ?? "")
+            if success ?? true {
+                cell.textLabel?.textColor = .systemBlue
+            } else {
+                cell.textLabel?.textColor = UIColor(named: "textColor")
+            }
+            
         case [2,3]:
-            cell.textLabel?.text = inheritedData?.scheduleCategoryNote ?? data
+            cell.textLabel?.text = inheritedData.scheduleCategoryNote ?? data
         case [3,0]:
-            cell.backgroundColor = UIColor.color(withData: (inheritedData?.scheduleColor)!)
+            cell.backgroundColor = UIColor.color(withData: (inheritedData.scheduleColor)!)
         case [4,0]:
             cell.textLabel?.text = data
             cell.accessoryView?.isHidden = false
-            switchButton.isOn = ((inheritedData?.scheduleRepeat) != nil)
+            switchButton.isOn = inheritedData.scheduleRepeat ?? false
             switchButton.isEnabled = false
         default:
             alertError(text: "Please,try again later\nError getting data", mainTitle: "Error!!")
@@ -142,10 +148,8 @@ extension OpenTaskDetailViewController: UITableViewDelegate, UITableViewDataSour
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         if indexPath == [2,2] {
-            guard let url = selectedScheduleModel?.scheduleCategoryURL,
-                  let link = URL(string: "https://" + url) else { return }
-            let safariVC = SFSafariViewController(url: link)
-            present(safariVC, animated: true)
+            guard let url = selectedScheduleModel.scheduleCategoryURL else { return }
+            futureUserActions(link: url)
         } else {
             tableView.allowsSelection = false
         }
@@ -169,9 +173,9 @@ extension OpenTaskDetailViewController: UITableViewDelegate, UITableViewDataSour
 extension OpenTaskDetailViewController {
     private func setupConstraints(){
         tableView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).inset(0)
-            make.leading.trailing.equalToSuperview().inset(10)
-            make.bottom.equalToSuperview().inset(0)
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
+            make.leading.trailing.equalToSuperview()
+            make.bottom.equalToSuperview()
         }
     }
 }
