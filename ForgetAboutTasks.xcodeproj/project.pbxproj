@@ -65,6 +65,8 @@
 		0ACE797229DD95C600599C19 /* CreateTaskTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE797129DD95C600599C19 /* CreateTaskTableVC.swift */; };
 		0ACE797829DECF3300599C19 /* NewContactVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE797729DECF3300599C19 /* NewContactVC.swift */; };
 		0ACE797A29DED2D400599C19 /* NewContactCustomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE797929DED2D400599C19 /* NewContactCustomView.swift */; };
+		0AF2D6EF2A1141360093A824 /* ScheduleSearchResultVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AF2D6EE2A1141360093A824 /* ScheduleSearchResultVC.swift */; };
+		0AF2D6F12A1364EC0093A824 /* AlertUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AF2D6F02A1364EC0093A824 /* AlertUser.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -139,6 +141,8 @@
 		0ACE797129DD95C600599C19 /* CreateTaskTableVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTaskTableVC.swift; sourceTree = "<group>"; };
 		0ACE797729DECF3300599C19 /* NewContactVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewContactVC.swift; sourceTree = "<group>"; };
 		0ACE797929DED2D400599C19 /* NewContactCustomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewContactCustomView.swift; sourceTree = "<group>"; };
+		0AF2D6EE2A1141360093A824 /* ScheduleSearchResultVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleSearchResultVC.swift; sourceTree = "<group>"; };
+		0AF2D6F02A1364EC0093A824 /* AlertUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertUser.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -292,6 +296,7 @@
 				0A8AC1A329B9D4EB00EA052B /* CreateTaskForDayVC.swift */,
 				0A2717B729FE518000EFBC11 /* OpenTaskDetailVC.swift */,
 				0A0CE6F629C461F600A14648 /* OptionsForScheduleVC.swift */,
+				0AF2D6EE2A1141360093A824 /* ScheduleSearchResultVC.swift */,
 			);
 			path = Schedule;
 			sourceTree = "<group>";
@@ -427,6 +432,7 @@
 				0A525DAE29FC3C3B009D116F /* AlertNewName.swift */,
 				0A6152112A09D57000A26792 /* AlertDismissed.swift */,
 				0A6152132A09E57700A26792 /* AlertActionWithURL.swift */,
+				0AF2D6F02A1364EC0093A824 /* AlertUser.swift */,
 			);
 			path = "AlertControllers+Extensions";
 			sourceTree = "<group>";
@@ -614,10 +620,12 @@
 				0A0CE6F729C461F600A14648 /* OptionsForScheduleVC.swift in Sources */,
 				0AA8EC5F29C7AA56004DC6DD /* AlertTime.swift in Sources */,
 				0AB763BA29E3FAC900BFDB0D /* AlertError.swift in Sources */,
+				0AF2D6F12A1364EC0093A824 /* AlertUser.swift in Sources */,
 				0A99A8FD29CD855100CC5A42 /* AlertTextField.swift in Sources */,
 				0AA74A2129E6EAB200F01532 /* ColorConverters.swift in Sources */,
 				0A99A8FF29CD8FE000CC5A42 /* AllTasksToDoVC.swift in Sources */,
 				0A8AC1A129B9D46D00EA052B /* ScheduleVC.swift in Sources */,
+				0AF2D6EF2A1141360093A824 /* ScheduleSearchResultVC.swift in Sources */,
 				0A86ED1A29B5D97F001C9BAF /* ForgetAboutTasks.xcdatamodeld in Sources */,
 				0A7FFFC029F1BA1800CAC9DA /* DownloadImage.swift in Sources */,
 				0A7FFFBD29F1326A00CAC9DA /* String+Extension.swift in Sources */,

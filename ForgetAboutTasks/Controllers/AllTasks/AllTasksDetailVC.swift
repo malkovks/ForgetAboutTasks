@@ -125,6 +125,7 @@ extension AllTasksDetailViewController: UITableViewDelegate, UITableViewDataSour
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "tasksCell", for: indexPath)
         cell.layer.cornerRadius = 10
+        cell.textLabel?.numberOfLines = 0
         cell.contentView.layer.cornerRadius = 10
         cell.backgroundColor = UIColor(named: "cellColor")
         switch indexPath {
@@ -164,7 +165,11 @@ extension AllTasksDetailViewController: UITableViewDelegate, UITableViewDataSour
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        45
+        return UITableView.automaticDimension
+    }
+    
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        UITableView.automaticDimension
     }
     
 }

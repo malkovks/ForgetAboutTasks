@@ -9,6 +9,7 @@ import UIKit
 import FirebaseAuth
 import SnapKit
 
+
 struct UserProfileData {
     var cellName: String
     var cellImage: UIImage
@@ -209,9 +210,17 @@ class UserProfileViewController: UIViewController {
         
     }
     
+    private func imageLoad(){
+        guard let currentUser = Auth.auth().currentUser,
+              let imageURL = currentUser.photoURL,
+              let data = try? Data(contentsOf: imageURL) else { return }
+        userImageView.image = UIImage(data: data)
+                
+    }
+    
     private func loadingData(){
         let (name,mail,age,image) = CheckAuth.shared.loadData()
-        userImageView.image = image
+//        userImageView.image = image
         mailLabel.text = mail
         ageLabel.text = "User's age: \(age)"
         userNameLabel.text = name
@@ -336,9 +345,9 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
 extension UserProfileViewController: UIImagePickerControllerDelegate,UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let image = info[.editedImage] as? UIImage{
-            guard let data = image.jpegData(compressionQuality: 0.5) else { print("error saving");return}
+            guard let data = image.jpegData(compressionQuality: 0.5) else { return}
             let encode = try! PropertyListEncoder().encode(data)
-            UserDefaults.standard.set(encode, forKey: "userImage")
+            UserDefaults.standard.setValue(encode, forKey: "userImage")
             userImageView.image = image
         } else {
             print("Error")
@@ -353,12 +362,6 @@ extension UserProfileViewController: UIImagePickerControllerDelegate,UINavigatio
 
 extension UserProfileViewController  {
     private func configureConstraints(){
-        
-        let imageStackView = UIStackView(arrangedSubviews: [userImageView,changeUserImageView])
-        imageStackView.spacing = 10
-        imageStackView.alignment = .center
-        imageStackView.contentMode = .center
-        imageStackView.axis = .vertical
 
         let infoStack = UIStackView(arrangedSubviews: [userNameLabel,mailLabel,ageLabel])
         infoStack.alignment = .leading
@@ -372,19 +375,26 @@ extension UserProfileViewController  {
             make.height.equalTo(300)
         }
         
-        profileView.addSubview(imageStackView)
-        imageStackView.snp.makeConstraints { make in
+        profileView.addSubview(userImageView)
+        userImageView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(20)
-            make.leading.equalTo(10)
+            make.leading.equalToSuperview().offset(30)
             make.width.equalTo(110)
-            make.height.equalTo(150)
+            make.height.equalTo(110)
+        }
+        
+        profileView.addSubview(changeUserImageView)
+        changeUserImageView.snp.makeConstraints { make in
+            make.bottom.equalTo(profileView.snp.bottom).offset(-30)
+            make.leading.equalToSuperview().offset(30)
+            make.width.equalTo(110)
         }
         
         profileView.addSubview(infoStack)
         infoStack.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(20)
             make.trailing.equalToSuperview().inset(-10)
-            make.leading.equalTo(imageStackView.snp.trailing).offset(30)
+            make.leading.equalTo(userImageView.snp.trailing).offset(10)
             make.height.equalTo(110)
         }
         

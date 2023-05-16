@@ -94,6 +94,7 @@ extension OpenTaskDetailViewController: UITableViewDelegate, UITableViewDataSour
         cell.layer.cornerRadius = 10
         cell.contentView.layer.cornerRadius = 10
         cell.backgroundColor = UIColor(named: "cellColor")
+        cell.textLabel?.numberOfLines = 0
         
         let switchButton = UISwitch(frame: .zero)
         switchButton.isOn = false
@@ -160,12 +161,16 @@ extension OpenTaskDetailViewController: UITableViewDelegate, UITableViewDataSour
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        45
+        return UITableView.automaticDimension
     }
     
     
     func numberOfSections(in tableView: UITableView) -> Int {
         5
+    }
+    
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableView.automaticDimension
     }
     
 }

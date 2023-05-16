@@ -20,6 +20,12 @@ class ScheduleViewController: UIViewController {
     let localRealm = try! Realm()
     private var scheduleModel: Results<ScheduleModel>!
     
+    let resultVC = ScheduleSearchResultViewController()
+    
+    private lazy var searchNavigationButton: UIBarButtonItem = {
+        return UIBarButtonItem(image: UIImage(systemName: "magnifyingglass.circle.fill"), landscapeImagePhone: nil, style: .bordered, target: self, action: #selector(didTapSearch))
+    }()
+    
     private var calendar: FSCalendar = {
        let calendar = FSCalendar()
         calendar.formatter.timeZone = TimeZone.current
@@ -44,33 +50,48 @@ class ScheduleViewController: UIViewController {
         return calendar
     }()
     
-    
+    private let searchController: UISearchController = {
+       let search = UISearchController(searchResultsController: ScheduleSearchResultViewController())
+        search.searchBar.placeholder = "Enter the date or name of event"
+        search.isActive = false
+        search.searchBar.searchTextField.clearButtonMode = .whileEditing
+        search.obscuresBackgroundDuringPresentation = false
+        return search
+    }()
     
     //MARK: - Setup for views
     override func viewDidLoad() {
         super.viewDidLoad()
         setupAuthentification()
-//        setupView()
-//        setupNavigationController()
-        //добавить поиск по дате при помощи скролла
+        calendar.transform = CGAffineTransform(translationX: 0.01, y: 0.01)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setupAnimation()
     }
     
    //MARK: - target methods
-    @objc private func didTapTapped(){
-        if !calendar.pagingEnabled {
-            calendar.pagingEnabled = true
-            navigationItem.leftBarButtonItem?.image = UIImage(systemName: "eye.slash.fill")
-            
-        } else {
-            calendar.pagingEnabled = false
-            navigationItem.leftBarButtonItem?.image = UIImage(systemName: "eye.fill")
-        }
+    @objc private func didTapSearch(){
+            navigationItem.searchController = searchController
+            searchController.isActive = true
+    }
+    
+    @objc private func didTapCallAlert(){
+        
     }
 
     //MARK: - Setup Methods
     private func setupDelegates(){
         calendar.delegate = self
         calendar.dataSource = self
+    }
+    
+    private func setupAnimation(){
+        UIView.animate(withDuration: 1, delay: 0, options: .curveEaseInOut) {
+            self.calendar.transform = CGAffineTransform.identity
+            self.view.layoutIfNeeded()
+        }
     }
     
     private func setupAuthentification(){
@@ -99,9 +120,23 @@ class ScheduleViewController: UIViewController {
     
     private func setupNavigationController(){
         title = "Schedule"
+        navigationItem.leftBarButtonItem = searchNavigationButton
+        navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = true
+        navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
         navigationController?.tabBarController?.tabBar.scrollEdgeAppearance = navigationController?.tabBarController?.tabBar.standardAppearance
         navigationController?.navigationItem.largeTitleDisplayMode = .never
         navigationController?.navigationBar.prefersLargeTitles = false
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(didTapCallAlert))
+    }
+    
+    private func setupSearchController(){
+        searchController.searchBar.placeholder = "Enter text"
+        searchController.searchResultsUpdater = self
+        searchController.searchBar.delegate = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        navigationItem.searchController = nil
+        navigationItem.hidesSearchBarWhenScrolling = true
     }
     
     private func loadingRealmData(){
@@ -152,6 +187,35 @@ extension ScheduleViewController: FSCalendarDelegate, FSCalendarDataSource {
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
         loadingDataByDate(date: date, at: monthPosition, is: false)
     }
+}
+
+extension ScheduleViewController: UISearchResultsUpdating,UISearchBarDelegate {
+    func updateSearchResults(for searchController: UISearchController) {
+//        filterTable(searchController.searchBar.text ?? "Text")
+        if let text = searchController.searchBar.text, !text.isEmpty {
+            filterTable(text)
+        }
+    }
+//    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+//
+//    }
+////
+//    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+//        if !searchText.isEmpty {
+//            filterTable(searchText)
+//            print("Some result")
+//        } else {
+//            resultVC.scheduleModel = nil
+//            print("Empty text")
+//        }
+//    }
+    
+    func filterTable(_ text: String){
+        let predicate = NSPredicate(format: "scheduleName CONTAINS[c] %@", text)
+        let filteredObject = localRealm.objects(ScheduleModel.self).filter(predicate)
+        resultVC.updateResult(model: filteredObject)
+    }
+    
 }
 
 extension ScheduleViewController: FSCalendarDelegateAppearance {

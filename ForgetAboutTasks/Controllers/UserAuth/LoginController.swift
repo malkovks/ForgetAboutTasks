@@ -148,20 +148,15 @@ extension LogInViewController {
         }
         
         view.addSubview(passwordField)
+        
         passwordField.snp.makeConstraints { make in
             make.top.equalTo(emailField.snp.bottom).offset(20)
             make.leading.equalToSuperview().offset(20)
             make.trailing.equalToSuperview().inset(20)
             make.height.equalTo(40)
         }
-        
-        view.addSubview(isPasswordHiddenButton)
-        isPasswordHiddenButton.snp.makeConstraints { make in
-            make.top.equalTo(emailField.snp.bottom).offset(25)
-            make.trailing.equalToSuperview().inset(25)
-            make.width.equalTo(40)
-            make.height.equalTo(30)
-        }
+        passwordField.rightView = isPasswordHiddenButton
+        passwordField.rightViewMode = .whileEditing
         
         view.addSubview(configureUserButton)
         configureUserButton.snp.makeConstraints { make in

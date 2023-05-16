@@ -53,7 +53,7 @@ class AllTasksToDoViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
-        print(Realm.Configuration.defaultConfiguration.fileURL)
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {

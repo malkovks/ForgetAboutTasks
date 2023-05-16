@@ -71,15 +71,6 @@ class RegisterAccountViewController: UIViewController {
         return button
     }()
     
-    private let isPasswordHiddenButtonSecond: UIButton = {
-        let button = UIButton(type: .system)
-        button.setImage(UIImage(systemName: "eye.fill"), for: .normal)
-        button.tintColor = .black
-        button.backgroundColor = .secondarySystemBackground
-        button.layer.cornerRadius = 8
-        return button
-    }()
-    
     private let configureUserButton: UIButton = {
         let button = UIButton()
         button.configuration = .tinted()
@@ -106,12 +97,10 @@ class RegisterAccountViewController: UIViewController {
             passwordField.isSecureTextEntry = false
             secondPasswordField.isSecureTextEntry = false
             isPasswordHiddenButton.setImage(UIImage(systemName: "eye.slash.fill"), for: .normal)
-            isPasswordHiddenButtonSecond.setImage(UIImage(systemName: "eye.slash.fill"), for: .normal)
         } else {
             passwordField.isSecureTextEntry = true
             secondPasswordField.isSecureTextEntry = true
             isPasswordHiddenButton.setImage(UIImage(systemName: "eye.fill"), for: .normal)
-            isPasswordHiddenButtonSecond.setImage(UIImage(systemName: "eye.fill"), for: .normal)
         }
         isPasswordHidden = !isPasswordHidden
     }
@@ -167,7 +156,6 @@ class RegisterAccountViewController: UIViewController {
     
     private func setupTargets(){
         isPasswordHiddenButton.addTarget(self, action: #selector(didTapChangeVisible), for: .touchUpInside)
-        isPasswordHiddenButtonSecond.addTarget(self, action: #selector(didTapChangeVisible), for: .touchUpInside)
         configureUserButton.addTarget(self, action: #selector(didTapCreateNewAccount), for: .touchUpInside)
     }
     
@@ -208,22 +196,11 @@ extension RegisterAccountViewController {
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(40)
         }
+        passwordField.rightView = isPasswordHiddenButton
+        passwordField.rightViewMode = .whileEditing
+        secondPasswordField.rightView = isPasswordHiddenButton
+        secondPasswordField.rightViewMode = .whileEditing
         
-        view.addSubview(isPasswordHiddenButton)
-        isPasswordHiddenButton.snp.makeConstraints { make in
-            make.top.equalTo(emailField.snp.bottom).offset(25)
-            make.trailing.equalToSuperview().inset(25)
-            make.width.equalTo(40)
-            make.height.equalTo(30)
-        }
-        
-        view.addSubview(isPasswordHiddenButtonSecond)
-        isPasswordHiddenButtonSecond.snp.makeConstraints { make in
-            make.top.equalTo(passwordField.snp.bottom).offset(25)
-            make.trailing.equalToSuperview().inset(25)
-            make.width.equalTo(40)
-            make.height.equalTo(30)
-        }
         
         view.addSubview(configureUserButton)
         configureUserButton.snp.makeConstraints { make in

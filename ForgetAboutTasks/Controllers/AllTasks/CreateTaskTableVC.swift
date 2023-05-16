@@ -53,8 +53,10 @@ class CreateTaskTableViewController: UIViewController {
         if !tasksModel.allTaskNameEvent.isEmpty {
             tasksModel.allTaskColor = cellBackgroundColor.encode()
             AllTasksRealmManager.shared.saveAllTasksModel(model: tasksModel)
-            tasksModel = AllTaskModel()
-            self.dismiss(animated: true)
+            showAlertForUser(text: "Event saved successfully", duration: DispatchTime.now()+2)
+            DispatchQueue.main.asyncAfter(deadline: .now()+3) {
+                self.view.window?.rootViewController?.dismiss(animated: true)
+            }
         } else {
             alertError(text: "Enter value in Name cell", mainTitle: "Error saving!")
         }
@@ -66,9 +68,11 @@ class CreateTaskTableViewController: UIViewController {
             if !editedTaskModel.allTaskNameEvent.isEmpty {
                 editedTaskModel.allTaskColor = cellBackgroundColor.encode()
                 let date = tasksModel.allTaskDate ?? Date()
-                print(date)
                 AllTasksRealmManager.shared.editAllTasksModel(oldModelDate: date, newModel: editedTaskModel)
-                self.view.window?.rootViewController?.dismiss(animated: true)
+                showAlertForUser(text: "Event edited successfully", duration: DispatchTime.now()+2)
+                DispatchQueue.main.asyncAfter(deadline: .now()+3) {
+                    self.view.window?.rootViewController?.dismiss(animated: true)
+                }
             } else {
                 alertError(text: "Enter value in Name Section", mainTitle: "Error editing!")
             }

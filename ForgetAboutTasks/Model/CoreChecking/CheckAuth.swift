@@ -40,6 +40,8 @@ class CheckAuth: UIViewController {
         if let data = UserDefaults.standard.data(forKey: "userImage") {
             let decode = try! PropertyListDecoder().decode(Data.self, from: data)
             image = UIImage(data: decode) ?? UIImage(systemName: "photo.circle")!
+        } else {
+            alertError()
         }
         let name = UserDefaults.standard.string(forKey: "userName") ?? "Error loading name"
         let mail = UserDefaults.standard.string(forKey: "userMail") ?? "Error loading email"
@@ -48,10 +50,13 @@ class CheckAuth: UIViewController {
     }
     
     func saveData(result: AuthDataResult) {
-        guard let imageURL = result.user.photoURL else { print("Error");return}
-        downloadImage(url: imageURL) { data in
-            UserDefaults.standard.set(data, forKey: "userImage")
-        }
+        guard let currentUser = Auth.auth().currentUser,
+              let imageURL = currentUser.photoURL,
+              let data = try? Data(contentsOf: imageURL) else { return }
+//        guard let imageURL = result.user.photoURL else { alertError(text: "Error getting image", mainTitle: "Error");return}
+//        downloadImage(url: imageURL) { data in
+            UserDefaults.standard.setValue(data, forKey: "userImage")
+//        }
         UserDefaults.standard.setValue(result.user.displayName, forKey: "userName")
         UserDefaults.standard.setValue(result.user.email, forKey: "userMail")
     }

@@ -53,12 +53,16 @@ class OptionsForScheduleViewController: UIViewController {
         
         let isClear = setupAlertIfDataEmpty()
         if isClear {
-            ScheduleRealmManager.shared.saveScheduleModel(model: scheduleModel)
             if reminderStatus {
                 setupUserNotification(model: scheduleModel)
                 reminderStatus = false
-                self.dismiss(animated: true)
             }
+            ScheduleRealmManager.shared.saveScheduleModel(model: scheduleModel)
+            showAlertForUser(text: "Saved successfully", duration: DispatchTime.now()+3)
+            DispatchQueue.main.asyncAfter(deadline: .now()+3) {
+                self.view.window?.rootViewController?.dismiss(animated: true)
+            }
+
         }
     }
     
@@ -77,10 +81,11 @@ class OptionsForScheduleViewController: UIViewController {
         let filterName = scheduleModel.scheduleName
         if !editedScheduleModel.scheduleName.isEmpty && editedScheduleModel.scheduleDate != nil && editedScheduleModel.scheduleTime != nil  {
             ScheduleRealmManager.shared.editScheduleModel(filterDate: filterDate, filterName: filterName, changes: editedScheduleModel)
-            self.view.window?.rootViewController?.dismiss(animated: true)
-//            let vc = ScheduleViewController()
-//            alertDismissed(view: vc.view)
-            print("Edited completely")
+            showAlertForUser(text: "Event edited successfully", duration: DispatchTime.now()+2)
+            DispatchQueue.main.asyncAfter(deadline: .now()+3) {
+                self.view.window?.rootViewController?.dismiss(animated: true)
+            }
+            
         } else {
             alertError()
         }
@@ -304,19 +309,20 @@ extension OptionsForScheduleViewController: UITableViewDelegate, UITableViewData
                 }
             case [2,2]:
                 alertTextField(cell: "Enter URL of event", placeholder: "Enter the text", keyboard: .emailAddress,table: tableView) { [self] text in
-                    editedScheduleModel.scheduleCategoryURL = text
-                    cellsName[indexPath.section][indexPath.row] = text
-                    navigationItemButton.isEnabled = true
-                }
-            case [2,3]:
-                alertTextField(cell: "Enter Notes of event", placeholder: "Enter the text", keyboard: .default,table: tableView) { [self] text in
                     if (text.contains("www.") || text.contains("https://")) && text.contains(".") {
-                        cellsName[indexPath.section][indexPath.row] = text
                         editedScheduleModel.scheduleCategoryURL = text
+                        cellsName[indexPath.section][indexPath.row] = text
                         navigationItemButton.isEnabled = true
                     } else {
                         alertError(text: "Try again!\nEnter www. in URL link and pick a domain", mainTitle: "Warning!")
                     }
+                    
+                }
+            case [2,3]:
+                alertTextField(cell: "Enter Notes of event", placeholder: "Enter the text", keyboard: .default,table: tableView) { [self] text in
+                        cellsName[indexPath.section][indexPath.row] = text
+                        editedScheduleModel.scheduleCategoryURL = text
+                        navigationItemButton.isEnabled = true
                 }
             case [3,0]:
                 openColorPicker()
