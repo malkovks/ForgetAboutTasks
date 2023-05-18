@@ -67,6 +67,7 @@
 		0ACE797A29DED2D400599C19 /* NewContactCustomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE797929DED2D400599C19 /* NewContactCustomView.swift */; };
 		0AF2D6EF2A1141360093A824 /* ScheduleSearchResultVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AF2D6EE2A1141360093A824 /* ScheduleSearchResultVC.swift */; };
 		0AF2D6F12A1364EC0093A824 /* AlertUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AF2D6F02A1364EC0093A824 /* AlertUser.swift */; };
+		0AF2D6F42A166C7B0093A824 /* Calendar+UIMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AF2D6F32A166C7B0093A824 /* Calendar+UIMenu.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -143,6 +144,7 @@
 		0ACE797929DED2D400599C19 /* NewContactCustomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewContactCustomView.swift; sourceTree = "<group>"; };
 		0AF2D6EE2A1141360093A824 /* ScheduleSearchResultVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleSearchResultVC.swift; sourceTree = "<group>"; };
 		0AF2D6F02A1364EC0093A824 /* AlertUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertUser.swift; sourceTree = "<group>"; };
+		0AF2D6F32A166C7B0093A824 /* Calendar+UIMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Calendar+UIMenu.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -432,7 +434,6 @@
 				0A525DAE29FC3C3B009D116F /* AlertNewName.swift */,
 				0A6152112A09D57000A26792 /* AlertDismissed.swift */,
 				0A6152132A09E57700A26792 /* AlertActionWithURL.swift */,
-				0AF2D6F02A1364EC0093A824 /* AlertUser.swift */,
 			);
 			path = "AlertControllers+Extensions";
 			sourceTree = "<group>";
@@ -440,6 +441,7 @@
 		0AA8EC7029CAF52E004DC6DD /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				0AF2D6F22A166A720093A824 /* UIView+Extensions */,
 				0A7FFFBE29F1B9F700CAC9DA /* DownloadImage */,
 				0A7FFFBB29F1325500CAC9DA /* String+Extensions */,
 				0AA74A2229E715DA00F01532 /* Date */,
@@ -447,6 +449,15 @@
 				0AA8EC5B29C76897004DC6DD /* AlertControllers+Extensions */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		0AF2D6F22A166A720093A824 /* UIView+Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				0AF2D6F02A1364EC0093A824 /* AlertUser.swift */,
+				0AF2D6F32A166C7B0093A824 /* Calendar+UIMenu.swift */,
+			);
+			path = "UIView+Extensions";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -636,6 +647,7 @@
 				0A86ED1029B5D97F001C9BAF /* AppDelegate.swift in Sources */,
 				0A9E1C3A29CEEDCE000CC9A9 /* LoginController.swift in Sources */,
 				0A8AC1A429B9D4EB00EA052B /* CreateTaskForDayVC.swift in Sources */,
+				0AF2D6F42A166C7B0093A824 /* Calendar+UIMenu.swift in Sources */,
 				0A7FFFBA29EFDC0B00CAC9DA /* ContactRealmManager.swift in Sources */,
 				0A9E1C3C29D0778F000CC9A9 /* RegisterAccountController.swift in Sources */,
 				0A86ED1229B5D97F001C9BAF /* SceneDelegate.swift in Sources */,

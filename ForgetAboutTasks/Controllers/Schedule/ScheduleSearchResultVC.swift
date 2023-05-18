@@ -28,6 +28,7 @@ class ScheduleSearchResultViewController: UIViewController {
     }
     
     private func setupTableView(){
+        tableView.backgroundColor = #colorLiteral(red: 0.8424847722, green: 0.8424847722, blue: 0.8424847722, alpha: 0.8470588235)
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cellSearchResult")
@@ -48,17 +49,40 @@ extension ScheduleSearchResultViewController: UITableViewDelegate, UITableViewDa
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cellSearchResult")
         let model = scheduleModel?[indexPath.row]
-        cell.textLabel?.text = model?.scheduleCategoryName
-        cell.detailTextLabel?.text =  String(describing: model?.scheduleDate)
+        
+        let timeFF = Formatters.instance.timeStringFromDate(date: model?.scheduleDate ?? Date())
+        let dateF = DateFormatter.localizedString(from: model?.scheduleTime ?? Date(), dateStyle: .medium, timeStyle: .none)
+        
+        cell.textLabel?.text = model?.scheduleName
+        cell.detailTextLabel?.text =  dateF + ". Time: " + timeFF
+        cell.imageView?.image = UIImage(systemName: "circle.fill")
+        if let data = model?.scheduleColor {
+            let color = UIColor.color(withData: data)
+            cell.imageView?.tintColor = color
+        }
         return cell
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return scheduleModel?.count ?? 0
+        return scheduleModel?.count ?? 10
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        print("Selected at \(indexPath.row)")
+        guard let model = scheduleModel?[indexPath.row] else { return }
+        let vc = OpenTaskDetailViewController()
+        vc.selectedScheduleModel = model
+        let nav = UINavigationController(rootViewController: vc)
+        nav.modalPresentationStyle = .fullScreen
+        nav.isNavigationBarHidden = false
+        present(nav, animated: true)
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        1
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return "Result of search:"
     }
 }
 

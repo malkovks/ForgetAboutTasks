@@ -8,21 +8,21 @@
 import UIKit
 
 extension UIViewController {
-    func showAlertForUser(text: String,duration: DispatchTime){
+    func showAlertForUser(text: String,duration: DispatchTime,controllerView: UIView){
         let customView = UIView()
         customView.backgroundColor = UIColor(named: "cellColor")
-        customView.layer.cornerRadius = 10
+        customView.layer.cornerRadius = 12
         self.view.addSubview(customView)
         customView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(view.frame.size.height/7)
+            make.top.equalTo(controllerView.safeAreaLayoutGuide.snp.top).offset(10)
             make.centerX.equalToSuperview()
-            make.width.equalTo(view.frame.size.width/2)
-            make.height.equalTo(view.frame.size.height/12)
+            make.width.equalTo(view.frame.size.width/3)
+            make.height.equalTo(view.frame.size.height/20)
             
         }
         
         let label = UILabel()
-        label.font = .systemFont(ofSize: 20, weight: .medium, width: .standard)
+        label.font = .systemFont(ofSize: 10, weight: .medium, width: .standard)
         label.text = text
         label.numberOfLines = 0
         label.textColor = UIColor(named: "textColor")

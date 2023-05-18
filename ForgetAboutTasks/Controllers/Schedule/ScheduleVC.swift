@@ -19,12 +19,15 @@ class ScheduleViewController: UIViewController {
     
     let localRealm = try! Realm()
     private var scheduleModel: Results<ScheduleModel>!
+    private var filteredModel: Results<ScheduleModel>!
     
     let resultVC = ScheduleSearchResultViewController()
     
     private lazy var searchNavigationButton: UIBarButtonItem = {
-        return UIBarButtonItem(image: UIImage(systemName: "magnifyingglass.circle.fill"), landscapeImagePhone: nil, style: .bordered, target: self, action: #selector(didTapSearch))
+        return UIBarButtonItem(image: UIImage(systemName: "magnifyingglass.circle.fill"), landscapeImagePhone: nil, style: .plain, target: self, action: #selector(didTapSearch))
     }()
+    
+    private let tableView = UITableView()
     
     private var calendar: FSCalendar = {
        let calendar = FSCalendar()
@@ -38,10 +41,11 @@ class ScheduleViewController: UIViewController {
         calendar.headerHeight = 50
         calendar.firstWeekday = 2
         calendar.placeholderType = .none //remove past and future dates of months
+        calendar.appearance.eventDefaultColor = #colorLiteral(red: 0.8374214172, green: 0.8374213576, blue: 0.8374213576, alpha: 1)
         calendar.appearance.titleFont = UIFont.systemFont(ofSize: 18)
         calendar.appearance.headerTitleFont = .systemFont(ofSize: 20)
         calendar.appearance.borderDefaultColor = .clear
-        calendar.appearance.titleWeekendColor = #colorLiteral(red: 0.3826281726, green: 0.4247716069, blue: 0.4593068957, alpha: 0.916589598)
+        calendar.appearance.titleWeekendColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
         calendar.appearance.titleDefaultColor = UIColor(named: "textColor")
         calendar.appearance.weekdayTextColor = UIColor(named: "calendarHeaderColor")
         calendar.appearance.headerTitleColor = UIColor(named: "calendarHeaderColor")
@@ -52,7 +56,7 @@ class ScheduleViewController: UIViewController {
     
     private let searchController: UISearchController = {
        let search = UISearchController(searchResultsController: ScheduleSearchResultViewController())
-        search.searchBar.placeholder = "Enter the date or name of event"
+        search.searchBar.placeholder = "Enter the name of event"
         search.isActive = false
         search.searchBar.searchTextField.clearButtonMode = .whileEditing
         search.obscuresBackgroundDuringPresentation = false
@@ -77,9 +81,15 @@ class ScheduleViewController: UIViewController {
             searchController.isActive = true
     }
     
-    @objc private func didTapCallAlert(){
+    @objc private func selectDate(_ sender: Any){
         
     }
+    
+    @objc private func didTapCallAlert(){
+//        showAlertForUser(text: "View was loaded", duration: DispatchTime.now()+2, controllerView: view)
+    }
+    
+    
 
     //MARK: - Setup Methods
     private func setupDelegates(){
@@ -88,7 +98,7 @@ class ScheduleViewController: UIViewController {
     }
     
     private func setupAnimation(){
-        UIView.animate(withDuration: 1, delay: 0, options: .curveEaseInOut) {
+        UIView.animate(withDuration: 1, delay: 0, options: .curveLinear) {
             self.calendar.transform = CGAffineTransform.identity
             self.view.layoutIfNeeded()
         }
@@ -113,9 +123,18 @@ class ScheduleViewController: UIViewController {
         calendar.reloadData()
         setupDelegates()
         setupConstraints()
-        loadingRealmData()
+        setupSearchController()
+        loadingData()
+        setupTableView()
         loadingDataByDate(date: Date(), at: .current, is: true)
         view.backgroundColor = UIColor(named: "backgroundColor")
+    }
+    
+    private func setupTableView(){
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.isHidden = true
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "scheduleCell")
     }
     
     private func setupNavigationController(){
@@ -131,7 +150,6 @@ class ScheduleViewController: UIViewController {
     }
     
     private func setupSearchController(){
-        searchController.searchBar.placeholder = "Enter text"
         searchController.searchResultsUpdater = self
         searchController.searchBar.delegate = self
         searchController.obscuresBackgroundDuringPresentation = false
@@ -139,8 +157,9 @@ class ScheduleViewController: UIViewController {
         navigationItem.hidesSearchBarWhenScrolling = true
     }
     
-    private func loadingRealmData(){
-        scheduleModel = localRealm.objects(ScheduleModel.self)
+    private func loadingData(){
+        let value = localRealm.objects(ScheduleModel.self)
+        filteredModel = value
     }
     
     private func loadingDataByDate(date: Date,at monthPosition: FSCalendarMonthPosition,is firstLoad: Bool) {
@@ -154,15 +173,17 @@ class ScheduleViewController: UIViewController {
         let components = calendar.dateComponents([.weekday], from: date)
         guard let weekday = components.weekday else { alertError(text: "", mainTitle: "Error value");return }
         
-        let predicate = NSPredicate(format: "scheduleWeekday = \(weekday) AND scheduleRepeat = true")
-        let predicateUnrepeat = NSPredicate(format: "scheduleRepeat = false AND scheduleDate BETWEEN %@", [dateStart,dateEnd])
-        let compound = NSCompoundPredicate(type: .or, subpredicates: [predicate,predicateUnrepeat])
-        let value = localRealm.objects(ScheduleModel.self).filter(compound)
+        
+        let value = localRealm.objects(ScheduleModel.self)
         scheduleModel = value
         
 
         if firstLoad == false {
             if monthPosition == .current {
+                let predicate = NSPredicate(format: "scheduleWeekday = \(weekday) AND scheduleRepeat = true")
+                let predicateUnrepeat = NSPredicate(format: "scheduleRepeat = false AND scheduleDate BETWEEN %@", [dateStart,dateEnd])
+                let compound = NSCompoundPredicate(type: .or, subpredicates: [predicate,predicateUnrepeat])
+                let value = localRealm.objects(ScheduleModel.self).filter(compound)
                 let vc = CreateTaskForDayController()
                 vc.choosenDate = date
                 vc.cellDataScheduleModel = value
@@ -172,7 +193,6 @@ class ScheduleViewController: UIViewController {
                 present(nav, animated: true)
             }
         }
-        
     }
 }
 //MARK: - calendar delegates
@@ -186,41 +206,71 @@ extension ScheduleViewController: FSCalendarDelegate, FSCalendarDataSource {
     
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
         loadingDataByDate(date: date, at: monthPosition, is: false)
+        print(String(describing: date))
+    }
+    
+    func calendar(_ calendar: FSCalendar, numberOfEventsFor date: Date) -> Int {
+        var eventCounts = [Date: Int]()
+        for event in scheduleModel {
+            let date = event.scheduleDate ?? Date()
+            print(date)
+            if let count = eventCounts[date]{
+                eventCounts[date]! += 1
+            } else {
+                eventCounts[date] = 1
+            }
+        }
+        if let counts = eventCounts[date] {
+            return counts
+
+        } else {
+            return 0
+        }
     }
 }
+//MARK: - Table view Delegates and DataSources
+extension ScheduleViewController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return filteredModel?.count ?? 0
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "scheduleCell")
+        cell.textLabel?.text = filteredModel?[indexPath.row].scheduleName
+        cell.detailTextLabel?.text = String(describing: filteredModel?[indexPath.row].scheduleDate)
+        return cell
+    }
+}
+
+
 
 extension ScheduleViewController: UISearchResultsUpdating,UISearchBarDelegate {
     func updateSearchResults(for searchController: UISearchController) {
-//        filterTable(searchController.searchBar.text ?? "Text")
-        if let text = searchController.searchBar.text, !text.isEmpty {
-            filterTable(text)
+        guard let text = searchController.searchBar.text else { alertError();return }
+        let value = filterTable(text)
+        if !text.isEmpty {
+            let vc = searchController.searchResultsController as? ScheduleSearchResultViewController
+            vc?.scheduleModel = value
+            vc?.tableView.reloadData()
         }
     }
-//    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-//
-//    }
-////
-//    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-//        if !searchText.isEmpty {
-//            filterTable(searchText)
-//            print("Some result")
-//        } else {
-//            resultVC.scheduleModel = nil
-//            print("Empty text")
-//        }
-//    }
     
-    func filterTable(_ text: String){
-        let predicate = NSPredicate(format: "scheduleName CONTAINS[c] %@", text)
-        let filteredObject = localRealm.objects(ScheduleModel.self).filter(predicate)
-        resultVC.updateResult(model: filteredObject)
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        if ((searchBar.text?.isEmpty) != nil) {
+            tableView.isHidden = true
+            calendar.isHidden = false
+        }
     }
-    
+
+    func filterTable(_ text: String) -> Results<ScheduleModel>{
+        loadingData()
+        let predicate = NSPredicate(format: "scheduleName CONTAINS[c] %@", text)
+        filteredModel = filteredModel.filter(predicate).sorted(byKeyPath: "scheduleDate")
+        return filteredModel ?? scheduleModel
+    }
 }
 
-extension ScheduleViewController: FSCalendarDelegateAppearance {
-    
-}
+
 
 extension ScheduleViewController {
     private func setupConstraints(){
@@ -230,33 +280,12 @@ extension ScheduleViewController {
             make.leading.trailing.equalToSuperview().inset(0)
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(0)
         }
+        view.addSubview(tableView)
+            tableView.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
+            make.leading.trailing.equalToSuperview()
+            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
+        }
     }
 }
-
-//MARK: - Добавление евентов в календарь для отображения
-//    var dates = ["2023-03-10","2023-03-11","2023-03-12","2023-03-13","2023-03-14","2023-03-15"]
-//
-
-
-
-//    private func setupSwipeAction(){
-//        let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(didTapSwipe))
-//        swipeUp.direction = .up
-//        calendar.addGestureRecognizer(swipeUp)
-//
-//        let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(didTapSwipe))
-//        swipeDown.direction = .up
-//        calendar.addGestureRecognizer(swipeDown)
-//    }
-    
-//    @objc private func didTapSwipe(gesture: UISwipeGestureRecognizer){
-//        switch gesture.direction {
-//        case .up:
-//            didTapTapped()
-//        case .down:
-//            didTapTapped()
-//        default:
-//            break
-//        }
-//    }
 

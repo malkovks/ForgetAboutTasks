@@ -53,7 +53,7 @@ class CreateTaskTableViewController: UIViewController {
         if !tasksModel.allTaskNameEvent.isEmpty {
             tasksModel.allTaskColor = cellBackgroundColor.encode()
             AllTasksRealmManager.shared.saveAllTasksModel(model: tasksModel)
-            showAlertForUser(text: "Event saved successfully", duration: DispatchTime.now()+2)
+            showAlertForUser(text: "Event saved successfully", duration: DispatchTime.now()+2, controllerView: view)
             DispatchQueue.main.asyncAfter(deadline: .now()+3) {
                 self.view.window?.rootViewController?.dismiss(animated: true)
             }
@@ -69,7 +69,7 @@ class CreateTaskTableViewController: UIViewController {
                 editedTaskModel.allTaskColor = cellBackgroundColor.encode()
                 let date = tasksModel.allTaskDate ?? Date()
                 AllTasksRealmManager.shared.editAllTasksModel(oldModelDate: date, newModel: editedTaskModel)
-                showAlertForUser(text: "Event edited successfully", duration: DispatchTime.now()+2)
+                showAlertForUser(text: "Event edited successfully", duration: DispatchTime.now()+2, controllerView: view)
                 DispatchQueue.main.asyncAfter(deadline: .now()+3) {
                     self.view.window?.rootViewController?.dismiss(animated: true)
                 }

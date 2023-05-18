@@ -42,6 +42,11 @@ class OptionsForScheduleViewController: UIViewController {
         setupTableView()
         setupView()
     }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        showAlertForUser(text: "Saved successfully", duration: DispatchTime.now()+3, controllerView: view)
+    }
 
     //MARK: - Targets methods
     @objc private func didTapDismiss(){
@@ -58,11 +63,10 @@ class OptionsForScheduleViewController: UIViewController {
                 reminderStatus = false
             }
             ScheduleRealmManager.shared.saveScheduleModel(model: scheduleModel)
-            showAlertForUser(text: "Saved successfully", duration: DispatchTime.now()+3)
+            
             DispatchQueue.main.asyncAfter(deadline: .now()+3) {
                 self.view.window?.rootViewController?.dismiss(animated: true)
             }
-
         }
     }
     
@@ -81,7 +85,7 @@ class OptionsForScheduleViewController: UIViewController {
         let filterName = scheduleModel.scheduleName
         if !editedScheduleModel.scheduleName.isEmpty && editedScheduleModel.scheduleDate != nil && editedScheduleModel.scheduleTime != nil  {
             ScheduleRealmManager.shared.editScheduleModel(filterDate: filterDate, filterName: filterName, changes: editedScheduleModel)
-            showAlertForUser(text: "Event edited successfully", duration: DispatchTime.now()+2)
+            showAlertForUser(text: "Event edited successfully", duration: DispatchTime.now()+2, controllerView: view)
             DispatchQueue.main.asyncAfter(deadline: .now()+3) {
                 self.view.window?.rootViewController?.dismiss(animated: true)
             }
