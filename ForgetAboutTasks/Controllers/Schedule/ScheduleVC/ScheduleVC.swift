@@ -27,8 +27,6 @@ class ScheduleViewController: UIViewController {
         return UIBarButtonItem(image: UIImage(systemName: "magnifyingglass.circle.fill"), landscapeImagePhone: nil, style: .plain, target: self, action: #selector(didTapSearch))
     }()
     
-    private let tableView = UITableView()
-    
     private var calendar: FSCalendar = {
        let calendar = FSCalendar()
         calendar.formatter.timeZone = TimeZone.current
@@ -125,16 +123,9 @@ class ScheduleViewController: UIViewController {
         setupConstraints()
         setupSearchController()
         loadingData()
-        setupTableView()
+
         loadingDataByDate(date: Date(), at: .current, is: true)
         view.backgroundColor = UIColor(named: "backgroundColor")
-    }
-    
-    private func setupTableView(){
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.isHidden = true
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "scheduleCell")
     }
     
     private func setupNavigationController(){
@@ -222,28 +213,12 @@ extension ScheduleViewController: FSCalendarDelegate, FSCalendarDataSource {
         }
         if let counts = eventCounts[date] {
             return counts
-
         } else {
             return 0
         }
     }
 }
-//MARK: - Table view Delegates and DataSources
-extension ScheduleViewController: UITableViewDelegate, UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return filteredModel?.count ?? 0
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "scheduleCell")
-        cell.textLabel?.text = filteredModel?[indexPath.row].scheduleName
-        cell.detailTextLabel?.text = String(describing: filteredModel?[indexPath.row].scheduleDate)
-        return cell
-    }
-}
-
-
-
+//MARK: - Search delegates
 extension ScheduleViewController: UISearchResultsUpdating,UISearchBarDelegate {
     func updateSearchResults(for searchController: UISearchController) {
         guard let text = searchController.searchBar.text else { alertError();return }
@@ -257,8 +232,7 @@ extension ScheduleViewController: UISearchResultsUpdating,UISearchBarDelegate {
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         if ((searchBar.text?.isEmpty) != nil) {
-            tableView.isHidden = true
-            calendar.isHidden = false
+            searchController.isActive = false
         }
     }
 
@@ -279,12 +253,6 @@ extension ScheduleViewController {
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(0)
             make.leading.trailing.equalToSuperview().inset(0)
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(0)
-        }
-        view.addSubview(tableView)
-            tableView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
-            make.leading.trailing.equalToSuperview()
-            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
         }
     }
 }

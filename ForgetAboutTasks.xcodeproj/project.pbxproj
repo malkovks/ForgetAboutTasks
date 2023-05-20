@@ -16,7 +16,7 @@
 		0A0A49DA2A04E64F00517E6F /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 0A0A49D92A04E64F00517E6F /* FirebaseAuth */; };
 		0A0A49DC2A04E64F00517E6F /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 0A0A49DB2A04E64F00517E6F /* FirebaseDatabase */; };
 		0A0A49DE2A04E64F00517E6F /* FirebaseDatabaseSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 0A0A49DD2A04E64F00517E6F /* FirebaseDatabaseSwift */; };
-		0A0CE6F729C461F600A14648 /* OptionsForScheduleVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A0CE6F629C461F600A14648 /* OptionsForScheduleVC.swift */; };
+		0A0CE6F729C461F600A14648 /* CreateEventScheduleVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A0CE6F629C461F600A14648 /* CreateEventScheduleVC.swift */; };
 		0A2717B829FE518000EFBC11 /* OpenTaskDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2717B729FE518000EFBC11 /* OpenTaskDetailVC.swift */; };
 		0A2717BA2A01F7FE00EFBC11 /* AllTasksDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2717B92A01F7FE00EFBC11 /* AllTasksDetailVC.swift */; };
 		0A525DAF29FC3C3B009D116F /* AlertNewName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A525DAE29FC3C3B009D116F /* AlertNewName.swift */; };
@@ -68,6 +68,7 @@
 		0AF2D6EF2A1141360093A824 /* ScheduleSearchResultVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AF2D6EE2A1141360093A824 /* ScheduleSearchResultVC.swift */; };
 		0AF2D6F12A1364EC0093A824 /* AlertUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AF2D6F02A1364EC0093A824 /* AlertUser.swift */; };
 		0AF2D6F42A166C7B0093A824 /* Calendar+UIMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AF2D6F32A166C7B0093A824 /* Calendar+UIMenu.swift */; };
+		0AF2D6F82A189A390093A824 /* EditEventScheduleVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AF2D6F72A189A390093A824 /* EditEventScheduleVC.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -88,7 +89,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		0A0CE6F629C461F600A14648 /* OptionsForScheduleVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionsForScheduleVC.swift; sourceTree = "<group>"; };
+		0A0CE6F629C461F600A14648 /* CreateEventScheduleVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateEventScheduleVC.swift; sourceTree = "<group>"; };
 		0A2717B729FE518000EFBC11 /* OpenTaskDetailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenTaskDetailVC.swift; sourceTree = "<group>"; };
 		0A2717B92A01F7FE00EFBC11 /* AllTasksDetailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllTasksDetailVC.swift; sourceTree = "<group>"; };
 		0A525DAE29FC3C3B009D116F /* AlertNewName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertNewName.swift; sourceTree = "<group>"; };
@@ -145,6 +146,7 @@
 		0AF2D6EE2A1141360093A824 /* ScheduleSearchResultVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleSearchResultVC.swift; sourceTree = "<group>"; };
 		0AF2D6F02A1364EC0093A824 /* AlertUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertUser.swift; sourceTree = "<group>"; };
 		0AF2D6F32A166C7B0093A824 /* Calendar+UIMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Calendar+UIMenu.swift"; sourceTree = "<group>"; };
+		0AF2D6F72A189A390093A824 /* EditEventScheduleVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditEventScheduleVC.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -294,11 +296,10 @@
 		0A99A90029CD98C600CC5A42 /* Schedule */ = {
 			isa = PBXGroup;
 			children = (
-				0A8AC1A029B9D46D00EA052B /* ScheduleVC.swift */,
+				0AF2D6F62A189A1F0093A824 /* ScheduleVC */,
 				0A8AC1A329B9D4EB00EA052B /* CreateTaskForDayVC.swift */,
 				0A2717B729FE518000EFBC11 /* OpenTaskDetailVC.swift */,
-				0A0CE6F629C461F600A14648 /* OptionsForScheduleVC.swift */,
-				0AF2D6EE2A1141360093A824 /* ScheduleSearchResultVC.swift */,
+				0AF2D6F92A189CF00093A824 /* EventEditingOrCreating */,
 			);
 			path = Schedule;
 			sourceTree = "<group>";
@@ -458,6 +459,24 @@
 				0AF2D6F32A166C7B0093A824 /* Calendar+UIMenu.swift */,
 			);
 			path = "UIView+Extensions";
+			sourceTree = "<group>";
+		};
+		0AF2D6F62A189A1F0093A824 /* ScheduleVC */ = {
+			isa = PBXGroup;
+			children = (
+				0A8AC1A029B9D46D00EA052B /* ScheduleVC.swift */,
+				0AF2D6EE2A1141360093A824 /* ScheduleSearchResultVC.swift */,
+			);
+			path = ScheduleVC;
+			sourceTree = "<group>";
+		};
+		0AF2D6F92A189CF00093A824 /* EventEditingOrCreating */ = {
+			isa = PBXGroup;
+			children = (
+				0A0CE6F629C461F600A14648 /* CreateEventScheduleVC.swift */,
+				0AF2D6F72A189A390093A824 /* EditEventScheduleVC.swift */,
+			);
+			path = EventEditingOrCreating;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -628,7 +647,7 @@
 				0AA604E929E16C05007ACE58 /* ColorExtensions.swift in Sources */,
 				0AA604DF29E04541007ACE58 /* AlertImagePicker.swift in Sources */,
 				0AA74A2429E715ED00F01532 /* DateFormatters.swift in Sources */,
-				0A0CE6F729C461F600A14648 /* OptionsForScheduleVC.swift in Sources */,
+				0A0CE6F729C461F600A14648 /* CreateEventScheduleVC.swift in Sources */,
 				0AA8EC5F29C7AA56004DC6DD /* AlertTime.swift in Sources */,
 				0AB763BA29E3FAC900BFDB0D /* AlertError.swift in Sources */,
 				0AF2D6F12A1364EC0093A824 /* AlertUser.swift in Sources */,
@@ -644,6 +663,7 @@
 				0A99A90729CD99CA00CC5A42 /* UserAuthController.swift in Sources */,
 				0A2717BA2A01F7FE00EFBC11 /* AllTasksDetailVC.swift in Sources */,
 				0ACE797229DD95C600599C19 /* CreateTaskTableVC.swift in Sources */,
+				0AF2D6F82A189A390093A824 /* EditEventScheduleVC.swift in Sources */,
 				0A86ED1029B5D97F001C9BAF /* AppDelegate.swift in Sources */,
 				0A9E1C3A29CEEDCE000CC9A9 /* LoginController.swift in Sources */,
 				0A8AC1A429B9D4EB00EA052B /* CreateTaskForDayVC.swift in Sources */,

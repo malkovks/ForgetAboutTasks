@@ -21,7 +21,6 @@ class TabBarViewController: UITabBarController {
         let allTasks = setupNavigationController(vc: AllTasksToDoViewController(), itemName: "All Tasks", image: "list.clipboard.fill")
         let contactsVC = setupNavigationController(vc: ContactsViewController(), itemName: "Contacts", image: "rectangle.stack.person.crop")
         let userVC = setupNavWithoutNavBarEdgeAppearance(vc: UserProfileViewController(), itemName: "Settings", image: "gear")
-        
 //        viewControllers = [scheduleVC, allTasks, contactsVC, userVC]
         setViewControllers([scheduleVC,allTasks,contactsVC,userVC], animated: true)
     }
@@ -45,6 +44,4 @@ class TabBarViewController: UITabBarController {
         navController.tabBarItem = item
         return navController
     }
-
-
 }

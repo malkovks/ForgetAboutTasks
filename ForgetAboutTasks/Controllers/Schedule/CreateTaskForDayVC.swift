@@ -106,7 +106,7 @@ class CreateTaskForDayController: UIViewController {
     }
     
     @objc private func didTapCreate(){
-        let vc = OptionsForScheduleViewController()
+        let vc = CreateEventScheduleViewController()
         vc.choosenDate = choosenDate
         let navVC = UINavigationController(rootViewController: vc)
         navVC.modalTransitionStyle = .flipHorizontal
@@ -261,7 +261,7 @@ extension CreateTaskForDayController: UITableViewDelegate, UITableViewDataSource
         let cellData = cellDataScheduleModel[indexPath.row]
         
         let actionInstance = UIContextualAction(style: .normal, title: "") { [weak self] _, _, completionHandler in
-            let vc = OptionsForScheduleViewController()
+            let vc = CreateEventScheduleViewController()
             vc.isEditingView = true
             vc.editedScheduleModel = cellData
             let nav = UINavigationController(rootViewController: vc)

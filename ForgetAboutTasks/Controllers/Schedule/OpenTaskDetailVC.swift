@@ -24,6 +24,10 @@ class OpenTaskDetailViewController: UIViewController {
     private var scheduleModel = ScheduleModel()
     var selectedScheduleModel = ScheduleModel()
     
+    private lazy var shareModelButton: UIBarButtonItem = {
+        return UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(didTapShareTable))
+    }()
+    
     private let tableView = UITableView(frame: CGRectZero, style: .insetGrouped)
     //MARK: - viewDidLoad
     override func viewDidLoad() {
@@ -38,10 +42,9 @@ class OpenTaskDetailViewController: UIViewController {
     }
     
     @objc private func didTapEdit(){
-        let vc = OptionsForScheduleViewController()
+        let vc = EditEventScheduleViewController()
         vc.scheduleModel = selectedScheduleModel
         vc.choosenDate = selectedScheduleModel.scheduleDate ?? Date()
-        vc.isEditingView = true
         vc.cellBackgroundColor = UIColor.color(withData: selectedScheduleModel.scheduleColor!) ?? #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
         let nav = UINavigationController(rootViewController: vc)
         nav.modalPresentationStyle = .fullScreen
@@ -49,6 +52,16 @@ class OpenTaskDetailViewController: UIViewController {
         nav.isNavigationBarHidden = false
         present(nav, animated: true)
     }
+    
+    @objc private func didTapShareTable(){
+        guard let pdfTable = convertTableIntoPDF(from: tableView) else { alertError();return}
+        let activity = UIActivityViewController(activityItems: [pdfTable], applicationActivities: nil)
+        activity.setValue("PDF Report", forKey: "subject")
+        activity.excludedActivityTypes = [.print,.postToFlickr,.message,.mail,.markupAsPDF]
+        activity.setValue("com.adobe.pdf", forKey: "fileType")
+        present(activity, animated: true)
+    }
+    
     //MARK: - Setup Views and secondary methods
     private func setupView() {
         setupNavigationController()
@@ -67,9 +80,18 @@ class OpenTaskDetailViewController: UIViewController {
     private func setupNavigationController(){
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(didTapDismiss))
         let saveButton = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(didTapEdit))
-        navigationItem.rightBarButtonItems = [saveButton]
+        navigationItem.rightBarButtonItems = [saveButton,shareModelButton]
         navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
-        title = selectedScheduleModel.scheduleCategoryName
+        title = "Details"
+    }
+    
+    private func convertTableIntoPDF(from tableView: UITableView) -> Data? {
+        let pdfBounds = CGRect(x: 0, y: 0, width: 612, height: 792)
+        let pdfDate = NSMutableData()
+        UIGraphicsBeginPDFPageWithInfo(pdfBounds, nil)
+        tableView.layer.render(in: UIGraphicsGetCurrentContext()!)
+        UIGraphicsEndPDFContext()
+        return pdfDate as Data
     }
 }
 //MARK: - table view delegates and data sources

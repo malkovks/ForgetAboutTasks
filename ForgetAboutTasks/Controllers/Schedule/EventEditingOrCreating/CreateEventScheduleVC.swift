@@ -1,5 +1,5 @@
 //
-//  OptionsForScheduleViewController.swift
+//  CreateEventScheduleViewController.swift
 //  ForgetAboutTasks
 //
 //  Created by Константин Малков on 17.03.2023.
@@ -11,7 +11,7 @@ import Combine
 import UserNotifications
 import RealmSwift
 
-class OptionsForScheduleViewController: UIViewController {
+class CreateEventScheduleViewController: UIViewController {
     
     let headerArray = ["Details of event","Date and time","Category of event","Color of event","Repeat"]
     
@@ -28,13 +28,14 @@ class OptionsForScheduleViewController: UIViewController {
     
     private var cancellable: AnyCancellable?//for parallels displaying color in cell and Combine Kit for it
     
-    private let picker = UIColorPickerViewController()
     var scheduleModel = ScheduleModel()
     var editedScheduleModel = ScheduleModel()
+    private let realm = try! Realm()
+    
     private lazy var navigationItemButton: UIBarButtonItem = {
         return UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(didTapEdit))
     }()
-    
+    private let picker = UIColorPickerViewController()
     private let tableView = UITableView(frame: CGRectZero, style: .insetGrouped)
     //MARK: - viewDidLoad
     override func viewDidLoad() {
@@ -170,6 +171,21 @@ class OptionsForScheduleViewController: UIViewController {
             }
         }
     }
+    
+    private func setupCellTitle(model: ScheduleModel,indexPath: IndexPath){
+        switch indexPath {
+            case [0,0]: cellsName[indexPath.section][indexPath.row] = model.scheduleName
+        case [1,0]: cellsName[indexPath.section][indexPath.row] = String(describing: model.scheduleDate)
+        case [2,0]: cellsName[indexPath.section][indexPath.row] = model.scheduleCategoryName ?? "Empty cell"
+        case [2,1]: cellsName[indexPath.section][indexPath.row] = model.scheduleCategoryType ?? "Empty cell"
+        case [2,2]: cellsName[indexPath.section][indexPath.row] = model.scheduleCategoryURL ?? "Empty cell"
+        case [2,3]: cellsName[indexPath.section][indexPath.row] = model.scheduleCategoryNote ?? "Empty cell"
+        
+        default:
+            print("Error")
+        }
+   
+    }
     //MARK: - Logics methods
     
     private func setupAlertIfDataEmpty() -> Bool{
@@ -198,8 +214,8 @@ class OptionsForScheduleViewController: UIViewController {
         self.present(picker, animated: true)
     }
 }
-
-extension OptionsForScheduleViewController: UITableViewDelegate, UITableViewDataSource {
+//MARK: - Table view delegates
+extension CreateEventScheduleViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0: return 1
@@ -228,7 +244,10 @@ extension OptionsForScheduleViewController: UITableViewDelegate, UITableViewData
         cell.accessoryView = switchButton
         
         if isEditingView {
+//            setupCellTitle(model: scheduleModel, indexPath: indexPath)
+//            cell.textLabel?.text = data
             switch indexPath {
+                
             case [0,0]:
                 cell.textLabel?.text = scheduleModel.scheduleName
                 cell.accessoryView = nil
@@ -282,6 +301,7 @@ extension OptionsForScheduleViewController: UITableViewDelegate, UITableViewData
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let cellName = cellsName[indexPath.section][indexPath.row]
+        let cell = tableView.cellForRow(at: indexPath)
 
         if isEditingView {
           switch indexPath {
@@ -290,6 +310,8 @@ extension OptionsForScheduleViewController: UITableViewDelegate, UITableViewData
                     editedScheduleModel.scheduleName = text
                     cellsName[indexPath.section][indexPath.row] = text
                     navigationItemButton.isEnabled = true
+                    cell?.textLabel?.text = text
+                    tableView.reloadData()
                 }
             case [1,0]:
                 alertTimeInline(table: tableView, choosenDate: choosenDate) { [self] date, timeString, weekday in
@@ -308,13 +330,13 @@ extension OptionsForScheduleViewController: UITableViewDelegate, UITableViewData
             case [2,1]:
                 alertTextField(cell: "Enter Type of event", placeholder: "Enter the text", keyboard: .default,table: tableView) { [self] text in
                     editedScheduleModel.scheduleCategoryType = text
+                    
                     cellsName[indexPath.section][indexPath.row] = text
                     navigationItemButton.isEnabled = true
                 }
             case [2,2]:
                 alertTextField(cell: "Enter URL of event", placeholder: "Enter the text", keyboard: .emailAddress,table: tableView) { [self] text in
                     if (text.contains("www.") || text.contains("https://")) && text.contains(".") {
-                        editedScheduleModel.scheduleCategoryURL = text
                         cellsName[indexPath.section][indexPath.row] = text
                         navigationItemButton.isEnabled = true
                     } else {
@@ -324,9 +346,12 @@ extension OptionsForScheduleViewController: UITableViewDelegate, UITableViewData
                 }
             case [2,3]:
                 alertTextField(cell: "Enter Notes of event", placeholder: "Enter the text", keyboard: .default,table: tableView) { [self] text in
-                        cellsName[indexPath.section][indexPath.row] = text
-                        editedScheduleModel.scheduleCategoryURL = text
-                        navigationItemButton.isEnabled = true
+                    cellsName[indexPath.section][indexPath.row] = text
+                    try! realm.write {
+                        scheduleModel.scheduleCategoryNote = text
+                    }
+                    editedScheduleModel.scheduleCategoryNote = text
+                    navigationItemButton.isEnabled = true
                 }
             case [3,0]:
                 openColorPicker()
@@ -398,14 +423,13 @@ extension OptionsForScheduleViewController: UITableViewDelegate, UITableViewData
         return 45
     }
     
-    
     func numberOfSections(in tableView: UITableView) -> Int {
         5
     }
     
 }
 //MARK: - Color picker delegate
-extension OptionsForScheduleViewController: UIColorPickerViewControllerDelegate {
+extension CreateEventScheduleViewController: UIColorPickerViewControllerDelegate {
     
     func colorPickerViewController(_ viewController: UIColorPickerViewController, didSelect color: UIColor, continuously: Bool) {
         cellBackgroundColor = color
@@ -413,19 +437,18 @@ extension OptionsForScheduleViewController: UIColorPickerViewControllerDelegate 
         if !isEditingView {
             DispatchQueue.main.async {
                 self.scheduleModel.scheduleColor = encodeColor
+                try! self.realm.write {
+                    self.scheduleModel.scheduleColor = encodeColor
+                }
                 self.tableView.reloadData()
             }
         }
         
     }
 }
-//MARK: - Adaptivity PC delegate and constraints setups
+//MARK: - Setup constraint extension
 
-extension OptionsForScheduleViewController: UIAdaptivePresentationControllerDelegate {
-    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {    }
-}
-
-extension OptionsForScheduleViewController {
+extension CreateEventScheduleViewController {
     private func setupConstraints(){
         tableView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top)

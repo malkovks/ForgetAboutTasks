@@ -33,6 +33,7 @@ class ScheduleSearchResultViewController: UIViewController {
         tableView.dataSource = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cellSearchResult")
     }
+
     
     private func setupNavigationController(){
         navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
