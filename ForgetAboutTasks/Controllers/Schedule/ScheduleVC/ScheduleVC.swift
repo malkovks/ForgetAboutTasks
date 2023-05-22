@@ -33,7 +33,7 @@ class ScheduleViewController: UIViewController {
         calendar.scrollDirection = .vertical
         calendar.backgroundColor = UIColor(named: "backgroundColor")
         calendar.tintColor = UIColor(named: "navigationControllerColor")
-        calendar.locale = Locale(identifier: "en")
+        calendar.locale = .current
         calendar.pagingEnabled = false
         calendar.weekdayHeight = 30
         calendar.headerHeight = 50
@@ -70,6 +70,7 @@ class ScheduleViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        calendar.reloadData()
         setupAnimation()
     }
     
@@ -197,22 +198,25 @@ extension ScheduleViewController: FSCalendarDelegate, FSCalendarDataSource {
     
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
         loadingDataByDate(date: date, at: monthPosition, is: false)
-        print(String(describing: date))
     }
     
     func calendar(_ calendar: FSCalendar, numberOfEventsFor date: Date) -> Int {
-        var eventCounts = [Date: Int]()
+        var eventCounts = [String: Int]()
+        
         for event in scheduleModel {
-            let date = event.scheduleDate ?? Date()
-            print(date)
+            let dateModel = event.scheduleDate ?? Date()
+            let date = DateFormatter.localizedString(from: dateModel, dateStyle: .medium, timeStyle: .none)
             if let count = eventCounts[date]{
                 eventCounts[date]! += 1
             } else {
                 eventCounts[date] = 1
             }
         }
-        if let counts = eventCounts[date] {
-            return counts
+        let convertDate = DateFormatter.localizedString(from: date, dateStyle: .medium, timeStyle: .none)
+        if let counts = eventCounts[convertDate] {
+            
+            print("\(date) + Calendar date")
+            return 1
         } else {
             return 0
         }

@@ -57,21 +57,18 @@ extension UIViewController {
         datePicker.datePickerMode = .dateAndTime
         datePicker.date = choosenDate
         datePicker.preferredDatePickerStyle = .inline
-//        datePicker.locale = NSLocale(localeIdentifier: "Ru_ru") as Locale
         alert.view.addSubview(datePicker)
         
         
         alert.addAction(UIAlertAction(title: "Ok", style: .default) { action in
-            let dateFormatter = DateFormatter()
-            dateFormatter.locale = .current
-            dateFormatter.dateFormat = "dd.MM.yyyy HH:mm"
-            let timeString = dateFormatter.string(from: datePicker.date)
+            
             let date = datePicker.date
             
             let calendar = Calendar.current
             let comp = calendar.dateComponents([.weekday], from: date)
             guard let weekdayComp = comp.weekday else { return }
             let weekday = weekdayComp
+            let timeString = DateFormatter.localizedString(from: date, dateStyle: .medium, timeStyle: .short)
             completionHandler(date,timeString,weekday)
             
             DispatchQueue.main.async {

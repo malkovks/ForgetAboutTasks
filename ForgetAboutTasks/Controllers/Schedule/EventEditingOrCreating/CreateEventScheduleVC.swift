@@ -22,7 +22,6 @@ class CreateEventScheduleViewController: UIViewController {
                      ["Repeat every 7 days"]]
     
     var cellBackgroundColor =  #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
-    var isEditingView: Bool = false
     var choosenDate = Date()
     private var reminderStatus: Bool = false
     
@@ -31,10 +30,7 @@ class CreateEventScheduleViewController: UIViewController {
     var scheduleModel = ScheduleModel()
     var editedScheduleModel = ScheduleModel()
     private let realm = try! Realm()
-    
-    private lazy var navigationItemButton: UIBarButtonItem = {
-        return UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(didTapEdit))
-    }()
+
     private let picker = UIColorPickerViewController()
     private let tableView = UITableView(frame: CGRectZero, style: .insetGrouped)
     //MARK: - viewDidLoad
@@ -64,8 +60,8 @@ class CreateEventScheduleViewController: UIViewController {
                 reminderStatus = false
             }
             ScheduleRealmManager.shared.saveScheduleModel(model: scheduleModel)
-            
-            DispatchQueue.main.asyncAfter(deadline: .now()+3) {
+            alertDismissed(view: view)
+            DispatchQueue.main.asyncAfter(deadline: .now()) {
                 self.view.window?.rootViewController?.dismiss(animated: true)
             }
         }
@@ -76,23 +72,6 @@ class CreateEventScheduleViewController: UIViewController {
             scheduleModel.scheduleRepeat = true
         } else {
             scheduleModel.scheduleRepeat = false
-        }
-    }
-    
-    @objc private func didTapEdit(){
-        let color = cellBackgroundColor.encode()
-        editedScheduleModel.scheduleColor = color
-        let filterDate = scheduleModel.scheduleDate ?? Date()
-        let filterName = scheduleModel.scheduleName
-        if !editedScheduleModel.scheduleName.isEmpty && editedScheduleModel.scheduleDate != nil && editedScheduleModel.scheduleTime != nil  {
-            ScheduleRealmManager.shared.editScheduleModel(filterDate: filterDate, filterName: filterName, changes: editedScheduleModel)
-            showAlertForUser(text: "Event edited successfully", duration: DispatchTime.now()+2, controllerView: view)
-            DispatchQueue.main.asyncAfter(deadline: .now()+3) {
-                self.view.window?.rootViewController?.dismiss(animated: true)
-            }
-            
-        } else {
-            alertError()
         }
     }
     
@@ -141,28 +120,21 @@ class CreateEventScheduleViewController: UIViewController {
         navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(didTapDismiss))
         let saveButton = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(didTapSave))
-        if isEditingView {
-            navigationItem.rightBarButtonItem = navigationItemButton
-            navigationItemButton.isEnabled = false
-        } else {
-            navigationItem.rightBarButtonItems = [saveButton]
-        }
+        navigationItem.rightBarButtonItems = [saveButton]
     }
     
     private func setupUserNotification(model: ScheduleModel){
         let center = UNUserNotificationCenter.current()
         let content = UNMutableNotificationContent()
-        let date = model.scheduleTime ?? Date()
-        let type = String(describing: model.scheduleCategoryType)
-        let note = String(describing: model.scheduleCategoryNote)
-        let nameCategory = String(describing: model.scheduleCategoryName)
-        content.title = "Planned reminder to you on \(date)"
-        content.body = "\(model.scheduleName)"
-        content.subtitle = ".\(nameCategory), \(type), \(note)"
+        let dateS = model.scheduleTime ?? Date()
+        let date = DateFormatter.localizedString(from: dateS, dateStyle: .medium, timeStyle: .none)
+        content.title = "Planned reminder"
+        content.body = "\(date)"
+        content.subtitle = "\(model.scheduleName)"
         content.sound = .defaultRingtone
         let dateFormat = DateFormatter.localizedString(from: scheduleModel.scheduleDate ?? Date(), dateStyle: .medium, timeStyle:.none)
         content.userInfo = ["userNotification": dateFormat]
-        let components = Calendar.current.dateComponents([.day,.month,.year,.hour,.minute,.second], from: date)
+        let components = Calendar.current.dateComponents([.day,.month,.year,.hour,.minute,.second], from: dateS)
         let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
         let request = UNNotificationRequest(identifier: "request", content: content, trigger: trigger)
         center.add(request) { [weak self] error in
@@ -170,21 +142,6 @@ class CreateEventScheduleViewController: UIViewController {
                 self?.alertError()
             }
         }
-    }
-    
-    private func setupCellTitle(model: ScheduleModel,indexPath: IndexPath){
-        switch indexPath {
-            case [0,0]: cellsName[indexPath.section][indexPath.row] = model.scheduleName
-        case [1,0]: cellsName[indexPath.section][indexPath.row] = String(describing: model.scheduleDate)
-        case [2,0]: cellsName[indexPath.section][indexPath.row] = model.scheduleCategoryName ?? "Empty cell"
-        case [2,1]: cellsName[indexPath.section][indexPath.row] = model.scheduleCategoryType ?? "Empty cell"
-        case [2,2]: cellsName[indexPath.section][indexPath.row] = model.scheduleCategoryURL ?? "Empty cell"
-        case [2,3]: cellsName[indexPath.section][indexPath.row] = model.scheduleCategoryNote ?? "Empty cell"
-        
-        default:
-            print("Error")
-        }
-   
     }
     //MARK: - Logics methods
     
@@ -230,7 +187,6 @@ extension CreateEventScheduleViewController: UITableViewDelegate, UITableViewDat
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         let data = cellsName[indexPath.section][indexPath.row]
         
-        let dateAndTime = scheduleModel.scheduleTime ?? Date()
         
         cell.textLabel?.numberOfLines = 0
         cell.layer.cornerRadius = 10
@@ -242,45 +198,7 @@ extension CreateEventScheduleViewController: UITableViewDelegate, UITableViewDat
         switchButton.isHidden = true
         switchButton.onTintColor = cellBackgroundColor
         cell.accessoryView = switchButton
-        
-        if isEditingView {
-//            setupCellTitle(model: scheduleModel, indexPath: indexPath)
-//            cell.textLabel?.text = data
-            switch indexPath {
-                
-            case [0,0]:
-                cell.textLabel?.text = scheduleModel.scheduleName
-                cell.accessoryView = nil
-            case [1,0]:
-                let time = DateFormatter.localizedString(from: dateAndTime, dateStyle: .medium, timeStyle: .short)
-                cell.textLabel?.text = time
-                cell.accessoryView = nil
-            case [1,1]:
-                cell.textLabel?.text = data
-                cell.accessoryView?.isHidden = false
-                switchButton.isOn = false
-            case[2,0]:
-                cell.textLabel?.text = scheduleModel.scheduleCategoryName ?? data
-                cell.accessoryView = nil
-            case [2,1]:
-                cell.textLabel?.text = scheduleModel.scheduleCategoryType ?? data
-                cell.accessoryView = nil
-            case [2,2]:
-                cell.textLabel?.text = scheduleModel.scheduleCategoryURL ?? data
-                cell.accessoryView = nil
-            case [2,3]:
-                cell.textLabel?.text = scheduleModel.scheduleCategoryNote ?? data
-                cell.accessoryView = nil
-            case [3,0]:
-                cell.backgroundColor = UIColor.color(withData: (scheduleModel.scheduleColor)!)
-            case [4,0]:
-                cell.textLabel?.text = data
-                cell.accessoryView?.isHidden = false
-                switchButton.isOn = scheduleModel.scheduleRepeat ?? false
-            default:
-                alertError(text: "Please,try again later\nError getting data", mainTitle: "Error!!")
-            }
-        } else {
+    
             
             cell.textLabel?.text = data
             if indexPath == [3,0] {
@@ -294,117 +212,58 @@ extension CreateEventScheduleViewController: UITableViewDelegate, UITableViewDat
             } else {
                 cell.accessoryView = nil
             }
-        }
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let cellName = cellsName[indexPath.section][indexPath.row]
-        let cell = tableView.cellForRow(at: indexPath)
-
-        if isEditingView {
-          switch indexPath {
-            case [0,0]:
-                alertTextField(cell: cellName, placeholder: "Enter text", keyboard: .default, table: tableView) {[self] text in
-                    editedScheduleModel.scheduleName = text
-                    cellsName[indexPath.section][indexPath.row] = text
-                    navigationItemButton.isEnabled = true
-                    cell?.textLabel?.text = text
-                    tableView.reloadData()
-                }
-            case [1,0]:
-                alertTimeInline(table: tableView, choosenDate: choosenDate) { [self] date, timeString, weekday in
-                    editedScheduleModel.scheduleTime = date
-                    editedScheduleModel.scheduleDate = date
-                    editedScheduleModel.scheduleWeekday = weekday
-                    cellsName[indexPath.section][indexPath.row] = timeString
-                    navigationItemButton.isEnabled = true
-                }
-            case [2,0]:
-                alertTextField(cell: "Enter Name of event", placeholder: "Enter the text", keyboard: .default,table: tableView) { [self] text in
-                    editedScheduleModel.scheduleCategoryName = text
-                    cellsName[indexPath.section][indexPath.row] = text
-                    navigationItemButton.isEnabled = true
-                }
-            case [2,1]:
-                alertTextField(cell: "Enter Type of event", placeholder: "Enter the text", keyboard: .default,table: tableView) { [self] text in
-                    editedScheduleModel.scheduleCategoryType = text
-                    
-                    cellsName[indexPath.section][indexPath.row] = text
-                    navigationItemButton.isEnabled = true
-                }
-            case [2,2]:
-                alertTextField(cell: "Enter URL of event", placeholder: "Enter the text", keyboard: .emailAddress,table: tableView) { [self] text in
-                    if (text.contains("www.") || text.contains("https://")) && text.contains(".") {
-                        cellsName[indexPath.section][indexPath.row] = text
-                        navigationItemButton.isEnabled = true
-                    } else {
-                        alertError(text: "Try again!\nEnter www. in URL link and pick a domain", mainTitle: "Warning!")
-                    }
-                    
-                }
-            case [2,3]:
-                alertTextField(cell: "Enter Notes of event", placeholder: "Enter the text", keyboard: .default,table: tableView) { [self] text in
-                    cellsName[indexPath.section][indexPath.row] = text
-                    try! realm.write {
-                        scheduleModel.scheduleCategoryNote = text
-                    }
-                    editedScheduleModel.scheduleCategoryNote = text
-                    navigationItemButton.isEnabled = true
-                }
-            case [3,0]:
-                openColorPicker()
-                navigationItemButton.isEnabled = true
-                
-                            
-            default:
-                print("error")
+        
+        switch indexPath {
+        case [0,0]:
+            alertTextField(cell: cellName, placeholder: "Enter text", keyboard: .default, table: tableView) {[self] text in
+                scheduleModel.scheduleName = text
+                cellsName[indexPath.section][indexPath.row] = text
             }
-        } else {
-            scheduleModel.scheduleRepeat = false
-            switch indexPath {
-            case [0,0]:
-                alertTextField(cell: cellName, placeholder: "Enter text", keyboard: .default, table: tableView) {[self] text in
-                    scheduleModel.scheduleName = text
-                    cellsName[indexPath.section][indexPath.row] = text
-                }
-            case [1,0]:
-                alertTimeInline(table: tableView, choosenDate: choosenDate) { [self] date, timeString, weekday in
-                    scheduleModel.scheduleTime = date
-                    scheduleModel.scheduleDate = date
-                    scheduleModel.scheduleWeekday = weekday
-                    cellsName[indexPath.section][indexPath.row] = timeString
-                }
-            case [2,0]:
-                alertTextField(cell: "Enter Name of event", placeholder: "Enter the text", keyboard: .default,table: tableView) { [self] text in
-                    scheduleModel.scheduleCategoryName = text
-                    cellsName[indexPath.section][indexPath.row] = text
-                }
-            case [2,1]:
-                alertTextField(cell: "Enter Type of event", placeholder: "Enter the text", keyboard: .default,table: tableView) { [self] text in
-                    scheduleModel.scheduleCategoryType = text
-                    cellsName[indexPath.section][indexPath.row] = text
-                }
-            case [2,2]:
-                alertTextField(cell: "Enter URL of event", placeholder: "Enter the text", keyboard: .emailAddress,table: tableView) { [self] text in
-                    if (text.contains("www.") || text.contains("https://")) && text.contains(".") {
-                        cellsName[indexPath.section][indexPath.row] = text
-                        scheduleModel.scheduleCategoryURL = text
-                    } else {
-                        alertError(text: "Try again!\nEnter www. in URL link and pick a domain", mainTitle: "Warning!")
-                    }
-                }
-            case [2,3]:
-                alertTextField(cell: "Enter Notes of event", placeholder: "Enter the text", keyboard: .default,table: tableView) { [self] text in
-                    scheduleModel.scheduleCategoryNote = text
-                    cellsName[indexPath.section][indexPath.row] = text
-                }
-            case [3,0]:
-                openColorPicker()
-            default:
-                print("error")
+        case [1,0]:
+            alertTimeInline(table: tableView, choosenDate: choosenDate) { [self] date, timeString, weekday in
+                scheduleModel.scheduleTime = date
+                scheduleModel.scheduleDate = date
+                scheduleModel.scheduleWeekday = weekday
+                cellsName[indexPath.section][indexPath.row] = timeString
             }
+        case [2,0]:
+            alertTextField(cell: "Enter Name of event", placeholder: "Enter the text", keyboard: .default,table: tableView) { [self] text in
+                scheduleModel.scheduleCategoryName = text
+                cellsName[indexPath.section][indexPath.row] = text
+            }
+        case [2,1]:
+            alertTextField(cell: "Enter Type of event", placeholder: "Enter the text", keyboard: .default,table: tableView) { [self] text in
+                scheduleModel.scheduleCategoryType = text
+                cellsName[indexPath.section][indexPath.row] = text
+            }
+        case [2,2]:
+            alertTextField(cell: "Enter URL name with domain", placeholder: "Enter URL", keyboard: .emailAddress,table: tableView) { [self] text in
+                if (text.contains("www.") || text.contains("https://")) && text.contains(".") {
+                    cellsName[indexPath.section][indexPath.row] = text
+                    scheduleModel.scheduleCategoryURL = text
+                } else if !text.contains("www.") || !text.contains("http://") && text.contains("."){
+                    let editedText = "www." + text
+                    cellsName[indexPath.section][indexPath.row] = editedText
+                    scheduleModel.scheduleCategoryURL = text
+                } else {
+                    alertError(text: "Enter name of URL link with correct domain", mainTitle: "Incorrect input")
+                }
+            }
+        case [2,3]:
+            alertTextField(cell: "Enter Notes of event", placeholder: "Enter the text", keyboard: .default,table: tableView) { [self] text in
+                scheduleModel.scheduleCategoryNote = text
+                cellsName[indexPath.section][indexPath.row] = text
+            }
+        case [3,0]:
+            openColorPicker()
+        default:
+            print("error")
         }
     }
     
@@ -434,16 +293,13 @@ extension CreateEventScheduleViewController: UIColorPickerViewControllerDelegate
     func colorPickerViewController(_ viewController: UIColorPickerViewController, didSelect color: UIColor, continuously: Bool) {
         cellBackgroundColor = color
         let encodeColor = color.encode()
-        if !isEditingView {
-            DispatchQueue.main.async {
+        DispatchQueue.main.async {
+            self.scheduleModel.scheduleColor = encodeColor
+            try! self.realm.write {
                 self.scheduleModel.scheduleColor = encodeColor
-                try! self.realm.write {
-                    self.scheduleModel.scheduleColor = encodeColor
-                }
-                self.tableView.reloadData()
             }
+            self.tableView.reloadData()
         }
-        
     }
 }
 //MARK: - Setup constraint extension

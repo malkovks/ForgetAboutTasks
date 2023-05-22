@@ -19,14 +19,29 @@ class EditEventScheduleViewController: UIViewController {
                      [""],
                      ["Repeat every 7 days"]]
     
-    var cellBackgroundColor =  #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
-    var choosenDate = Date()
+    private var cellBackgroundColor: UIColor
+    private var choosenDate: Date
+    private var scheduleModel: ScheduleModel
+    
+    init(cellBackgroundColor: UIColor, choosenDate: Date, scheduleModel: ScheduleModel){
+        self.cellBackgroundColor = cellBackgroundColor
+        self.choosenDate = choosenDate
+        self.scheduleModel = scheduleModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     private var reminderStatus: Bool = false
     private var isStartEditing: Bool = false
     
     private var cancellable: AnyCancellable?//for parallels displaying color in cell and Combine Kit for it
     
-    var scheduleModel = ScheduleModel()
+   
     var editedScheduleModel = ScheduleModel()
     private let realm = try! Realm()
     
@@ -98,7 +113,6 @@ class EditEventScheduleViewController: UIViewController {
         setupNavigationController()
         setupDelegate()
         setupColorPicker()
-//        setupConstraints()
         setupTableView()
         view.backgroundColor = UIColor(named: "backgroundColor")
         title = "Editing event"
@@ -132,18 +146,18 @@ class EditEventScheduleViewController: UIViewController {
     private func setupUserNotification(model: ScheduleModel){
         let center = UNUserNotificationCenter.current()
         let content = UNMutableNotificationContent()
-        let date = model.scheduleTime ?? Date()
-        let convertDate = DateFormatter.localizedString(from: date, dateStyle: .medium, timeStyle: .none)
+        let dateS = model.scheduleTime ?? Date()
+        let date = DateFormatter.localizedString(from: dateS, dateStyle: .medium, timeStyle: .none)
         let type = String(describing: model.scheduleCategoryType)
         let note = String(describing: model.scheduleCategoryNote)
         let nameCategory = String(describing: model.scheduleCategoryName)
-        content.title = "Planned reminder to you on \(convertDate)"
-        content.body = "\(model.scheduleName)"
-        content.subtitle = "\(nameCategory), \(type), \(note)"
+        content.title = "Planned reminder"
+        content.body = "\(date)"
+        content.subtitle = "\(model.scheduleName)"
         content.sound = .defaultRingtone
-        let dateFormat = DateFormatter.localizedString(from: scheduleModel.scheduleDate ?? Date(), dateStyle: .medium, timeStyle:.medium)
+        let dateFormat = DateFormatter.localizedString(from: scheduleModel.scheduleDate ?? Date(), dateStyle: .medium, timeStyle:.none)
         content.userInfo = ["userNotification": dateFormat]
-        let components = Calendar.current.dateComponents([.day,.month,.year,.hour,.minute,.second], from: date)
+        let components = Calendar.current.dateComponents([.day,.month,.year,.hour,.minute,.second], from: dateS)
         let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
         let request = UNNotificationRequest(identifier: "request", content: content, trigger: trigger)
         center.add(request) { [weak self] error in
@@ -250,7 +264,6 @@ extension EditEventScheduleViewController: UITableViewDelegate, UITableViewDataS
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let cellName = cellsName[indexPath.section][indexPath.row]
-//        let cell = tableView.cellForRow(at: indexPath)
         isStartEditing = true
         navigationItemButton.isEnabled = true
             switch indexPath {
@@ -264,7 +277,7 @@ extension EditEventScheduleViewController: UITableViewDelegate, UITableViewDataS
                     editedScheduleModel.scheduleTime = date
                     editedScheduleModel.scheduleDate = date
                     editedScheduleModel.scheduleWeekday = weekday
-                    cellsName[indexPath.section][indexPath.row] = timeString
+//                    cellsName[indexPath.section][indexPath.row] = timeString
                 }
             case [2,0]:
                 alertTextField(cell: "Enter Name of event", placeholder: "Enter the text", keyboard: .default,table: tableView) { [self] text in
@@ -277,12 +290,16 @@ extension EditEventScheduleViewController: UITableViewDelegate, UITableViewDataS
                     cellsName[indexPath.section][indexPath.row] = text
                 }
             case [2,2]:
-                alertTextField(cell: "Enter URL of event", placeholder: "Enter the text", keyboard: .emailAddress,table: tableView) { [self] text in
-                    if (text.contains("www.") || text.contains("https://")) && text.contains(".") {
+                alertTextField(cell: "Enter URL name with domain", placeholder: "Enter URL", keyboard: .emailAddress,table: tableView) { [self] text in
+                    if (text.contains("www.") || text.contains("http://")) && text.contains(".") {
                         cellsName[indexPath.section][indexPath.row] = text
                         editedScheduleModel.scheduleCategoryURL = text
+                    } else if !text.contains("www.") || !text.contains("http://") && text.contains("."){
+                        let editedText = "www." + text
+                        cellsName[indexPath.section][indexPath.row] = editedText
+                        editedScheduleModel.scheduleCategoryURL = text
                     } else {
-                        alertError(text: "Try again!\nEnter www. in URL link and pick a domain", mainTitle: "Warning!")
+                        alertError(text: "Enter name of URL link with correct domain", mainTitle: "Incorrect input")
                     }
                 }
             case [2,3]:
@@ -324,22 +341,8 @@ extension EditEventScheduleViewController: UIColorPickerViewControllerDelegate {
     
     func colorPickerViewController(_ viewController: UIColorPickerViewController, didSelect color: UIColor, continuously: Bool) {
         cellBackgroundColor = color
-//        let encodeColor = color.encode()
-        DispatchQueue.main.async {
-//            self.editedScheduleModel.scheduleColor = encodeColor
-            self.tableView.reloadData()
-        }
+        self.tableView.reloadData()
     }
 }
-//MARK: - Setup constraint extension
 
-extension EditEventScheduleViewController {
-    private func setupConstraints(){
-        tableView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
-            make.leading.trailing.equalToSuperview()
-            make.bottom.equalToSuperview().inset(0)
-        }
-    }
-}
 

@@ -32,7 +32,7 @@ class AllTasksDetailViewController: UIViewController {
     private let tableView = UITableView()
     
     private lazy var shareTableInfo: UIBarButtonItem = {
-        return UIBarButtonItem(image: UIImage(systemName: "square.and.arrow.up.fill"), style: .bordered, target: self, action: #selector(didTapShareTable))
+        return UIBarButtonItem(image: UIImage(systemName: "square.and.arrow.up.fill"), style: .done, target: self, action: #selector(didTapShareTable))
     }()
     
     override func viewDidLoad() {

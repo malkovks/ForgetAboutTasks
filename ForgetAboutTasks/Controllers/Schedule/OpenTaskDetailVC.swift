@@ -28,6 +28,8 @@ class OpenTaskDetailViewController: UIViewController {
         return UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(didTapShareTable))
     }()
     
+    private let indicator =  UIActivityIndicatorView(style: .gray)
+    
     private let tableView = UITableView(frame: CGRectZero, style: .insetGrouped)
     //MARK: - viewDidLoad
     override func viewDidLoad() {
@@ -42,10 +44,10 @@ class OpenTaskDetailViewController: UIViewController {
     }
     
     @objc private func didTapEdit(){
-        let vc = EditEventScheduleViewController()
-        vc.scheduleModel = selectedScheduleModel
-        vc.choosenDate = selectedScheduleModel.scheduleDate ?? Date()
-        vc.cellBackgroundColor = UIColor.color(withData: selectedScheduleModel.scheduleColor!) ?? #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
+        
+        let colorCell = UIColor.color(withData: selectedScheduleModel.scheduleColor!) ?? #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
+        let choosenDate = selectedScheduleModel.scheduleDate ?? Date()
+        let vc = EditEventScheduleViewController(cellBackgroundColor: colorCell, choosenDate: choosenDate, scheduleModel: selectedScheduleModel)
         let nav = UINavigationController(rootViewController: vc)
         nav.modalPresentationStyle = .fullScreen
         nav.modalTransitionStyle = .crossDissolve
@@ -54,18 +56,15 @@ class OpenTaskDetailViewController: UIViewController {
     }
     
     @objc private func didTapShareTable(){
-        guard let pdfTable = convertTableIntoPDF(from: tableView) else { alertError();return}
-        let activity = UIActivityViewController(activityItems: [pdfTable], applicationActivities: nil)
-        activity.setValue("PDF Report", forKey: "subject")
-        activity.excludedActivityTypes = [.print,.postToFlickr,.message,.mail,.markupAsPDF]
-        activity.setValue("com.adobe.pdf", forKey: "fileType")
-        present(activity, animated: true)
+        saveAsPDF()
+        indicator.stopAnimating()
     }
     
     //MARK: - Setup Views and secondary methods
     private func setupView() {
         setupNavigationController()
         setupConstraints()
+        indicator.hidesWhenStopped = true
         view.backgroundColor = UIColor(named: "backgroundColor")
     }
     
@@ -93,6 +92,30 @@ class OpenTaskDetailViewController: UIViewController {
         UIGraphicsEndPDFContext()
         return pdfDate as Data
     }
+    
+    private func setupMenu(){
+        let action = UIAction(title: "Share Image", image: UIImage(systemName: "photo.circle.fill")) { _ in
+            
+        }
+    }
+    
+    func saveAsPDF() {
+        let pdfRenderer = UIGraphicsPDFRenderer(bounds: tableView.bounds)
+        let pdfData = pdfRenderer.pdfData { context in
+            context.beginPage()
+            tableView.drawHierarchy(in: tableView.bounds, afterScreenUpdates: true)
+        }
+        UIGraphicsBeginImageContextWithOptions(tableView.contentSize, false, 0.0)
+        tableView.layer.render(in: UIGraphicsGetCurrentContext()!)
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        let tableviewData = tableView.dataSource
+        let activityViewController = UIActivityViewController(activityItems: [image,pdfData], applicationActivities: nil)
+        self.present(activityViewController, animated: true, completion: nil)
+        
+    }
+
 }
 //MARK: - table view delegates and data sources
 extension OpenTaskDetailViewController: UITableViewDelegate, UITableViewDataSource {
@@ -113,8 +136,7 @@ extension OpenTaskDetailViewController: UITableViewDelegate, UITableViewDataSour
         let time = DateFormatter.localizedString(from: inheritedData.scheduleTime ?? Date(), dateStyle: .none, timeStyle:.short)
         let date = DateFormatter.localizedString(from: inheritedData.scheduleDate ?? Date(), dateStyle: .medium, timeStyle:.none)
         
-        cell.layer.cornerRadius = 10
-        cell.contentView.layer.cornerRadius = 10
+        
         cell.backgroundColor = UIColor(named: "cellColor")
         cell.textLabel?.numberOfLines = 0
         
@@ -146,13 +168,12 @@ extension OpenTaskDetailViewController: UITableViewDelegate, UITableViewDataSour
         case [2,2]:
             cell.textLabel?.text = inheritedData.scheduleCategoryURL ?? data
             let text = inheritedData.scheduleCategoryURL
-            let success = text?.isURLValid(text: text ?? "")
-            if success ?? true {
+
+            if let success = text?.isURLValid(text: text ?? "") , !success {
                 cell.textLabel?.textColor = .systemBlue
             } else {
                 cell.textLabel?.textColor = UIColor(named: "textColor")
             }
-            
         case [2,3]:
             cell.textLabel?.text = inheritedData.scheduleCategoryNote ?? data
         case [3,0]:
@@ -203,6 +224,12 @@ extension OpenTaskDetailViewController {
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
             make.leading.trailing.equalToSuperview()
             make.bottom.equalToSuperview()
+        }
+        view.addSubview(indicator)
+        indicator.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.centerY.equalToSuperview().offset(-60)
+            make.width.height.equalTo(50)
         }
     }
 }

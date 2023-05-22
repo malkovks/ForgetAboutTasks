@@ -221,6 +221,7 @@ class UserProfileViewController: UIViewController {
     private func loadingData(){
         let (name,mail,age,image) = CheckAuth.shared.loadData()
 //        userImageView.image = image
+        userImageView.image = image
         mailLabel.text = mail
         ageLabel.text = "User's age: \(age)"
         userNameLabel.text = name

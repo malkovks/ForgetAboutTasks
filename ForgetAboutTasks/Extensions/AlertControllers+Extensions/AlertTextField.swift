@@ -14,11 +14,15 @@ extension UIViewController {
         alert.addTextField(configurationHandler: { [self] text in
             text.placeholder = placeholder
             text.clearButtonMode = .whileEditing
-            text.autocapitalizationType = .sentences
             text.keyboardType = type
             text.resignFirstResponder()
-            if text.keyboardType == .emailAddress && text.keyboardType == .URL {
+            
+            if type == .default {
+                text.autocapitalizationType = .sentences
+                text.autocorrectionType = .yes
+            } else {
                 text.autocapitalizationType = .none
+                text.autocorrectionType = .no
             }
             text.snp.makeConstraints { make in
                 make.top.equalToSuperview().offset(64)

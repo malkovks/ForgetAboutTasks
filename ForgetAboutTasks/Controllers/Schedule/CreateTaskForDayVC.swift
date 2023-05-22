@@ -262,7 +262,6 @@ extension CreateTaskForDayController: UITableViewDelegate, UITableViewDataSource
         
         let actionInstance = UIContextualAction(style: .normal, title: "") { [weak self] _, _, completionHandler in
             let vc = CreateEventScheduleViewController()
-            vc.isEditingView = true
             vc.editedScheduleModel = cellData
             let nav = UINavigationController(rootViewController: vc)
             nav.modalPresentationStyle = .fullScreen
