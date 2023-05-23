@@ -21,16 +21,32 @@ class OpenTaskDetailViewController: UIViewController {
     
     var cellBackgroundColor =  #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
     
-    private var scheduleModel = ScheduleModel()
-    var selectedScheduleModel = ScheduleModel()
+    private var selectedScheduleModel: ScheduleModel
     
+    init(model: ScheduleModel) {
+        self.selectedScheduleModel = model
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    //MARK: - UI Setups view
     private lazy var shareModelButton: UIBarButtonItem = {
-        return UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(didTapShareTable))
+        return UIBarButtonItem(systemItem: .action,menu: topMenu)
     }()
     
-    private let indicator =  UIActivityIndicatorView(style: .gray)
+    private lazy var startEditButton: UIBarButtonItem = {
+        return UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(didTapEdit))
+    }()
+    
+    private var topMenu = UIMenu()
+    private let indicator =  UIActivityIndicatorView(style: .medium)
     
     private let tableView = UITableView(frame: CGRectZero, style: .insetGrouped)
+    
+    
     //MARK: - viewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -55,17 +71,20 @@ class OpenTaskDetailViewController: UIViewController {
         present(nav, animated: true)
     }
     
-    @objc private func didTapShareTable(){
-        saveAsPDF()
-        indicator.stopAnimating()
-    }
-    
     //MARK: - Setup Views and secondary methods
     private func setupView() {
+        setupMenu()
         setupNavigationController()
         setupConstraints()
+        setupGestureForDismiss()
         indicator.hidesWhenStopped = true
         view.backgroundColor = UIColor(named: "backgroundColor")
+    }
+    
+    private func setupGestureForDismiss(){
+        let gesture = UISwipeGestureRecognizer(target: self, action: #selector(didTapDismiss))
+        gesture.direction = .right
+        view.addGestureRecognizer(gesture)
     }
     
     private func setupTableView(){
@@ -78,40 +97,45 @@ class OpenTaskDetailViewController: UIViewController {
     
     private func setupNavigationController(){
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(didTapDismiss))
-        let saveButton = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(didTapEdit))
-        navigationItem.rightBarButtonItems = [saveButton,shareModelButton]
+        navigationItem.rightBarButtonItems = [startEditButton,shareModelButton]
         navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
         title = "Details"
     }
     
-    private func convertTableIntoPDF(from tableView: UITableView) -> Data? {
-        let pdfBounds = CGRect(x: 0, y: 0, width: 612, height: 792)
-        let pdfDate = NSMutableData()
-        UIGraphicsBeginPDFPageWithInfo(pdfBounds, nil)
-        tableView.layer.render(in: UIGraphicsGetCurrentContext()!)
-        UIGraphicsEndPDFContext()
-        return pdfDate as Data
-    }
-    
     private func setupMenu(){
-        let action = UIAction(title: "Share Image", image: UIImage(systemName: "photo.circle.fill")) { _ in
-            
+        let shareImage = UIAction(title: "Share Image", image: UIImage(systemName: "photo.circle.fill")) { _ in
+            self.shareTableView("image")
         }
+        let sharePDF = UIAction(title: "Share PDF File",image: UIImage(systemName: "doc.text.image.fill")) { _ in
+            self.shareTableView("pdf")
+        }
+        topMenu = UIMenu(title: "Share selection", image: UIImage(systemName: "square.and.arrow.up"), options: .singleSelection , children: [shareImage,sharePDF])
     }
     
-    func saveAsPDF() {
+    func shareTableView(_ typeSharing: String) {
+        //pdf render
         let pdfRenderer = UIGraphicsPDFRenderer(bounds: tableView.bounds)
         let pdfData = pdfRenderer.pdfData { context in
             context.beginPage()
             tableView.drawHierarchy(in: tableView.bounds, afterScreenUpdates: true)
         }
+        //screenshot render
         UIGraphicsBeginImageContextWithOptions(tableView.contentSize, false, 0.0)
         tableView.layer.render(in: UIGraphicsGetCurrentContext()!)
-        let image = UIGraphicsGetImageFromCurrentImageContext()
+        guard let image = UIGraphicsGetImageFromCurrentImageContext() else {
+            alertError(text: "Error making screenshot of table view", mainTitle: "Error!")
+            return
+        }
         UIGraphicsEndImageContext()
-        
-        let tableviewData = tableView.dataSource
-        let activityViewController = UIActivityViewController(activityItems: [image,pdfData], applicationActivities: nil)
+
+    
+        var activityItems = [Any]()
+        if typeSharing == "image" {
+            activityItems.append(image)
+        } else {
+            activityItems.append(pdfData)
+        }
+        let activityViewController = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
         self.present(activityViewController, animated: true, completion: nil)
         
     }

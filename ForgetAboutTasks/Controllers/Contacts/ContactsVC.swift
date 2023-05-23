@@ -155,8 +155,7 @@ extension ContactsViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "contactCell")
         let data = (viewIsFiltered ? filteredContactData[indexPath.row] : contactData[indexPath.row])
-        cell.layer.cornerRadius = 10
-        cell.contentView.layer.cornerRadius = 10
+
         cell.backgroundColor = UIColor(named: "backgroundColor")
         cell.textLabel?.font = .systemFont(ofSize: 20,weight: .semibold)
         cell.accessoryType = .disclosureIndicator

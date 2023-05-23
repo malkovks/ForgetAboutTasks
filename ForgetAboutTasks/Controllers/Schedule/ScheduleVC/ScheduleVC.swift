@@ -15,16 +15,17 @@ import RealmSwift
 
 class ScheduleViewController: UIViewController {
     
-    let formatter = Formatters()
-    
-    let localRealm = try! Realm()
+    private let localRealm = try! Realm()
     private var scheduleModel: Results<ScheduleModel>!
     private var filteredModel: Results<ScheduleModel>!
     
-    let resultVC = ScheduleSearchResultViewController()
-    
+    //MARK: - UI elements setups
     private lazy var searchNavigationButton: UIBarButtonItem = {
         return UIBarButtonItem(image: UIImage(systemName: "magnifyingglass.circle.fill"), landscapeImagePhone: nil, style: .plain, target: self, action: #selector(didTapSearch))
+    }()
+    
+    private lazy var createNewEventNavigationButton: UIBarButtonItem = {
+        return UIBarButtonItem(title: nil, image: UIImage(systemName: "plus.circle.fill"), target: self, action: #selector(didTapCreate))
     }()
     
     private var calendar: FSCalendar = {
@@ -80,16 +81,15 @@ class ScheduleViewController: UIViewController {
             searchController.isActive = true
     }
     
-    @objc private func selectDate(_ sender: Any){
-        
+    @objc private func didTapCreate(){
+        let vc = CreateEventScheduleViewController(choosenDate: Date())
+        let nav = UINavigationController(rootViewController: vc)
+        nav.modalPresentationStyle = .fullScreen
+        nav.modalTransitionStyle = .flipHorizontal
+        nav.isNavigationBarHidden = false
+        present(nav, animated: true)
     }
     
-    @objc private func didTapCallAlert(){
-//        showAlertForUser(text: "View was loaded", duration: DispatchTime.now()+2, controllerView: view)
-    }
-    
-    
-
     //MARK: - Setup Methods
     private func setupDelegates(){
         calendar.delegate = self
@@ -130,15 +130,15 @@ class ScheduleViewController: UIViewController {
     }
     
     private func setupNavigationController(){
-        title = "Schedule"
+        title = "Calendar"
         navigationItem.leftBarButtonItem = searchNavigationButton
+        navigationItem.rightBarButtonItem = createNewEventNavigationButton
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = true
         navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
         navigationController?.tabBarController?.tabBar.scrollEdgeAppearance = navigationController?.tabBarController?.tabBar.standardAppearance
         navigationController?.navigationItem.largeTitleDisplayMode = .never
         navigationController?.navigationBar.prefersLargeTitles = false
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(didTapCallAlert))
     }
     
     private func setupSearchController(){
@@ -163,22 +163,19 @@ class ScheduleViewController: UIViewController {
         
         let calendar = Calendar.current
         let components = calendar.dateComponents([.weekday], from: date)
-        guard let weekday = components.weekday else { alertError(text: "", mainTitle: "Error value");return }
+        guard let weekday = components.weekday else { alertError(text: "Can't get weekday numbers. Try again!", mainTitle: "Error value");return }
         
         
         let value = localRealm.objects(ScheduleModel.self)
         scheduleModel = value
         
-
         if firstLoad == false {
             if monthPosition == .current {
                 let predicate = NSPredicate(format: "scheduleWeekday = \(weekday) AND scheduleRepeat = true")
                 let predicateUnrepeat = NSPredicate(format: "scheduleRepeat = false AND scheduleDate BETWEEN %@", [dateStart,dateEnd])
                 let compound = NSCompoundPredicate(type: .or, subpredicates: [predicate,predicateUnrepeat])
                 let value = localRealm.objects(ScheduleModel.self).filter(compound)
-                let vc = CreateTaskForDayController()
-                vc.choosenDate = date
-                vc.cellDataScheduleModel = value
+                let vc = CreateTaskForDayController(model: value, choosenDate: date)
                 let nav = UINavigationController(rootViewController: vc)
                 nav.modalPresentationStyle = .fullScreen
                 nav.isNavigationBarHidden = false
@@ -206,16 +203,14 @@ extension ScheduleViewController: FSCalendarDelegate, FSCalendarDataSource {
         for event in scheduleModel {
             let dateModel = event.scheduleDate ?? Date()
             let date = DateFormatter.localizedString(from: dateModel, dateStyle: .medium, timeStyle: .none)
-            if let count = eventCounts[date]{
+            if eventCounts[date] != nil {
                 eventCounts[date]! += 1
             } else {
                 eventCounts[date] = 1
             }
         }
         let convertDate = DateFormatter.localizedString(from: date, dateStyle: .medium, timeStyle: .none)
-        if let counts = eventCounts[convertDate] {
-            
-            print("\(date) + Calendar date")
+        if eventCounts[convertDate] != nil {
             return 1
         } else {
             return 0
@@ -236,7 +231,9 @@ extension ScheduleViewController: UISearchResultsUpdating,UISearchBarDelegate {
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         if ((searchBar.text?.isEmpty) != nil) {
+            searchController.searchBar.text = ""
             searchController.isActive = false
+            searchController.animationEnded(true)
         }
     }
 
@@ -248,8 +245,7 @@ extension ScheduleViewController: UISearchResultsUpdating,UISearchBarDelegate {
     }
 }
 
-
-
+//MARK: - extensions with contstraints setups
 extension ScheduleViewController {
     private func setupConstraints(){
         view.addSubview(calendar)

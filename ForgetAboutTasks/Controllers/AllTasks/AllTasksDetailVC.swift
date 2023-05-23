@@ -47,11 +47,8 @@ class AllTasksDetailViewController: UIViewController {
     }
     
     @objc private func didTapEdit(){
-        let vc = CreateTaskTableViewController()
-        vc.tasksModel = self.tasksModel
-        vc.isUserPressedToChangeModel = true
-        vc.title = "Editing event"
-        vc.cellBackgroundColor = UIColor.color(withData: tasksModel.allTaskColor!) ?? #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
+        let color = UIColor.color(withData: tasksModel.allTaskColor!) ?? #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
+        let vc = EditTaskTableViewController(color: color, model: tasksModel)
         let navVC = UINavigationController(rootViewController: vc)
         navVC.modalPresentationStyle = .formSheet
         navVC.sheetPresentationController?.detents = [.large()]
@@ -124,7 +121,7 @@ extension AllTasksDetailViewController: UITableViewDelegate, UITableViewDataSour
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "tasksCell", for: indexPath)
-        cell.layer.cornerRadius = 10
+
         cell.textLabel?.numberOfLines = 0
         cell.contentView.layer.cornerRadius = 10
         cell.backgroundColor = UIColor(named: "cellColor")

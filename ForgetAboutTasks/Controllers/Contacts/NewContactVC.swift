@@ -150,7 +150,6 @@ extension NewContactViewController: UITableViewDelegate, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "tasksCell", for: indexPath)
         let data = cellsName[indexPath.section][indexPath.row]
         cell.layer.cornerRadius = 10
-        cell.contentView.layer.cornerRadius = 10
         cell.backgroundColor = UIColor(named: "cellColor")
         if !isViewEdited {
             if let image = contactModel.contactImage {

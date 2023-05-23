@@ -60,6 +60,8 @@
 		0AA74A2829EC524200F01532 /* AllTaskModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA74A2729EC524200F01532 /* AllTaskModel.swift */; };
 		0AA8EC5D29C76968004DC6DD /* AlertDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA8EC5C29C76968004DC6DD /* AlertDate.swift */; };
 		0AA8EC5F29C7AA56004DC6DD /* AlertTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA8EC5E29C7AA56004DC6DD /* AlertTime.swift */; };
+		0AB0A96D2A1C41C00084AE07 /* SetupShareAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB0A96C2A1C41C00084AE07 /* SetupShareAction.swift */; };
+		0AB0A96F2A1C61D30084AE07 /* EditTaskTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB0A96E2A1C61D30084AE07 /* EditTaskTableVC.swift */; };
 		0AB763BA29E3FAC900BFDB0D /* AlertError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB763B929E3FAC900BFDB0D /* AlertError.swift */; };
 		0ACE796B29D9EEAA00599C19 /* AlertSpinner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE796A29D9EEAA00599C19 /* AlertSpinner.swift */; };
 		0ACE797229DD95C600599C19 /* CreateTaskTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE797129DD95C600599C19 /* CreateTaskTableVC.swift */; };
@@ -138,6 +140,8 @@
 		0AA74A2729EC524200F01532 /* AllTaskModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllTaskModel.swift; sourceTree = "<group>"; };
 		0AA8EC5C29C76968004DC6DD /* AlertDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertDate.swift; sourceTree = "<group>"; };
 		0AA8EC5E29C7AA56004DC6DD /* AlertTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertTime.swift; sourceTree = "<group>"; };
+		0AB0A96C2A1C41C00084AE07 /* SetupShareAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupShareAction.swift; sourceTree = "<group>"; };
+		0AB0A96E2A1C61D30084AE07 /* EditTaskTableVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTaskTableVC.swift; sourceTree = "<group>"; };
 		0AB763B929E3FAC900BFDB0D /* AlertError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertError.swift; sourceTree = "<group>"; };
 		0ACE796A29D9EEAA00599C19 /* AlertSpinner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertSpinner.swift; sourceTree = "<group>"; };
 		0ACE797129DD95C600599C19 /* CreateTaskTableVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTaskTableVC.swift; sourceTree = "<group>"; };
@@ -310,6 +314,7 @@
 				0A99A8FE29CD8FE000CC5A42 /* AllTasksToDoVC.swift */,
 				0A2717B92A01F7FE00EFBC11 /* AllTasksDetailVC.swift */,
 				0ACE797129DD95C600599C19 /* CreateTaskTableVC.swift */,
+				0AB0A96E2A1C61D30084AE07 /* EditTaskTableVC.swift */,
 			);
 			path = AllTasks;
 			sourceTree = "<group>";
@@ -442,6 +447,7 @@
 		0AA8EC7029CAF52E004DC6DD /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				0AB0A96B2A1C41800084AE07 /* UIAcitvityViewController+Extensions */,
 				0AF2D6F22A166A720093A824 /* UIView+Extensions */,
 				0A7FFFBE29F1B9F700CAC9DA /* DownloadImage */,
 				0A7FFFBB29F1325500CAC9DA /* String+Extensions */,
@@ -450,6 +456,14 @@
 				0AA8EC5B29C76897004DC6DD /* AlertControllers+Extensions */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		0AB0A96B2A1C41800084AE07 /* UIAcitvityViewController+Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				0AB0A96C2A1C41C00084AE07 /* SetupShareAction.swift */,
+			);
+			path = "UIAcitvityViewController+Extensions";
 			sourceTree = "<group>";
 		};
 		0AF2D6F22A166A720093A824 /* UIView+Extensions */ = {
@@ -631,6 +645,7 @@
 				0AA74A2629EC521800F01532 /* AllTasksRealmManager.swift in Sources */,
 				0A9E1C3F29D078BD000CC9A9 /* LogInView.swift in Sources */,
 				0ACE797829DECF3300599C19 /* NewContactVC.swift in Sources */,
+				0AB0A96D2A1C41C00084AE07 /* SetupShareAction.swift in Sources */,
 				0A525DAF29FC3C3B009D116F /* AlertNewName.swift in Sources */,
 				0AA604EC29E16DC1007ACE58 /* PressButtonProtocols.swift in Sources */,
 				0ACE797A29DED2D400599C19 /* NewContactCustomView.swift in Sources */,
@@ -671,6 +686,7 @@
 				0A7FFFBA29EFDC0B00CAC9DA /* ContactRealmManager.swift in Sources */,
 				0A9E1C3C29D0778F000CC9A9 /* RegisterAccountController.swift in Sources */,
 				0A86ED1229B5D97F001C9BAF /* SceneDelegate.swift in Sources */,
+				0AB0A96F2A1C61D30084AE07 /* EditTaskTableVC.swift in Sources */,
 				0AA604DC29E03CB1007ACE58 /* AlertContacts.swift in Sources */,
 				0AA74A2829EC524200F01532 /* AllTaskModel.swift in Sources */,
 				0A7FFFB829EFD9E100CAC9DA /* ContactModel.swift in Sources */,

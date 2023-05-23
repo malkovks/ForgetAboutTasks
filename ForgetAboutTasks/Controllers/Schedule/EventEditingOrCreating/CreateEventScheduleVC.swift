@@ -13,24 +13,31 @@ import RealmSwift
 
 class CreateEventScheduleViewController: UIViewController {
     
-    let headerArray = ["Details of event","Date and time","Category of event","Color of event","Repeat"]
+    private let headerArray = ["Details of event","Date and time","Category of event","Color of event","Repeat"]
     
-    var cellsName = [["Name of event"],
+    private var cellsName = [["Name of event"],
                      ["Date and Time","Set a reminder"],
                      ["Name","Type","URL","Note"],
                      [""],
                      ["Repeat every 7 days"]]
     
-    var cellBackgroundColor =  #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
-    var choosenDate = Date()
     private var reminderStatus: Bool = false
-    
     private var cancellable: AnyCancellable?//for parallels displaying color in cell and Combine Kit for it
-    
-    var scheduleModel = ScheduleModel()
-    var editedScheduleModel = ScheduleModel()
+    private var scheduleModel = ScheduleModel()
     private let realm = try! Realm()
-
+    private var cellBackgroundColor =  #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
+    private var choosenDate: Date
+    private var isStartEditing: Bool = false
+    
+    init(choosenDate: Date){
+        self.choosenDate = choosenDate
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     private let picker = UIColorPickerViewController()
     private let tableView = UITableView(frame: CGRectZero, style: .insetGrouped)
     //MARK: - viewDidLoad
@@ -42,12 +49,18 @@ class CreateEventScheduleViewController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        showAlertForUser(text: "Saved successfully", duration: DispatchTime.now()+3, controllerView: view)
+        showAlertForUser(text: "Saved successfully", duration: DispatchTime.now()+1, controllerView: view)
     }
+    
+    
 
     //MARK: - Targets methods
     @objc private func didTapDismiss(){
-        dismiss(animated: true)
+        if isStartEditing {
+            setupAlertSheet(title:"Attention", subtitle: "You inputed the data that was not saved.\nWhat do you want to do?" )
+        } else {
+            dismiss(animated: true)
+        }
     }
     
     @objc private func didTapSave(){
@@ -89,6 +102,19 @@ class CreateEventScheduleViewController: UIViewController {
 
     
     //MARK: - Setup Views and secondary methods
+    private func setupAlertSheet(title: String,subtitle: String) {
+        let sheet = UIAlertController(title: title, message: subtitle, preferredStyle: .actionSheet)
+        sheet.addAction(UIAlertAction(title: "Discard changes", style: .destructive,handler: { _ in
+            self.dismiss(animated: true)
+        }))
+        sheet.addAction(UIAlertAction(title: "Save", style: .default,handler: { [self] _ in
+            didTapSave()
+        }))
+        sheet.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        present(sheet, animated: true)
+    }
+
+    
     private func setupView() {
         setupNavigationController()
         setupDelegate()
@@ -166,6 +192,7 @@ class CreateEventScheduleViewController: UIViewController {
         self.cancellable = picker.publisher(for: \.selectedColor) .sink(receiveValue: { color in
             DispatchQueue.main.async {
                 self.cellBackgroundColor = color
+                self.isStartEditing = true
             }
         })
         self.present(picker, animated: true)
@@ -189,7 +216,6 @@ extension CreateEventScheduleViewController: UITableViewDelegate, UITableViewDat
         
         
         cell.textLabel?.numberOfLines = 0
-        cell.layer.cornerRadius = 10
         cell.contentView.layer.cornerRadius = 10
         cell.backgroundColor = UIColor(named: "cellColor")
         
@@ -224,6 +250,7 @@ extension CreateEventScheduleViewController: UITableViewDelegate, UITableViewDat
             alertTextField(cell: cellName, placeholder: "Enter text", keyboard: .default, table: tableView) {[self] text in
                 scheduleModel.scheduleName = text
                 cellsName[indexPath.section][indexPath.row] = text
+                isStartEditing = true
             }
         case [1,0]:
             alertTimeInline(table: tableView, choosenDate: choosenDate) { [self] date, timeString, weekday in
@@ -231,26 +258,31 @@ extension CreateEventScheduleViewController: UITableViewDelegate, UITableViewDat
                 scheduleModel.scheduleDate = date
                 scheduleModel.scheduleWeekday = weekday
                 cellsName[indexPath.section][indexPath.row] = timeString
+                isStartEditing = true
             }
         case [2,0]:
             alertTextField(cell: "Enter Name of event", placeholder: "Enter the text", keyboard: .default,table: tableView) { [self] text in
                 scheduleModel.scheduleCategoryName = text
                 cellsName[indexPath.section][indexPath.row] = text
+                isStartEditing = true
             }
         case [2,1]:
             alertTextField(cell: "Enter Type of event", placeholder: "Enter the text", keyboard: .default,table: tableView) { [self] text in
                 scheduleModel.scheduleCategoryType = text
                 cellsName[indexPath.section][indexPath.row] = text
+                isStartEditing = true
             }
         case [2,2]:
             alertTextField(cell: "Enter URL name with domain", placeholder: "Enter URL", keyboard: .emailAddress,table: tableView) { [self] text in
                 if (text.contains("www.") || text.contains("https://")) && text.contains(".") {
                     cellsName[indexPath.section][indexPath.row] = text
                     scheduleModel.scheduleCategoryURL = text
+                    isStartEditing = true
                 } else if !text.contains("www.") || !text.contains("http://") && text.contains("."){
                     let editedText = "www." + text
                     cellsName[indexPath.section][indexPath.row] = editedText
                     scheduleModel.scheduleCategoryURL = text
+                    isStartEditing = true
                 } else {
                     alertError(text: "Enter name of URL link with correct domain", mainTitle: "Incorrect input")
                 }
@@ -259,6 +291,7 @@ extension CreateEventScheduleViewController: UITableViewDelegate, UITableViewDat
             alertTextField(cell: "Enter Notes of event", placeholder: "Enter the text", keyboard: .default,table: tableView) { [self] text in
                 scheduleModel.scheduleCategoryNote = text
                 cellsName[indexPath.section][indexPath.row] = text
+                isStartEditing = true
             }
         case [3,0]:
             openColorPicker()

@@ -11,9 +11,9 @@ import SnapKit
 import Combine
 
 class EditEventScheduleViewController: UIViewController {
-    let headerArray = ["Details of event","Date and time","Category of event","Color of event","Repeat"]
+    private let headerArray = ["Details of event","Date and time","Category of event","Color of event","Repeat"]
     
-    var cellsName = [[""],
+    private var cellsName = [[""],
                      ["","Set a reminder"],
                      ["","","",""],
                      [""],
@@ -22,6 +22,11 @@ class EditEventScheduleViewController: UIViewController {
     private var cellBackgroundColor: UIColor
     private var choosenDate: Date
     private var scheduleModel: ScheduleModel
+    private var editedScheduleModel = ScheduleModel()
+    private let realm = try! Realm()
+    private var reminderStatus: Bool = false
+    private var isStartEditing: Bool = false
+    private var cancellable: AnyCancellable?//for parallels displaying color in cell and Combine Kit for it
     
     init(cellBackgroundColor: UIColor, choosenDate: Date, scheduleModel: ScheduleModel){
         self.cellBackgroundColor = cellBackgroundColor
@@ -29,21 +34,10 @@ class EditEventScheduleViewController: UIViewController {
         self.scheduleModel = scheduleModel
         super.init(nibName: nil, bundle: nil)
     }
-    
-    
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    private var reminderStatus: Bool = false
-    private var isStartEditing: Bool = false
-    
-    private var cancellable: AnyCancellable?//for parallels displaying color in cell and Combine Kit for it
-    
-   
-    var editedScheduleModel = ScheduleModel()
-    private let realm = try! Realm()
     
     private lazy var navigationItemButton: UIBarButtonItem = {
         return UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(didTapEdit))
@@ -68,7 +62,11 @@ class EditEventScheduleViewController: UIViewController {
 
     //MARK: - Targets methods
     @objc private func didTapDismiss(){
-        dismiss(animated: true)
+        if isStartEditing {
+            setupAlertSheet(title: "Attention", subtitle: "You have some changes.\nWhat do you want to do")
+        } else {
+            dismiss(animated: true)
+        }
     }
     
     @objc private func didTapSwitch(sender: UISwitch){
@@ -84,14 +82,14 @@ class EditEventScheduleViewController: UIViewController {
         editedScheduleModel.scheduleColor = color
         let filterDate = scheduleModel.scheduleDate ?? Date()
         let filterName = scheduleModel.scheduleName
-        if !editedScheduleModel.scheduleName.isEmpty && editedScheduleModel.scheduleDate != nil && editedScheduleModel.scheduleTime != nil  {
+        if !editedScheduleModel.scheduleName.isEmpty {
             ScheduleRealmManager.shared.editScheduleModel(filterDate: filterDate, filterName: filterName, changes: editedScheduleModel)
             showAlertForUser(text: "Event edited successfully", duration: DispatchTime.now()+2, controllerView: view)
             DispatchQueue.main.asyncAfter(deadline: .now()+3) {
                 self.view.window?.rootViewController?.dismiss(animated: true)
             }
         } else {
-            alertError()
+            alertError(text: "Enter value in first section!")
         }
     }
     
@@ -139,7 +137,11 @@ class EditEventScheduleViewController: UIViewController {
         navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(didTapDismiss))
         navigationItem.rightBarButtonItem = navigationItemButton
-        navigationItemButton.isEnabled = false
+        if isStartEditing {
+            navigationItemButton.isEnabled = false
+        } else {
+            navigationItemButton.isEnabled = true
+        }
 
     }
     //MARK: - Main functions for view
@@ -148,9 +150,6 @@ class EditEventScheduleViewController: UIViewController {
         let content = UNMutableNotificationContent()
         let dateS = model.scheduleTime ?? Date()
         let date = DateFormatter.localizedString(from: dateS, dateStyle: .medium, timeStyle: .none)
-        let type = String(describing: model.scheduleCategoryType)
-        let note = String(describing: model.scheduleCategoryNote)
-        let nameCategory = String(describing: model.scheduleCategoryName)
         content.title = "Planned reminder"
         content.body = "\(date)"
         content.subtitle = "\(model.scheduleName)"
@@ -179,7 +178,6 @@ class EditEventScheduleViewController: UIViewController {
         default:
             print("Error")
         }
-   
     }
     //MARK: - Logics methods
     
@@ -204,6 +202,7 @@ class EditEventScheduleViewController: UIViewController {
         self.cancellable = picker.publisher(for: \.selectedColor) .sink(receiveValue: { color in
             DispatchQueue.main.async {
                 self.cellBackgroundColor = color
+                self.isStartEditing = true
             }
         })
         self.present(picker, animated: true)
@@ -231,7 +230,6 @@ extension EditEventScheduleViewController: UITableViewDelegate, UITableViewDataS
         let convertedDate = DateFormatter.localizedString(from: scheduleModel.scheduleTime ?? Date(), dateStyle: .medium, timeStyle: .medium)
         
         cell.textLabel?.numberOfLines = 0
-        cell.layer.cornerRadius = 10
         cell.contentView.layer.cornerRadius = 10
         cell.backgroundColor = UIColor(named: "cellColor")
         
@@ -264,40 +262,46 @@ extension EditEventScheduleViewController: UITableViewDelegate, UITableViewDataS
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let cellName = cellsName[indexPath.section][indexPath.row]
-        isStartEditing = true
-        navigationItemButton.isEnabled = true
+        
+        
             switch indexPath {
             case [0,0]:
                 alertTextField(cell: cellName, placeholder: "Enter text", keyboard: .default, table: tableView) {[self] text in
                     editedScheduleModel.scheduleName = text
                     cellsName[indexPath.section][indexPath.row] = text
+                    isStartEditing = true
                 }
             case [1,0]:
                 alertTimeInline(table: tableView, choosenDate: choosenDate) { [self] date, timeString, weekday in
                     editedScheduleModel.scheduleTime = date
                     editedScheduleModel.scheduleDate = date
                     editedScheduleModel.scheduleWeekday = weekday
-//                    cellsName[indexPath.section][indexPath.row] = timeString
+                    cellsName[indexPath.section][indexPath.row] = timeString
+                    isStartEditing = true
                 }
             case [2,0]:
                 alertTextField(cell: "Enter Name of event", placeholder: "Enter the text", keyboard: .default,table: tableView) { [self] text in
                     editedScheduleModel.scheduleCategoryName = text
                     cellsName[indexPath.section][indexPath.row] = text
+                    isStartEditing = true
                 }
             case [2,1]:
                 alertTextField(cell: "Enter Type of event", placeholder: "Enter the text", keyboard: .default,table: tableView) { [self] text in
                     editedScheduleModel.scheduleCategoryType = text
                     cellsName[indexPath.section][indexPath.row] = text
+                    isStartEditing = true
                 }
             case [2,2]:
                 alertTextField(cell: "Enter URL name with domain", placeholder: "Enter URL", keyboard: .emailAddress,table: tableView) { [self] text in
                     if (text.contains("www.") || text.contains("http://")) && text.contains(".") {
                         cellsName[indexPath.section][indexPath.row] = text
                         editedScheduleModel.scheduleCategoryURL = text
+                        isStartEditing = true
                     } else if !text.contains("www.") || !text.contains("http://") && text.contains("."){
                         let editedText = "www." + text
                         cellsName[indexPath.section][indexPath.row] = editedText
                         editedScheduleModel.scheduleCategoryURL = text
+                        isStartEditing = true
                     } else {
                         alertError(text: "Enter name of URL link with correct domain", mainTitle: "Incorrect input")
                     }
@@ -306,6 +310,7 @@ extension EditEventScheduleViewController: UITableViewDelegate, UITableViewDataS
                 alertTextField(cell: "Enter Notes of event", placeholder: "Enter the text", keyboard: .default,table: tableView) { [self] text in
                     editedScheduleModel.scheduleCategoryNote = text
                     cellsName[indexPath.section][indexPath.row] = text
+                    isStartEditing = true
                 }
             case [3,0]:
                 openColorPicker()
@@ -345,4 +350,17 @@ extension EditEventScheduleViewController: UIColorPickerViewControllerDelegate {
     }
 }
 
+extension EditEventScheduleViewController {
+    private func setupAlertSheet(title: String,subtitle: String) {
+        let sheet = UIAlertController(title: title, message: subtitle, preferredStyle: .actionSheet)
+        sheet.addAction(UIAlertAction(title: "Discard changes", style: .destructive,handler: { _ in
+            self.dismiss(animated: true)
+        }))
+        sheet.addAction(UIAlertAction(title: "Save", style: .default,handler: { [self] _ in
+            didTapEdit()
+        }))
+        sheet.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        present(sheet, animated: true)
+    }
+}
 

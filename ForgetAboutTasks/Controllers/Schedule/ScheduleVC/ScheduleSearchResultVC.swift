@@ -15,11 +15,12 @@ class ScheduleSearchResultViewController: UIViewController {
     
     let tableView = UITableView(frame: .null, style: .grouped)
     
+    //MARK: - Setup viewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
     }
-    
+    //MARK: - main setups
     private func setupView(){
         setupNavigationController()
         setupTableView()
@@ -38,12 +39,6 @@ class ScheduleSearchResultViewController: UIViewController {
     private func setupNavigationController(){
         navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
     }
-    
-    func updateResult(model: Results<ScheduleModel>){
-        scheduleModel = model
-        tableView.reloadData()
-    }
-    
 
 }
 extension ScheduleSearchResultViewController: UITableViewDelegate, UITableViewDataSource {
@@ -70,8 +65,7 @@ extension ScheduleSearchResultViewController: UITableViewDelegate, UITableViewDa
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         guard let model = scheduleModel?[indexPath.row] else { return }
-        let vc = OpenTaskDetailViewController()
-        vc.selectedScheduleModel = model
+        let vc = OpenTaskDetailViewController(model: model)
         let nav = UINavigationController(rootViewController: vc)
         nav.modalPresentationStyle = .fullScreen
         nav.isNavigationBarHidden = false

@@ -7,39 +7,42 @@
 
 import UIKit
 
-extension UIViewController {
+extension UIViewController: UITextFieldDelegate {
     func alertTextField(cell title: String,placeholder: String,keyboard type: UIKeyboardType,table: UITableView, completion: @escaping (String) -> Void) {
         
         let alert = UIAlertController(title: "", message: title, preferredStyle: .alert)
-        alert.addTextField(configurationHandler: { [self] text in
-            text.placeholder = placeholder
-            text.clearButtonMode = .whileEditing
-            text.keyboardType = type
-            text.resignFirstResponder()
+        alert.addTextField(configurationHandler: { [self] textField in
+            textField.placeholder = placeholder
+            textField.clearButtonMode = .whileEditing
+            textField.keyboardType = type
+            textField.resignFirstResponder()
+            textField.delegate = self
+            textField.returnKeyType = .continue
             
             if type == .default {
-                text.autocapitalizationType = .sentences
-                text.autocorrectionType = .yes
+                textField.autocapitalizationType = .sentences
+                textField.autocorrectionType = .yes
             } else {
-                text.autocapitalizationType = .none
-                text.autocorrectionType = .no
+                textField.autocapitalizationType = .none
+                textField.autocorrectionType = .no
             }
-            text.snp.makeConstraints { make in
+            textField.snp.makeConstraints { make in
                 make.top.equalToSuperview().offset(64)
                 make.leading.trailing.equalToSuperview().inset(16)
                 make.height.greaterThanOrEqualTo(30)
             }
-            text.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
+            textField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
             
             let toolbar = UIToolbar()
             toolbar.sizeToFit()
+            //НЕ РАБОТАЕТ кнопка скрытия клавиатуры
+//            let doneB = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(self.doneButtonTapped))
+//            doneB.tintColor = UIColor(named: "navigationControllerColor")
+//            doneB.target = textField
+//            let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+//            toolbar.setItems([flexibleSpace,doneB], animated: true)
             
-            let doneB = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(doneButtonTapped))
-            doneB.tintColor = UIColor(named: "navigationControllerColor")
-            let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-            toolbar.setItems([flexibleSpace,doneB], animated: true)
-            
-            text.inputAccessoryView = toolbar
+            textField.inputAccessoryView = toolbar
             
             
         })
@@ -58,13 +61,12 @@ extension UIViewController {
             }
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.view.tintColor = UIColor(named: "navigationControllerColor")
         alert.editButtonItem.tintColor = UIColor(named: "navigationControllerColor")
-        
         present(alert, animated: true)
     }
     
     @objc private func doneButtonTapped(){
-        print("done button is work correctly")
         view.endEditing(true)
     }
     
@@ -77,5 +79,10 @@ extension UIViewController {
                 self.view.layoutIfNeeded()
             }
         }
+    }
+    
+    public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
 }

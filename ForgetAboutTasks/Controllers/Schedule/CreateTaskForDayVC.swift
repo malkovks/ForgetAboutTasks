@@ -10,31 +10,28 @@ import FSCalendar
 import SnapKit
 import RealmSwift
 
-class ScheduleUserID {
-    var userID : String
-    
-    init(userID: String){
-        self.userID = userID
-    }
-    
-    deinit {}
-}
-
-protocol ScheduleUserIdProtocol: AnyObject {
-    func sendUserID(id:String)
-}
 
 class CreateTaskForDayController: UIViewController {
     
-    var cellDataScheduleModel: Results<ScheduleModel>!
-    
+    private var cellDataScheduleModel: Results<ScheduleModel>!
     private var localRealmData = try! Realm()
-    
-    var choosenDate = Date()
+    private var choosenDate = Date()
     private var isValueWasChanged = Bool()
     private var isTrailingSwipeActionActive = Bool()
     private var indexOfCell = Int()
     private var isCellEdited = Bool()
+    
+    init(model: Results<ScheduleModel>,choosenDate: Date){
+        self.cellDataScheduleModel = model
+        self.choosenDate = choosenDate
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    //MARK: - Setup UI elements
 
     private var calendar: FSCalendar = {
         let calendar = FSCalendar()
@@ -96,18 +93,12 @@ class CreateTaskForDayController: UIViewController {
     }
 
  //MARK: -  actions targets methods
-    @objc private func didTapTapped(){
-        if !cellDataScheduleModel.isEmpty && isValueWasChanged == true {
-            //present alert and saving data
-            setupAlertSheet(title: "Warning", subtitle: "What do you want to do with this list?")
-        } else {
-            self.dismiss(animated: true)
-        }
+    @objc private func didTapDismiss(){
+        dismiss(animated: true)
     }
     
     @objc private func didTapCreate(){
-        let vc = CreateEventScheduleViewController()
-        vc.choosenDate = choosenDate
+        let vc = CreateEventScheduleViewController(choosenDate: choosenDate)
         let navVC = UINavigationController(rootViewController: vc)
         navVC.modalTransitionStyle = .flipHorizontal
         navVC.modalPresentationStyle = .fullScreen
@@ -125,11 +116,6 @@ class CreateTaskForDayController: UIViewController {
             loadingRealmData(predicate: predicate, typeOf: "scheduleName")
         }
     }
-    
-
-    
-    
-   
 //MARK: - Setups for view controller
     private func setupAlertSheet(title: String,subtitle: String) {
         let sheet = UIAlertController(title: title, message: subtitle, preferredStyle: .actionSheet)
@@ -143,11 +129,18 @@ class CreateTaskForDayController: UIViewController {
         present(sheet, animated: true)
     }
     
+    private func setupGestureForDismiss(){
+        let gesture = UISwipeGestureRecognizer(target: self, action: #selector(didTapDismiss))
+        gesture.direction = .right
+        view.addGestureRecognizer(gesture)
+    }
+    
     private func setupView(){
         view.backgroundColor = UIColor(named: "backgroundColor")
         calendar.today =  choosenDate
         segmentalController.addTarget(self, action: #selector(didTapSegmentChanged(segment:)), for: .valueChanged)
         calendar.reloadData()
+        setupGestureForDismiss()
         setupTitleView(date: choosenDate)
         
     }
@@ -166,7 +159,7 @@ class CreateTaskForDayController: UIViewController {
     private func setupNavigationController(){
         navigationController?.navigationItem.largeTitleDisplayMode = .never
         navigationController?.navigationBar.prefersLargeTitles = false
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "arrow.backward.circle.fill"), landscapeImagePhone: nil, style: .done, target: self, action: #selector(didTapTapped))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "arrow.backward.circle.fill"), landscapeImagePhone: nil, style: .done, target: self, action: #selector(didTapDismiss))
         let firstBut = UIBarButtonItem(image: UIImage(systemName: "plus.circle.fill"), landscapeImagePhone: nil, style: .done, target: self, action: #selector(didTapCreate))
         navigationItem.rightBarButtonItems = [firstBut]
         navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
@@ -234,8 +227,7 @@ extension CreateTaskForDayController: UITableViewDelegate, UITableViewDataSource
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let data = cellDataScheduleModel[indexPath.row]
-        let vc = OpenTaskDetailViewController()
-        vc.selectedScheduleModel = data
+        let vc = OpenTaskDetailViewController(model: data)
         let nav = UINavigationController(rootViewController: vc)
         nav.modalPresentationStyle = .fullScreen
         nav.isNavigationBarHidden = false
@@ -259,10 +251,11 @@ extension CreateTaskForDayController: UITableViewDelegate, UITableViewDataSource
     func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         isTrailingSwipeActionActive = true
         let cellData = cellDataScheduleModel[indexPath.row]
-        
+        let colorCell = UIColor.color(withData: cellData.scheduleColor!) ?? #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
+
         let actionInstance = UIContextualAction(style: .normal, title: "") { [weak self] _, _, completionHandler in
-            let vc = CreateEventScheduleViewController()
-            vc.editedScheduleModel = cellData
+            guard let date = self?.choosenDate else { return }
+            let vc = EditEventScheduleViewController(cellBackgroundColor: colorCell, choosenDate: date, scheduleModel: cellData)
             let nav = UINavigationController(rootViewController: vc)
             nav.modalPresentationStyle = .fullScreen
             nav.isNavigationBarHidden = false

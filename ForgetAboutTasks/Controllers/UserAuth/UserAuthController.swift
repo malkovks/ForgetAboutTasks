@@ -18,8 +18,6 @@ class UserAuthViewController: UIViewController {
     
     weak var delegate: UserAuthProtocol?
     
-    weak var userDelegate: ScheduleUserIdProtocol?
-    
     private let spinner = UIActivityIndicatorView()
     
     //MARK: - UI views
