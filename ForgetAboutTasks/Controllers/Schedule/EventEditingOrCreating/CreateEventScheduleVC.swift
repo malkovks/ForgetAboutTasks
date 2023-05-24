@@ -152,7 +152,9 @@ class CreateEventScheduleViewController: UIViewController {
     private func setupUserNotification(model: ScheduleModel){
         let center = UNUserNotificationCenter.current()
         let content = UNMutableNotificationContent()
+        
         let dateS = model.scheduleTime ?? Date()
+        print(dateS)
         let date = DateFormatter.localizedString(from: dateS, dateStyle: .medium, timeStyle: .none)
         content.title = "Planned reminder"
         content.body = "\(date)"

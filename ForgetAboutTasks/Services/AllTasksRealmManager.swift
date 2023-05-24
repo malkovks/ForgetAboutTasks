@@ -32,7 +32,7 @@ class AllTasksRealmManager {
         let model = localRealm.objects(AllTaskModel.self).filter("allTaskDate == %@",oldModelDate).first!
         try! localRealm.write {
             model.allTaskColor = newModel.allTaskColor 
-            model.allTaskNameEvent = newModel.allTaskNameEvent 
+            model.allTaskNameEvent = newModel.allTaskNameEvent
             model.allTaskURL = newModel.allTaskURL ?? model.allTaskURL
             model.allTaskDate = newModel.allTaskDate ?? model.allTaskDate
             model.allTaskTime = newModel.allTaskTime ?? model.allTaskTime

@@ -18,7 +18,6 @@ class ScheduleModel: Object {
     @Persisted var scheduleCategoryNote: String?
     @Persisted var scheduleColor: Data? 
     @Persisted var scheduleRepeat: Bool? = false
-    @Persisted var scheduleWeekday: Int? 
-    
+    @Persisted var scheduleWeekday: Int?   
 }
 

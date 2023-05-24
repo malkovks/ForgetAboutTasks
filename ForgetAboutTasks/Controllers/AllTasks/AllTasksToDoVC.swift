@@ -58,7 +58,9 @@ class AllTasksToDoViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        tableView.reloadData()
+        UIView.transition(with: tableView, duration: 0.3,options: .transitionCrossDissolve) {
+            self.tableView.reloadData()
+        }
     }
     
     //MARK: - Targets methods
@@ -74,8 +76,10 @@ class AllTasksToDoViewController: UIViewController {
     }
     
     @objc private func didTapRefresh(sender: AnyObject){
-        self.tableView.reloadData()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+        UIView.transition(with: tableView, duration: 0.3,options: .transitionCrossDissolve) {
+            self.tableView.reloadData()
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
             self.refreshController.endRefreshing()
         }
     }
@@ -91,17 +95,18 @@ class AllTasksToDoViewController: UIViewController {
     @objc private func didTapSearch(){
         navigationItem.searchController = searchController
         searchController.isActive = true
-//        navigationItem.searchController?.isActive = true
     }
     
     @objc private func didTapChangeCell(sender tag: AnyObject) {
-        
         let button = tag as! UIButton
         let indexPath = IndexPath(row: button.tag, section: 0)
         let model = allTasksData[indexPath.row]
         let booleanValue = !model.allTaskCompleted
         AllTasksRealmManager.shared.changeCompleteStatus(model: model, boolean: booleanValue)
-        tableView.reloadData()
+        loadingRealmData(typeOf: "allTaskCompleted",ascending: false)
+        UIView.transition(with: tableView, duration: 0.3,options: .transitionCrossDissolve) {
+            self.tableView.reloadData()
+        }
     }
     
     //MARK: - Setup methods
@@ -147,15 +152,19 @@ class AllTasksToDoViewController: UIViewController {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cellIdentifier")
     }
     //MARK: - Logic methods
-    private func loadingRealmData(typeOf sort: String = "allTaskDate") {
-        let secValue = localRealmData.objects(AllTaskModel.self).sorted(byKeyPath: sort)
+    private func loadingRealmData(typeOf sort: String = "allTaskDate",ascending:Bool = true) {
+        let secValue = localRealmData.objects(AllTaskModel.self).sorted(byKeyPath: sort,ascending: ascending)
         allTasksData = secValue
-        self.tableView.reloadData()
+        UIView.transition(with: tableView, duration: 0.3,options: .transitionCrossDissolve) {
+            self.tableView.reloadData()
+        }
     }
     
     private func setupCategories(model: AllTaskModel) {
         allTasksDataSections.append(model.allTaskDate ?? Date())
-        self.tableView.reloadData()
+        UIView.transition(with: tableView, duration: 0.3,options: .transitionCrossDissolve) {
+            self.tableView.reloadData()
+        }
     }
 }
 
@@ -171,13 +180,15 @@ extension AllTasksToDoViewController: UITableViewDelegate, UITableViewDataSource
         let color = UIColor.color(withData: data.allTaskColor!)
         cell.backgroundColor = UIColor(named: "backgroundColor")
 
-        let button = UIButton(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
+        let button = UIButton(type: .custom)
+        button.frame = CGRect(x: 0, y: 0, width: 30, height: 30)
         button.tintColor = UIColor(named: "navigationControllerColor")
         button.addTarget(self, action: #selector(didTapChangeCell), for: .touchUpInside)
         button.sizeToFit()
         button.tag = indexPath.row
 
         cell.accessoryView = button as UIView
+        cell.accessoryView?.tintColor = UIColor(named: "navigationControllerColor")
         
         let timeFF = Formatters.instance.timeStringFromDate(date: data.allTaskTime ?? Date())
         let dateF = DateFormatter.localizedString(from: data.allTaskDate ?? Date(), dateStyle: .medium, timeStyle: .none)
@@ -240,7 +251,9 @@ extension AllTasksToDoViewController: UISearchResultsUpdating ,UISearchBarDelega
     
     private func filterTable(_ searchText: String) {
         allTasksDataFiltered = allTasksData.filter("allTaskNameEvent CONTAINS[c] %@ ",searchText)
-        tableView.reloadData()
+        UIView.transition(with: tableView, duration: 0.3,options: .transitionCrossDissolve) {
+            self.tableView.reloadData()
+        }
     }
 }
 //MARK: Contraints

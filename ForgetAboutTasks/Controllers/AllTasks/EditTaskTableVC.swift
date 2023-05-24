@@ -49,51 +49,38 @@ class EditTaskTableViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        setupTableView()
         setupView()
     }
 
     //MARK: - Targets methods
     @objc private func didTapDismiss(){
-        dismiss(animated: true)
-    }
-    
-    @objc private func didTapSave(){
-        if !tasksModel.allTaskNameEvent.isEmpty {
-            tasksModel.allTaskColor = cellBackgroundColor.encode()
-            AllTasksRealmManager.shared.saveAllTasksModel(model: tasksModel)
-            showAlertForUser(text: "Event saved successfully", duration: DispatchTime.now()+2, controllerView: view)
-            DispatchQueue.main.asyncAfter(deadline: .now()+3) {
-                self.view.window?.rootViewController?.dismiss(animated: true)
-            }
-        } else {
-            alertError(text: "Enter value in Name cell", mainTitle: "Error saving!")
+        if isStartEditing {
+            setupAlertSheet()
         }
-        
     }
     
     @objc private func didTapEdit(){
         
-        if !editedTaskModel.allTaskNameEvent.isEmpty {
+        if isStartEditing {
+            if editedTaskModel.allTaskNameEvent.isEmpty {
+                editedTaskModel.allTaskNameEvent = tasksModel.allTaskNameEvent
+            }
             editedTaskModel.allTaskColor = cellBackgroundColor.encode()
             let date = tasksModel.allTaskDate ?? Date()
             AllTasksRealmManager.shared.editAllTasksModel(oldModelDate: date, newModel: editedTaskModel)
             showAlertForUser(text: "Event edited successfully", duration: DispatchTime.now()+2, controllerView: view)
-            DispatchQueue.main.asyncAfter(deadline: .now()+3) {
+            DispatchQueue.main.asyncAfter(deadline: .now()+2) {
                 self.view.window?.rootViewController?.dismiss(animated: true)
             }
-        } else {
-            alertError(text: "Enter value in Name Section", mainTitle: "Error editing!")
         }
-    
     }
     //MARK: - Setup methods
     private func setupView() {
+        setupTableView()
+        setupConstraints()
         setupNavigationController()
         setupDelegate()
         setupColorPicker()
-        setupConstraints()
         view.backgroundColor = UIColor(named: "backgroundColor")
     }
     
@@ -118,7 +105,6 @@ class EditTaskTableViewController: UIViewController {
         title = "Editing"
         navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(didTapDismiss))
-        tableView.allowsSelection = true
         navigationItem.rightBarButtonItem = navigationButton
         navigationButton.isEnabled = false
     }
@@ -128,12 +114,14 @@ class EditTaskTableViewController: UIViewController {
         self.cancellable = picker.publisher(for: \.selectedColor) .sink(receiveValue: { color in
             DispatchQueue.main.async {
                 self.cellBackgroundColor = color
+                self.navigationButton.isEnabled = true
+                self.isStartEditing = true
             }
         })
         self.present(picker, animated: true)
     }
     
-    private func setupCellTitle(model: AllTaskModel,indexPath: IndexPath){
+    @objc private func setupCellTitle(model: AllTaskModel,indexPath: IndexPath){
         let date = model.allTaskDate ?? Date()
         let time = model.allTaskTime ?? Date()
         switch indexPath.section {
@@ -184,27 +172,36 @@ extension EditTaskTableViewController: UITableViewDelegate, UITableViewDataSourc
                 cellsName[indexPath.section][indexPath.row] = text
                 editedTaskModel.allTaskNameEvent = text
                 navigationButton.isEnabled = true
+                isStartEditing = true
             }
         case [1,0]:
             alertDate(table: tableView, choosenDate: nil) { [self] _ , date, dateString in
-                cellsName[indexPath.section][indexPath.row] += ": " + dateString
+                cellsName[indexPath.section][indexPath.row] = dateString
                 editedTaskModel.allTaskDate = date
+                navigationButton.isEnabled = true
+                isStartEditing = true
             }
         case [2,0]:
             alertTime(table: tableView, choosenDate: Date()) {  [self] date, timeString in
-                cellsName[indexPath.section][indexPath.row] += ": " + timeString
+                cellsName[indexPath.section][indexPath.row] = timeString
                 editedTaskModel.allTaskTime = date
+                navigationButton.isEnabled = true
+                isStartEditing = true
             }
         case [3,0]:
             alertTextField(cell: cellName, placeholder: "Enter notes value", keyboard: .default, table:tableView) { [self] text in
                 cellsName[indexPath.section][indexPath.row] = text
                 editedTaskModel.allTaskNotes = text
+                navigationButton.isEnabled = true
+                isStartEditing = true
             }
         case [4,0]:
             alertTextField(cell: cellName, placeholder: "Enter URL value", keyboard: .URL, table: tableView, completion: { [self] text in
                 if text.isURLValid(text: text){
                     cellsName[indexPath.section][indexPath.row] = text
                     editedTaskModel.allTaskURL = text
+                    navigationButton.isEnabled = true
+                    isStartEditing = true
                 } else {
                     alertError(text: "Try again!\nEnter www. in URL link and pick a domain", mainTitle: "Warning!")
                 }
@@ -215,10 +212,6 @@ extension EditTaskTableViewController: UITableViewDelegate, UITableViewDataSourc
             print("error")
         
         }
-    }
-    
-    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -232,19 +225,18 @@ extension EditTaskTableViewController: UITableViewDelegate, UITableViewDataSourc
         return 45
     }
     
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableView.automaticDimension
+    }
 }
-
+//MARK: - Color picker delegate and constraint func
 extension EditTaskTableViewController: UIColorPickerViewControllerDelegate {
     func colorPickerViewController(_ viewController: UIColorPickerViewController, didSelect color: UIColor, continuously: Bool) {
         cellBackgroundColor = color
         let encodeColor = color.encode()
-        self.tasksModel.allTaskColor = encodeColor
-        self.tableView.reloadData()
+        editedTaskModel.allTaskColor = encodeColor
+        tableView.reloadData()
     }
-}
-
-extension EditTaskTableViewController: UIAdaptivePresentationControllerDelegate {
-    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {}
 }
 
 extension EditTaskTableViewController {
@@ -254,5 +246,17 @@ extension EditTaskTableViewController {
             make.leading.trailing.equalToSuperview().inset(10)
             make.bottom.equalToSuperview().inset(0)
         }
+    }
+    
+    private func setupAlertSheet(title: String = "Attention" ,subtitle: String = "You have some changes.\nWhat do you want to do?") {
+        let sheet = UIAlertController(title: title, message: subtitle, preferredStyle: .actionSheet)
+        sheet.addAction(UIAlertAction(title: "Discard changes", style: .destructive,handler: { _ in
+            self.dismiss(animated: true)
+        }))
+        sheet.addAction(UIAlertAction(title: "Save", style: .default,handler: { [self] _ in
+            didTapEdit()
+        }))
+        sheet.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        present(sheet, animated: true)
     }
 }

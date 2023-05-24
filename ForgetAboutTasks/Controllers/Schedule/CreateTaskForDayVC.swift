@@ -98,7 +98,8 @@ class CreateTaskForDayController: UIViewController {
     }
     
     @objc private func didTapCreate(){
-        let vc = CreateEventScheduleViewController(choosenDate: choosenDate)
+        let date = Calendar.current.date(byAdding: .hour,value: 12, to: choosenDate) ?? Date()
+        let vc = CreateEventScheduleViewController(choosenDate: date)
         let navVC = UINavigationController(rootViewController: vc)
         navVC.modalTransitionStyle = .flipHorizontal
         navVC.modalPresentationStyle = .fullScreen
@@ -128,6 +129,7 @@ class CreateTaskForDayController: UIViewController {
         sheet.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         present(sheet, animated: true)
     }
+    
     
     private func setupGestureForDismiss(){
         let gesture = UISwipeGestureRecognizer(target: self, action: #selector(didTapDismiss))

@@ -294,4 +294,16 @@ extension CreateTaskTableViewController {
             make.bottom.equalToSuperview().inset(0)
         }
     }
+    
+    private func setupAlertSheet(title: String,subtitle: String) {
+        let sheet = UIAlertController(title: title, message: subtitle, preferredStyle: .actionSheet)
+        sheet.addAction(UIAlertAction(title: "Discard changes", style: .destructive,handler: { _ in
+            self.dismiss(animated: true)
+        }))
+        sheet.addAction(UIAlertAction(title: "Save", style: .default,handler: { [self] _ in
+            didTapSave()
+        }))
+        sheet.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        present(sheet, animated: true)
+    }
 }

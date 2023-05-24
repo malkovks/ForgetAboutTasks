@@ -11,16 +11,14 @@ import SafariServices
 
 class OpenTaskDetailViewController: UIViewController {
     
-    let headerArray = ["Details of event","Date and time","Category of event","Color of event","Repeat"]
-    
-    var cellsName = [["Name of event"],
+    private let headerArray = ["Details of event","Date and time","Category of event","Color of event","Repeat"]
+    private var cellsName = [["Name of event"],
                      ["Date", "Time"],
                      ["Name","Type","URL","Note"],
                      [""],
                      ["Repeat every 7 days"]]
     
-    var cellBackgroundColor =  #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
-    
+    private var cellBackgroundColor =  #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
     private var selectedScheduleModel: ScheduleModel
     
     init(model: ScheduleModel) {
@@ -127,8 +125,6 @@ class OpenTaskDetailViewController: UIViewController {
             return
         }
         UIGraphicsEndImageContext()
-
-    
         var activityItems = [Any]()
         if typeSharing == "image" {
             activityItems.append(image)
@@ -138,6 +134,29 @@ class OpenTaskDetailViewController: UIViewController {
         let activityViewController = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
         self.present(activityViewController, animated: true, completion: nil)
         
+    }
+    
+    private func checkPlannedNotification() -> Bool {
+        var value = Bool()
+        let center = UNUserNotificationCenter.current()
+        let date = selectedScheduleModel.scheduleDate!
+        print(date)
+        center.getPendingNotificationRequests { requests in
+            let notOnDate = requests.filter { request in
+                if let trigger = request.trigger as? UNCalendarNotificationTrigger {
+                    return Calendar.current.isDate(trigger.nextTriggerDate()!, inSameDayAs: date)
+                }
+                return false
+            }
+            if notOnDate.count > 0 {
+                print("there are \(notOnDate.count) notifications planned for \(date)")
+                value = true
+            } else {
+                print("No notification on current day")
+                value = false
+            }
+        }
+        return value
     }
 
 }
@@ -176,11 +195,17 @@ extension OpenTaskDetailViewController: UITableViewDelegate, UITableViewDataSour
         case [1,0]:
             cell.textLabel?.text = date + " Time: " + time
         case [1,1]:
-            let content = UNMutableNotificationContent()
-            if content.userInfo["userNotification"] as? String == date {
-                switchButton.isOn = true
+//            let content = UNMutableNotificationContent()
+//            if content.userInfo["userNotification"] as? String == date {
+//                switchButton.isOn = true
+//            } else {
+//                switchButton.isOn = false
+//            }
+            let value = checkPlannedNotification()
+            if value {
+                switchButton.isOn = value
             } else {
-                switchButton.isOn = false
+                switchButton.isOn = value
             }
             cell.textLabel?.text = "Reminder status"
             cell.accessoryView?.isHidden = false

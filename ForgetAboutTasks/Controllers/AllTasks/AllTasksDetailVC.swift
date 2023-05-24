@@ -29,7 +29,7 @@ class AllTasksDetailViewController: UIViewController {
     
     let picker = UIColorPickerViewController()
     
-    private let tableView = UITableView()
+    private let tableView = UITableView(frame: .zero, style: .insetGrouped)
     
     private lazy var shareTableInfo: UIBarButtonItem = {
         return UIBarButtonItem(image: UIImage(systemName: "square.and.arrow.up.fill"), style: .done, target: self, action: #selector(didTapShareTable))

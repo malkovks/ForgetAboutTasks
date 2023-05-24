@@ -71,9 +71,9 @@ class EditEventScheduleViewController: UIViewController {
     
     @objc private func didTapSwitch(sender: UISwitch){
         if sender.isOn {
-            scheduleModel.scheduleRepeat = true
+            editedScheduleModel.scheduleRepeat = true
         } else {
-            scheduleModel.scheduleRepeat = false
+            editedScheduleModel.scheduleRepeat = false
         }
     }
     
@@ -83,6 +83,10 @@ class EditEventScheduleViewController: UIViewController {
         let filterDate = scheduleModel.scheduleDate ?? Date()
         let filterName = scheduleModel.scheduleName
         if !editedScheduleModel.scheduleName.isEmpty {
+            if reminderStatus {
+                setupUserNotification(model: scheduleModel)
+                reminderStatus = false
+            }
             ScheduleRealmManager.shared.editScheduleModel(filterDate: filterDate, filterName: filterName, changes: editedScheduleModel)
             showAlertForUser(text: "Event edited successfully", duration: DispatchTime.now()+2, controllerView: view)
             DispatchQueue.main.asyncAfter(deadline: .now()+3) {
@@ -95,7 +99,7 @@ class EditEventScheduleViewController: UIViewController {
     
     @objc private func didTapSetReminder(sender: UISwitch){
         if sender.isOn {
-            if scheduleModel.scheduleDate == nil && scheduleModel.scheduleTime == nil {
+            if editedScheduleModel.scheduleDate == nil && editedScheduleModel.scheduleTime == nil {
                 alertError(text: "Enter date for setting reminder", mainTitle: "Error set up reminder!")
             } else {
                 reminderStatus = true
