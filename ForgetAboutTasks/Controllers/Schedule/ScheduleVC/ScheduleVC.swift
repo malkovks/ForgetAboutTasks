@@ -28,6 +28,10 @@ class ScheduleViewController: UIViewController {
         return UIBarButtonItem(title: nil, image: UIImage(systemName: "plus.circle.fill"), target: self, action: #selector(didTapCreate))
     }()
     
+    private lazy var displayAllEvent: UIBarButtonItem = {
+        return UIBarButtonItem(image: UIImage(systemName: "list.bullet.circle.fill"), landscapeImagePhone: nil, style: .done, target: self, action: #selector(didTapOpenAllEvent))
+    }()
+    
     private var calendar: FSCalendar = {
        let calendar = FSCalendar()
         calendar.formatter.timeZone = TimeZone.current
@@ -90,6 +94,11 @@ class ScheduleViewController: UIViewController {
         present(nav, animated: true)
     }
     
+    @objc private func didTapOpenAllEvent(){
+        let vc = ScheduleAllEventViewController(model: scheduleModel)
+        show(vc, sender: nil)
+    }
+    
     //MARK: - Setup Methods
     private func setupDelegates(){
         calendar.delegate = self
@@ -132,7 +141,12 @@ class ScheduleViewController: UIViewController {
     private func setupNavigationController(){
         title = "Calendar"
         navigationItem.leftBarButtonItem = searchNavigationButton
-        navigationItem.rightBarButtonItem = createNewEventNavigationButton
+        navigationItem.rightBarButtonItems = [createNewEventNavigationButton,displayAllEvent]
+        if scheduleModel.count == 0 {
+            displayAllEvent.isEnabled = false
+        } else {
+            displayAllEvent.isEnabled = true
+        }
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = true
         navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")

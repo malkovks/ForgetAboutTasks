@@ -60,6 +60,7 @@
 		0AA74A2829EC524200F01532 /* AllTaskModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA74A2729EC524200F01532 /* AllTaskModel.swift */; };
 		0AA8EC5D29C76968004DC6DD /* AlertDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA8EC5C29C76968004DC6DD /* AlertDate.swift */; };
 		0AA8EC5F29C7AA56004DC6DD /* AlertTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA8EC5E29C7AA56004DC6DD /* AlertTime.swift */; };
+		0AACE7A92A1F80D500531C84 /* ScheduleAllEventVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AACE7A82A1F80D500531C84 /* ScheduleAllEventVC.swift */; };
 		0AB0A96D2A1C41C00084AE07 /* SetupShareAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB0A96C2A1C41C00084AE07 /* SetupShareAction.swift */; };
 		0AB0A96F2A1C61D30084AE07 /* EditTaskTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB0A96E2A1C61D30084AE07 /* EditTaskTableVC.swift */; };
 		0AB763BA29E3FAC900BFDB0D /* AlertError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB763B929E3FAC900BFDB0D /* AlertError.swift */; };
@@ -140,6 +141,7 @@
 		0AA74A2729EC524200F01532 /* AllTaskModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllTaskModel.swift; sourceTree = "<group>"; };
 		0AA8EC5C29C76968004DC6DD /* AlertDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertDate.swift; sourceTree = "<group>"; };
 		0AA8EC5E29C7AA56004DC6DD /* AlertTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertTime.swift; sourceTree = "<group>"; };
+		0AACE7A82A1F80D500531C84 /* ScheduleAllEventVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleAllEventVC.swift; sourceTree = "<group>"; };
 		0AB0A96C2A1C41C00084AE07 /* SetupShareAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupShareAction.swift; sourceTree = "<group>"; };
 		0AB0A96E2A1C61D30084AE07 /* EditTaskTableVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTaskTableVC.swift; sourceTree = "<group>"; };
 		0AB763B929E3FAC900BFDB0D /* AlertError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertError.swift; sourceTree = "<group>"; };
@@ -480,6 +482,7 @@
 			children = (
 				0A8AC1A029B9D46D00EA052B /* ScheduleVC.swift */,
 				0AF2D6EE2A1141360093A824 /* ScheduleSearchResultVC.swift */,
+				0AACE7A82A1F80D500531C84 /* ScheduleAllEventVC.swift */,
 			);
 			path = ScheduleVC;
 			sourceTree = "<group>";
@@ -678,6 +681,7 @@
 				0A99A90729CD99CA00CC5A42 /* UserAuthController.swift in Sources */,
 				0A2717BA2A01F7FE00EFBC11 /* AllTasksDetailVC.swift in Sources */,
 				0ACE797229DD95C600599C19 /* CreateTaskTableVC.swift in Sources */,
+				0AACE7A92A1F80D500531C84 /* ScheduleAllEventVC.swift in Sources */,
 				0AF2D6F82A189A390093A824 /* EditEventScheduleVC.swift in Sources */,
 				0A86ED1029B5D97F001C9BAF /* AppDelegate.swift in Sources */,
 				0A9E1C3A29CEEDCE000CC9A9 /* LoginController.swift in Sources */,

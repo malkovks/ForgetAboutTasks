@@ -201,12 +201,12 @@ extension OpenTaskDetailViewController: UITableViewDelegate, UITableViewDataSour
 //            } else {
 //                switchButton.isOn = false
 //            }
-            let value = checkPlannedNotification()
-            if value {
-                switchButton.isOn = value
-            } else {
-                switchButton.isOn = value
-            }
+//            let value = checkPlannedNotification()
+//            if value {
+//                switchButton.isOn = value
+//            } else {
+//                switchButton.isOn = value
+//            }
             cell.textLabel?.text = "Reminder status"
             cell.accessoryView?.isHidden = false
             switchButton.isEnabled = false
