@@ -213,9 +213,8 @@ extension AllTasksToDoViewController: UITableViewDelegate, UITableViewDataSource
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let model = allTasksData[indexPath.row]
-        let vc = AllTasksDetailViewController()
-        vc.tasksModel = model
-        vc.title = "Event details"
+        let color = UIColor.color(withData: model.allTaskColor!) ?? #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
+        let vc = AllTasksDetailViewController(color: color, model: model)
         let nav = UINavigationController(rootViewController: vc)
         nav.modalPresentationStyle = .pageSheet
         nav.isNavigationBarHidden = false
@@ -233,6 +232,7 @@ extension AllTasksToDoViewController: UITableViewDelegate, UITableViewDataSource
         deleteInstance.backgroundColor = .systemRed
         deleteInstance.image = UIImage(systemName: "trash.fill")
         deleteInstance.image?.withTintColor(.systemBackground)
+        
         let action = UISwipeActionsConfiguration(actions: [deleteInstance])
         
         return action

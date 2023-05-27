@@ -29,7 +29,7 @@ class ScheduleSearchResultViewController: UIViewController {
     }
     
     private func setupTableView(){
-        tableView.backgroundColor = #colorLiteral(red: 0.8424847722, green: 0.8424847722, blue: 0.8424847722, alpha: 0.8470588235)
+        tableView.backgroundColor = UIColor(named: "backgroundColor")
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cellSearchResult")
@@ -45,6 +45,7 @@ extension ScheduleSearchResultViewController: UITableViewDelegate, UITableViewDa
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cellSearchResult")
         let model = scheduleModel?[indexPath.row]
+        cell.backgroundView?.tintColor = UIColor(named: "cellColor")
         
         let timeFF = Formatters.instance.timeStringFromDate(date: model?.scheduleDate ?? Date())
         let dateF = DateFormatter.localizedString(from: model?.scheduleTime ?? Date(), dateStyle: .medium, timeStyle: .none)

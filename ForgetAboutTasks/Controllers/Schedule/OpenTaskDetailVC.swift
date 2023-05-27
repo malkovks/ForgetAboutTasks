@@ -58,7 +58,6 @@ class OpenTaskDetailViewController: UIViewController {
     }
     
     @objc private func didTapEdit(){
-        
         let colorCell = UIColor.color(withData: selectedScheduleModel.scheduleColor!) ?? #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
         let choosenDate = selectedScheduleModel.scheduleDate ?? Date()
         let vc = EditEventScheduleViewController(cellBackgroundColor: colorCell, choosenDate: choosenDate, scheduleModel: selectedScheduleModel)
@@ -67,6 +66,26 @@ class OpenTaskDetailViewController: UIViewController {
         nav.modalTransitionStyle = .crossDissolve
         nav.isNavigationBarHidden = false
         present(nav, animated: true)
+    }
+    
+    @objc private func didGesturePress(_ gesture: UILongPressGestureRecognizer){
+        if gesture.state == .began {
+            let point = gesture.location(in: tableView)
+            guard let indexPath = tableView.indexPathForRow(at: point) else { return }
+            var model: String?
+            switch indexPath {
+            case [0,0]: model = selectedScheduleModel.scheduleName
+            case [1,0]: model = DateFormatter.localizedString(from: selectedScheduleModel.scheduleDate ?? Date(), dateStyle: .medium, timeStyle: .short)
+            case [2,0]: model = selectedScheduleModel.scheduleCategoryName
+            case [2,1]: model = selectedScheduleModel.scheduleCategoryType
+            case [2,3]: model = selectedScheduleModel.scheduleCategoryNote
+            default:
+                alertError()
+            }
+            UIPasteboard.general.string = model
+            alertDismissed(view: self.view)
+            tableView.deselectRow(at: indexPath, animated: true)
+        }
     }
     
     //MARK: - Setup Views and secondary methods
@@ -91,6 +110,8 @@ class OpenTaskDetailViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        let gesture = UILongPressGestureRecognizer(target: self, action: #selector(didGesturePress(_:)))
+        tableView.addGestureRecognizer(gesture)
     }
     
     private func setupNavigationController(){
@@ -195,18 +216,6 @@ extension OpenTaskDetailViewController: UITableViewDelegate, UITableViewDataSour
         case [1,0]:
             cell.textLabel?.text = date + " Time: " + time
         case [1,1]:
-//            let content = UNMutableNotificationContent()
-//            if content.userInfo["userNotification"] as? String == date {
-//                switchButton.isOn = true
-//            } else {
-//                switchButton.isOn = false
-//            }
-//            let value = checkPlannedNotification()
-//            if value {
-//                switchButton.isOn = value
-//            } else {
-//                switchButton.isOn = value
-//            }
             cell.textLabel?.text = "Reminder status"
             cell.accessoryView?.isHidden = false
             switchButton.isEnabled = false

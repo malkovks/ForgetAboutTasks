@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 
 extension UIViewController {
-    func alertDate(table: UITableView,choosenDate: Date?, completiongHandler: @escaping (Int,Date,String) -> Void) {
+    func alertDate(table: UITableView?,choosenDate: Date?,calendar style: UIDatePicker.Mode = .date, completiongHandler: @escaping (Int,Date,String) -> Void) {
         let alert = UIAlertController(title: "", message: nil, preferredStyle: .actionSheet)
         let datePicker = UIDatePicker()
         datePicker.timeZone = .current
@@ -18,6 +18,7 @@ extension UIViewController {
         datePicker.date = choosenDate ?? Date()
         datePicker.preferredDatePickerStyle = .wheels
         alert.view.addSubview(datePicker)
+
         
         alert.addAction(UIAlertAction(title: "Ok", style: .default) { action in
             let date = datePicker.date
@@ -29,7 +30,7 @@ extension UIViewController {
             let weekday = weekdayComp
             completiongHandler(weekday,date,dateString)
             DispatchQueue.main.async {
-                table.reloadData()
+                table?.reloadData()
             }
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .destructive))

@@ -9,7 +9,7 @@ import UIKit
 
 extension UIViewController {
     func alertDismissed(view: UIView){
-        let alert = UIAlertController(title: "Text was copied", message: nil, preferredStyle: .actionSheet)
+        let alert = UIAlertController(title: "Text was copied", message: nil, preferredStyle: .alert)
         alert.preferredContentSize = CGSize(width: 400, height: 200)
         alert.popoverPresentationController?.sourceView = view
         alert.popoverPresentationController?.sourceRect = CGRect(x: view.bounds.midX, y: 0, width: 0, height: 0)

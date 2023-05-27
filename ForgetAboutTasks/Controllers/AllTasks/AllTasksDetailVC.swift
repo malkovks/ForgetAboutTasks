@@ -13,28 +13,34 @@ import SafariServices
 
 class AllTasksDetailViewController: UIViewController {
     
-    let headerArray = ["Name","Date","Time","Notes","URL","Color accent"]
-    
-    var cellsName = [["Name of event"],
+    private let headerArray = ["Name","Date","Time","Notes","URL","Color accent"]
+    private var cellsName = [["Name of event"],
                      ["Date"],
                      ["Time"],
                      ["Notes"],
                      ["URL"],
                      [""]]
-
-    var cellBackgroundColor =  #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
-    var tasksModel = AllTaskModel()
+    private var cellBackgroundColor =  #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
+    private var tasksModel = AllTaskModel()
     
+    init(color: UIColor, model: AllTaskModel){
+        self.tasksModel = model
+        self.cellBackgroundColor = color
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    //MARK: - UI elements
     var cancellable: AnyCancellable?//for parallels displaying color in cell and Combine Kit for it
-    
     let picker = UIColorPickerViewController()
-    
     private let tableView = UITableView(frame: .zero, style: .insetGrouped)
     
     private lazy var shareTableInfo: UIBarButtonItem = {
         return UIBarButtonItem(image: UIImage(systemName: "square.and.arrow.up.fill"), style: .done, target: self, action: #selector(didTapShareTable))
     }()
-    
+    //MARK: - view loading
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTableView()
@@ -64,6 +70,26 @@ class AllTasksDetailViewController: UIViewController {
         vc.excludedActivityTypes = [.markupAsPDF,.airDrop,.mail,.openInIBooks]
         present(vc, animated: true)
     }
+    
+    @objc private func didGesturePress(_ gesture: UILongPressGestureRecognizer) {
+        if gesture.state == .began {
+            let point = gesture.location(in: tableView)
+            guard let indexPath = tableView.indexPathForRow(at: point) else { return }
+            var model: String?
+            switch indexPath.section {
+            case 0: model = tasksModel.allTaskNameEvent
+            case 1: model = DateFormatter.localizedString(from: tasksModel.allTaskDate ?? Date(), dateStyle: .medium, timeStyle: .none)
+            case 2: model = DateFormatter.localizedString(from: tasksModel.allTaskDate ?? Date(), dateStyle: .none, timeStyle: .short)
+            case 3: model = tasksModel.allTaskNotes
+            case 4: model = tasksModel.allTaskURL
+            default:
+                alertError()
+            }
+            UIPasteboard.general.string = model
+            alertDismissed(view: self.view)
+            tableView.deselectRow(at: indexPath, animated: true)
+        }
+    }
     //MARK: - Setup methods
     private func setupView() {
         setupNavigationController()
@@ -84,6 +110,8 @@ class AllTasksDetailViewController: UIViewController {
         tableView.dataSource = self
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "tasksCell")
+        let gesture = UILongPressGestureRecognizer(target: self, action: #selector(didGesturePress(_:)))
+        tableView.addGestureRecognizer(gesture)
     }
     
     private func setupColorPicker(){

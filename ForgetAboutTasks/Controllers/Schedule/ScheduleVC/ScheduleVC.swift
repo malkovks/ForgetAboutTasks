@@ -244,11 +244,8 @@ extension ScheduleViewController: UISearchResultsUpdating,UISearchBarDelegate {
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        if ((searchBar.text?.isEmpty) != nil) {
-            searchController.searchBar.text = ""
-            searchController.isActive = false
-            searchController.animationEnded(true)
-        }
+        searchBar.resignFirstResponder()
+        searchController.isActive = false
     }
 
     func filterTable(_ text: String) -> Results<ScheduleModel>{
