@@ -72,7 +72,7 @@ extension UIViewController {
             completionHandler(date,timeString,weekday)
             
             DispatchQueue.main.async {
-                table.reloadData()
+//                table.reloadData()
             }
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .destructive))

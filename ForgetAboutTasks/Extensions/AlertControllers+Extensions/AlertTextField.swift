@@ -43,7 +43,7 @@ extension UIViewController: UITextFieldDelegate {
                 }
                 if !text.isEmpty {
                     completion(text)
-                    table.reloadData()
+//                    table.reloadData()
                 } else {
                     self.alertError(text: "Enter some value!")
                 }

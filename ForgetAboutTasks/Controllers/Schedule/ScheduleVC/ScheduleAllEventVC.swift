@@ -89,7 +89,7 @@ class ScheduleAllEventViewController: UIViewController {
     private func setupNavigationController(){
         navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
         navigationItem.rightBarButtonItem = filterTableData
-        title = "Events"
+        title = "All events"
     }
 }
 //MARK: - Table view delegate
