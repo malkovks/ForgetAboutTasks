@@ -247,6 +247,7 @@ extension CreateEventScheduleViewController: UIImagePickerControllerDelegate, UI
             cell.textLabel?.text = ""
             cell.imageView?.frame = CGRect(x: 1, y: 1, width: tableView.frame.size.width-2, height: 200)
             cell.accessoryView = nil
+            
             cellImageView?.image = image
             picker.dismiss(animated: true)
             tableView.deselectRow(at: index, animated: true)

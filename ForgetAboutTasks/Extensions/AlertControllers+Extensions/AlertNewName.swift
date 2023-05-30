@@ -8,11 +8,13 @@
 import UIKit
 
 extension UIViewController {
-    func alertNewName(title: String,placeholder: String, completion: @escaping (String) -> Void) {
+    func alertNewName(title: String,placeholder: String,type: UIKeyboardType = .default, completion: @escaping (String) -> Void) {
         let alert = UIAlertController(title: "", message: title, preferredStyle: .alert)
         alert.addTextField(configurationHandler: { text in
             text.placeholder = placeholder
             text.autocapitalizationType = .words
+            text.keyboardType = type
+            
         })
         alert.addAction(UIAlertAction(title: "Save", style: .default,handler: { _ in
             DispatchQueue.main.async {

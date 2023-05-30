@@ -104,7 +104,7 @@ class UserProfileViewController: UIViewController {
         userImageView.layer.cornerRadius = 0.5 * userImageView.bounds.size.width
         scrollView.frame = view.bounds
     }
-    
+    //MARK: - Targets methods
     @objc private func didTapLogout(){
         let alert = UIAlertController(title: "Warning", message: "Do you want to Exit from your account?", preferredStyle: .actionSheet)
         alert.addAction(UIAlertAction(title: "Confirm", style: .destructive,handler: { _ in
@@ -118,7 +118,6 @@ class UserProfileViewController: UIViewController {
                 }
                 self.view.window?.rootViewController?.dismiss(animated: true)
                 let vc = UserAuthViewController()
-                vc.delegate = self
                 let navVC = UINavigationController(rootViewController: vc)
                 navVC.modalPresentationStyle = .fullScreen
                 navVC.isNavigationBarHidden = false
@@ -132,7 +131,7 @@ class UserProfileViewController: UIViewController {
     }
     
     @objc private func didTapImagePicker(){
-        let alert = UIAlertController(title: "", message: "What exactly do you want to do?", preferredStyle: .actionSheet)
+        let alert = UIAlertController(title: nil, message: "What exactly do you want to do?", preferredStyle: .actionSheet)
         alert.addAction(UIAlertAction(title: "Set new image", style: .default,handler: { [self] _ in
             if UIImagePickerController.isSourceTypeAvailable(.photoLibrary){
                 imagePicker.delegate = self
@@ -158,16 +157,16 @@ class UserProfileViewController: UIViewController {
         present(alert, animated: true)
     }
     
-    @objc private func didTapTapOnLabel(sender: UITapGestureRecognizer){
+    @objc private func didTapOnName(sender: UITapGestureRecognizer){
         alertNewName(title: "Enter new name and second name", placeholder: "Enter the text") { [weak self] text in
-            self?.userNameLabel.text = "User's age: " + text
+            self?.userNameLabel.text = text
             UserDefaults.standard.set(text, forKey: "userName")
         }
     }
     
     @objc private func didTapOnAge(sender: UITapGestureRecognizer){
-        alertNewName(title: "Enter your age", placeholder: "Enter age number") { [weak self] text in
-            self?.ageLabel.text = text
+        alertNewName(title: "Enter your age", placeholder: "Enter age number",type: .numberPad) { [weak self] text in
+            self?.ageLabel.text = "Age: " + text
             UserDefaults.standard.set(text, forKey: "userAge")
         }
     }
@@ -179,8 +178,6 @@ class UserProfileViewController: UIViewController {
             print("is off")
         }
     }
-    
-    
     //MARK: - Setup methods
     private func setupView(){
         setupNavigationController()
@@ -193,6 +190,7 @@ class UserProfileViewController: UIViewController {
         loadingData()
         setupScrollView()
         setupTableView()
+        setupLabelUnderline()
         view.backgroundColor = UIColor(named: "backgroundColor")
     }
     
@@ -205,38 +203,41 @@ class UserProfileViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.layer.cornerRadius = 8
-        
         tableView.backgroundColor = UIColor(named: "backgroundColor")
-        
     }
     
-    private func imageLoad(){
-        guard let currentUser = Auth.auth().currentUser,
-              let imageURL = currentUser.photoURL,
-              let data = try? Data(contentsOf: imageURL) else { return }
-        userImageView.image = UIImage(data: data)
-                
+    private func setupLabelUnderline(){
+        guard let labelText = userNameLabel.text, let ageText = ageLabel.text else { return }
+        let attributedText = NSAttributedString(string: labelText, attributes: [NSAttributedString.Key.underlineStyle : NSUnderlineStyle.single.rawValue])
+        let attributedText2 = NSAttributedString(string: ageText, attributes: [NSAttributedString.Key.underlineStyle : NSUnderlineStyle.single.rawValue])
+        userNameLabel.attributedText = attributedText
+        ageLabel.attributedText = attributedText2
+        changeUserImageView.titleLabel?.attributedText = attributedText
     }
+    
+//    private func imageLoad(){
+//        guard let currentUser = Auth.auth().currentUser,
+//              let imageURL = currentUser.photoURL,
+//              let data = try? Data(contentsOf: imageURL) else { return }
+//        userImageView.image = UIImage(data: data)
+//    }
     
     private func loadingData(){
         let (name,mail,age,image) = CheckAuth.shared.loadData()
         userImageView.image = image
         mailLabel.text = mail
-        ageLabel.text = "User's age: \(age)"
+        ageLabel.text = "Age: \(age)"
         userNameLabel.text = name
     }
     
     private func setupNavigationController(){
         title = "My Profile"
-        navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
+        navigationController?.navigationBar.tintColor = UIColor(named: "textColor")
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "arrow.uturn.right.square"), style: .done, target: self, action: #selector(didTapLogout))
     }
     
     private func setupDelegates(){
-        let vc = UserAuthViewController()
-        vc.delegate = self
         imagePicker.delegate = self
-        
     }
     
     private func setupTapGestureForImage(){
@@ -246,7 +247,7 @@ class UserProfileViewController: UIViewController {
     }
     
     private func setTapGestureForLabel(){
-        let tap = UITapGestureRecognizer(target: self, action: #selector(didTapTapOnLabel))
+        let tap = UITapGestureRecognizer(target: self, action: #selector(didTapOnName))
         userNameLabel.isUserInteractionEnabled = true
         userNameLabel.addGestureRecognizer(tap)
     }
@@ -259,19 +260,6 @@ class UserProfileViewController: UIViewController {
     
     private func setupTargets(){
         changeUserImageView.addTarget(self, action: #selector(didTapImagePicker), for: .touchUpInside)
-    }
-}
-
-extension UserProfileViewController: UserAuthProtocol {
-    func userData(result: AuthDataResult) {
-        CheckAuth.shared.saveData(result: result)
-        guard let imageURL = result.user.photoURL else { alertError(text: "Error getting user's image", mainTitle: "Warning!");return}
-        downloadImage(url: imageURL) { [weak self] data in
-            let image = UIImage(data: data)
-            self?.userImageView.image = image
-        }
-        self.userNameLabel.text = result.user.displayName ?? "Unavaliable name"
-        self.mailLabel.text = result.user.email ?? ""
     }
 }
 

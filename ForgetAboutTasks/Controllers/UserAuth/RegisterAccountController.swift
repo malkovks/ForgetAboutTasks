@@ -8,20 +8,25 @@
 import UIKit
 import SnapKit
 import FirebaseAuth
-import FirebaseDatabase
+//import FirebaseDatabase
 
 
 class RegisterAccountViewController: UIViewController {
     
     private var isPasswordHidden: Bool = true
     
+    private let indicator = UIActivityIndicatorView()
+    
     //MARK: - UI views
     private let emailField: UITextField = {
        let field = UITextField()
         field.placeholder = " example@email.com"
         field.layer.borderWidth = 1
+        field.textContentType = .emailAddress
+        field.textColor = UIColor(named: "textColor")
         field.layer.cornerRadius = 12
-        field.layer.borderColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
+        field.keyboardType = .emailAddress
+        field.layer.borderColor = UIColor(named: "navigationControllerColor")?.cgColor
         field.clearButtonMode = .whileEditing
         field.autocapitalizationType = .none
         return field
@@ -31,42 +36,48 @@ class RegisterAccountViewController: UIViewController {
        let field = UITextField()
         field.placeholder = " Enter the password.."
         field.isSecureTextEntry = true
+        field.textColor = UIColor(named: "textColor")
         field.layer.borderWidth = 1
+        field.textContentType = .newPassword
         field.autocapitalizationType = .none
         field.passwordRules = UITextInputPasswordRules(descriptor: "No matter how and what")
         field.layer.cornerRadius = 12
-        field.layer.borderColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
+        field.layer.borderColor = UIColor(named: "navigationControllerColor")?.cgColor
         return field
     }()
     
     private let secondPasswordField: UITextField = {
        let field = UITextField()
         field.placeholder = " Repeat password.."
+        field.textColor = UIColor(named: "textColor")
         field.isSecureTextEntry = true
         field.layer.borderWidth = 1
+        field.textContentType = .newPassword
         field.autocapitalizationType = .none
         field.passwordRules = UITextInputPasswordRules(descriptor: "No matter how and what")
         field.layer.cornerRadius = 12
-        field.layer.borderColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
+        field.layer.borderColor = UIColor(named: "navigationControllerColor")?.cgColor
         return field
     }()
     
     private let userNameField: UITextField = {
        let field = UITextField()
         field.placeholder = " Enter your name"
+        field.textColor = UIColor(named: "textColor")
         field.isSecureTextEntry = false
         field.layer.borderWidth = 1
+        field.textContentType = .name
         field.autocapitalizationType = .words
         field.layer.cornerRadius = 12
-        field.layer.borderColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
+        field.layer.borderColor = UIColor(named: "navigationControllerColor")?.cgColor
         return field
     }()
     
     private let isPasswordHiddenButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(UIImage(systemName: "eye.fill"), for: .normal)
-        button.tintColor = .black
-        button.backgroundColor = .secondarySystemBackground
+        button.tintColor = UIColor(named: "navigationControllerColor")
+        button.backgroundColor = UIColor(named: "launchBackgroundColor")
         button.layer.cornerRadius = 8
         return button
     }()
@@ -74,12 +85,14 @@ class RegisterAccountViewController: UIViewController {
     private let configureUserButton: UIButton = {
         let button = UIButton()
         button.configuration = .tinted()
-        button.configuration?.title = "Create.."
-        button.configuration?.image = UIImage(systemName: "plus.circle.fill")?.withTintColor(.secondarySystemBackground,renderingMode: .alwaysOriginal)
+        button.configuration?.title = "Create"
+        button.configuration?.image = UIImage(systemName: "plus.circle.fill")?.withTintColor(UIColor(named: "launchBackgroundColor")!,renderingMode: .alwaysOriginal)
         button.configuration?.imagePadding = 8
+        button.configuration?.imagePlacement = .trailing
         button.layer.cornerRadius = 8
-        button.backgroundColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
-        button.tintColor = .systemBackground
+        button.configuration?.baseForegroundColor = UIColor(named: "textColor")
+        button.configuration?.baseBackgroundColor = UIColor(named: "loginColor")
+        button.tintColor = UIColor(named: "textColor")
         return button
     }()
     
@@ -88,10 +101,6 @@ class RegisterAccountViewController: UIViewController {
         setupView()
     }
     //MARK: - Targets
-    @objc private func didTapBack(){
-        self.dismiss(animated: true)
-    }
-    
     @objc private func didTapChangeVisible(){
         if isPasswordHidden {
             passwordField.isSecureTextEntry = false
@@ -106,36 +115,37 @@ class RegisterAccountViewController: UIViewController {
     }
     //Добавить функцию создания имени фамилии и базовых данных и привязки данных к аккаунту
     @objc private func didTapCreateNewAccount(){
+        indicator.startAnimating()
         guard let mailField = emailField.text, !mailField.isEmpty,
               let firstPassword = passwordField.text, !firstPassword.isEmpty,
               let secondPassword = secondPasswordField.text, !secondPassword.isEmpty,
               let userName = userNameField.text, !userName.isEmpty else {
-            setupAlert(title: "Error!", subtitle: "Some of the text fields is empty.\nEnter value in all fields")
+            alertError(text: "Enter text in all fields")
             return
         }
         if firstPassword.elementsEqual(secondPassword) {
-            print("Equal and creating new account")
             if secondPassword.count >= 8 {
-                FirebaseAuth.Auth.auth().createUser(withEmail: mailField, password: secondPassword) { result, error in
-                    guard error == nil, let result = result else { self.setupAlert(); return } 
-                    let ref = Database.database().reference().child("users")
-                    ref.child(result.user.uid).updateChildValues(["name" : userName,"email": mailField]) { error, _ in
-                        if error != nil {
-                            print("Error saving data")
-                        }
-                    }
+                FirebaseAuth.Auth.auth().createUser(withEmail: mailField, password: secondPassword) { [weak self] _, error in
+                    guard error == nil else { self?.alertError(text: "This account has already been created", mainTitle: "Error!"); return }
                     UserDefaults.standard.setValue(userName, forKey: "userName")
                     UserDefaults.standard.setValue(mailField, forKey: "userMail")
-                    self.view.window?.rootViewController?.dismiss(animated: true)
+                    self?.view.window?.rootViewController?.dismiss(animated: true)
                     CheckAuth.shared.setupForAuth()
-                    
+                    self?.indicator.stopAnimating()
+                    do {
+                        try! KeychainManager.save(service: "Firebase Auth", account: mailField, password: firstPassword.data(using: .utf8) ?? Data())
+                    } catch {
+                        self?.alertError(text: "Error saving in Keychain", mainTitle: "Error!")
+                    }
                 }
             } else {
-                setupAlert(title: "Alert!", subtitle: "Password must contains at least 8 letters.\nChange size of your password!")
+                alertError(text: "Password must contains at least 8 symbols", mainTitle: "Warning")
+                self.indicator.stopAnimating()
             }
             
         } else {
-            setupAlert(title: "Error!", subtitle: "Password is not equal.\nTry again!")
+            alertError(text: "Passwords in both field aren't equal", mainTitle: "Warning")
+            self.indicator.stopAnimating()
         }
     }
     //MARK: - Set up methods
@@ -143,26 +153,20 @@ class RegisterAccountViewController: UIViewController {
         setupConstraints()
         setupNavigationController()
         setupTargets()
-        view.backgroundColor = .secondarySystemBackground
+        view.backgroundColor = UIColor(named: "launchBackgroundColor")
         emailField.becomeFirstResponder()
     }
     
     private func setupNavigationController(){
         title = "Create New Account"
-        navigationController?.navigationBar.tintColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
+        navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
         navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "return"), landscapeImagePhone: nil, style: .done, target: self, action: #selector(didTapBack))
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .done, target: nil, action: nil)
     }
     
     private func setupTargets(){
         isPasswordHiddenButton.addTarget(self, action: #selector(didTapChangeVisible), for: .touchUpInside)
         configureUserButton.addTarget(self, action: #selector(didTapCreateNewAccount), for: .touchUpInside)
-    }
-    
-    private func setupAlert(title: String = "Error",subtitle: String = "Something goes wrong!"){
-        let alert = UIAlertController(title: title, message: subtitle, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .cancel))
-        present(alert, animated: true)
     }
     
 }

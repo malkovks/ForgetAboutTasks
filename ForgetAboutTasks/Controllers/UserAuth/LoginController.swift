@@ -7,6 +7,7 @@
 import UIKit
 import SnapKit
 import FirebaseAuth
+import Security
 
 
 class LogInViewController: UIViewController {
@@ -18,8 +19,9 @@ class LogInViewController: UIViewController {
        let field = UITextField()
         field.placeholder = " example@email.com"
         field.layer.borderWidth = 1
+        field.textContentType = .emailAddress
         field.layer.cornerRadius = 12
-        field.layer.borderColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
+        field.layer.borderColor = UIColor(named: "navigationControllerColor")?.cgColor
         field.clearButtonMode = .whileEditing
         field.autocapitalizationType = .none
         return field
@@ -29,11 +31,12 @@ class LogInViewController: UIViewController {
        let field = UITextField()
         field.placeholder = " Enter the password.."
         field.isSecureTextEntry = true
+        field.textContentType = .password
         field.layer.borderWidth = 1
         field.autocapitalizationType = .none
         field.passwordRules = UITextInputPasswordRules(descriptor: "No matter how and what")
         field.layer.cornerRadius = 12
-        field.layer.borderColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
+        field.layer.borderColor = UIColor(named: "navigationControllerColor")?.cgColor
         return field
     }()
     
@@ -41,7 +44,7 @@ class LogInViewController: UIViewController {
         let button = UIButton(type: .system)
         button.setImage(UIImage(systemName: "eye.fill"), for: .normal)
         button.tintColor = .black
-        button.backgroundColor = .secondarySystemBackground
+        button.backgroundColor = UIColor(named: "launchBackgroundColor")
         button.layer.cornerRadius = 8
         return button
     }()
@@ -50,22 +53,28 @@ class LogInViewController: UIViewController {
         let button = UIButton()
         button.configuration = .tinted()
         button.configuration?.title = "Continue"
-        button.configuration?.image = UIImage(systemName: "arrowshape.right.fill")?.withTintColor(.secondarySystemBackground,renderingMode: .alwaysOriginal)
-        button.configuration?.imagePadding = 8
         button.layer.cornerRadius = 8
-        button.backgroundColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
-        button.tintColor = .systemBackground
+        button.configuration?.baseBackgroundColor = UIColor(named: "textColor")
+        button.tintColor = UIColor(named: "textColor")
         return button
     }()
+    
+    private let resetPasswordButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.configuration = .tinted()
+        button.configuration?.title = "Forget password"
+        button.configuration?.baseBackgroundColor = .clear
+        button.configuration?.baseForegroundColor = UIColor(named: "textColor")
+        return button
+    }()
+    
+    private let indicatorView = UIActivityIndicatorView(style: .medium)
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
     }
     //MARK: - Targets
-    @objc private func didTapBack(){
-        self.dismiss(animated: true)
-    }
     
     @objc private func didTapChangeVisible(){
         if isPasswordHidden {
@@ -79,9 +88,13 @@ class LogInViewController: UIViewController {
     }
     //при входе в аккаунт выгружать также имя фамилию и прочее
     @objc private func didTapContinue(){
-        guard let email = emailField.text, !email.isEmpty,
-              let password = passwordField.text, !password.isEmpty else {
-            setupAlert(title: "Error Log In!", subtitle: "Enter email and password.\nIf You forget your personal data, try again later.")
+        indicatorView.startAnimating()
+        guard let password = passwordField.text, !password.isEmpty else {
+            alertError(text: "Enter email and password.\nIf You forget your personal data, try again later.", mainTitle: "Error login")
+            return
+        }
+        guard let email = emailField.text, !email.isEmpty else {
+            alertError(text: "Enter email and password.\nIf You forget your personal data, try again later.", mainTitle: "Error login")
             return
         }
         
@@ -89,42 +102,51 @@ class LogInViewController: UIViewController {
         FirebaseAuth.Auth.auth().signIn(withEmail: email, password: password) { [weak self] result, error in
             
             guard error == nil else {
-                self?.setupAlert(subtitle: "Account wasn't Found!\nPlease, try again!")
+                self?.alertError(text: "Incorrect email or password.\nTry again!", mainTitle: "Error!")
                 return
             }
             self?.view.window?.rootViewController?.dismiss(animated: true)
             self?.setupLoadingSpinner()
             UserDefaults.standard.setValue(email, forKey: "userMail")
             CheckAuth.shared.setupForAuth()
-            
-            
+            self?.getPassword(email)
+            self?.indicatorView.stopAnimating()
         }
+    }
+    
+    @objc private func didTapResetPassword(){
+        let vc = ResetPasswordViewController()
+        show(vc, sender: nil)
     }
     //MARK: - Set up methods
     private func setupView(){
         setupConstraints()
         setupNavigationController()
         setupTargets()
-        view.backgroundColor = .secondarySystemBackground
+        view.backgroundColor = UIColor(named: "launchBackgroundColor")
         emailField.becomeFirstResponder()
+        
     }
     
-    private func setupAlert(title: String = "Error!",subtitle: String ){
-        let alert = UIAlertController(title: title, message: subtitle, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .cancel))
-        present(alert,animated: true)
+    private func getPassword(_ email: String){
+        guard let data = KeychainManager.get(service: "Firebase Auth", account: email) else { alertError(text: "Failed to read password", mainTitle: "Error");return }
+        let password = String(decoding: data, as: UTF8.self)
+        
+        print("Password is \(password)")
+        
     }
     
     private func setupNavigationController(){
         title = "Log In"
-        navigationController?.navigationBar.tintColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
+        navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
         navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "return"), landscapeImagePhone: nil, style: .done, target: self, action: #selector(didTapBack))
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: .done, target: nil, action: nil)
     }
     
     private func setupTargets(){
         isPasswordHiddenButton.addTarget(self, action: #selector(didTapChangeVisible), for: .touchUpInside)
         configureUserButton.addTarget(self, action: #selector(didTapContinue), for: .touchUpInside)
+        resetPasswordButton.addTarget(self, action: #selector(didTapResetPassword), for: .touchUpInside)
     }
     
     private func showRegisterAccount(){
@@ -137,6 +159,14 @@ class LogInViewController: UIViewController {
     }
     
 }
+//extension LogInViewController: UITextFieldDelegate {
+//    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+//        if let text = textField.text, !text.isEmpty {
+//
+//        }
+//    }
+//}
+
 //MARK: - Extensions
 extension LogInViewController {
     private func setupConstraints(){
@@ -158,9 +188,16 @@ extension LogInViewController {
         passwordField.rightView = isPasswordHiddenButton
         passwordField.rightViewMode = .whileEditing
         
+        view.addSubview(resetPasswordButton)
+        resetPasswordButton.snp.makeConstraints { make in
+            make.top.equalTo(passwordField.snp.bottom).offset(20)
+            make.leading.trailing.equalToSuperview().inset(80)
+            make.height.equalTo(30)
+        }
+        
         view.addSubview(configureUserButton)
         configureUserButton.snp.makeConstraints { make in
-            make.top.equalTo(passwordField.snp.bottom).offset(20)
+            make.top.equalTo(resetPasswordButton.snp.bottom).offset(20)
             make.leading.trailing.equalToSuperview().inset(60)
             make.height.equalTo(40)
         }

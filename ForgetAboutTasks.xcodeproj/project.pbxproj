@@ -47,7 +47,6 @@
 		0A9E1C3829CEEC4B000CC9A9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0A9E1C3729CEEC4B000CC9A9 /* GoogleService-Info.plist */; };
 		0A9E1C3A29CEEDCE000CC9A9 /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9E1C3929CEEDCE000CC9A9 /* LoginController.swift */; };
 		0A9E1C3C29D0778F000CC9A9 /* RegisterAccountController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9E1C3B29D0778F000CC9A9 /* RegisterAccountController.swift */; };
-		0A9E1C3F29D078BD000CC9A9 /* LogInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9E1C3E29D078BD000CC9A9 /* LogInView.swift */; };
 		0AA604DC29E03CB1007ACE58 /* AlertContacts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA604DB29E03CB1007ACE58 /* AlertContacts.swift */; };
 		0AA604DF29E04541007ACE58 /* AlertImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA604DE29E04541007ACE58 /* AlertImagePicker.swift */; };
 		0AA604E329E14673007ACE58 /* ScheduleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA604E229E14673007ACE58 /* ScheduleModel.swift */; };
@@ -68,6 +67,8 @@
 		0ACE797229DD95C600599C19 /* CreateTaskTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE797129DD95C600599C19 /* CreateTaskTableVC.swift */; };
 		0ACE797829DECF3300599C19 /* NewContactVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE797729DECF3300599C19 /* NewContactVC.swift */; };
 		0ACE797A29DED2D400599C19 /* NewContactCustomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE797929DED2D400599C19 /* NewContactCustomView.swift */; };
+		0AEAA9F32A264BBF00BE85A4 /* ResetPasswordController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEAA9F22A264BBF00BE85A4 /* ResetPasswordController.swift */; };
+		0AEAA9F62A26884A00BE85A4 /* KeyChainClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEAA9F52A26884A00BE85A4 /* KeyChainClass.swift */; };
 		0AF2D6EF2A1141360093A824 /* ScheduleSearchResultVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AF2D6EE2A1141360093A824 /* ScheduleSearchResultVC.swift */; };
 		0AF2D6F12A1364EC0093A824 /* AlertUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AF2D6F02A1364EC0093A824 /* AlertUser.swift */; };
 		0AF2D6F42A166C7B0093A824 /* Calendar+UIMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AF2D6F32A166C7B0093A824 /* Calendar+UIMenu.swift */; };
@@ -127,7 +128,6 @@
 		0A9E1C3729CEEC4B000CC9A9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		0A9E1C3929CEEDCE000CC9A9 /* LoginController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
 		0A9E1C3B29D0778F000CC9A9 /* RegisterAccountController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterAccountController.swift; sourceTree = "<group>"; };
-		0A9E1C3E29D078BD000CC9A9 /* LogInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInView.swift; sourceTree = "<group>"; };
 		0A9E1C4329D46851000CC9A9 /* ForgetAboutTasks.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ForgetAboutTasks.entitlements; sourceTree = "<group>"; };
 		0AA604DB29E03CB1007ACE58 /* AlertContacts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertContacts.swift; sourceTree = "<group>"; };
 		0AA604DE29E04541007ACE58 /* AlertImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertImagePicker.swift; sourceTree = "<group>"; };
@@ -149,6 +149,8 @@
 		0ACE797129DD95C600599C19 /* CreateTaskTableVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTaskTableVC.swift; sourceTree = "<group>"; };
 		0ACE797729DECF3300599C19 /* NewContactVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewContactVC.swift; sourceTree = "<group>"; };
 		0ACE797929DED2D400599C19 /* NewContactCustomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewContactCustomView.swift; sourceTree = "<group>"; };
+		0AEAA9F22A264BBF00BE85A4 /* ResetPasswordController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPasswordController.swift; sourceTree = "<group>"; };
+		0AEAA9F52A26884A00BE85A4 /* KeyChainClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyChainClass.swift; sourceTree = "<group>"; };
 		0AF2D6EE2A1141360093A824 /* ScheduleSearchResultVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleSearchResultVC.swift; sourceTree = "<group>"; };
 		0AF2D6F02A1364EC0093A824 /* AlertUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertUser.swift; sourceTree = "<group>"; };
 		0AF2D6F32A166C7B0093A824 /* Calendar+UIMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Calendar+UIMenu.swift"; sourceTree = "<group>"; };
@@ -230,6 +232,8 @@
 			children = (
 				0A9E1C4329D46851000CC9A9 /* ForgetAboutTasks.entitlements */,
 				0A8AC1A229B9D4D700EA052B /* Controllers */,
+				0AEAA9F42A2687D400BE85A4 /* KeyChain  */,
+				0A99A90929CD9C9700CC5A42 /* UserDefaults */,
 				0AA604E029E1460E007ACE58 /* Model */,
 				0AA604E429E14805007ACE58 /* Services */,
 				0AA604EA29E16DA1007ACE58 /* Protocols */,
@@ -283,10 +287,10 @@
 			children = (
 				0A8AC19E29B9D00A00EA052B /* TabBarViewController.swift */,
 				0A99A90529CD99B400CC5A42 /* UserAuth */,
+				0A99A90329CD98E600CC5A42 /* UserProfile */,
 				0A99A90029CD98C600CC5A42 /* Schedule */,
 				0A99A90129CD98CE00CC5A42 /* AllTasks */,
 				0A99A90229CD98DD00CC5A42 /* Contacts */,
-				0A99A90329CD98E600CC5A42 /* UserProfile */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -345,25 +349,17 @@
 				0A99A90629CD99CA00CC5A42 /* UserAuthController.swift */,
 				0A9E1C3929CEEDCE000CC9A9 /* LoginController.swift */,
 				0A9E1C3B29D0778F000CC9A9 /* RegisterAccountController.swift */,
-				0A9E1C3D29D078A0000CC9A9 /* LogInView */,
+				0AEAA9F22A264BBF00BE85A4 /* ResetPasswordController.swift */,
 			);
 			path = UserAuth;
 			sourceTree = "<group>";
 		};
-		0A99A90929CD9C9700CC5A42 /* CoreChecking */ = {
+		0A99A90929CD9C9700CC5A42 /* UserDefaults */ = {
 			isa = PBXGroup;
 			children = (
 				0A99A90A29CD9CB300CC5A42 /* CheckAuth.swift */,
 			);
-			path = CoreChecking;
-			sourceTree = "<group>";
-		};
-		0A9E1C3D29D078A0000CC9A9 /* LogInView */ = {
-			isa = PBXGroup;
-			children = (
-				0A9E1C3E29D078BD000CC9A9 /* LogInView.swift */,
-			);
-			path = LogInView;
+			path = UserDefaults;
 			sourceTree = "<group>";
 		};
 		0AA604DD29E04042007ACE58 /* NewContactView */ = {
@@ -378,7 +374,6 @@
 			isa = PBXGroup;
 			children = (
 				0AA604E129E1465F007ACE58 /* Realm */,
-				0A99A90929CD9C9700CC5A42 /* CoreChecking */,
 				0A8DD8D929BC8BD900B2DDAB /* DateFormatters */,
 			);
 			path = Model;
@@ -466,6 +461,14 @@
 				0AB0A96C2A1C41C00084AE07 /* SetupShareAction.swift */,
 			);
 			path = "UIAcitvityViewController+Extensions";
+			sourceTree = "<group>";
+		};
+		0AEAA9F42A2687D400BE85A4 /* KeyChain  */ = {
+			isa = PBXGroup;
+			children = (
+				0AEAA9F52A26884A00BE85A4 /* KeyChainClass.swift */,
+			);
+			path = "KeyChain ";
 			sourceTree = "<group>";
 		};
 		0AF2D6F22A166A720093A824 /* UIView+Extensions */ = {
@@ -646,7 +649,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0AA74A2629EC521800F01532 /* AllTasksRealmManager.swift in Sources */,
-				0A9E1C3F29D078BD000CC9A9 /* LogInView.swift in Sources */,
+				0AEAA9F62A26884A00BE85A4 /* KeyChainClass.swift in Sources */,
 				0ACE797829DECF3300599C19 /* NewContactVC.swift in Sources */,
 				0AB0A96D2A1C41C00084AE07 /* SetupShareAction.swift in Sources */,
 				0A525DAF29FC3C3B009D116F /* AlertNewName.swift in Sources */,
@@ -694,6 +697,7 @@
 				0AA604DC29E03CB1007ACE58 /* AlertContacts.swift in Sources */,
 				0AA74A2829EC524200F01532 /* AllTaskModel.swift in Sources */,
 				0A7FFFB829EFD9E100CAC9DA /* ContactModel.swift in Sources */,
+				0AEAA9F32A264BBF00BE85A4 /* ResetPasswordController.swift in Sources */,
 				0AA604E329E14673007ACE58 /* ScheduleModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
