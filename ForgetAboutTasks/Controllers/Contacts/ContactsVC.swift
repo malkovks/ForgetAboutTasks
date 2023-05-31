@@ -38,8 +38,12 @@ class ContactsViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        tableView.reloadData()
+        setupNavigationController()
+        UIView.transition(with: tableView, duration: 0.3,options: .transitionCrossDissolve) {
+            self.tableView.reloadData()
+        }
     }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,15 +53,11 @@ class ContactsViewController: UIViewController {
 
     //MARK: - Targets methods
     @objc private func didTapCreateNewContact(){
-        let vc = UINavigationController(rootViewController: NewContactViewController())
-        vc.isNavigationBarHidden = false
-        vc.modalPresentationStyle = .fullScreen
-        vc.modalTransitionStyle = .coverVertical
-        present(vc, animated: true)
+        let vc = NewContactViewController()
+        show(vc, sender: nil)
     }
     //MARK: - Setup methods
     private func setupView() {
-        setupNavigationController()
         setupConstraints()
         setupSearchController()
         loadingRealmData()
@@ -84,6 +84,7 @@ class ContactsViewController: UIViewController {
         navigationController?.navigationItem.largeTitleDisplayMode = .always
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .done, target: nil, action: nil)
         title = "Contacts"
     }
     //MARK: -Loading methods
@@ -93,27 +94,22 @@ class ContactsViewController: UIViewController {
         self.tableView.reloadData()
     }
     
-    private func openCurrentContact(model: ContactModel){
-        let vc = NewContactViewController()
-        vc.isViewEdited = false
-        vc.contactModel = model
-        let nav = UINavigationController(rootViewController: vc)
-        nav.isNavigationBarHidden = false
-        nav.modalPresentationStyle = .pageSheet
-        nav.title = model.contactName
-        nav.sheetPresentationController?.prefersGrabberVisible = true
-        present(nav, animated: true)
+    private func openCurrentContact(model: ContactModel,boolean: Bool){
+        let vc = EditContactViewController(contactModel: model,editing: boolean)
+        show(vc, sender: nil)
     }
     
     private func actionsWithContact(model: ContactModel){
         let alert = UIAlertController(title: nil, message: "What exactly do you want?", preferredStyle: .actionSheet)
         alert.addAction(UIAlertAction(title: "Contact Details", style: .default,handler: { [weak self] _ in
-            self?.openCurrentContact(model: model)
+            self?.openCurrentContact(model: model,boolean: false)
         }))
         alert.addAction(UIAlertAction(title: "Call to \(model.contactName)", style: .default,handler: { [weak self] _ in
             guard let url = URL(string: "tel://\(model.contactPhoneNumber)") else { self?.alertError();return}
             if UIApplication.shared.canOpenURL(url){
                 UIApplication.shared.open(url)
+            } else {
+                self?.alertError(text: "This function is not avaliable.\nTry again later", mainTitle: "Error!")
             }
         }))
         alert.addAction(UIAlertAction(title: "Write message", style: .default,handler: { [weak self] _ in
@@ -123,9 +119,9 @@ class ContactsViewController: UIViewController {
                 vc.recipients = ["\(model.contactPhoneNumber)"]
                 vc.messageComposeDelegate = self
                 
-                self?.present(vc, animated: true)
+                self?.show(vc, sender: nil)
             } else {
-                print("Error")
+                self?.alertError(text: "This function is not avaliable.\nTry again later", mainTitle: "Error!")
             }
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
@@ -176,30 +172,14 @@ extension ContactsViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let cell = tableView.cellForRow(at: indexPath)
         let cellData = contactData[indexPath.row]
-        let actionInstance = UIContextualAction(style: .normal, title: "") { _, _, completionHandler in
-            if cell?.textLabel?.textColor == .lightGray {
-                cell?.textLabel?.textColor = .black
-                cell?.detailTextLabel?.textColor = .black
-                cell?.imageView?.tintColor = .systemBlue
-            } else {
-                cell?.textLabel?.textColor = .lightGray
-                cell?.imageView?.tintColor = .lightGray
-                cell?.detailTextLabel?.textColor = .lightGray
-            }
+        let detailInstance = UIContextualAction(style: .normal, title: "") { [weak self] _, _, handler in
+            self?.openCurrentContact(model: cellData,boolean: false)
         }
-        let detailInstance = UIContextualAction(style: .normal, title: "") { [self] _, _, handler in
-            openCurrentContact(model: cellData)
-        }
-        detailInstance.backgroundColor = .systemGray
+        detailInstance.backgroundColor = .lightGray
         detailInstance.image = UIImage(systemName: "ellipsis")
         detailInstance.image?.withTintColor(.systemBackground)
-        
-        actionInstance.backgroundColor = .systemYellow
-        actionInstance.image = UIImage(systemName: "pencil.line")
-        actionInstance.image?.withTintColor(.systemBackground)
-        let action = UISwipeActionsConfiguration(actions: [actionInstance,detailInstance])
+        let action = UISwipeActionsConfiguration(actions: [detailInstance])
         return action
     }
     

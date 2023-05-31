@@ -7,29 +7,25 @@
 
 import UIKit
 import SnapKit
-import Combine
 import MessageUI
-
 
 class NewContactViewController: UIViewController {
     
     private let headerArray = ["Name","Phone","Mail","Type"]
-    
     private var cellsName = [["Name"],
                              ["Phone number"],
                              ["Mail"],
                              ["Type of contact"]]
-    
-    var contactModel = ContactModel()
-    
-    var isViewEdited: Bool = true
-    
+    private var contactModel = ContactModel()
+    //MARK: - UI elements
     private let tableView = UITableView()
     private let viewForTable = NewContactCustomView()
     
     private let labelForImageView: UILabel = {
         let label = UILabel()
         label.text = "Choose image"
+        let attributedText2 = NSAttributedString(string: label.text ?? "", attributes: [NSAttributedString.Key.underlineStyle : NSUnderlineStyle.single.rawValue])
+        label.attributedText = attributedText2
         label.textColor = .systemGray
         label.font = .systemFont(ofSize: 16, weight: .semibold)
         return label
@@ -46,7 +42,7 @@ class NewContactViewController: UIViewController {
         if !contactModel.contactName.isEmpty && !contactModel.contactPhoneNumber.isEmpty {
             ContactRealmManager.shared.saveContactModel(model: contactModel)
             contactModel = ContactModel()
-            self.dismiss(animated: true)
+            navigationController?.popViewController(animated: true)
             print("Contact was saved successfully")
         } else {
             alertError(text: "Enter value in Name and Phone sections", mainTitle: "Error saving!")
@@ -58,17 +54,11 @@ class NewContactViewController: UIViewController {
             self?.chooseImagePicker(source: sourceType)
         }
     }
-    
-    @objc private func didTapDismiss(){
-        self.dismiss(animated: true)
-    }
-    
     //MARK: - Setup methods
     private func setupView() {
         setupNavigationController()
         setupConstraints()
         customiseView()
-        setupSelection(boolean: isViewEdited)
         view.backgroundColor = UIColor(named: "backgroundColor")
         title = "New Contact"
     }
@@ -83,21 +73,8 @@ class NewContactViewController: UIViewController {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "tasksCell")
     }
     
-    private func setupSelection(boolean: Bool){
-        if !boolean {
-            labelForImageView.isHidden = false
-            viewForTable.isHidden = false
-            navigationItem.rightBarButtonItem?.isHidden = true
-        } else {
-            labelForImageView.isHidden = false
-            viewForTable.isHidden = false
-            navigationItem.rightBarButtonItem?.isHidden = false
-        }
-    }
-    
     private func setupNavigationController(){
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(didTapSave))
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Contacts", style: .done, target: self, action: #selector(didTapDismiss))
         navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
         navigationController?.navigationItem.largeTitleDisplayMode = .never
         navigationController?.navigationBar.prefersLargeTitles = false
@@ -109,25 +86,7 @@ class NewContactViewController: UIViewController {
         
         let gesture = UITapGestureRecognizer(target: self, action: #selector(didTapOpenPhoto))
         gesture.numberOfTapsRequired = 1
-        if isViewEdited {
-            viewForTable.addGestureRecognizer(gesture)
-        }
-    }
-    
-    private func setupComposeView(model: ContactModel){
-        if MFMailComposeViewController.canSendMail() {
-            let vc = MFMailComposeViewController()
-            vc.mailComposeDelegate = self
-            
-            vc.setToRecipients([model.contactMail])
-            vc.setSubject("Hello from Developers, \(model.contactName)")
-            vc.setMessageBody("Hello \(model.contactName)", isHTML: false)
-            
-            self.present(vc, animated: true)
-        } else {
-            alertError(text: "Error sending mail")
-        }
-        
+        viewForTable.addGestureRecognizer(gesture)
     }
 }
     //MARK: - Segue methods
@@ -151,80 +110,46 @@ extension NewContactViewController: UITableViewDelegate, UITableViewDataSource {
         let data = cellsName[indexPath.section][indexPath.row]
         cell.layer.cornerRadius = 10
         cell.backgroundColor = UIColor(named: "cellColor")
-        if !isViewEdited {
-            if let image = contactModel.contactImage {
-                viewForTable.contactImageView.image = UIImage(data: image)
-                viewForTable.contactImageView.layer.cornerRadius = 0.5 * viewForTable.contactImageView.bounds.size.width
-                viewForTable.contactImageView.contentMode = .scaleAspectFit
-                viewForTable.contactImageView.clipsToBounds = true
-                labelForImageView.isHidden = true
-            }
-            switch indexPath {
-            case [0,0]:
-                cell.textLabel?.text = contactModel.contactName
-            case [1,0]:
-                let phoneNumber = String.format(with: "+X (XXX) XXX-XXXX", phone: contactModel.contactPhoneNumber)
-                cell.textLabel?.text = phoneNumber
-            case [2,0]:
-                cell.textLabel?.text = contactModel.contactMail
-            case [3,0]:
-                cell.textLabel?.text = contactModel.contactType
-            default:
-                print("Error")
-            }
-        } else {
-            cell.textLabel?.text = data
-            labelForImageView.isHidden = false
-        }
+        cell.textLabel?.text = data
+        
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        let cell = tableView.cellForRow(at: indexPath)
         let cellName = cellsName[indexPath.section][indexPath.row]
-        if isViewEdited {
-            switch indexPath.section {
-            case 0:
-                alertTextField(cell: cellName, placeholder: "Enter name of contact", keyboard: .default, table: tableView) { [unowned self] text in
-                    self.cellsName[indexPath.section][indexPath.row] = text
-                    contactModel.contactName = text
-                }
-            case 1:
-                alertTextField(cell: cellName, placeholder: "Enter number of contact", keyboard: .numberPad, table: tableView) { [unowned self] text in
-                    self.cellsName[indexPath.section][indexPath.row] = text
-                    contactModel.contactPhoneNumber = text
-                }
-            case 2:
-                alertTextField(cell: cellName, placeholder: "Enter mail", keyboard: .emailAddress, table: tableView) { [weak self] text in
-                    if text.isEmailValid() {
-                        self?.cellsName[indexPath.section][indexPath.row] = text.lowercased()
-                        self?.contactModel.contactMail = text
-                    } else {
-                        self?.alertError(text: "Enter the @ domain and country domain", mainTitle: "Warning")
-                    }
-                }
-            case 3:
-                alertFriends(tableView: tableView) { [ weak self] text in
-                    self?.cellsName[indexPath.section][indexPath.row] = text
-                    self?.contactModel.contactType = text
-                }
-            default:
-                print("error")
+        switch indexPath.section {
+        case 0:
+            alertTextField(cell: cellName, placeholder: "Enter name of contact", keyboard: .default, table: tableView) { [unowned self] text in
+                self.cellsName[indexPath.section][indexPath.row] = text
+                cell?.textLabel?.text = text
+                contactModel.contactName = text
             }
-        } else {
-            switch indexPath.section {
-            case 1:
-                guard let url = URL(string: "tel://\(contactModel.contactPhoneNumber)") else { self.alertError();return}
-                if UIApplication.shared.canOpenURL(url){
-                    UIApplication.shared.open(url)
+        case 1:
+            alertTextField(cell: cellName, placeholder: "Enter number of contact", keyboard: .numberPad, table: tableView) { [unowned self] text in
+                self.cellsName[indexPath.section][indexPath.row] = text
+                cell?.textLabel?.text = text
+                contactModel.contactPhoneNumber = text
+            }
+        case 2:
+            alertTextField(cell: cellName, placeholder: "Enter mail", keyboard: .emailAddress, table: tableView) { [weak self] text in
+                if text.emailValidation(email: text) {
+                    self?.cellsName[indexPath.section][indexPath.row] = text.lowercased()
+                    self?.contactModel.contactMail = text
+                    cell?.textLabel?.text = text
                 } else {
-                    alertError(text: "", mainTitle: "Can't call to user!")
+                    self?.alertError(text: "Enter the @ domain and country domain", mainTitle: "Warning")
                 }
-            case 2:
-                setupComposeView(model: contactModel)
-            default:
-                print("Error")
             }
+        case 3:
+            alertFriends(tableView: tableView) { [ weak self] text in
+                self?.cellsName[indexPath.section][indexPath.row] = text
+                self?.contactModel.contactType = text
+                cell?.textLabel?.text = text
+            }
+        default:
+            print("error")
         }
         
     }
@@ -256,8 +181,7 @@ extension NewContactViewController: UIImagePickerControllerDelegate,UINavigation
         viewForTable.contactImageView.clipsToBounds = true
         viewForTable.contactImageView.layer.cornerRadius = viewForTable.contactImageView.frame.size.width/2
         let finalEditImage = viewForTable.contactImageView.image
-        guard let data = finalEditImage?.pngData() else { print("Error converting"); return }
-        print("Data was saved successfully")
+        guard let data = finalEditImage?.pngData() else { return }
         contactModel.contactImage = data
         dismiss(animated: true)
     }

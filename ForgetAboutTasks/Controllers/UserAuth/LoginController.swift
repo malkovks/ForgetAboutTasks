@@ -74,6 +74,11 @@ class LogInViewController: UIViewController {
         super.viewDidLoad()
         setupView()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setupConstraints()
+    }
     //MARK: - Targets
     
     @objc private func didTapChangeVisible(){
@@ -120,7 +125,7 @@ class LogInViewController: UIViewController {
     }
     //MARK: - Set up methods
     private func setupView(){
-        setupConstraints()
+        
         setupNavigationController()
         setupTargets()
         view.backgroundColor = UIColor(named: "launchBackgroundColor")

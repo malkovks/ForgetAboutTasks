@@ -69,6 +69,7 @@
 		0ACE797A29DED2D400599C19 /* NewContactCustomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE797929DED2D400599C19 /* NewContactCustomView.swift */; };
 		0AEAA9F32A264BBF00BE85A4 /* ResetPasswordController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEAA9F22A264BBF00BE85A4 /* ResetPasswordController.swift */; };
 		0AEAA9F62A26884A00BE85A4 /* KeyChainClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEAA9F52A26884A00BE85A4 /* KeyChainClass.swift */; };
+		0AEAA9F82A272BB600BE85A4 /* EditContactVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEAA9F72A272BB600BE85A4 /* EditContactVC.swift */; };
 		0AF2D6EF2A1141360093A824 /* ScheduleSearchResultVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AF2D6EE2A1141360093A824 /* ScheduleSearchResultVC.swift */; };
 		0AF2D6F12A1364EC0093A824 /* AlertUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AF2D6F02A1364EC0093A824 /* AlertUser.swift */; };
 		0AF2D6F42A166C7B0093A824 /* Calendar+UIMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AF2D6F32A166C7B0093A824 /* Calendar+UIMenu.swift */; };
@@ -151,6 +152,7 @@
 		0ACE797929DED2D400599C19 /* NewContactCustomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewContactCustomView.swift; sourceTree = "<group>"; };
 		0AEAA9F22A264BBF00BE85A4 /* ResetPasswordController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPasswordController.swift; sourceTree = "<group>"; };
 		0AEAA9F52A26884A00BE85A4 /* KeyChainClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyChainClass.swift; sourceTree = "<group>"; };
+		0AEAA9F72A272BB600BE85A4 /* EditContactVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditContactVC.swift; sourceTree = "<group>"; };
 		0AF2D6EE2A1141360093A824 /* ScheduleSearchResultVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleSearchResultVC.swift; sourceTree = "<group>"; };
 		0AF2D6F02A1364EC0093A824 /* AlertUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertUser.swift; sourceTree = "<group>"; };
 		0AF2D6F32A166C7B0093A824 /* Calendar+UIMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Calendar+UIMenu.swift"; sourceTree = "<group>"; };
@@ -330,6 +332,7 @@
 			children = (
 				0A8AC1A529B9D4FA00EA052B /* ContactsVC.swift */,
 				0ACE797729DECF3300599C19 /* NewContactVC.swift */,
+				0AEAA9F72A272BB600BE85A4 /* EditContactVC.swift */,
 				0AA604DD29E04042007ACE58 /* NewContactView */,
 			);
 			path = Contacts;
@@ -681,6 +684,7 @@
 				0A7FFFC029F1BA1800CAC9DA /* DownloadImage.swift in Sources */,
 				0A7FFFBD29F1326A00CAC9DA /* String+Extension.swift in Sources */,
 				0ACE796B29D9EEAA00599C19 /* AlertSpinner.swift in Sources */,
+				0AEAA9F82A272BB600BE85A4 /* EditContactVC.swift in Sources */,
 				0A99A90729CD99CA00CC5A42 /* UserAuthController.swift in Sources */,
 				0A2717BA2A01F7FE00EFBC11 /* AllTasksDetailVC.swift in Sources */,
 				0ACE797229DD95C600599C19 /* CreateTaskTableVC.swift in Sources */,
