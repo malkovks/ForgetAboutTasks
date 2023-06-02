@@ -296,8 +296,8 @@ extension EditEventScheduleViewController: UITableViewDelegate, UITableViewDataS
                     isStartEditing = true
                 }
             case [2,2]:
-                alertTextField(cell: "Enter URL name with domain", placeholder: "Enter URL", keyboard: .emailAddress,table: tableView) { [self] text in
-                    if (text.contains("www.") || text.contains("http://")) && text.contains(".") {
+                alertTextField(cell: "Enter URL name with domain", placeholder: "Enter URL", keyboard: .URL,table: tableView) { [self] text in
+                    if text.isURLValid(text: text) {
                         cellsName[indexPath.section][indexPath.row] = text
                         editedScheduleModel.scheduleCategoryURL = text
                         isStartEditing = true

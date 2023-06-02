@@ -19,6 +19,7 @@ class AllTasksRealmManager {
     func saveAllTasksModel(model: AllTaskModel){
         try! localRealm.write {
             localRealm.add(model)
+            
         }
     }
     

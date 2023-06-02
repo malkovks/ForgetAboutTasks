@@ -54,7 +54,7 @@ class AllTasksDetailViewController: UIViewController {
     
     @objc private func didTapEdit(){
         let color = UIColor.color(withData: tasksModel.allTaskColor!) ?? #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
-        let vc = EditTaskTableViewController(color: color, model: tasksModel)
+        guard let vc = EditTaskTableViewController(color: color, model: tasksModel) else { return }
         let navVC = UINavigationController(rootViewController: vc)
         navVC.modalPresentationStyle = .formSheet
         navVC.sheetPresentationController?.detents = [.large()]

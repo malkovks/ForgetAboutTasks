@@ -13,9 +13,10 @@ import RealmSwift
 
 class EditTaskTableViewController: UIViewController {
     
-    let headerArray = ["Name","Date","Time","Notes","URL","Color accent"]
+    weak var delegate: CheckSuccessSaveProtocol?
     
-    var cellsName = [["Name of event"],
+    private let headerArray = ["Name","Date","Time","Notes","URL","Color accent"]
+    private var cellsName = [["Name of event"],
                      ["Date"],
                      ["Time"],
                      ["Notes"],
@@ -27,11 +28,12 @@ class EditTaskTableViewController: UIViewController {
     private var tasksModel: AllTaskModel
     private var editedTaskModel = AllTaskModel()
     
-    init(color: UIColor,model: AllTaskModel){
+    init?(color: UIColor,model: AllTaskModel){
         self.cellBackgroundColor = color
         self.tasksModel = model
         super.init(nibName: nil, bundle: nil)
     }
+    
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -68,10 +70,8 @@ class EditTaskTableViewController: UIViewController {
             editedTaskModel.allTaskColor = cellBackgroundColor.encode()
             let date = tasksModel.allTaskDate ?? Date()
             AllTasksRealmManager.shared.editAllTasksModel(oldModelDate: date, newModel: editedTaskModel)
-            showAlertForUser(text: "Event edited successfully", duration: DispatchTime.now()+2, controllerView: view)
-            DispatchQueue.main.asyncAfter(deadline: .now()+2) {
-                self.view.window?.rootViewController?.dismiss(animated: true)
-            }
+            delegate?.isSavedCompletely(boolean: true)
+            dismiss(animated: true)
         }
     }
     //MARK: - Setup methods
@@ -165,11 +165,13 @@ extension EditTaskTableViewController: UITableViewDelegate, UITableViewDataSourc
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let cellName = cellsName[indexPath.section][indexPath.row]
+        let cell = tableView.cellForRow(at: indexPath)
     
         switch indexPath {
         case [0,0]:
             alertTextField(cell: cellName, placeholder: "Enter title of event", keyboard: .default, table: tableView) { [self] text in
                 cellsName[indexPath.section][indexPath.row] = text
+                cell?.textLabel?.text = text
                 editedTaskModel.allTaskNameEvent = text
                 navigationButton.isEnabled = true
                 isStartEditing = true
@@ -177,6 +179,7 @@ extension EditTaskTableViewController: UITableViewDelegate, UITableViewDataSourc
         case [1,0]:
             alertDate(table: tableView, choosenDate: nil) { [self] _ , date, dateString in
                 cellsName[indexPath.section][indexPath.row] = dateString
+                cell?.textLabel?.text = dateString
                 editedTaskModel.allTaskDate = date
                 navigationButton.isEnabled = true
                 isStartEditing = true
@@ -185,6 +188,7 @@ extension EditTaskTableViewController: UITableViewDelegate, UITableViewDataSourc
             alertTime(table: tableView, choosenDate: Date()) {  [self] date, timeString in
                 cellsName[indexPath.section][indexPath.row] = timeString
                 editedTaskModel.allTaskTime = date
+                cell?.textLabel?.text = timeString
                 navigationButton.isEnabled = true
                 isStartEditing = true
             }
@@ -192,6 +196,7 @@ extension EditTaskTableViewController: UITableViewDelegate, UITableViewDataSourc
             alertTextField(cell: cellName, placeholder: "Enter notes value", keyboard: .default, table:tableView) { [self] text in
                 cellsName[indexPath.section][indexPath.row] = text
                 editedTaskModel.allTaskNotes = text
+                cell?.textLabel?.text = text
                 navigationButton.isEnabled = true
                 isStartEditing = true
             }
@@ -200,6 +205,7 @@ extension EditTaskTableViewController: UITableViewDelegate, UITableViewDataSourc
                 if text.isURLValid(text: text){
                     cellsName[indexPath.section][indexPath.row] = text
                     editedTaskModel.allTaskURL = text
+                    cell?.textLabel?.text = text
                     navigationButton.isEnabled = true
                     isStartEditing = true
                 } else {
@@ -232,9 +238,12 @@ extension EditTaskTableViewController: UITableViewDelegate, UITableViewDataSourc
 //MARK: - Color picker delegate and constraint func
 extension EditTaskTableViewController: UIColorPickerViewControllerDelegate {
     func colorPickerViewController(_ viewController: UIColorPickerViewController, didSelect color: UIColor, continuously: Bool) {
+        let cell = tableView.cellForRow(at: [5,0])
+        cell?.backgroundColor = color
         cellBackgroundColor = color
         let encodeColor = color.encode()
         editedTaskModel.allTaskColor = encodeColor
+        
         tableView.reloadData()
     }
 }

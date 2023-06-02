@@ -49,8 +49,6 @@ extension UIViewController {
     
     
     func alertTimeInline(table: UITableView, choosenDate: Date, completionHandler: @escaping (Date,String,Int) -> Void) {
-        let calendar = Calendar.current
-        let currentDay = calendar.date(byAdding: .day, value: 1, to: choosenDate)
         let alert = UIAlertController(title: "", message: nil, preferredStyle: .actionSheet)
         let datePicker = UIDatePicker()
         datePicker.locale = .current

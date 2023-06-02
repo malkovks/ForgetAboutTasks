@@ -5,6 +5,7 @@
 //  Created by Константин Малков on 19.04.2023.
 //
 
+import Foundation
 import RealmSwift
 
 class ContactRealmManager {
@@ -29,8 +30,11 @@ class ContactRealmManager {
         }
     }
     
-    func editAllTasksModel(filter phoneNumber: String,newModel:ContactModel?){
-        let model = localRealm.objects(ContactModel.self).filter("contactPhoneNumber == %@",phoneNumber).first!
+    func editAllTasksModel(filter phoneNumber: String,secondFilter contactName: String,newModel:ContactModel?){
+        let predicate = NSPredicate(format: "contactName == %@", contactName)
+        let secondPredicate = NSPredicate(format: "contactPhoneNumber == %@", phoneNumber)
+        let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate,secondPredicate])
+        let model = localRealm.objects(ContactModel.self).filter(compoundPredicate).first!
         try! localRealm.write {
             model.contactImage = newModel?.contactImage ?? model.contactImage
             model.contactMail = newModel?.contactMail ?? model.contactMail

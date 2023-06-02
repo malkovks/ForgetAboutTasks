@@ -81,7 +81,7 @@ class NewContactViewController: UIViewController {
     }
     
     private func customiseView(){
-        viewForTable.backgroundColor = .clear
+        viewForTable.backgroundColor = .red
         viewForTable.viewForImage.backgroundColor = .clear
         
         let gesture = UITapGestureRecognizer(target: self, action: #selector(didTapOpenPhoto))

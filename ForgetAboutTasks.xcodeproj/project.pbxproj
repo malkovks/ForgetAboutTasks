@@ -39,6 +39,7 @@
 		0A8AC1A429B9D4EB00EA052B /* CreateTaskForDayVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8AC1A329B9D4EB00EA052B /* CreateTaskForDayVC.swift */; };
 		0A8AC1A629B9D4FA00EA052B /* ContactsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8AC1A529B9D4FA00EA052B /* ContactsVC.swift */; };
 		0A8AC1A829B9DBD300EA052B /* UserProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8AC1A729B9DBD300EA052B /* UserProfileVC.swift */; };
+		0A8D250A2A29CED300022622 /* CheckSuccessSaveProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8D25092A29CED300022622 /* CheckSuccessSaveProtocol.swift */; };
 		0A8DD8DB29BC8BEB00B2DDAB /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8DD8DA29BC8BEB00B2DDAB /* Formatters.swift */; };
 		0A99A8FD29CD855100CC5A42 /* AlertTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A99A8FC29CD855100CC5A42 /* AlertTextField.swift */; };
 		0A99A8FF29CD8FE000CC5A42 /* AllTasksToDoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A99A8FE29CD8FE000CC5A42 /* AllTasksToDoVC.swift */; };
@@ -121,6 +122,7 @@
 		0A8AC1A329B9D4EB00EA052B /* CreateTaskForDayVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTaskForDayVC.swift; sourceTree = "<group>"; };
 		0A8AC1A529B9D4FA00EA052B /* ContactsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsVC.swift; sourceTree = "<group>"; };
 		0A8AC1A729B9DBD300EA052B /* UserProfileVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileVC.swift; sourceTree = "<group>"; };
+		0A8D25092A29CED300022622 /* CheckSuccessSaveProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckSuccessSaveProtocol.swift; sourceTree = "<group>"; };
 		0A8DD8DA29BC8BEB00B2DDAB /* Formatters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Formatters.swift; sourceTree = "<group>"; };
 		0A99A8FC29CD855100CC5A42 /* AlertTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertTextField.swift; sourceTree = "<group>"; };
 		0A99A8FE29CD8FE000CC5A42 /* AllTasksToDoVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllTasksToDoVC.swift; sourceTree = "<group>"; };
@@ -415,6 +417,7 @@
 			isa = PBXGroup;
 			children = (
 				0AA604EB29E16DC1007ACE58 /* PressButtonProtocols.swift */,
+				0A8D25092A29CED300022622 /* CheckSuccessSaveProtocol.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -699,6 +702,7 @@
 				0A86ED1229B5D97F001C9BAF /* SceneDelegate.swift in Sources */,
 				0AB0A96F2A1C61D30084AE07 /* EditTaskTableVC.swift in Sources */,
 				0AA604DC29E03CB1007ACE58 /* AlertContacts.swift in Sources */,
+				0A8D250A2A29CED300022622 /* CheckSuccessSaveProtocol.swift in Sources */,
 				0AA74A2829EC524200F01532 /* AllTaskModel.swift in Sources */,
 				0A7FFFB829EFD9E100CAC9DA /* ContactModel.swift in Sources */,
 				0AEAA9F32A264BBF00BE85A4 /* ResetPasswordController.swift in Sources */,

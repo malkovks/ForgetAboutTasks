@@ -104,7 +104,7 @@ class CreateEventScheduleViewController: UIViewController {
 
     @objc private func didTapChangeCell(_ tag: AnyObject) {
         let button = tag as! UIButton
-        let indexPath = IndexPath(row: button.tag, section: 4)
+        let _ = IndexPath(row: button.tag, section: 4)
         let alert = UIAlertController(title: "", message: "What exactly do you want to do?", preferredStyle: .actionSheet)
         alert.addAction(UIAlertAction(title: "Set new image", style: .default,handler: { [self] _ in
             if UIImagePickerController.isSourceTypeAvailable(.photoLibrary){
@@ -238,7 +238,7 @@ extension CreateEventScheduleViewController: UIImagePickerControllerDelegate, UI
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let image = info[.editedImage] as? UIImage{
             guard let data = image.jpegData(compressionQuality: 1.0) else { return}
-            let encode = try! PropertyListEncoder().encode(data)
+            let _ = try! PropertyListEncoder().encode(data)
             cellImageView?.image = image
             guard let index = tableView.indexPathForSelectedRow,
                   let cell = tableView.cellForRow(at: index) else { alertError();return }
@@ -352,8 +352,8 @@ extension CreateEventScheduleViewController: UITableViewDelegate, UITableViewDat
                 isStartEditing = true
             }
         case [2,2]:
-            alertTextField(cell: "Enter URL name with domain", placeholder: "Enter URL", keyboard: .emailAddress,table: tableView) { [self] text in
-                if (text.contains("www.") || text.contains("https://")) && text.contains(".") {
+            alertTextField(cell: "Enter URL name with domain", placeholder: "Enter URL", keyboard: .URL,table: tableView) { [self] text in
+                if text.isURLValid(text: text) {
                     cell?.textLabel?.text = text
                     scheduleModel.scheduleCategoryURL = text
                     isStartEditing = true

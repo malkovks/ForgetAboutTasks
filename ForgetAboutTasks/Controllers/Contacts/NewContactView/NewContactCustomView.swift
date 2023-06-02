@@ -12,8 +12,6 @@ class NewContactCustomView: UIView {
     
     let viewForImage: UIView = {
        let view = UIView()
-        view.backgroundColor = .clear
-        view.layer.cornerRadius =  view.frame.size.width/2
         return view
     }()
     
@@ -23,7 +21,6 @@ class NewContactCustomView: UIView {
         image.clipsToBounds = true
         image.image = UIImage(systemName: "person.crop.circle.badge.plus")?.withRenderingMode(.alwaysTemplate)
         image.tintColor = UIColor(named: "navigationControllerColor")
-        image.layer.cornerRadius = image.frame.size.width/2
         return image
     }()
     

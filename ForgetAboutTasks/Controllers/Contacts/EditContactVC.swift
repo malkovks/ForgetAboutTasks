@@ -53,15 +53,16 @@ class EditContactViewController: UIViewController {
     
     //MARK: - Targets methods
     @objc private func didTapSave(){
-        if let name = editedContactModel?.contactName,
-           let phoneNumber = editedContactModel?.contactPhoneNumber,
-            name.isEmpty && phoneNumber.isEmpty {
-                let filterNumber = contactModel.contactPhoneNumber
-                ContactRealmManager.shared.editAllTasksModel(filter: filterNumber, newModel: editedContactModel ?? contactModel)
+//        if let name = editedContactModel?.contactName,
+//           !name.isEmpty {
+        let filterNumber = contactModel.contactPhoneNumber
+        let filterName = contactModel.contactName
+        
+        ContactRealmManager.shared.editAllTasksModel(filter: filterNumber, secondFilter: filterName, newModel: editedContactModel)
                 navigationController?.popViewController(animated: true)
-            } else {
-                alertError(text: "Error editing model. Try again!", mainTitle: "Error")
-        }
+//            } else {
+//                alertError(text: "Error editing model. Try again!", mainTitle: "Error")
+//        }
     }
     
     @objc private func didTapOpenPhoto(){
@@ -73,6 +74,7 @@ class EditContactViewController: UIViewController {
     @objc private func didTapEdit(){
         isViewEdited = !isViewEdited
         setupSelection(boolean: isViewEdited)
+        customiseView()
     }
 
     //MARK: - Setup methods
@@ -118,6 +120,7 @@ class EditContactViewController: UIViewController {
         gesture.numberOfTapsRequired = 1
         if isViewEdited {
             viewForTable.addGestureRecognizer(gesture)
+            labelForImageView.isHidden = false
         }
     }
     
@@ -132,7 +135,7 @@ class EditContactViewController: UIViewController {
             
             self.present(vc, animated: true)
         } else {
-            alertError(text: "Error sending mail")
+            alertError(text: "You can't send email. Maybe you don't Have Apple Mail App on your device?")
         }
         
     }
@@ -155,17 +158,17 @@ extension EditContactViewController: UITableViewDelegate, UITableViewDataSource 
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "tasksCell", for: indexPath)
-        let data = cellsName[indexPath.section][indexPath.row]
         cell.layer.cornerRadius = 10
         cell.backgroundColor = UIColor(named: "cellColor")
+        if let image = contactModel.contactImage {
+            viewForTable.contactImageView.image = UIImage(data: image)
+            viewForTable.contactImageView.layer.cornerRadius = viewForTable.contactImageView.frame.size.width/2
+            viewForTable.contactImageView.contentMode = .scaleAspectFit
+            viewForTable.contactImageView.clipsToBounds = true
+            labelForImageView.isHidden = true
+        }
         if !isViewEdited {
-            if let image = contactModel.contactImage {
-                viewForTable.contactImageView.image = UIImage(data: image)
-                viewForTable.contactImageView.layer.cornerRadius = viewForTable.contactImageView.frame.size.width/2
-                viewForTable.contactImageView.contentMode = .scaleAspectFit
-                viewForTable.contactImageView.clipsToBounds = true
-                labelForImageView.isHidden = true
-            }
+
             switch indexPath {
             case [0,0]:
                 cell.textLabel?.text = contactModel.contactName
@@ -180,8 +183,19 @@ extension EditContactViewController: UITableViewDelegate, UITableViewDataSource 
                 print("Error")
             }
         } else {
-            cell.textLabel?.text = data
-            labelForImageView.isHidden = false
+            switch indexPath {
+            case [0,0]:
+                cell.textLabel?.text = editedContactModel?.contactName ?? contactModel.contactName
+            case [1,0]:
+                let phoneNumber = String.format(with: "+X (XXX) XXX-XXXX", phone: editedContactModel?.contactPhoneNumber ?? contactModel.contactName)
+                cell.textLabel?.text = phoneNumber
+            case [2,0]:
+                cell.textLabel?.text = editedContactModel?.contactMail ?? contactModel.contactMail
+            case [3,0]:
+                cell.textLabel?.text = editedContactModel?.contactType ?? contactModel.contactType
+            default:
+                print("Error")
+            }
         }
         return cell
     }
@@ -189,23 +203,30 @@ extension EditContactViewController: UITableViewDelegate, UITableViewDataSource 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let cellName = cellsName[indexPath.section][indexPath.row]
+        let cell = tableView.cellForRow(at: indexPath)
         if isViewEdited {
             switch indexPath.section {
             case 0:
                 alertTextField(cell: cellName, placeholder: "Enter name of contact", keyboard: .default, table: tableView) { [unowned self] text in
                     self.cellsName[indexPath.section][indexPath.row] = text
-                    contactModel.contactName = text
+                    self.editedContactModel?.contactName = text
+                    self.tableView.reloadData()
+//                    cell?.textLabel?.text = text
                 }
             case 1:
                 alertTextField(cell: cellName, placeholder: "Enter number of contact", keyboard: .numberPad, table: tableView) { [unowned self] text in
                     self.cellsName[indexPath.section][indexPath.row] = text
-                    contactModel.contactPhoneNumber = text
+                    self.editedContactModel?.contactPhoneNumber = text
+//                    cell?.textLabel?.text = text
+                    self.tableView.reloadData()
                 }
             case 2:
                 alertTextField(cell: cellName, placeholder: "Enter mail", keyboard: .emailAddress, table: tableView) { [weak self] text in
-                    if text.isEmailValid() {
+                    if text.emailValidation(email: text) {
                         self?.cellsName[indexPath.section][indexPath.row] = text.lowercased()
-                        self?.contactModel.contactMail = text
+                        self?.editedContactModel?.contactMail = text
+//                        cell?.textLabel?.text = text
+                        self?.tableView.reloadData()
                     } else {
                         self?.alertError(text: "Enter the @ domain and country domain", mainTitle: "Warning")
                     }
@@ -213,7 +234,9 @@ extension EditContactViewController: UITableViewDelegate, UITableViewDataSource 
             case 3:
                 alertFriends(tableView: tableView) { [ weak self] text in
                     self?.cellsName[indexPath.section][indexPath.row] = text
-                    self?.contactModel.contactType = text
+                    self?.editedContactModel?.contactType = text
+                    self?.tableView.reloadData()
+//                    cell?.textLabel?.text = text
                 }
             default:
                 print("error")
@@ -263,9 +286,8 @@ extension EditContactViewController: UIImagePickerControllerDelegate,UINavigatio
         viewForTable.contactImageView.clipsToBounds = true
         viewForTable.contactImageView.layer.cornerRadius = viewForTable.contactImageView.frame.size.width/2
         let finalEditImage = viewForTable.contactImageView.image
-        guard let data = finalEditImage?.pngData() else { print("Error converting"); return }
-        print("Data was saved successfully")
-        contactModel.contactImage = data
+        guard let data = finalEditImage?.pngData() else { return }
+        editedContactModel?.contactImage = data
         dismiss(animated: true)
     }
 }

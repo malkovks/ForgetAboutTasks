@@ -43,7 +43,6 @@ extension UIViewController: UITextFieldDelegate {
                 }
                 if !text.isEmpty {
                     completion(text)
-//                    table.reloadData()
                 } else {
                     self.alertError(text: "Enter some value!")
                 }
@@ -67,7 +66,6 @@ extension UIViewController: UITextFieldDelegate {
     }
     
     @objc func toolBarDoneButtonTapped(_ textField: UITextField){
-        
         print("work")
     }
     

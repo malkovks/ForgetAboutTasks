@@ -10,7 +10,9 @@ import SnapKit
 import UIKit
 import RealmSwift
 
-class AllTasksToDoViewController: UIViewController {
+class AllTasksToDoViewController: UIViewController, CheckSuccessSaveProtocol {
+
+    
     
     var allTasksData: Results<AllTaskModel>!
     private var allTasksDataFiltered: Results<AllTaskModel>!
@@ -46,6 +48,7 @@ class AllTasksToDoViewController: UIViewController {
         controller.attributedTitle = NSAttributedString(string: "Pull to refresh")
         return controller
     }()
+  
     
 
     //MARK: - Views loading
@@ -53,7 +56,7 @@ class AllTasksToDoViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
-        
+        isSavedCompletely(boolean: false)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -67,6 +70,7 @@ class AllTasksToDoViewController: UIViewController {
     @objc private func didTapCreateNewTask(){
         let vc = CreateTaskTableViewController()
         vc.title = "New event"
+        vc.delegate = self
         let navVC = UINavigationController(rootViewController: vc)
         navVC.modalPresentationStyle = .formSheet
         navVC.sheetPresentationController?.detents = [.large()]
@@ -166,6 +170,13 @@ class AllTasksToDoViewController: UIViewController {
             self.tableView.reloadData()
         }
     }
+    
+    //MARK: - Delegate method for displaying alert
+    func isSavedCompletely(boolean: Bool) {
+        if boolean {
+            showAlertForUser(text: "Event saved successfully", duration: DispatchTime.now()+2, controllerView: view)
+        }
+    }
 }
 
 //MARK: - Table view delegates
@@ -215,6 +226,8 @@ extension AllTasksToDoViewController: UITableViewDelegate, UITableViewDataSource
         let model = allTasksData[indexPath.row]
         let color = UIColor.color(withData: model.allTaskColor!) ?? #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
         let vc = AllTasksDetailViewController(color: color, model: model)
+        let secVC = EditTaskTableViewController(color: color, model: model)
+        secVC?.delegate = self
         let nav = UINavigationController(rootViewController: vc)
         nav.modalPresentationStyle = .pageSheet
         nav.isNavigationBarHidden = false
