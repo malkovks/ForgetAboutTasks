@@ -11,7 +11,9 @@ import SnapKit
 import RealmSwift
 
 
-class CreateTaskForDayController: UIViewController {
+class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
+
+    
     
     private var cellDataScheduleModel: Results<ScheduleModel>!
     private var localRealmData = try! Realm()
@@ -100,6 +102,7 @@ class CreateTaskForDayController: UIViewController {
     @objc private func didTapCreate(){
         let date = Calendar.current.date(byAdding: .hour,value: 12, to: choosenDate) ?? Date()
         let vc = CreateEventScheduleViewController(choosenDate: date)
+        vc.delegate = self
         let navVC = UINavigationController(rootViewController: vc)
         navVC.modalTransitionStyle = .flipHorizontal
         navVC.modalPresentationStyle = .fullScreen
@@ -118,19 +121,6 @@ class CreateTaskForDayController: UIViewController {
         }
     }
 //MARK: - Setups for view controller
-    private func setupAlertSheet(title: String,subtitle: String) {
-        let sheet = UIAlertController(title: title, message: subtitle, preferredStyle: .actionSheet)
-        sheet.addAction(UIAlertAction(title: "Discard changes", style: .destructive,handler: { _ in
-            self.dismiss(animated: true)
-        }))
-        sheet.addAction(UIAlertAction(title: "Save", style: .default,handler: { [self] _ in
-            self.dismiss(animated: true)
-        }))
-        sheet.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        present(sheet, animated: true)
-    }
-    
-    
     private func setupGestureForDismiss(){
         let gesture = UISwipeGestureRecognizer(target: self, action: #selector(didTapDismiss))
         gesture.direction = .right
@@ -138,6 +128,7 @@ class CreateTaskForDayController: UIViewController {
     }
     
     private func setupView(){
+        isSavedCompletely(boolean: false)
         view.backgroundColor = UIColor(named: "backgroundColor")
         calendar.today =  choosenDate
         segmentalController.addTarget(self, action: #selector(didTapSegmentChanged(segment:)), for: .valueChanged)
@@ -197,6 +188,12 @@ class CreateTaskForDayController: UIViewController {
         cellDataScheduleModel = value
         self.tableView.reloadData()
         self.calendar.reloadData()
+    }
+    
+    func isSavedCompletely(boolean: Bool) {
+        if boolean {
+            showAlertForUser(text: "Event saved successfully", duration: DispatchTime.now()+1, controllerView: view)
+        }
     }
 }
 //MARK: - table delegates and datasource
@@ -258,6 +255,7 @@ extension CreateTaskForDayController: UITableViewDelegate, UITableViewDataSource
         let actionInstance = UIContextualAction(style: .normal, title: "") { [weak self] _, _, completionHandler in
             guard let date = self?.choosenDate else { return }
             let vc = EditEventScheduleViewController(cellBackgroundColor: colorCell, choosenDate: date, scheduleModel: cellData)
+            vc.delegate = self
             let nav = UINavigationController(rootViewController: vc)
             nav.modalPresentationStyle = .fullScreen
             nav.isNavigationBarHidden = false

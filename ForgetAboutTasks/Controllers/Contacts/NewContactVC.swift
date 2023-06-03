@@ -9,7 +9,9 @@ import UIKit
 import SnapKit
 import MessageUI
 
-class NewContactViewController: UIViewController {
+class NewContactViewController: UIViewController{
+
+    weak var delegate: CheckSuccessSaveProtocol?
     
     private let headerArray = ["Name","Phone","Mail","Type"]
     private var cellsName = [["Name"],
@@ -39,9 +41,11 @@ class NewContactViewController: UIViewController {
     
     //MARK: - Targets methods
     @objc private func didTapSave(){
-        if !contactModel.contactName.isEmpty && !contactModel.contactPhoneNumber.isEmpty {
+        if  let name = contactModel.contactName, let phone = contactModel.contactPhoneNumber,
+            !name.isEmpty && !phone.isEmpty {
             ContactRealmManager.shared.saveContactModel(model: contactModel)
             contactModel = ContactModel()
+            delegate?.isSavedCompletely(boolean: true)
             navigationController?.popViewController(animated: true)
             print("Contact was saved successfully")
         } else {
@@ -81,13 +85,15 @@ class NewContactViewController: UIViewController {
     }
     
     private func customiseView(){
-        viewForTable.backgroundColor = .red
+        viewForTable.backgroundColor = .clear
         viewForTable.viewForImage.backgroundColor = .clear
         
         let gesture = UITapGestureRecognizer(target: self, action: #selector(didTapOpenPhoto))
         gesture.numberOfTapsRequired = 1
         viewForTable.addGestureRecognizer(gesture)
     }
+    
+
 }
     //MARK: - Segue methods
 extension NewContactViewController: MFMailComposeViewControllerDelegate{

@@ -132,11 +132,7 @@ class RegisterAccountViewController: UIViewController {
                     self?.view.window?.rootViewController?.dismiss(animated: true)
                     CheckAuth.shared.setupForAuth()
                     self?.indicator.stopAnimating()
-                    do {
-                        try! KeychainManager.save(service: "Firebase Auth", account: mailField, password: firstPassword.data(using: .utf8) ?? Data())
-                    } catch {
-                        self?.alertError(text: "Error saving in Keychain", mainTitle: "Error!")
-                    }
+                    try! KeychainManager.save(service: "Firebase Auth", account: mailField, password: firstPassword.data(using: .utf8) ?? Data())
                 }
             } else {
                 alertError(text: "Password must contains at least 8 symbols", mainTitle: "Warning")

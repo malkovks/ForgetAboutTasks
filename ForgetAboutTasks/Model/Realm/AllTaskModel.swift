@@ -10,6 +10,7 @@ import Foundation
 
 class AllTaskModel: Object {
     
+    @Persisted var allTaskID = UUID().uuidString
     @Persisted var allTaskNameEvent: String
     @Persisted var allTaskDate: Date?
     @Persisted var allTaskTime: Date?

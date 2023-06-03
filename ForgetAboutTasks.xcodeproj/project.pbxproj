@@ -239,7 +239,7 @@
 				0AEAA9F42A2687D400BE85A4 /* KeyChain  */,
 				0A99A90929CD9C9700CC5A42 /* UserDefaults */,
 				0AA604E029E1460E007ACE58 /* Model */,
-				0AA604E429E14805007ACE58 /* Services */,
+				0AA604E429E14805007ACE58 /* Realm Managers */,
 				0AA604EA29E16DA1007ACE58 /* Protocols */,
 				0AA8EC7029CAF52E004DC6DD /* Extensions */,
 				0A8AC19C29B9C8A400EA052B /* Resources */,
@@ -394,14 +394,14 @@
 			path = Realm;
 			sourceTree = "<group>";
 		};
-		0AA604E429E14805007ACE58 /* Services */ = {
+		0AA604E429E14805007ACE58 /* Realm Managers */ = {
 			isa = PBXGroup;
 			children = (
 				0AA604E529E14814007ACE58 /* ScheduleRealmManager.swift */,
 				0AA74A2529EC521800F01532 /* AllTasksRealmManager.swift */,
 				0A7FFFB929EFDC0B00CAC9DA /* ContactRealmManager.swift */,
 			);
-			path = Services;
+			path = "Realm Managers";
 			sourceTree = "<group>";
 		};
 		0AA604E729E16BF6007ACE58 /* UIColor+Extensions */ = {

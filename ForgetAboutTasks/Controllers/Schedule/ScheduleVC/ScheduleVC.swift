@@ -13,7 +13,7 @@ import EventKit
 import SnapKit
 import RealmSwift
 
-class ScheduleViewController: UIViewController {
+class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
     
     private let localRealm = try! Realm()
     private var scheduleModel: Results<ScheduleModel>!
@@ -87,6 +87,7 @@ class ScheduleViewController: UIViewController {
     
     @objc private func didTapCreate(){
         let vc = CreateEventScheduleViewController(choosenDate: Date())
+        vc.delegate = self
         let nav = UINavigationController(rootViewController: vc)
         nav.modalPresentationStyle = .fullScreen
         nav.modalTransitionStyle = .flipHorizontal
@@ -128,6 +129,7 @@ class ScheduleViewController: UIViewController {
     }
     
     private func setupView(){
+        isSavedCompletely(boolean: false)
         calendar.reloadData()
         setupDelegates()
         setupConstraints()
@@ -142,11 +144,6 @@ class ScheduleViewController: UIViewController {
         title = "Calendar"
         navigationItem.leftBarButtonItem = searchNavigationButton
         navigationItem.rightBarButtonItems = [createNewEventNavigationButton,displayAllEvent]
-        if scheduleModel.count == 0 {
-            displayAllEvent.isEnabled = false
-        } else {
-            displayAllEvent.isEnabled = true
-        }
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = true
         navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
@@ -195,6 +192,12 @@ class ScheduleViewController: UIViewController {
                 nav.isNavigationBarHidden = false
                 present(nav, animated: true)
             }
+        }
+    }
+    
+    func isSavedCompletely(boolean: Bool) {
+        if boolean {
+            showAlertForUser(text: "Event saved successfully", duration: DispatchTime.now()+1, controllerView: view)
         }
     }
 }

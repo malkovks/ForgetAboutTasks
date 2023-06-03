@@ -13,6 +13,8 @@ import RealmSwift
 
 class CreateEventScheduleViewController: UIViewController {
     
+    weak var delegate: CheckSuccessSaveProtocol?
+    
     private let headerArray = ["Details of event","Date and time","Category of event","Color of event","Image"]
     
     private var cellsName = [["Name of event"],
@@ -48,13 +50,6 @@ class CreateEventScheduleViewController: UIViewController {
         setupTableView()
         setupView()
     }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        showAlertForUser(text: "Saved successfully", duration: DispatchTime.now()+1, controllerView: view)
-    }
-    
-    
 
     //MARK: - Targets methods
     @objc private func didTapDismiss(){
@@ -72,12 +67,12 @@ class CreateEventScheduleViewController: UIViewController {
         if isClear {
             if reminderStatus {
                 setupUserNotification(model: scheduleModel)
+                delegate?.isSavedCompletely(boolean: true)
                 reminderStatus = false
             }
             ScheduleRealmManager.shared.saveScheduleModel(model: scheduleModel)
-            alertDismissed(view: view, title: "Event was saved")
             DispatchQueue.main.asyncAfter(deadline: .now()) {
-                self.view.window?.rootViewController?.dismiss(animated: true)
+                self.dismiss(animated: true)
             }
         }
     }
@@ -336,7 +331,7 @@ extension CreateEventScheduleViewController: UITableViewDelegate, UITableViewDat
                 scheduleModel.scheduleTime = date
                 scheduleModel.scheduleDate = date
                 scheduleModel.scheduleWeekday = weekday
-                cell?.textLabel?.text = DateFormatter.localizedString(from: date, dateStyle: .medium, timeStyle: .short)
+                cell?.textLabel?.text = timeString
                 isStartEditing = true
             }
         case [2,0]:

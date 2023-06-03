@@ -56,7 +56,7 @@ class AllTasksToDoViewController: UIViewController, CheckSuccessSaveProtocol {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
-        isSavedCompletely(boolean: false)
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -115,6 +115,7 @@ class AllTasksToDoViewController: UIViewController, CheckSuccessSaveProtocol {
     
     //MARK: - Setup methods
     private func setupView(){
+        isSavedCompletely(boolean: false)
         setupConstraints()
         setupTableView()
         setupNavigationController()

@@ -19,17 +19,4 @@ extension UIViewController {
             alert.dismiss(animated: true)
         }
     }
-    func alertDismissedCustom(onView: UIView,output text: String) {
-        let alert = UIAlertController(title: text, message: nil, preferredStyle: .alert)
-        
-        let viewBackground = UIView(frame: CGRect(x: 0, y: 0, width: 200, height: 80))
-        view.backgroundColor = UIColor(named: "backgroundColor")
-        alert.view.addSubview(viewBackground)
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        if let topVC = UIApplication.shared.keyWindow?.rootViewController {
-            alert.popoverPresentationController?.sourceView = onView
-            alert.popoverPresentationController?.sourceRect = CGRect(x: 0, y: 0, width: 1, height: 1)
-            topVC.present(alert, animated: true)
-        }
-    }
 }

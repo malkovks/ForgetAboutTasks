@@ -9,6 +9,7 @@ import RealmSwift
 import Foundation
 
 class ScheduleModel: Object {
+    @Persisted var scheduleModelId = UUID().uuidString
     @Persisted var scheduleDate: Date? //до этого было базовое свойство
     @Persisted var scheduleTime: Date? //до этого было базовое свойство
     @Persisted var scheduleName: String

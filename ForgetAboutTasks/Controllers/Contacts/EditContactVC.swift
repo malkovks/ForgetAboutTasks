@@ -11,6 +11,8 @@ import SnapKit
 
 class EditContactViewController: UIViewController {
     
+    weak var delegate: CheckSuccessSaveProtocol?
+    
     private let headerArray = ["Name","Phone","Mail","Type"]
     
     private var cellsName = [["Name"],
@@ -19,7 +21,7 @@ class EditContactViewController: UIViewController {
                              ["Type of contact"]]
     
     private var contactModel: ContactModel
-    private var editedContactModel: ContactModel?
+    private var editedContactModel = ContactModel()
     private var isViewEdited: Bool
     
     init(contactModel: ContactModel,editing: Bool){
@@ -53,16 +55,10 @@ class EditContactViewController: UIViewController {
     
     //MARK: - Targets methods
     @objc private func didTapSave(){
-//        if let name = editedContactModel?.contactName,
-//           !name.isEmpty {
-        let filterNumber = contactModel.contactPhoneNumber
-        let filterName = contactModel.contactName
-        
-        ContactRealmManager.shared.editAllTasksModel(filter: filterNumber, secondFilter: filterName, newModel: editedContactModel)
-                navigationController?.popViewController(animated: true)
-//            } else {
-//                alertError(text: "Error editing model. Try again!", mainTitle: "Error")
-//        }
+        let id = contactModel.contactID
+        ContactRealmManager.shared.editAllTasksModel(user: id, newModel: editedContactModel)
+        delegate?.isSavedCompletely(boolean: true)
+        navigationController?.popViewController(animated: true)
     }
     
     @objc private func didTapOpenPhoto(){
@@ -84,7 +80,7 @@ class EditContactViewController: UIViewController {
         customiseView()
         setupSelection(boolean: isViewEdited)
         view.backgroundColor = UIColor(named: "backgroundColor")
-        title = "New Contact"
+        title = "Edit Contact"
     }
     
     private func setupTableView(){
@@ -128,10 +124,12 @@ class EditContactViewController: UIViewController {
         if MFMailComposeViewController.canSendMail() {
             let vc = MFMailComposeViewController()
             vc.mailComposeDelegate = self
+            let mail = String(describing: model.contactMail)
+            let name = String(describing: model.contactName)
             
-            vc.setToRecipients([model.contactMail])
-            vc.setSubject("Hello from Developers, \(model.contactName)")
-            vc.setMessageBody("Hello \(model.contactName)", isHTML: false)
+            vc.setToRecipients([mail])
+            vc.setSubject("Hello from Developers, \(name)")
+            vc.setMessageBody("Hello \(name)", isHTML: false)
             
             self.present(vc, animated: true)
         } else {
@@ -173,7 +171,7 @@ extension EditContactViewController: UITableViewDelegate, UITableViewDataSource 
             case [0,0]:
                 cell.textLabel?.text = contactModel.contactName
             case [1,0]:
-                let phoneNumber = String.format(with: "+X (XXX) XXX-XXXX", phone: contactModel.contactPhoneNumber)
+                let phoneNumber = String.format(with: "+X (XXX) XXX-XXXX", phone: contactModel.contactPhoneNumber ?? "")
                 cell.textLabel?.text = phoneNumber
             case [2,0]:
                 cell.textLabel?.text = contactModel.contactMail
@@ -185,14 +183,14 @@ extension EditContactViewController: UITableViewDelegate, UITableViewDataSource 
         } else {
             switch indexPath {
             case [0,0]:
-                cell.textLabel?.text = editedContactModel?.contactName ?? contactModel.contactName
+                cell.textLabel?.text = editedContactModel.contactName ?? contactModel.contactName
             case [1,0]:
-                let phoneNumber = String.format(with: "+X (XXX) XXX-XXXX", phone: editedContactModel?.contactPhoneNumber ?? contactModel.contactName)
+                let phoneNumber = String.format(with: "+X (XXX) XXX-XXXX", phone: editedContactModel.contactPhoneNumber ?? contactModel.contactName ?? "")
                 cell.textLabel?.text = phoneNumber
             case [2,0]:
-                cell.textLabel?.text = editedContactModel?.contactMail ?? contactModel.contactMail
+                cell.textLabel?.text = editedContactModel.contactMail ?? contactModel.contactMail
             case [3,0]:
-                cell.textLabel?.text = editedContactModel?.contactType ?? contactModel.contactType
+                cell.textLabel?.text = editedContactModel.contactType ?? contactModel.contactType
             default:
                 print("Error")
             }
@@ -209,24 +207,21 @@ extension EditContactViewController: UITableViewDelegate, UITableViewDataSource 
             case 0:
                 alertTextField(cell: cellName, placeholder: "Enter name of contact", keyboard: .default, table: tableView) { [unowned self] text in
                     self.cellsName[indexPath.section][indexPath.row] = text
-                    self.editedContactModel?.contactName = text
-                    self.tableView.reloadData()
-//                    cell?.textLabel?.text = text
+                    self.editedContactModel.contactName = text
+                    cell?.textLabel?.text = text
                 }
             case 1:
                 alertTextField(cell: cellName, placeholder: "Enter number of contact", keyboard: .numberPad, table: tableView) { [unowned self] text in
                     self.cellsName[indexPath.section][indexPath.row] = text
-                    self.editedContactModel?.contactPhoneNumber = text
-//                    cell?.textLabel?.text = text
-                    self.tableView.reloadData()
+                    self.editedContactModel.contactPhoneNumber = text
+                    cell?.textLabel?.text = text
                 }
             case 2:
                 alertTextField(cell: cellName, placeholder: "Enter mail", keyboard: .emailAddress, table: tableView) { [weak self] text in
                     if text.emailValidation(email: text) {
                         self?.cellsName[indexPath.section][indexPath.row] = text.lowercased()
-                        self?.editedContactModel?.contactMail = text
-//                        cell?.textLabel?.text = text
-                        self?.tableView.reloadData()
+                        self?.editedContactModel.contactMail = text
+                        cell?.textLabel?.text = text
                     } else {
                         self?.alertError(text: "Enter the @ domain and country domain", mainTitle: "Warning")
                     }
@@ -234,9 +229,8 @@ extension EditContactViewController: UITableViewDelegate, UITableViewDataSource 
             case 3:
                 alertFriends(tableView: tableView) { [ weak self] text in
                     self?.cellsName[indexPath.section][indexPath.row] = text
-                    self?.editedContactModel?.contactType = text
-                    self?.tableView.reloadData()
-//                    cell?.textLabel?.text = text
+                    self?.editedContactModel.contactType = text
+                    cell?.textLabel?.text = text
                 }
             default:
                 print("error")
@@ -244,7 +238,8 @@ extension EditContactViewController: UITableViewDelegate, UITableViewDataSource 
         } else {
             switch indexPath.section {
             case 1:
-                guard let url = URL(string: "tel://\(contactModel.contactPhoneNumber)") else { self.alertError();return}
+                let phone = String(describing: contactModel.contactPhoneNumber)
+                guard let url = URL(string: "tel://\(phone)") else { self.alertError();return}
                 if UIApplication.shared.canOpenURL(url){
                     UIApplication.shared.open(url)
                 } else {
@@ -287,7 +282,7 @@ extension EditContactViewController: UIImagePickerControllerDelegate,UINavigatio
         viewForTable.contactImageView.layer.cornerRadius = viewForTable.contactImageView.frame.size.width/2
         let finalEditImage = viewForTable.contactImageView.image
         guard let data = finalEditImage?.pngData() else { return }
-        editedContactModel?.contactImage = data
+        editedContactModel.contactImage = data
         dismiss(animated: true)
     }
 }

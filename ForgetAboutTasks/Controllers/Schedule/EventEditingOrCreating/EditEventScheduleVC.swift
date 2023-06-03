@@ -11,6 +11,9 @@ import SnapKit
 import Combine
 
 class EditEventScheduleViewController: UIViewController {
+    
+    weak var delegate: CheckSuccessSaveProtocol?
+    
     private let headerArray = ["Details of event","Date and time","Category of event","Color of event","Repeat"]
     
     private var cellsName = [[""],
@@ -88,9 +91,9 @@ class EditEventScheduleViewController: UIViewController {
                 reminderStatus = false
             }
             ScheduleRealmManager.shared.editScheduleModel(filterDate: filterDate, filterName: filterName, changes: editedScheduleModel)
-            showAlertForUser(text: "Event edited successfully", duration: DispatchTime.now()+2, controllerView: view)
-            DispatchQueue.main.asyncAfter(deadline: .now()+3) {
-                self.view.window?.rootViewController?.dismiss(animated: true)
+            DispatchQueue.main.asyncAfter(deadline: .now()) {
+                self.delegate?.isSavedCompletely(boolean: true)
+                self.dismiss(animated: true)
             }
         } else {
             alertError(text: "Enter value in first section!")
@@ -266,7 +269,7 @@ extension EditEventScheduleViewController: UITableViewDelegate, UITableViewDataS
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let cellName = cellsName[indexPath.section][indexPath.row]
-        
+        let cell = tableView.cellForRow(at: indexPath)
         
             switch indexPath {
             case [0,0]:
@@ -280,6 +283,7 @@ extension EditEventScheduleViewController: UITableViewDelegate, UITableViewDataS
                     editedScheduleModel.scheduleTime = date
                     editedScheduleModel.scheduleDate = date
                     editedScheduleModel.scheduleWeekday = weekday
+                    cell?.textLabel?.text = timeString
                     cellsName[indexPath.section][indexPath.row] = timeString
                     isStartEditing = true
                 }
@@ -287,12 +291,14 @@ extension EditEventScheduleViewController: UITableViewDelegate, UITableViewDataS
                 alertTextField(cell: "Enter Name of event", placeholder: "Enter the text", keyboard: .default,table: tableView) { [self] text in
                     editedScheduleModel.scheduleCategoryName = text
                     cellsName[indexPath.section][indexPath.row] = text
+                    cell?.textLabel?.text = text
                     isStartEditing = true
                 }
             case [2,1]:
                 alertTextField(cell: "Enter Type of event", placeholder: "Enter the text", keyboard: .default,table: tableView) { [self] text in
                     editedScheduleModel.scheduleCategoryType = text
                     cellsName[indexPath.section][indexPath.row] = text
+                    cell?.textLabel?.text = text
                     isStartEditing = true
                 }
             case [2,2]:
@@ -300,11 +306,13 @@ extension EditEventScheduleViewController: UITableViewDelegate, UITableViewDataS
                     if text.isURLValid(text: text) {
                         cellsName[indexPath.section][indexPath.row] = text
                         editedScheduleModel.scheduleCategoryURL = text
+                        cell?.textLabel?.text = text
                         isStartEditing = true
                     } else if !text.contains("www.") || !text.contains("http://") && text.contains("."){
                         let editedText = "www." + text
                         cellsName[indexPath.section][indexPath.row] = editedText
-                        editedScheduleModel.scheduleCategoryURL = text
+                        editedScheduleModel.scheduleCategoryURL = editedText
+                        cell?.textLabel?.text = editedText
                         isStartEditing = true
                     } else {
                         alertError(text: "Enter name of URL link with correct domain", mainTitle: "Incorrect input")
@@ -314,6 +322,7 @@ extension EditEventScheduleViewController: UITableViewDelegate, UITableViewDataS
                 alertTextField(cell: "Enter Notes of event", placeholder: "Enter the text", keyboard: .default,table: tableView) { [self] text in
                     editedScheduleModel.scheduleCategoryNote = text
                     cellsName[indexPath.section][indexPath.row] = text
+                    cell?.textLabel?.text = text
                     isStartEditing = true
                 }
             case [3,0]:
@@ -350,7 +359,8 @@ extension EditEventScheduleViewController: UIColorPickerViewControllerDelegate {
     
     func colorPickerViewController(_ viewController: UIColorPickerViewController, didSelect color: UIColor, continuously: Bool) {
         cellBackgroundColor = color
-        self.tableView.reloadData()
+        let cell = tableView.cellForRow(at: [3,0])
+        cell?.backgroundColor = color
     }
 }
 

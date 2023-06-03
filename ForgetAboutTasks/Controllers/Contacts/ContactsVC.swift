@@ -11,7 +11,7 @@ import RealmSwift
 import MessageUI
 
 
-class ContactsViewController: UIViewController {
+class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
     
     var contactData: Results<ContactModel>!
     var filteredContactData: Results<ContactModel>!
@@ -54,10 +54,12 @@ class ContactsViewController: UIViewController {
     //MARK: - Targets methods
     @objc private func didTapCreateNewContact(){
         let vc = NewContactViewController()
+        vc.delegate = self
         show(vc, sender: nil)
     }
     //MARK: - Setup methods
     private func setupView() {
+        isSavedCompletely(boolean: false)
         setupConstraints()
         setupSearchController()
         loadingRealmData()
@@ -96,16 +98,19 @@ class ContactsViewController: UIViewController {
     
     private func openCurrentContact(model: ContactModel,boolean: Bool){
         let vc = EditContactViewController(contactModel: model,editing: boolean)
+        vc.delegate = self
         show(vc, sender: nil)
     }
     
     private func actionsWithContact(model: ContactModel){
+        let name = String(describing: model.contactName)
+        let phone = String(describing: model.contactPhoneNumber)
         let alert = UIAlertController(title: nil, message: "What exactly do you want?", preferredStyle: .actionSheet)
         alert.addAction(UIAlertAction(title: "Contact Details", style: .default,handler: { [weak self] _ in
             self?.openCurrentContact(model: model,boolean: false)
         }))
-        alert.addAction(UIAlertAction(title: "Call to \(model.contactName)", style: .default,handler: { [weak self] _ in
-            guard let url = URL(string: "tel://\(model.contactPhoneNumber)") else { self?.alertError();return}
+        alert.addAction(UIAlertAction(title: "Call to \(name)", style: .default,handler: { [weak self] _ in
+            guard let url = URL(string: "tel://\(phone)") else { self?.alertError();return}
             if UIApplication.shared.canOpenURL(url){
                 UIApplication.shared.open(url)
             } else {
@@ -116,7 +121,7 @@ class ContactsViewController: UIViewController {
             if MFMessageComposeViewController.canSendText() {
                 let vc = MFMessageComposeViewController()
                 vc.body = "Hello!"
-                vc.recipients = ["\(model.contactPhoneNumber)"]
+                vc.recipients = ["\(phone)"]
                 vc.messageComposeDelegate = self
                 
                 self?.show(vc, sender: nil)
@@ -126,6 +131,12 @@ class ContactsViewController: UIViewController {
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         present(alert, animated: true)
+    }
+    
+    func isSavedCompletely(boolean: Bool) {
+        if boolean {
+            showAlertForUser(text: "Contact saved successfully", duration: DispatchTime.now()+1, controllerView: view)
+        }
     }
 }
 
@@ -161,7 +172,7 @@ extension ContactsViewController: UITableViewDelegate, UITableViewDataSource {
         cell.imageView?.contentMode = .scaleToFill
         cell.imageView?.tintColor = UIColor(named: "navigationControllerColor")
         
-        let number = String.format(with: "+X (XXX) XXX-XXXX", phone: data.contactPhoneNumber)
+        let number = String.format(with: "+X (XXX) XXX-XXXX", phone: data.contactPhoneNumber ?? "Enter phone number")
         
         cell.textLabel?.text = data.contactName
         cell.detailTextLabel?.text = "Phone number: " + number

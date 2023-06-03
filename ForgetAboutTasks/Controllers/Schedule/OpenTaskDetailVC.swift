@@ -7,9 +7,11 @@
 
 import UIKit
 import SnapKit
+import RealmSwift
 import SafariServices
 
-class OpenTaskDetailViewController: UIViewController {
+class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
+    
     
     private let headerArray = ["Details of event","Date and time","Category of event","Color of event","Repeat"]
     private var cellsName = [["Name of event"],
@@ -61,6 +63,7 @@ class OpenTaskDetailViewController: UIViewController {
         let colorCell = UIColor.color(withData: selectedScheduleModel.scheduleColor!) ?? #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
         let choosenDate = selectedScheduleModel.scheduleDate ?? Date()
         let vc = EditEventScheduleViewController(cellBackgroundColor: colorCell, choosenDate: choosenDate, scheduleModel: selectedScheduleModel)
+        vc.delegate = self
         let nav = UINavigationController(rootViewController: vc)
         nav.modalPresentationStyle = .fullScreen
         nav.modalTransitionStyle = .crossDissolve
@@ -178,6 +181,13 @@ class OpenTaskDetailViewController: UIViewController {
             }
         }
         return value
+    }
+    
+    func isSavedCompletely(boolean: Bool) {
+        if boolean {
+            tableView.reloadData()
+            showAlertForUser(text: "Event was edited!", duration: DispatchTime.now()+1, controllerView: view)
+        }
     }
 
 }
