@@ -20,7 +20,7 @@ class EditEventScheduleViewController: UIViewController {
                      ["","Set a reminder"],
                      ["","","",""],
                      [""],
-                     ["Repeat every 7 days"]]
+                     [""]]
     
     private var cellBackgroundColor: UIColor
     private var choosenDate: Date
@@ -47,16 +47,13 @@ class EditEventScheduleViewController: UIViewController {
     }()
     private let picker = UIColorPickerViewController()
     private let tableView = UITableView(frame: CGRectZero, style: .insetGrouped)
+    private var imagePicker = UIImagePickerController()
     //MARK: - viewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
     }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        showAlertForUser(text: "Saved successfully", duration: DispatchTime.now()+3, controllerView: view)
-    }
+
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
@@ -83,14 +80,13 @@ class EditEventScheduleViewController: UIViewController {
     @objc private func didTapEdit(){
         let color = cellBackgroundColor.encode()
         editedScheduleModel.scheduleColor = color
-        let filterDate = scheduleModel.scheduleDate ?? Date()
-        let filterName = scheduleModel.scheduleName
+        let id = scheduleModel.scheduleModelId
         if !editedScheduleModel.scheduleName.isEmpty {
             if reminderStatus {
                 setupUserNotification(model: scheduleModel)
                 reminderStatus = false
             }
-            ScheduleRealmManager.shared.editScheduleModel(filterDate: filterDate, filterName: filterName, changes: editedScheduleModel)
+            ScheduleRealmManager.shared.editScheduleModel(user: id, changes: editedScheduleModel)
             DispatchQueue.main.asyncAfter(deadline: .now()) {
                 self.delegate?.isSavedCompletely(boolean: true)
                 self.dismiss(animated: true)
@@ -134,6 +130,7 @@ class EditEventScheduleViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.register(ScheduleTableViewCell.self, forCellReuseIdentifier: ScheduleTableViewCell.identifier)
     }
     
     private func setupColorPicker(){
@@ -215,6 +212,31 @@ class EditEventScheduleViewController: UIViewController {
         self.present(picker, animated: true)
     }
 }
+extension EditEventScheduleViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        if let image = info[.editedImage] as? UIImage{
+            guard let data = image.jpegData(compressionQuality: 1.0) else { return}
+
+            editedScheduleModel.scheduleImage = data
+            guard let cell = tableView.cellForRow(at: [4,0]) else { alertError();return }
+
+//            cell.imageView?.image = image
+            tableView.reloadData()
+            picker.dismiss(animated: true)
+            tableView.deselectRow(at: [4,0], animated: true)
+        } else {
+            alertError(text: "Error!", mainTitle: "Can't get image and save it to event.\nTry again later!")
+        }
+        
+        
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        tableView.deselectRow(at: [4,0], animated: true)
+        picker.dismiss(animated: true)
+    }
+}
+
 //MARK: - Table view delegates
 extension EditEventScheduleViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -228,7 +250,8 @@ extension EditEventScheduleViewController: UITableViewDelegate, UITableViewDataS
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell")
+        let customCell = tableView.dequeueReusableCell(withIdentifier: ScheduleTableViewCell.identifier) as? ScheduleTableViewCell
         if !isStartEditing {
             setupCellTitle(model: scheduleModel, indexPath: indexPath)
         }
@@ -236,34 +259,35 @@ extension EditEventScheduleViewController: UITableViewDelegate, UITableViewDataS
         
         let convertedDate = DateFormatter.localizedString(from: scheduleModel.scheduleTime ?? Date(), dateStyle: .medium, timeStyle: .medium)
         
-        cell.textLabel?.numberOfLines = 0
-        cell.contentView.layer.cornerRadius = 10
-        cell.backgroundColor = UIColor(named: "cellColor")
+        cell?.textLabel?.numberOfLines = 0
+        cell?.contentView.layer.cornerRadius = 10
+        cell?.backgroundColor = UIColor(named: "cellColor")
         
         let switchButton = UISwitch(frame: .zero)
         switchButton.isOn = false
         switchButton.isHidden = true
         switchButton.onTintColor = cellBackgroundColor
-        cell.accessoryView = switchButton
+        cell?.accessoryView = switchButton
         
-        cell.textLabel?.text = data
+        cell?.textLabel?.text = data
         if indexPath == [3,0] {
-            cell.backgroundColor = cellBackgroundColor
+            cell?.backgroundColor = cellBackgroundColor
         } else if indexPath == [1,1] {
-            cell.accessoryView?.isHidden = false
+            cell?.accessoryView?.isHidden = false
             switchButton.addTarget(self, action: #selector(didTapSetReminder), for: .touchUpInside)
             let content = UNMutableNotificationContent()
             if content.userInfo["userNotification"] as? String == convertedDate {
                 switchButton.isOn = true
             }
         } else if indexPath == [4,0] {
-            cell.accessoryView?.isHidden = false
-            switchButton.addTarget(self, action: #selector(didTapSwitch), for: .touchUpInside)
+            let data = editedScheduleModel.scheduleImage ?? scheduleModel.scheduleImage
+            customCell?.imageViewSchedule.image = UIImage(data: data!)
+            return customCell!
         } else {
-            cell.accessoryView = nil
+            cell?.accessoryView = nil
         }
         
-        return cell
+        return cell!
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -327,6 +351,12 @@ extension EditEventScheduleViewController: UITableViewDelegate, UITableViewDataS
                 }
             case [3,0]:
                 openColorPicker()
+            case [4,0]:
+                tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+                imagePicker.delegate = self
+                imagePicker.sourceType = .photoLibrary
+                imagePicker.allowsEditing = true
+                present(self.imagePicker, animated: true)
             default:
                 print("error")
             
@@ -342,8 +372,10 @@ extension EditEventScheduleViewController: UITableViewDelegate, UITableViewDataS
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if indexPath == [2,3] {
+        if indexPath == [2,3] && indexPath == [4,0]{
             return UITableView.automaticDimension
+        } else if indexPath == [4,0] {
+            return 300
         }
         return 45
     }

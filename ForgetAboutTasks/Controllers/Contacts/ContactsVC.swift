@@ -9,14 +9,17 @@ import UIKit
 import SnapKit
 import RealmSwift
 import MessageUI
+import Contacts
+import ContactsUI
 
 
 class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
     
-    var contactData: Results<ContactModel>!
-    var filteredContactData: Results<ContactModel>!
+    private var contactData: Results<ContactModel>!
+    private var filteredContactData: Results<ContactModel>!
     private var localRealmData = try! Realm()
     
+//MARK: - UI elements
     private var searchBarIsEmpty: Bool {
         guard let text = searchController.searchBar.text else { return true }
         return text.isEmpty
@@ -27,6 +30,7 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
     }
     
     private let searchController = UISearchController()
+    
     private let tableView = UITableView()
     
     private let refreshController: UIRefreshControl = {
@@ -36,6 +40,12 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
         return controller
     }()
     
+    private lazy var importContacts: UIBarButtonItem = {
+        return UIBarButtonItem(image: UIImage(systemName: "square.and.arrow.down"), style: .done, target: self, action: #selector(didTapOpenContacts))
+    }()
+    
+    private let contactPicker = CNContactPickerViewController()
+//MARK: - Views loading
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setupNavigationController()
@@ -57,12 +67,20 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
         vc.delegate = self
         show(vc, sender: nil)
     }
+    
+    @objc private func didTapOpenContacts(){
+        let vc = contactPicker
+        vc.delegate = self
+        let nav = UINavigationController(rootViewController: vc)
+        present(nav, animated:  true)
+    }
     //MARK: - Setup methods
     private func setupView() {
         isSavedCompletely(boolean: false)
         setupConstraints()
         setupSearchController()
         loadingRealmData()
+        contactPicker.delegate = self
         view.backgroundColor = UIColor(named: "backgroundColor")
     }
     
@@ -81,7 +99,8 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
     }
     
     private func setupNavigationController(){
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(didTapCreateNewContact))
+        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(didTapCreateNewContact))
+        navigationItem.rightBarButtonItems = [addButton,importContacts]
         navigationController?.navigationBar.tintColor = UIColor(named: "navigationController")
         navigationController?.navigationItem.largeTitleDisplayMode = .always
         navigationController?.navigationBar.prefersLargeTitles = true
@@ -139,7 +158,29 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
         }
     }
 }
+//MARK: - Contacts delegate
+extension ContactsViewController: CNContactPickerDelegate {
+    func contactPicker(_ picker: CNContactPickerViewController, didSelect contacts: [CNContact]) {
+        for contact in contacts {
+            let model = ContactModel()
+            guard let phoneNumber = contact.phoneNumbers.first?.value,
+                  let email = contact.emailAddresses.first?.label else { return }
+            let convertEmail = CNLabeledValue<NSString>.localizedString(forLabel: email)
+            let number = CNPhoneNumber(stringValue: phoneNumber.stringValue).stringValue
+            model.contactImage = contact.imageData
+            model.contactName = contact.givenName + " " + contact.familyName
+            model.contactPhoneNumber = number
+            model.contactMail = convertEmail
+            ContactRealmManager.shared.saveContactModel(model: model)
+            tableView.reloadData()
+//            model.contactPhoneNumber = contact.phoneNumbers.first
+//            model.contactType = contact.contactType
+            
+        }
+    }
+}
 
+//MARK: - Search delegates
 extension ContactsViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         filterTable(searchController.searchBar.text ?? "Empty value")
@@ -152,7 +193,7 @@ extension ContactsViewController: UISearchResultsUpdating {
 
     
 }
-
+//MARK: - Table view delegates
 extension ContactsViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -218,7 +259,7 @@ extension ContactsViewController: UITableViewDelegate, UITableViewDataSource {
         80
     }
 }
-
+//MARK: - Message delegate for opening mail
 extension ContactsViewController: MFMessageComposeViewControllerDelegate {
     func messageComposeViewController(_ controller: MFMessageComposeViewController, didFinishWith result: MessageComposeResult) {
         if result == .cancelled {
@@ -228,7 +269,7 @@ extension ContactsViewController: MFMessageComposeViewControllerDelegate {
     
     
 }
-
+//MARK: - setup constraints
 extension ContactsViewController {
         private func setupConstraints(){
         view.addSubview(tableView)

@@ -28,8 +28,8 @@ class ScheduleRealmManager {
         }
     }
 
-    func editScheduleModel(filterDate: Date,filterName: String,changes: ScheduleModel){
-        let model = localRealm.objects(ScheduleModel.self).filter("scheduleDate == %@ AND scheduleName == %@",filterDate,filterName).first
+    func editScheduleModel(user id: String,changes: ScheduleModel){
+        let model = localRealm.objects(ScheduleModel.self).filter("scheduleModelId == %@",id).first
         try! localRealm.write {
             model?.scheduleCategoryURL = changes.scheduleCategoryURL ?? model?.scheduleCategoryURL
             model?.scheduleCategoryName = changes.scheduleCategoryName ?? model?.scheduleCategoryName
@@ -41,6 +41,7 @@ class ScheduleRealmManager {
             model?.scheduleColor = changes.scheduleColor ?? model?.scheduleColor
             model?.scheduleRepeat = ((changes.scheduleRepeat ?? model?.scheduleRepeat) != nil)
             model?.scheduleWeekday = changes.scheduleWeekday ?? model?.scheduleWeekday
+            model?.scheduleImage = changes.scheduleImage ?? model?.scheduleImage
         }
     }
     

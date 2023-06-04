@@ -83,7 +83,7 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
             case [2,1]: model = selectedScheduleModel.scheduleCategoryType
             case [2,3]: model = selectedScheduleModel.scheduleCategoryNote
             default:
-                alertError()
+                print("None")
             }
             UIPasteboard.general.string = model
             alertDismissed(view: self.view)
@@ -113,8 +113,12 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.register(ScheduleTableViewCell.self, forCellReuseIdentifier: ScheduleTableViewCell.identifier)
         let gesture = UILongPressGestureRecognizer(target: self, action: #selector(didGesturePress(_:)))
         tableView.addGestureRecognizer(gesture)
+        let cell = tableView.cellForRow(at: [4,0])
+        cell?.imageView?.image = UIImage(data: selectedScheduleModel.scheduleImage!)
+        cell?.imageView?.contentMode = .center
     }
     
     private func setupNavigationController(){
@@ -204,57 +208,58 @@ extension OpenTaskDetailViewController: UITableViewDelegate, UITableViewDataSour
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell")
+        let customCell = tableView.dequeueReusableCell(withIdentifier: ScheduleTableViewCell.identifier) as? ScheduleTableViewCell
         let inheritedData = selectedScheduleModel
         let data = cellsName[indexPath.section][indexPath.row]
         let time = DateFormatter.localizedString(from: inheritedData.scheduleTime ?? Date(), dateStyle: .none, timeStyle:.short)
         let date = DateFormatter.localizedString(from: inheritedData.scheduleDate ?? Date(), dateStyle: .medium, timeStyle:.none)
         
         
-        cell.backgroundColor = UIColor(named: "cellColor")
-        cell.textLabel?.numberOfLines = 0
+        cell?.backgroundColor = UIColor(named: "cellColor")
+        cell?.textLabel?.numberOfLines = 0
         
         let switchButton = UISwitch(frame: .zero)
         switchButton.isOn = false
         switchButton.isHidden = true
         switchButton.onTintColor = UIColor(named: "navigationControllerColor")
-        cell.accessoryView = switchButton
+        cell?.accessoryView = switchButton
         
         switch indexPath {
         case [0,0]:
-            cell.textLabel?.text = inheritedData.scheduleName
+            cell?.textLabel?.text = inheritedData.scheduleName
         case [1,0]:
-            cell.textLabel?.text = date + " Time: " + time
+            cell?.textLabel?.text = date + " Time: " + time
         case [1,1]:
-            cell.textLabel?.text = "Reminder status"
-            cell.accessoryView?.isHidden = false
+            cell?.textLabel?.text = "Reminder status"
+            cell?.accessoryView?.isHidden = false
             switchButton.isEnabled = false
         case[2,0]:
-            cell.textLabel?.text = inheritedData.scheduleCategoryName ?? data
+            cell?.textLabel?.text = inheritedData.scheduleCategoryName ?? data
         case [2,1]:
-            cell.textLabel?.text = inheritedData.scheduleCategoryType ?? data
+            cell?.textLabel?.text = inheritedData.scheduleCategoryType ?? data
         case [2,2]:
-            cell.textLabel?.text = inheritedData.scheduleCategoryURL ?? data
+            cell?.textLabel?.text = inheritedData.scheduleCategoryURL ?? data
             let text = inheritedData.scheduleCategoryURL
 
             if let success = text?.isURLValid(text: text ?? "") , !success {
-                cell.textLabel?.textColor = .systemBlue
+                cell?.textLabel?.textColor = .systemBlue
             } else {
-                cell.textLabel?.textColor = UIColor(named: "textColor")
+                cell?.textLabel?.textColor = UIColor(named: "textColor")
             }
         case [2,3]:
-            cell.textLabel?.text = inheritedData.scheduleCategoryNote ?? data
+            cell?.textLabel?.text = inheritedData.scheduleCategoryNote ?? data
         case [3,0]:
-            cell.backgroundColor = UIColor.color(withData: (inheritedData.scheduleColor)!)
+            cell?.backgroundColor = UIColor.color(withData: (inheritedData.scheduleColor)!)
         case [4,0]:
-            cell.textLabel?.text = data
-            cell.accessoryView?.isHidden = false
-            switchButton.isOn = inheritedData.scheduleRepeat ?? false
-            switchButton.isEnabled = false
+            let data = selectedScheduleModel.scheduleImage
+            let image = UIImage(data: data!)
+            customCell?.imageViewSchedule.image = image
+            return customCell!
         default:
             alertError(text: "Please,try again later\nError getting data", mainTitle: "Error!!")
         }
-        return cell
+        return cell!
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -272,6 +277,9 @@ extension OpenTaskDetailViewController: UITableViewDelegate, UITableViewDataSour
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if indexPath == [4,0] {
+            return 300
+        }
         return UITableView.automaticDimension
     }
     

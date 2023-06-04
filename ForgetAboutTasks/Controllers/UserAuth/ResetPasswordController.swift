@@ -46,10 +46,7 @@ class ResetPasswordViewController: UIViewController {
     @objc private func didTapResetPassword(){
         let auth = Auth.auth()
         guard let text = emailTextField.text, !text.isEmpty else { alertError(text: "Enter email"); return }
-//        guard text.isEmailValid() else {
-//            alertError(text: "Your email is not valid", mainTitle: "Error");
-//            return
-//        }
+        
         auth.sendPasswordReset(withEmail: text) { [weak self] errors in
             if let error = errors {
                 self?.alertError(text: error.localizedDescription, mainTitle: "Error")

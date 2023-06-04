@@ -30,7 +30,11 @@ class CreateEventScheduleViewController: UIViewController {
     private var cellBackgroundColor =  #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
     private var choosenDate: Date
     private var isStartEditing: Bool = false
-    private var cellImageView: UIImageView?
+    private var cellImageView: UIImageView = {
+       let image = UIImageView()
+        image.image = UIImage(systemName: "photo.circle")
+        return image
+    }()
     
     init(choosenDate: Date){
         self.choosenDate = choosenDate
@@ -97,9 +101,7 @@ class CreateEventScheduleViewController: UIViewController {
         }
     }
 
-    @objc private func didTapChangeCell(_ tag: AnyObject) {
-        let button = tag as! UIButton
-        let _ = IndexPath(row: button.tag, section: 4)
+    @objc private func didTapChangeCell() {
         let alert = UIAlertController(title: "", message: "What exactly do you want to do?", preferredStyle: .actionSheet)
         alert.addAction(UIAlertAction(title: "Set new image", style: .default,handler: { [self] _ in
             if UIImagePickerController.isSourceTypeAvailable(.photoLibrary){
@@ -118,9 +120,8 @@ class CreateEventScheduleViewController: UIViewController {
             }
         }))
         alert.addAction(UIAlertAction(title: "Delete image", style: .destructive,handler: { _ in
-            self.cellImageView?.image = UIImage(systemName: "photo.circle")
-            self.cellImageView?.sizeToFit()
-//            UserDefaults.standard.set(nil,forKey: "userImage")
+            let cell = self.tableView.cellForRow(at: [4,0])
+            cell?.imageView?.image = UIImage(named: "camera.fill")
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         present(alert, animated: true)
@@ -163,6 +164,7 @@ class CreateEventScheduleViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.register(ScheduleTableViewCell.self, forCellReuseIdentifier: ScheduleTableViewCell.identifier)
     }
     
     private func setupColorPicker(){
@@ -233,28 +235,22 @@ extension CreateEventScheduleViewController: UIImagePickerControllerDelegate, UI
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let image = info[.editedImage] as? UIImage{
             guard let data = image.jpegData(compressionQuality: 1.0) else { return}
-            let _ = try! PropertyListEncoder().encode(data)
-            cellImageView?.image = image
-            guard let index = tableView.indexPathForSelectedRow,
-                  let cell = tableView.cellForRow(at: index) else { alertError();return }
-            
+
+            scheduleModel.scheduleImage = data
+            guard let cell = tableView.cellForRow(at: [4,0]) else { alertError();return }
+
             cell.imageView?.image = image
-            cell.textLabel?.text = ""
-            cell.imageView?.frame = CGRect(x: 1, y: 1, width: tableView.frame.size.width-2, height: 200)
-            cell.accessoryView = nil
-            
-            cellImageView?.image = image
             picker.dismiss(animated: true)
-            tableView.deselectRow(at: index, animated: true)
-//            UserDefaults.standard.setValue(encode, forKey: "userImage")
-//            userImageView.image = image
+            tableView.deselectRow(at: [4,0], animated: true)
         } else {
             alertError(text: "Error!", mainTitle: "Can't get image and save it to event.\nTry again later!")
         }
         
+        
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        tableView.deselectRow(at: [4,0], animated: true)
         picker.dismiss(animated: true)
     }
     
@@ -273,13 +269,14 @@ extension CreateEventScheduleViewController: UITableViewDelegate, UITableViewDat
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell")
+        let customCell = (tableView.dequeueReusableCell(withIdentifier: ScheduleTableViewCell.identifier) as? ScheduleTableViewCell)!
         let data = cellsName[indexPath.section][indexPath.row]
         
-        cell.textLabel?.numberOfLines = 0
-        cell.contentView.layer.cornerRadius = 10
-        cell.backgroundColor = UIColor(named: "cellColor")
-        cell.textLabel?.text = data
+        cell?.textLabel?.numberOfLines = 0
+        cell?.contentView.layer.cornerRadius = 10
+        cell?.backgroundColor = UIColor(named: "cellColor")
+        cell?.textLabel?.text = data
         
         let switchButton = UISwitch(frame: .zero)
         switchButton.isOn = false
@@ -297,20 +294,18 @@ extension CreateEventScheduleViewController: UITableViewDelegate, UITableViewDat
         button.tag = indexPath.row
     
         if indexPath == [3,0] {
-            cell.backgroundColor = cellBackgroundColor
+            cell?.backgroundColor = cellBackgroundColor
         } else if indexPath == [1,1] {
-            cell.accessoryView = switchButton
-            cell.accessoryView?.isHidden = false
+            cell?.accessoryView = switchButton
+            cell?.accessoryView?.isHidden = false
         } else if indexPath == [4,0] {
-            if cellImageView == nil {
-                cell.accessoryView = button
-            }
+            return customCell
         } else {
-            cell.accessoryView?.isHidden = true
-            cell.accessoryView = nil
+            cell?.accessoryView?.isHidden = true
+            cell?.accessoryView = nil
         }
             
-        return cell
+        return cell!
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -323,7 +318,6 @@ extension CreateEventScheduleViewController: UITableViewDelegate, UITableViewDat
             alertTextField(cell: cellName, placeholder: "Enter text", keyboard: .default, table: tableView) {[self] text in
                 scheduleModel.scheduleName = text
                 cell?.textLabel?.text = text
-//                cellsName[indexPath.section][indexPath.row] = text
                 isStartEditing = true
             }
         case [1,0]:
@@ -370,12 +364,7 @@ extension CreateEventScheduleViewController: UITableViewDelegate, UITableViewDat
         case [3,0]:
             openColorPicker()
         case [4,0]:
-            tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
-            imagePicker.delegate = self
-            imagePicker.sourceType = .photoLibrary
-            imagePicker.allowsEditing = true
-            present(self.imagePicker, animated: true)
-            
+            didTapChangeCell()
         default:
             print("error")
         }
@@ -392,6 +381,8 @@ extension CreateEventScheduleViewController: UITableViewDelegate, UITableViewDat
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if indexPath == [2,3] && indexPath == [4,0]{
             return UITableView.automaticDimension
+        } else if indexPath == [4,0] {
+            return 300
         }
         return 45
     }

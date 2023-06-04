@@ -40,6 +40,7 @@
 		0A8AC1A629B9D4FA00EA052B /* ContactsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8AC1A529B9D4FA00EA052B /* ContactsVC.swift */; };
 		0A8AC1A829B9DBD300EA052B /* UserProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8AC1A729B9DBD300EA052B /* UserProfileVC.swift */; };
 		0A8D250A2A29CED300022622 /* CheckSuccessSaveProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8D25092A29CED300022622 /* CheckSuccessSaveProtocol.swift */; };
+		0A8D250D2A2C108D00022622 /* ScheduleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8D250C2A2C108D00022622 /* ScheduleTableViewCell.swift */; };
 		0A8DD8DB29BC8BEB00B2DDAB /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8DD8DA29BC8BEB00B2DDAB /* Formatters.swift */; };
 		0A99A8FD29CD855100CC5A42 /* AlertTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A99A8FC29CD855100CC5A42 /* AlertTextField.swift */; };
 		0A99A8FF29CD8FE000CC5A42 /* AllTasksToDoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A99A8FE29CD8FE000CC5A42 /* AllTasksToDoVC.swift */; };
@@ -123,6 +124,7 @@
 		0A8AC1A529B9D4FA00EA052B /* ContactsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsVC.swift; sourceTree = "<group>"; };
 		0A8AC1A729B9DBD300EA052B /* UserProfileVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileVC.swift; sourceTree = "<group>"; };
 		0A8D25092A29CED300022622 /* CheckSuccessSaveProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckSuccessSaveProtocol.swift; sourceTree = "<group>"; };
+		0A8D250C2A2C108D00022622 /* ScheduleTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleTableViewCell.swift; sourceTree = "<group>"; };
 		0A8DD8DA29BC8BEB00B2DDAB /* Formatters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Formatters.swift; sourceTree = "<group>"; };
 		0A99A8FC29CD855100CC5A42 /* AlertTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertTextField.swift; sourceTree = "<group>"; };
 		0A99A8FE29CD8FE000CC5A42 /* AllTasksToDoVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllTasksToDoVC.swift; sourceTree = "<group>"; };
@@ -236,6 +238,7 @@
 			children = (
 				0A9E1C4329D46851000CC9A9 /* ForgetAboutTasks.entitlements */,
 				0A8AC1A229B9D4D700EA052B /* Controllers */,
+				0A8D250B2A2C105800022622 /* Table VIew Custom Cells */,
 				0AEAA9F42A2687D400BE85A4 /* KeyChain  */,
 				0A99A90929CD9C9700CC5A42 /* UserDefaults */,
 				0AA604E029E1460E007ACE58 /* Model */,
@@ -297,6 +300,14 @@
 				0A99A90229CD98DD00CC5A42 /* Contacts */,
 			);
 			path = Controllers;
+			sourceTree = "<group>";
+		};
+		0A8D250B2A2C105800022622 /* Table VIew Custom Cells */ = {
+			isa = PBXGroup;
+			children = (
+				0A8D250C2A2C108D00022622 /* ScheduleTableViewCell.swift */,
+			);
+			path = "Table VIew Custom Cells";
 			sourceTree = "<group>";
 		};
 		0A8DD8D929BC8BD900B2DDAB /* DateFormatters */ = {
@@ -680,6 +691,7 @@
 				0AF2D6F12A1364EC0093A824 /* AlertUser.swift in Sources */,
 				0A99A8FD29CD855100CC5A42 /* AlertTextField.swift in Sources */,
 				0AA74A2129E6EAB200F01532 /* ColorConverters.swift in Sources */,
+				0A8D250D2A2C108D00022622 /* ScheduleTableViewCell.swift in Sources */,
 				0A99A8FF29CD8FE000CC5A42 /* AllTasksToDoVC.swift in Sources */,
 				0A8AC1A129B9D46D00EA052B /* ScheduleVC.swift in Sources */,
 				0AF2D6EF2A1141360093A824 /* ScheduleSearchResultVC.swift in Sources */,

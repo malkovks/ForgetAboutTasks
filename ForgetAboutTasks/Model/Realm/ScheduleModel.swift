@@ -10,13 +10,14 @@ import Foundation
 
 class ScheduleModel: Object {
     @Persisted var scheduleModelId = UUID().uuidString
-    @Persisted var scheduleDate: Date? //до этого было базовое свойство
-    @Persisted var scheduleTime: Date? //до этого было базовое свойство
+    @Persisted var scheduleDate: Date? 
+    @Persisted var scheduleTime: Date?
     @Persisted var scheduleName: String
     @Persisted var scheduleCategoryName: String?
     @Persisted var scheduleCategoryType: String?
     @Persisted var scheduleCategoryURL: String?
     @Persisted var scheduleCategoryNote: String?
+    @Persisted var scheduleImage: Data?
     @Persisted var scheduleColor: Data? 
     @Persisted var scheduleRepeat: Bool? = false
     @Persisted var scheduleWeekday: Int?   

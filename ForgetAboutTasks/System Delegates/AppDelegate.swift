@@ -10,11 +10,13 @@ import CoreData
 import Firebase
 import GoogleSignIn
 import UserNotifications
+import Contacts
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     let current = UNUserNotificationCenter.current()
+    let contactStore = CNContactStore()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         FirebaseApp.configure()
@@ -24,6 +26,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 print("Error successing to send notifications")
             } else {
                 print("Success to get user notification")
+            }
+        }
+        contactStore.requestAccess(for: .contacts) { success, error in
+            if !success {
+                
             }
         }
         

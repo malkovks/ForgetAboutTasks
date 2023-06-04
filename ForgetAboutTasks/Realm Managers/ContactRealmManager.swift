@@ -26,8 +26,6 @@ class ContactRealmManager {
     func deleteContactModel(model: ContactModel){
         try! localRealm.write {
             localRealm.delete(model)
-            print(model.contactID)
-            print("Contact was deleted")
         }
     }
     
