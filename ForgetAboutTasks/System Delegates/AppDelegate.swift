@@ -11,12 +11,16 @@ import Firebase
 import GoogleSignIn
 import UserNotifications
 import Contacts
+import Photos
+import AVFoundation
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     let current = UNUserNotificationCenter.current()
     let contactStore = CNContactStore()
+    let library = PHPhotoLibrary.self
+    let camera = AVCaptureDevice.self
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         FirebaseApp.configure()
@@ -29,8 +33,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
         contactStore.requestAccess(for: .contacts) { success, error in
-            if !success {
+            if success {
+                print("Allowed to get contacts from phone")
+            }
+        }
+        library.requestAuthorization { success in
+            switch success {
                 
+            case .denied:
+                print("Denied")
+            case .authorized:
+                print("Success allowed to images")
+            case .limited:
+                print("Limit")
+            @unknown default:
+                break
+            }
+        }
+        camera.requestAccess(for: .video) { success in
+            if success {
+                print("Success allowed to use camera")
             }
         }
         

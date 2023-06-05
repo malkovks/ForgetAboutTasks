@@ -12,8 +12,11 @@ class ContactModel: Object {
     
     @Persisted var contactID: String = UUID().uuidString
     @Persisted var contactName: String?
+    @Persisted var contactSurname: String?
+    @Persisted var contactAddress: String?
     @Persisted var contactPhoneNumber: String?
     @Persisted var contactMail: String?
     @Persisted var contactType: String?
     @Persisted var contactImage: Data?
+    @Persisted var contactDateBirthday: Date?
 }

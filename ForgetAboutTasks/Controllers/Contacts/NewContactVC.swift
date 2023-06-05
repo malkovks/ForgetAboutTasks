@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 import MessageUI
+import Contacts
 
 class NewContactViewController: UIViewController{
 
@@ -44,8 +45,10 @@ class NewContactViewController: UIViewController{
         if  let name = contactModel.contactName, let phone = contactModel.contactPhoneNumber,
             !name.isEmpty && !phone.isEmpty {
             ContactRealmManager.shared.saveContactModel(model: contactModel)
+            saveContactInContacts(model: contactModel)
             contactModel = ContactModel()
             delegate?.isSavedCompletely(boolean: true)
+            
             navigationController?.popViewController(animated: true)
             print("Contact was saved successfully")
         } else {
@@ -91,6 +94,32 @@ class NewContactViewController: UIViewController{
         let gesture = UITapGestureRecognizer(target: self, action: #selector(didTapOpenPhoto))
         gesture.numberOfTapsRequired = 1
         viewForTable.addGestureRecognizer(gesture)
+    }
+    
+    private func saveContactInContacts(model: ContactModel){
+        let contact = CNMutableContact()
+        let adres = CNMutablePostalAddress()
+        
+        
+        
+        guard let data = model.contactImage else { return }
+        contact.imageData = data
+        contact.givenName = model.contactName ?? "No name"
+        let email = CNLabeledValue(label: CNLabelHome, value: model.contactMail as? NSString ?? "No email")
+        contact.emailAddresses = [email]
+        let phone = String.format(with: "+X (XXX) XXX-XXXX", phone: model.contactPhoneNumber ?? "No number")
+        contact.phoneNumbers = [CNLabeledValue(label: CNLabelPhoneNumberiPhone, value: CNPhoneNumber(stringValue: phone))]
+        
+        let store = CNContactStore()
+        let saveRequest = CNSaveRequest()
+        saveRequest.add(contact, toContainerWithIdentifier: nil)
+        
+        do {
+            try store.execute(saveRequest)
+        } catch {
+            alertError(text: "Could not saved contact in Contacts List. Try again later", mainTitle: "Error saving!")
+        }
+        
     }
     
 
@@ -187,7 +216,7 @@ extension NewContactViewController: UIImagePickerControllerDelegate,UINavigation
         viewForTable.contactImageView.clipsToBounds = true
         viewForTable.contactImageView.layer.cornerRadius = viewForTable.contactImageView.frame.size.width/2
         let finalEditImage = viewForTable.contactImageView.image
-        guard let data = finalEditImage?.pngData() else { return }
+        guard let data = finalEditImage?.jpegData(compressionQuality: 1.0) else { return }
         contactModel.contactImage = data
         dismiss(animated: true)
     }

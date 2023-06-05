@@ -894,7 +894,9 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "Forget About Tasks";
 				INFOPLIST_KEY_NSCalendarsUsageDescription = "This app need Your access to calendar to get data and send it";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Please allow to use camera for setting up photo on user image";
+				INFOPLIST_KEY_NSContactsUsageDescription = "This app need Your access to contacts to get import and export data.";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Please allow to user your own photo library for Your choosing images for profile images";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Please allow to use photo library to import photos in some events";
 				INFOPLIST_KEY_NSRemindersUsageDescription = "Please allow to use notification to get fresh reminders from calendar";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
@@ -927,7 +929,9 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "Forget About Tasks";
 				INFOPLIST_KEY_NSCalendarsUsageDescription = "This app need Your access to calendar to get data and send it";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Please allow to use camera for setting up photo on user image";
+				INFOPLIST_KEY_NSContactsUsageDescription = "This app need Your access to contacts to get import and export data.";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Please allow to user your own photo library for Your choosing images for profile images";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Please allow to use photo library to import photos in some events";
 				INFOPLIST_KEY_NSRemindersUsageDescription = "Please allow to use notification to get fresh reminders from calendar";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;

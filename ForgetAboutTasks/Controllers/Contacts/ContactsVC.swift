@@ -157,26 +157,33 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
             showAlertForUser(text: "Contact saved successfully", duration: DispatchTime.now()+1, controllerView: view)
         }
     }
+    
+    func importContact(contacts: [CNContact]){
+        for contact in contacts {
+            let model = ContactModel()
+            guard let phone = contact.phoneNumbers.first?.value else { alertError(text: "Can't get data from Contacts", mainTitle: "Error"); return}
+            let email = contact.emailAddresses.first?.value
+            let numberPhone = CNPhoneNumber(stringValue: phone.stringValue).stringValue
+            let emailString = email as? String
+            model.contactImage = contact.imageData
+            model.contactName = contact.givenName + " " + contact.familyName + " " + contact.middleName
+            model.contactPhoneNumber = numberPhone
+            model.contactMail = emailString
+            
+            
+            ContactRealmManager.shared.saveContactModel(model: model)
+            tableView.reloadData()
+            showAlertForUser(text: "Choosen contact imported successfully", duration: DispatchTime.now()+1, controllerView: view)
+        }
+    }
+
+    
 }
 //MARK: - Contacts delegate
 extension ContactsViewController: CNContactPickerDelegate {
+    
     func contactPicker(_ picker: CNContactPickerViewController, didSelect contacts: [CNContact]) {
-        for contact in contacts {
-            let model = ContactModel()
-            guard let phoneNumber = contact.phoneNumbers.first?.value,
-                  let email = contact.emailAddresses.first?.label else { return }
-            let convertEmail = CNLabeledValue<NSString>.localizedString(forLabel: email)
-            let number = CNPhoneNumber(stringValue: phoneNumber.stringValue).stringValue
-            model.contactImage = contact.imageData
-            model.contactName = contact.givenName + " " + contact.familyName
-            model.contactPhoneNumber = number
-            model.contactMail = convertEmail
-            ContactRealmManager.shared.saveContactModel(model: model)
-            tableView.reloadData()
-//            model.contactPhoneNumber = contact.phoneNumbers.first
-//            model.contactType = contact.contactType
-            
-        }
+        importContact(contacts: contacts)
     }
 }
 
