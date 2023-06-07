@@ -16,8 +16,8 @@ class ScheduleAllEventViewController: UIViewController {
     private var scheduleDates: [Date]
     
     init(model: Results<ScheduleModel>){
-        let date = model.map({ $0.scheduleDate ?? Date ()}).sorted()
-        self.scheduleModel = model.sorted(byKeyPath: "scheduleDate")
+        let date = model.map({ $0.scheduleStartDate ?? Date ()}).sorted()
+        self.scheduleModel = model.sorted(byKeyPath: "scheduleStartDate")
         self.scheduleDates = date
         super.init(nibName: nil, bundle: nil)
     }
@@ -40,9 +40,10 @@ class ScheduleAllEventViewController: UIViewController {
     }
     //MARK: - Target methods
     @objc private func didTapOpenCalendar(){
-        alertDate(table: tableView, choosenDate: Date()) { _, date, text in
-            let model = self.realm.objects(ScheduleModel.self).filter("scheduleDate == %@", date)
+        alertDate(choosenDate: Date()) { _, date, text in
+            let model = self.realm.objects(ScheduleModel.self).filter("scheduleStartDate == %@", date)
             self.scheduleModel = model
+            self.tableView.reloadData()
         }
     }
     
@@ -104,7 +105,7 @@ extension ScheduleAllEventViewController: UITableViewDelegate, UITableViewDataSo
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let date = scheduleDates[section]
-        return scheduleModel.filter("scheduleDate == %@",date).count
+        return scheduleModel.filter("scheduleStartDate == %@",date).count
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -114,9 +115,9 @@ extension ScheduleAllEventViewController: UITableViewDelegate, UITableViewDataSo
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cellAllEvent")
         let date = scheduleDates[indexPath.section]
-        let event = scheduleModel.filter("scheduleDate == %@",date)
+        let event = scheduleModel.filter("scheduleStartDate == %@",date)
         let model = event[indexPath.row]
-        let dateConvert = DateFormatter.localizedString(from: model.scheduleDate ?? Date(), dateStyle: .medium, timeStyle: .none)
+        let dateConvert = DateFormatter.localizedString(from: model.scheduleStartDate ?? Date(), dateStyle: .medium, timeStyle: .none)
         let timeConvert = DateFormatter.localizedString(from: model.scheduleTime ?? Date(), dateStyle: .none, timeStyle: .short)
         cell.textLabel?.text = model.scheduleName
         cell.detailTextLabel?.text = dateConvert + ", " + timeConvert
@@ -131,7 +132,7 @@ extension ScheduleAllEventViewController: UITableViewDelegate, UITableViewDataSo
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let date = scheduleDates[indexPath.section]
-        let event = scheduleModel.filter("scheduleDate == %@ ", date)
+        let event = scheduleModel.filter("scheduleStartDate == %@ ", date)
         let model = event[indexPath.row]
         let vc = OpenTaskDetailViewController(model: model)
         let nav = UINavigationController(rootViewController: vc)

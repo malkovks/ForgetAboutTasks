@@ -69,6 +69,7 @@
 		0ACE797229DD95C600599C19 /* CreateTaskTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE797129DD95C600599C19 /* CreateTaskTableVC.swift */; };
 		0ACE797829DECF3300599C19 /* NewContactVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE797729DECF3300599C19 /* NewContactVC.swift */; };
 		0ACE797A29DED2D400599C19 /* NewContactCustomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE797929DED2D400599C19 /* NewContactCustomView.swift */; };
+		0ADAB9FC2A310EEA00A5C2B2 /* AlertPhoneNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ADAB9FB2A310EEA00A5C2B2 /* AlertPhoneNumber.swift */; };
 		0AEAA9F32A264BBF00BE85A4 /* ResetPasswordController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEAA9F22A264BBF00BE85A4 /* ResetPasswordController.swift */; };
 		0AEAA9F62A26884A00BE85A4 /* KeyChainClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEAA9F52A26884A00BE85A4 /* KeyChainClass.swift */; };
 		0AEAA9F82A272BB600BE85A4 /* EditContactVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEAA9F72A272BB600BE85A4 /* EditContactVC.swift */; };
@@ -154,6 +155,7 @@
 		0ACE797129DD95C600599C19 /* CreateTaskTableVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTaskTableVC.swift; sourceTree = "<group>"; };
 		0ACE797729DECF3300599C19 /* NewContactVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewContactVC.swift; sourceTree = "<group>"; };
 		0ACE797929DED2D400599C19 /* NewContactCustomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewContactCustomView.swift; sourceTree = "<group>"; };
+		0ADAB9FB2A310EEA00A5C2B2 /* AlertPhoneNumber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertPhoneNumber.swift; sourceTree = "<group>"; };
 		0AEAA9F22A264BBF00BE85A4 /* ResetPasswordController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPasswordController.swift; sourceTree = "<group>"; };
 		0AEAA9F52A26884A00BE85A4 /* KeyChainClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyChainClass.swift; sourceTree = "<group>"; };
 		0AEAA9F72A272BB600BE85A4 /* EditContactVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditContactVC.swift; sourceTree = "<group>"; };
@@ -448,6 +450,7 @@
 				0AA8EC5C29C76968004DC6DD /* AlertDate.swift */,
 				0AA8EC5E29C7AA56004DC6DD /* AlertTime.swift */,
 				0A99A8FC29CD855100CC5A42 /* AlertTextField.swift */,
+				0ADAB9FB2A310EEA00A5C2B2 /* AlertPhoneNumber.swift */,
 				0AA604DB29E03CB1007ACE58 /* AlertContacts.swift */,
 				0AA604DE29E04541007ACE58 /* AlertImagePicker.swift */,
 				0AB763B929E3FAC900BFDB0D /* AlertError.swift */,
@@ -684,6 +687,7 @@
 				0A8AC1A629B9D4FA00EA052B /* ContactsVC.swift in Sources */,
 				0AA604E929E16C05007ACE58 /* ColorExtensions.swift in Sources */,
 				0AA604DF29E04541007ACE58 /* AlertImagePicker.swift in Sources */,
+				0ADAB9FC2A310EEA00A5C2B2 /* AlertPhoneNumber.swift in Sources */,
 				0AA74A2429E715ED00F01532 /* DateFormatters.swift in Sources */,
 				0A0CE6F729C461F600A14648 /* CreateEventScheduleVC.swift in Sources */,
 				0AA8EC5F29C7AA56004DC6DD /* AlertTime.swift in Sources */,

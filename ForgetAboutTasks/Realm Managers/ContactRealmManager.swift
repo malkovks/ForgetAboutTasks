@@ -29,6 +29,13 @@ class ContactRealmManager {
         }
     }
     
+    func deleteAllContactModel(){
+        let objects = localRealm.objects(ContactModel.self)
+        try! localRealm.write {
+            localRealm.delete(objects)
+        }
+    }
+    
     func editAllTasksModel(user id: String,newModel:ContactModel){
 
         let model = localRealm.objects(ContactModel.self).filter("contactID == %@",id).first!
@@ -36,9 +43,14 @@ class ContactRealmManager {
             model.contactImage = newModel.contactImage ?? model.contactImage
             model.contactMail = newModel.contactMail ?? model.contactMail
             model.contactName = newModel.contactName ?? model.contactName
+            model.contactSurname = newModel.contactSurname ?? model.contactSurname
+            model.contactCountry = newModel.contactCountry ?? model.contactCountry
+            model.contactCity = newModel.contactCity ?? model.contactCity
+            model.contactAddress = newModel.contactAddress ?? model.contactAddress
+            model.contactPostalCode = newModel.contactPostalCode ?? model.contactPostalCode
+            model.contactDateBirthday = newModel.contactDateBirthday ?? model.contactDateBirthday
             model.contactPhoneNumber = newModel.contactPhoneNumber ?? model.contactPhoneNumber
             model.contactType = newModel.contactType ?? model.contactType
-            print("Edit work fine")
         }
     }
     

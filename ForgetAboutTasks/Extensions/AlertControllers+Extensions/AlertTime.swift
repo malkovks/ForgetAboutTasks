@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 
 extension UIViewController {
-    func alertTime(table: UITableView,choosenDate: Date, completiongHandler: @escaping (Date,String) -> Void) {
+    func alertTime(choosenDate: Date, completiongHandler: @escaping (Date,String) -> Void) {
         let alert = UIAlertController(title: "", message: nil, preferredStyle: .actionSheet)
         let datePicker = UIDatePicker()
         datePicker.locale = .current
@@ -28,10 +28,6 @@ extension UIViewController {
             let date = datePicker.date
 
             completiongHandler(date,timeString)
-            
-            DispatchQueue.main.async {
-                table.reloadData()
-            }
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .destructive))
         

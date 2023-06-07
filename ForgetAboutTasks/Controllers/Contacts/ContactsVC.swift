@@ -19,7 +19,7 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
     private var filteredContactData: Results<ContactModel>!
     private var localRealmData = try! Realm()
     
-//MARK: - UI elements
+    //MARK: - UI elements
     private var searchBarIsEmpty: Bool {
         guard let text = searchController.searchBar.text else { return true }
         return text.isEmpty
@@ -34,14 +34,26 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
     private let tableView = UITableView()
     
     private let refreshController: UIRefreshControl = {
-       let controller = UIRefreshControl()
+        let controller = UIRefreshControl()
         controller.tintColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
         controller.attributedTitle = NSAttributedString(string: "Pull to refresh")
         return controller
     }()
     
-    private lazy var importContacts: UIBarButtonItem = {
-        return UIBarButtonItem(image: UIImage(systemName: "square.and.arrow.down"), style: .done, target: self, action: #selector(didTapOpenContacts))
+    private lazy var importContactsButton: UIBarButtonItem = {
+        return UIBarButtonItem(image: UIImage(systemName: "arrow.down.circle.fill"), style: .done, target: self, action: #selector(didTapOpenContacts))
+    }()
+    
+    private lazy var createContactButton: UIBarButtonItem = {
+       return UIBarButtonItem(image: UIImage(systemName: "plus.circle.fill"), landscapeImagePhone: nil, style: .done, target: self, action: #selector(didTapCreateNewContact))
+    }()
+    
+    private lazy var editTableViewButton: UIBarButtonItem = {
+        return UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(didTapEditTable))
+    }()
+    
+    private lazy var deleteAllEventsButton: UIBarButtonItem = {
+        return UIBarButtonItem(image: UIImage(systemName: "trash.circle.fill"), style: .done, target: self, action: #selector(didTapClearTable))
     }()
     
     private let contactPicker = CNContactPickerViewController()
@@ -74,6 +86,28 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
         let nav = UINavigationController(rootViewController: vc)
         present(nav, animated:  true)
     }
+    
+    @objc private func didTapEditTable(){
+        if tableView.isEditing {
+            tableView.setEditing(false, animated: true)
+            navigationItem.setRightBarButtonItems([createContactButton,importContactsButton], animated: true)
+            navigationItem.rightBarButtonItem?.isEnabled = true
+        } else {
+            if !contactData.isEmpty {
+                tableView.setEditing(true, animated: true)
+                navigationItem.setRightBarButtonItems([deleteAllEventsButton], animated: true)
+                navigationItem.rightBarButtonItem?.isEnabled = true
+            } else {
+                navigationItem.rightBarButtonItem?.isEnabled = false
+            }
+            
+        }
+        
+    }
+    
+    @objc private func didTapClearTable(){
+        alertForDeleting()
+    }
     //MARK: - Setup methods
     private func setupView() {
         isSavedCompletely(boolean: false)
@@ -99,8 +133,8 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
     }
     
     private func setupNavigationController(){
-        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(didTapCreateNewContact))
-        navigationItem.rightBarButtonItems = [addButton,importContacts]
+        navigationItem.rightBarButtonItems = [createContactButton,importContactsButton]
+        navigationItem.leftBarButtonItems = [editTableViewButton]
         navigationController?.navigationBar.tintColor = UIColor(named: "navigationController")
         navigationController?.navigationItem.largeTitleDisplayMode = .always
         navigationController?.navigationBar.prefersLargeTitles = true
@@ -122,14 +156,14 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
     }
     
     private func actionsWithContact(model: ContactModel){
-        let name = String(describing: model.contactName)
-        let phone = String(describing: model.contactPhoneNumber)
+        let name = model.contactName ?? "No name"
+        let phone = model.contactPhoneNumber ?? "No number to call"
         let alert = UIAlertController(title: nil, message: "What exactly do you want?", preferredStyle: .actionSheet)
         alert.addAction(UIAlertAction(title: "Contact Details", style: .default,handler: { [weak self] _ in
             self?.openCurrentContact(model: model,boolean: false)
         }))
         alert.addAction(UIAlertAction(title: "Call to \(name)", style: .default,handler: { [weak self] _ in
-            guard let url = URL(string: "tel://\(phone)") else { self?.alertError();return}
+            guard let url = URL(string: "tel://\(phone)") else { self?.alertError(text: "Incorrect number");return}
             if UIApplication.shared.canOpenURL(url){
                 UIApplication.shared.open(url)
             } else {
@@ -152,6 +186,21 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
         present(alert, animated: true)
     }
     
+    func alertForDeleting(){
+        let alert = UIAlertController(title: "Warning!", message: "Are you sure you want to delete all contacts permanently?", preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction(title: "Delete", style: .destructive,handler: { [self] _ in
+            ContactRealmManager.shared.deleteAllContactModel()
+            let indexPaths = (0..<tableView.numberOfRows(inSection: 0)).map { IndexPath(row: $0, section: 0) }
+            tableView.deleteRows(at: indexPaths, with: .top)
+            tableView.setEditing(false, animated: true)
+            navigationItem.setRightBarButtonItems([createContactButton,importContactsButton], animated: true)
+            navigationItem.rightBarButtonItem?.isEnabled = true
+            
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        present(alert, animated: true)
+    }
+    
     func isSavedCompletely(boolean: Bool) {
         if boolean {
             showAlertForUser(text: "Contact saved successfully", duration: DispatchTime.now()+1, controllerView: view)
@@ -161,15 +210,17 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
     func importContact(contacts: [CNContact]){
         for contact in contacts {
             let model = ContactModel()
-            guard let phone = contact.phoneNumbers.first?.value else { alertError(text: "Can't get data from Contacts", mainTitle: "Error"); return}
+            
+            let phone = contact.phoneNumbers.first?.value ?? CNPhoneNumber(stringValue: "")
             let email = contact.emailAddresses.first?.value
-            let numberPhone = CNPhoneNumber(stringValue: phone.stringValue).stringValue
+            var numberPhone = CNPhoneNumber(stringValue: phone.stringValue).stringValue
+            numberPhone = numberPhone.isPhoneNumberValid(text: numberPhone) ?? "No number"
+
             let emailString = email as? String
             model.contactImage = contact.imageData
             model.contactName = contact.givenName + " " + contact.familyName + " " + contact.middleName
             model.contactPhoneNumber = numberPhone
             model.contactMail = emailString
-            
             
             ContactRealmManager.shared.saveContactModel(model: model)
             tableView.reloadData()
@@ -219,11 +270,13 @@ extension ContactsViewController: UITableViewDelegate, UITableViewDataSource {
         cell.imageView?.frame = .zero
         cell.imageView?.contentMode = .scaleToFill
         cell.imageView?.tintColor = UIColor(named: "navigationControllerColor")
-        
-        let number = String.format(with: "+X (XXX) XXX-XXXX", phone: data.contactPhoneNumber ?? "Enter phone number")
+        let number = data.contactPhoneNumber ?? "No phone number"
+//        if data.contactPhoneNumber?.count ?? 10 > 8 {
+//            number = String.format(with: "+X (XXX) XXX-XXXX", phone: data.contactPhoneNumber ?? "Enter phone number")
+//        }
         
         cell.textLabel?.text = data.contactName
-        cell.detailTextLabel?.text = "Phone number: " + number
+        cell.detailTextLabel?.text = "Phone number: " + (number)
         cell.imageView?.image = UIImage(systemName: "person.crop.circle.fill")
         cell.imageView?.frame(forAlignmentRect: CGRect(x: 0, y: 0, width: 50, height: 50))
         

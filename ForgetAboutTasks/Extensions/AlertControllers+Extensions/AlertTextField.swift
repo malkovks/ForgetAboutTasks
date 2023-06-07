@@ -7,10 +7,10 @@
 
 import UIKit
 
-extension UIViewController: UITextFieldDelegate {
+extension UIViewController{
     
     
-    func alertTextField(cell title: String,placeholder: String,keyboard type: UIKeyboardType,table: UITableView, completion: @escaping (String) -> Void) {
+    func alertTextField(cell title: String,placeholder: String,keyboard type: UIKeyboardType, completion: @escaping (String) -> Void) {
         
         let alert = UIAlertController(title: "", message: title, preferredStyle: .alert)
         alert.addTextField(configurationHandler: { [self] textField in
@@ -18,7 +18,6 @@ extension UIViewController: UITextFieldDelegate {
             textField.clearButtonMode = .whileEditing
             textField.keyboardType = type
             textField.resignFirstResponder()
-            textField.delegate = self
             textField.returnKeyType = .continue
             
             if type == .default {

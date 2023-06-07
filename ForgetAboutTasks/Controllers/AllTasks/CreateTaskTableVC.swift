@@ -138,31 +138,31 @@ extension CreateTaskTableViewController: UITableViewDelegate, UITableViewDataSou
         let cell = tableView.cellForRow(at: indexPath)
         switch indexPath {
         case [0,0]:
-            alertTextField(cell: cellName, placeholder: "Enter title of event", keyboard: .default, table: tableView) { [self] text in
+            alertTextField(cell: cellName, placeholder: "Enter title of event", keyboard: .default) { [self] text in
                 cellsName[indexPath.section][indexPath.row] = text
                 tasksModel.allTaskNameEvent = text
                 cell?.textLabel?.text = text
             }
         case [1,0]:
-            alertDate(table: tableView, choosenDate: nil) { [self] _ , date, dateString in
+            alertDate( choosenDate: nil) { [self] _ , date, dateString in
                 cellsName[indexPath.section][indexPath.row] = "Date: " + dateString
                 tasksModel.allTaskDate = date
                 cell?.textLabel?.text = dateString
             }
         case [2,0]:
-            alertTime(table: tableView, choosenDate: Date()) {  [self] date, timeString in
+            alertTime(choosenDate: Date()) {  [self] date, timeString in
                 cellsName[indexPath.section][indexPath.row] = "Time: " + timeString
                 tasksModel.allTaskTime = date
                 cell?.textLabel?.text = timeString
             }
         case [3,0]:
-            alertTextField(cell: cellName, placeholder: "Enter notes value", keyboard: .default, table: tableView) { [self] text in
+            alertTextField(cell: cellName, placeholder: "Enter notes value", keyboard: .default) { [self] text in
                 cellsName[indexPath.section][indexPath.row] = text
                 tasksModel.allTaskNotes = text
                 cell?.textLabel?.text = text
             }
         case [4,0]:
-            alertTextField(cell: cellName, placeholder: "Enter URL value", keyboard: .URL, table: tableView, completion: { [self] text in
+            alertTextField(cell: cellName, placeholder: "Enter URL value", keyboard: .URL) { [self] text in
                 if text.isURLValid(text: text) {
                     cellsName[indexPath.section][indexPath.row] = text
                     tasksModel.allTaskURL = text
@@ -171,7 +171,7 @@ extension CreateTaskTableViewController: UITableViewDelegate, UITableViewDataSou
                     alertError(text: "Try again!\nEnter www. in URL link and pick a domain", mainTitle: "Warning!")
                 }
                 
-            })
+            }
         case [5,0]:
             openColorPicker()
         default:

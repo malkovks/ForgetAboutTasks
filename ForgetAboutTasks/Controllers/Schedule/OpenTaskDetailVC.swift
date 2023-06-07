@@ -61,7 +61,7 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
     
     @objc private func didTapEdit(){
         let colorCell = UIColor.color(withData: selectedScheduleModel.scheduleColor!) ?? #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
-        let choosenDate = selectedScheduleModel.scheduleDate ?? Date()
+        let choosenDate = selectedScheduleModel.scheduleStartDate ?? Date()
         let vc = EditEventScheduleViewController(cellBackgroundColor: colorCell, choosenDate: choosenDate, scheduleModel: selectedScheduleModel)
         vc.delegate = self
         let nav = UINavigationController(rootViewController: vc)
@@ -78,7 +78,7 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
             var model: String?
             switch indexPath {
             case [0,0]: model = selectedScheduleModel.scheduleName
-            case [1,0]: model = DateFormatter.localizedString(from: selectedScheduleModel.scheduleDate ?? Date(), dateStyle: .medium, timeStyle: .short)
+            case [1,0]: model = DateFormatter.localizedString(from: selectedScheduleModel.scheduleStartDate ?? Date(), dateStyle: .medium, timeStyle: .short)
             case [2,0]: model = selectedScheduleModel.scheduleCategoryName
             case [2,1]: model = selectedScheduleModel.scheduleCategoryType
             case [2,3]: model = selectedScheduleModel.scheduleCategoryNote
@@ -167,7 +167,7 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
     private func checkPlannedNotification() -> Bool {
         var value = Bool()
         let center = UNUserNotificationCenter.current()
-        let date = selectedScheduleModel.scheduleDate!
+        let date = selectedScheduleModel.scheduleStartDate!
         print(date)
         center.getPendingNotificationRequests { requests in
             let notOnDate = requests.filter { request in
@@ -213,7 +213,7 @@ extension OpenTaskDetailViewController: UITableViewDelegate, UITableViewDataSour
         let inheritedData = selectedScheduleModel
         let data = cellsName[indexPath.section][indexPath.row]
         let time = DateFormatter.localizedString(from: inheritedData.scheduleTime ?? Date(), dateStyle: .none, timeStyle:.short)
-        let date = DateFormatter.localizedString(from: inheritedData.scheduleDate ?? Date(), dateStyle: .medium, timeStyle:.none)
+        let date = DateFormatter.localizedString(from: inheritedData.scheduleStartDate ?? Date(), dateStyle: .medium, timeStyle:.none)
         
         
         cell?.backgroundColor = UIColor(named: "cellColor")

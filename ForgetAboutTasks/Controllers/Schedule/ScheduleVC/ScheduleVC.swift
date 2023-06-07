@@ -183,7 +183,7 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
         if firstLoad == false {
             if monthPosition == .current {
                 let predicate = NSPredicate(format: "scheduleWeekday = \(weekday) AND scheduleRepeat = true")
-                let predicateUnrepeat = NSPredicate(format: "scheduleRepeat = false AND scheduleDate BETWEEN %@", [dateStart,dateEnd])
+                let predicateUnrepeat = NSPredicate(format: "scheduleRepeat = false AND scheduleStartDate BETWEEN %@", [dateStart,dateEnd])
                 let compound = NSCompoundPredicate(type: .or, subpredicates: [predicate,predicateUnrepeat])
                 let value = localRealm.objects(ScheduleModel.self).filter(compound)
                 let vc = CreateTaskForDayController(model: value, choosenDate: date)
@@ -218,7 +218,7 @@ extension ScheduleViewController: FSCalendarDelegate, FSCalendarDataSource {
         var eventCounts = [String: Int]()
         
         for event in scheduleModel {
-            let dateModel = event.scheduleDate ?? Date()
+            let dateModel = event.scheduleStartDate ?? Date()
             let date = DateFormatter.localizedString(from: dateModel, dateStyle: .medium, timeStyle: .none)
             if eventCounts[date] != nil {
                 eventCounts[date]! += 1
@@ -254,7 +254,7 @@ extension ScheduleViewController: UISearchResultsUpdating,UISearchBarDelegate {
     func filterTable(_ text: String) -> Results<ScheduleModel>{
         loadingData()
         let predicate = NSPredicate(format: "scheduleName CONTAINS[c] %@", text)
-        filteredModel = filteredModel.filter(predicate).sorted(byKeyPath: "scheduleDate")
+        filteredModel = filteredModel.filter(predicate).sorted(byKeyPath: "scheduleStartDate")
         return filteredModel ?? scheduleModel
     }
 }

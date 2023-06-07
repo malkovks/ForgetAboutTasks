@@ -14,14 +14,15 @@ class NewContactViewController: UIViewController{
 
     weak var delegate: CheckSuccessSaveProtocol?
     
-    private let headerArray = ["Name","Phone","Mail","Type"]
-    private var cellsName = [["Name"],
-                             ["Phone number"],
-                             ["Mail"],
+    private let headerArray = ["","","","",""]
+    private var cellsName = [["Name", "Second Name"],
+                             ["Phone number","Mail"],
+                             ["Country","City","Address","Postal Code"],
+                             ["Birthday"],
                              ["Type of contact"]]
     private var contactModel = ContactModel()
     //MARK: - UI elements
-    private let tableView = UITableView()
+    private let tableView = UITableView(frame: .zero, style: .insetGrouped)
     private let viewForTable = NewContactCustomView()
     
     private let labelForImageView: UILabel = {
@@ -71,8 +72,8 @@ class NewContactViewController: UIViewController{
     }
     
     private func setupTableView(){
-        tableView.isScrollEnabled = false
-        tableView.bounces = false
+        tableView.isScrollEnabled = true
+        tableView.bounces = true
         tableView.backgroundColor = UIColor(named: "backgroundColor")
         tableView.delegate = self
         tableView.dataSource = self
@@ -98,9 +99,6 @@ class NewContactViewController: UIViewController{
     
     private func saveContactInContacts(model: ContactModel){
         let contact = CNMutableContact()
-        let adres = CNMutablePostalAddress()
-        
-        
         
         guard let data = model.contactImage else { return }
         contact.imageData = data
@@ -133,17 +131,23 @@ extension NewContactViewController: MFMailComposeViewControllerDelegate{
 
 extension NewContactViewController: UITableViewDelegate, UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        4
+        5
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        switch section {
+        case 0: return 2
+        case 1: return 2
+        case 2: return 4
+        case 3: return 1
+        case 4: return 1
+        default: return 0
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "tasksCell", for: indexPath)
         let data = cellsName[indexPath.section][indexPath.row]
-        cell.layer.cornerRadius = 10
         cell.backgroundColor = UIColor(named: "cellColor")
         cell.textLabel?.text = data
         
@@ -154,21 +158,27 @@ extension NewContactViewController: UITableViewDelegate, UITableViewDataSource {
         tableView.deselectRow(at: indexPath, animated: true)
         let cell = tableView.cellForRow(at: indexPath)
         let cellName = cellsName[indexPath.section][indexPath.row]
-        switch indexPath.section {
-        case 0:
-            alertTextField(cell: cellName, placeholder: "Enter name of contact", keyboard: .default, table: tableView) { [unowned self] text in
+        switch indexPath{
+        case [0,0]:
+            alertTextField(cell: cellName, placeholder: "Enter first name", keyboard: .default) { [unowned self] text in
                 self.cellsName[indexPath.section][indexPath.row] = text
                 cell?.textLabel?.text = text
                 contactModel.contactName = text
             }
-        case 1:
-            alertTextField(cell: cellName, placeholder: "Enter number of contact", keyboard: .numberPad, table: tableView) { [unowned self] text in
+        case [0,1]:
+            alertTextField(cell: cellName, placeholder: "Enter secon name", keyboard: .default) { [unowned self] text in
+                self.cellsName[indexPath.section][indexPath.row] = text
+                cell?.textLabel?.text = text
+                contactModel.contactSurname = text
+            }
+        case [1,0]:
+            alertPhoneNumber(cell: cellName, placeholder: "Enter valid number", keyboard: .numberPad) { [unowned self] text in
                 self.cellsName[indexPath.section][indexPath.row] = text
                 cell?.textLabel?.text = text
                 contactModel.contactPhoneNumber = text
             }
-        case 2:
-            alertTextField(cell: cellName, placeholder: "Enter mail", keyboard: .emailAddress, table: tableView) { [weak self] text in
+        case [1,1]:
+            alertTextField(cell: cellName, placeholder: "Enter mail", keyboard: .emailAddress) { [weak self] text in
                 if text.emailValidation(email: text) {
                     self?.cellsName[indexPath.section][indexPath.row] = text.lowercased()
                     self?.contactModel.contactMail = text
@@ -177,8 +187,28 @@ extension NewContactViewController: UITableViewDelegate, UITableViewDataSource {
                     self?.alertError(text: "Enter the @ domain and country domain", mainTitle: "Warning")
                 }
             }
-        case 3:
-            alertFriends(tableView: tableView) { [ weak self] text in
+        case [2,0]: alertTextField(cell: cellName, placeholder: "Enter name of country", keyboard: .default) { [weak self]  text in
+            cell?.textLabel?.text = text
+            self?.contactModel.contactCountry = text
+        }
+        case [2,1]: alertTextField(cell: cellName, placeholder: "Enter name of city", keyboard: .default) { [weak self]  text in
+            cell?.textLabel?.text = text
+            self?.contactModel.contactCity = text
+        }
+        case [2,2]: alertTextField(cell: cellName, placeholder: "Enter the address", keyboard: .default) { [weak self]  text in
+            cell?.textLabel?.text = text
+            self?.contactModel.contactAddress = text
+        }
+        case [2,3]: alertTextField(cell: cellName, placeholder: "Enter postal code", keyboard: .default) { [weak self]  text in
+            cell?.textLabel?.text = text
+            self?.contactModel.contactPostalCode = text
+        }
+        case [3,0]: alertDate( choosenDate: Date()) { [weak self] _, birthday, text in
+            cell?.textLabel?.text = text
+            self?.contactModel.contactDateBirthday = birthday
+        }
+        case [4,0]:
+            alertFriends { [ weak self] text in
                 self?.cellsName[indexPath.section][indexPath.row] = text
                 self?.contactModel.contactType = text
                 cell?.textLabel?.text = text
@@ -233,14 +263,14 @@ extension NewContactViewController {
             make.height.width.equalTo(180)
             make.centerX.equalToSuperview()
         }
-        
+
         view.addSubview(labelForImageView)
         labelForImageView.snp.makeConstraints { make in
             make.top.equalTo(viewForTable.snp.bottom).offset(10)
             make.height.equalTo(25)
             make.centerX.equalToSuperview()
         }
-        
+
         view.addSubview(tableView)
         tableView.snp.makeConstraints { make in
             make.top.equalTo(labelForImageView.snp.bottom).offset(20)

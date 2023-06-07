@@ -46,6 +46,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 print("Success allowed to images")
             case .limited:
                 print("Limit")
+            case .notDetermined:
+                print("Not determined")
+            case .restricted:
+                print("Restricted")
             @unknown default:
                 break
             }

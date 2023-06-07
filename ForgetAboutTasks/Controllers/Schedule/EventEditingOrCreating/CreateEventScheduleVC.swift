@@ -91,7 +91,7 @@ class CreateEventScheduleViewController: UIViewController {
     
     @objc private func didTapSetReminder(sender: UISwitch){
         if sender.isOn {
-            if scheduleModel.scheduleDate == nil && scheduleModel.scheduleTime == nil {
+            if scheduleModel.scheduleStartDate == nil && scheduleModel.scheduleTime == nil {
                 alertError(text: "Enter date for setting reminder", mainTitle: "Error set up reminder!")
             } else {
                 reminderStatus = true
@@ -190,7 +190,7 @@ class CreateEventScheduleViewController: UIViewController {
         content.body = "\(date)"
         content.subtitle = "\(model.scheduleName)"
         content.sound = .defaultRingtone
-        let dateFormat = DateFormatter.localizedString(from: scheduleModel.scheduleDate ?? Date(), dateStyle: .medium, timeStyle:.none)
+        let dateFormat = DateFormatter.localizedString(from: scheduleModel.scheduleStartDate ?? Date(), dateStyle: .medium, timeStyle:.none)
         content.userInfo = ["userNotification": dateFormat]
         let components = Calendar.current.dateComponents([.day,.month,.year,.hour,.minute,.second], from: dateS)
         let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
@@ -207,7 +207,7 @@ class CreateEventScheduleViewController: UIViewController {
         if scheduleModel.scheduleName == "Unknown" {
             alertError(text: "Enter value in Name cell")
             return false
-        } else if scheduleModel.scheduleDate == nil {
+        } else if scheduleModel.scheduleStartDate == nil {
             alertError(text: "Choose date of event")
             return false
         } else if scheduleModel.scheduleTime == nil {
@@ -315,7 +315,7 @@ extension CreateEventScheduleViewController: UITableViewDelegate, UITableViewDat
         
         switch indexPath {
         case [0,0]:
-            alertTextField(cell: cellName, placeholder: "Enter text", keyboard: .default, table: tableView) {[self] text in
+            alertTextField(cell: cellName, placeholder: "Enter text", keyboard: .default) {[self] text in
                 scheduleModel.scheduleName = text
                 cell?.textLabel?.text = text
                 isStartEditing = true
@@ -323,25 +323,25 @@ extension CreateEventScheduleViewController: UITableViewDelegate, UITableViewDat
         case [1,0]:
             alertTimeInline(table: tableView, choosenDate: choosenDate) { [self] date, timeString, weekday in
                 scheduleModel.scheduleTime = date
-                scheduleModel.scheduleDate = date
+                scheduleModel.scheduleStartDate = date
                 scheduleModel.scheduleWeekday = weekday
                 cell?.textLabel?.text = timeString
                 isStartEditing = true
             }
         case [2,0]:
-            alertTextField(cell: "Enter Name of event", placeholder: "Enter the text", keyboard: .default,table: tableView) { [self] text in
+            alertTextField(cell: "Enter Name of event", placeholder: "Enter the text", keyboard: .default) { [self] text in
                 scheduleModel.scheduleCategoryName = text
                 cell?.textLabel?.text = text
                 isStartEditing = true
             }
         case [2,1]:
-            alertTextField(cell: "Enter Type of event", placeholder: "Enter the text", keyboard: .default,table: tableView) { [self] text in
+            alertTextField(cell: "Enter Type of event", placeholder: "Enter the text", keyboard: .default) { [self] text in
                 scheduleModel.scheduleCategoryType = text
                 cell?.textLabel?.text = text
                 isStartEditing = true
             }
         case [2,2]:
-            alertTextField(cell: "Enter URL name with domain", placeholder: "Enter URL", keyboard: .URL,table: tableView) { [self] text in
+            alertTextField(cell: "Enter URL name with domain", placeholder: "Enter URL", keyboard: .URL) { [self] text in
                 if text.isURLValid(text: text) {
                     cell?.textLabel?.text = text
                     scheduleModel.scheduleCategoryURL = text
@@ -356,7 +356,7 @@ extension CreateEventScheduleViewController: UITableViewDelegate, UITableViewDat
                 }
             }
         case [2,3]:
-            alertTextField(cell: "Enter Notes of event", placeholder: "Enter the text", keyboard: .default,table: tableView) { [self] text in
+            alertTextField(cell: "Enter Notes of event", placeholder: "Enter the text", keyboard: .default) { [self] text in
                 cell?.textLabel?.text = text
                 cellsName[indexPath.section][indexPath.row] = text
                 isStartEditing = true

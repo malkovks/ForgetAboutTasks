@@ -115,7 +115,7 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
         if segment.selectedSegmentIndex == 0 {
             loadingRealmData(predicate: predicate, typeOf: "scheduleTime")
         } else if segment.selectedSegmentIndex == 1 {
-            loadingRealmData(predicate: predicate, typeOf: "scheduleDate")
+            loadingRealmData(predicate: predicate, typeOf: "scheduleStartDate")
         } else if segment.selectedSegmentIndex == 2 {
             loadingRealmData(predicate: predicate, typeOf: "scheduleName")
         }
@@ -175,7 +175,7 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
         let components = calendar.dateComponents([.weekday], from: date)
         let weekday = components.weekday ?? 1
         let predicate = NSPredicate(format: "scheduleWeekday = \(weekday) AND scheduleRepeat = true")
-        let predicateUnrepeat = NSPredicate(format: "scheduleRepeat = false AND scheduleDate BETWEEN %@", [dateStart,dateEnd])
+        let predicateUnrepeat = NSPredicate(format: "scheduleRepeat = false AND scheduleStartDate BETWEEN %@", [dateStart,dateEnd])
         let compound = NSCompoundPredicate(type: .or, subpredicates: [predicate,predicateUnrepeat])
         return compound
         
@@ -210,7 +210,7 @@ extension CreateTaskForDayController: UITableViewDelegate, UITableViewDataSource
         
         let color = UIColor.color(withData: data.scheduleColor!) ?? #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
         
-        if let date = data.scheduleDate, let time = data.scheduleTime {
+        if let date = data.scheduleStartDate, let time = data.scheduleTime {
             let date = DateFormatter.localizedString(from: date, dateStyle: .medium, timeStyle: .none)
             let time = Formatters.instance.timeStringFromDate(date: time)
             cell.textLabel?.text = data.scheduleName

@@ -169,7 +169,7 @@ extension EditTaskTableViewController: UITableViewDelegate, UITableViewDataSourc
     
         switch indexPath {
         case [0,0]:
-            alertTextField(cell: cellName, placeholder: "Enter title of event", keyboard: .default, table: tableView) { [self] text in
+            alertTextField(cell: cellName, placeholder: "Enter title of event", keyboard: .default) { [self] text in
                 cellsName[indexPath.section][indexPath.row] = text
                 cell?.textLabel?.text = text
                 editedTaskModel.allTaskNameEvent = text
@@ -177,7 +177,7 @@ extension EditTaskTableViewController: UITableViewDelegate, UITableViewDataSourc
                 isStartEditing = true
             }
         case [1,0]:
-            alertDate(table: tableView, choosenDate: nil) { [self] _ , date, dateString in
+            alertDate(choosenDate: nil) { [self] _ , date, dateString in
                 cellsName[indexPath.section][indexPath.row] = dateString
                 cell?.textLabel?.text = dateString
                 editedTaskModel.allTaskDate = date
@@ -185,7 +185,7 @@ extension EditTaskTableViewController: UITableViewDelegate, UITableViewDataSourc
                 isStartEditing = true
             }
         case [2,0]:
-            alertTime(table: tableView, choosenDate: Date()) {  [self] date, timeString in
+            alertTime(choosenDate: Date()) {  [self] date, timeString in
                 cellsName[indexPath.section][indexPath.row] = timeString
                 editedTaskModel.allTaskTime = date
                 cell?.textLabel?.text = timeString
@@ -193,7 +193,7 @@ extension EditTaskTableViewController: UITableViewDelegate, UITableViewDataSourc
                 isStartEditing = true
             }
         case [3,0]:
-            alertTextField(cell: cellName, placeholder: "Enter notes value", keyboard: .default, table:tableView) { [self] text in
+            alertTextField(cell: cellName, placeholder: "Enter notes value", keyboard: .default) { [self] text in
                 cellsName[indexPath.section][indexPath.row] = text
                 editedTaskModel.allTaskNotes = text
                 cell?.textLabel?.text = text
@@ -201,7 +201,7 @@ extension EditTaskTableViewController: UITableViewDelegate, UITableViewDataSourc
                 isStartEditing = true
             }
         case [4,0]:
-            alertTextField(cell: cellName, placeholder: "Enter URL value", keyboard: .URL, table: tableView, completion: { [self] text in
+            alertTextField(cell: cellName, placeholder: "Enter URL value", keyboard: .URL, completion: { [self] text in
                 if text.isURLValid(text: text){
                     cellsName[indexPath.section][indexPath.row] = text
                     editedTaskModel.allTaskURL = text

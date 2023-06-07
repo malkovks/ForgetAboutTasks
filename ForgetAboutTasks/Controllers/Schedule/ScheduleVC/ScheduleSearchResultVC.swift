@@ -47,7 +47,7 @@ extension ScheduleSearchResultViewController: UITableViewDelegate, UITableViewDa
         let model = scheduleModel?[indexPath.row]
         cell.backgroundView?.tintColor = UIColor(named: "cellColor")
         
-        let timeFF = Formatters.instance.timeStringFromDate(date: model?.scheduleDate ?? Date())
+        let timeFF = Formatters.instance.timeStringFromDate(date: model?.scheduleStartDate ?? Date())
         let dateF = DateFormatter.localizedString(from: model?.scheduleTime ?? Date(), dateStyle: .medium, timeStyle: .none)
         
         cell.textLabel?.text = model?.scheduleName

@@ -98,7 +98,7 @@ class EditEventScheduleViewController: UIViewController {
     
     @objc private func didTapSetReminder(sender: UISwitch){
         if sender.isOn {
-            if editedScheduleModel.scheduleDate == nil && editedScheduleModel.scheduleTime == nil {
+            if editedScheduleModel.scheduleStartDate == nil && editedScheduleModel.scheduleTime == nil {
                 alertError(text: "Enter date for setting reminder", mainTitle: "Error set up reminder!")
             } else {
                 reminderStatus = true
@@ -158,7 +158,7 @@ class EditEventScheduleViewController: UIViewController {
         content.body = "\(date)"
         content.subtitle = "\(model.scheduleName)"
         content.sound = .defaultRingtone
-        let dateFormat = DateFormatter.localizedString(from: scheduleModel.scheduleDate ?? Date(), dateStyle: .medium, timeStyle:.none)
+        let dateFormat = DateFormatter.localizedString(from: scheduleModel.scheduleStartDate ?? Date(), dateStyle: .medium, timeStyle:.none)
         content.userInfo = ["userNotification": dateFormat]
         let components = Calendar.current.dateComponents([.day,.month,.year,.hour,.minute,.second], from: dateS)
         let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
@@ -189,7 +189,7 @@ class EditEventScheduleViewController: UIViewController {
         if scheduleModel.scheduleName == "Unknown" {
             alertError(text: "Enter value in Name cell")
             return false
-        } else if scheduleModel.scheduleDate == nil {
+        } else if scheduleModel.scheduleStartDate == nil {
             alertError(text: "Choose date of event")
             return false
         } else if scheduleModel.scheduleTime == nil {
@@ -297,7 +297,7 @@ extension EditEventScheduleViewController: UITableViewDelegate, UITableViewDataS
         
             switch indexPath {
             case [0,0]:
-                alertTextField(cell: cellName, placeholder: "Enter text", keyboard: .default, table: tableView) {[self] text in
+                alertTextField(cell: cellName, placeholder: "Enter text", keyboard: .default) {[self] text in
                     editedScheduleModel.scheduleName = text
                     cellsName[indexPath.section][indexPath.row] = text
                     isStartEditing = true
@@ -305,28 +305,28 @@ extension EditEventScheduleViewController: UITableViewDelegate, UITableViewDataS
             case [1,0]:
                 alertTimeInline(table: tableView, choosenDate: choosenDate) { [self] date, timeString, weekday in
                     editedScheduleModel.scheduleTime = date
-                    editedScheduleModel.scheduleDate = date
+                    editedScheduleModel.scheduleStartDate = date
                     editedScheduleModel.scheduleWeekday = weekday
                     cell?.textLabel?.text = timeString
                     cellsName[indexPath.section][indexPath.row] = timeString
                     isStartEditing = true
                 }
             case [2,0]:
-                alertTextField(cell: "Enter Name of event", placeholder: "Enter the text", keyboard: .default,table: tableView) { [self] text in
+                alertTextField(cell: "Enter Name of event", placeholder: "Enter the text", keyboard: .default) { [self] text in
                     editedScheduleModel.scheduleCategoryName = text
                     cellsName[indexPath.section][indexPath.row] = text
                     cell?.textLabel?.text = text
                     isStartEditing = true
                 }
             case [2,1]:
-                alertTextField(cell: "Enter Type of event", placeholder: "Enter the text", keyboard: .default,table: tableView) { [self] text in
+                alertTextField(cell: "Enter Type of event", placeholder: "Enter the text", keyboard: .default) { [self] text in
                     editedScheduleModel.scheduleCategoryType = text
                     cellsName[indexPath.section][indexPath.row] = text
                     cell?.textLabel?.text = text
                     isStartEditing = true
                 }
             case [2,2]:
-                alertTextField(cell: "Enter URL name with domain", placeholder: "Enter URL", keyboard: .URL,table: tableView) { [self] text in
+                alertTextField(cell: "Enter URL name with domain", placeholder: "Enter URL", keyboard: .URL) { [self] text in
                     if text.isURLValid(text: text) {
                         cellsName[indexPath.section][indexPath.row] = text
                         editedScheduleModel.scheduleCategoryURL = text
@@ -343,7 +343,7 @@ extension EditEventScheduleViewController: UITableViewDelegate, UITableViewDataS
                     }
                 }
             case [2,3]:
-                alertTextField(cell: "Enter Notes of event", placeholder: "Enter the text", keyboard: .default,table: tableView) { [self] text in
+                alertTextField(cell: "Enter Notes of event", placeholder: "Enter the text", keyboard: .default) { [self] text in
                     editedScheduleModel.scheduleCategoryNote = text
                     cellsName[indexPath.section][indexPath.row] = text
                     cell?.textLabel?.text = text

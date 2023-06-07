@@ -10,8 +10,9 @@ import Foundation
 
 class ScheduleModel: Object {
     @Persisted var scheduleModelId = UUID().uuidString
-    @Persisted var scheduleDate: Date? 
+    @Persisted var scheduleStartDate: Date?
     @Persisted var scheduleTime: Date?
+    @Persisted var scheduleEndDate: Date?
     @Persisted var scheduleName: String
     @Persisted var scheduleCategoryName: String?
     @Persisted var scheduleCategoryType: String?
