@@ -14,12 +14,12 @@ class NewContactViewController: UIViewController{
 
     weak var delegate: CheckSuccessSaveProtocol?
     
-    private let headerArray = ["","","","",""]
-    private var cellsName = [["Name", "Second Name"],
-                             ["Phone number","Mail"],
+    private let headerArray = ["Name","Main Data","Address","Birthday","Type of contact"]
+    private var cellsName = [["Enter Name", "Enter Second Name"],
+                             ["Enter Phone number","Enter Mail"],
                              ["Country","City","Address","Postal Code"],
-                             ["Birthday"],
-                             ["Type of contact"]]
+                             ["Choose date"],
+                             ["Choose Type of contact"]]
     private var contactModel = ContactModel()
     //MARK: - UI elements
     private let tableView = UITableView(frame: .zero, style: .insetGrouped)

@@ -28,6 +28,11 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
         self.choosenDate = choosenDate
         super.init(nibName: nil, bundle: nil)
     }
+    init(choosenDate: Date){
+        self.choosenDate = choosenDate
+        self.cellDataScheduleModel = nil
+        super.init(nibName: nil, bundle: nil)
+    }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -92,6 +97,8 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
         setupNavigationController()
         setupTableViewAndDelegates()
         setupConstraintsForCalendar()
+        let predicate = setupRealmData(date: choosenDate)
+        loadingRealmData(predicate: predicate)
     }
 
  //MARK: -  actions targets methods

@@ -9,17 +9,18 @@ import UIKit
 import MessageUI
 import SnapKit
 import Contacts
+import MapKit
 
 class EditContactViewController: UIViewController {
     
     weak var delegate: CheckSuccessSaveProtocol?
     
-    private let headerArray = ["","","","",""]
-    private var cellsName = [["Name", "Second Name"],
-                             ["Phone number","Mail"],
+    private let headerArray = ["Name","Phone and Mail","Address","Birthday","Type of contact"]
+    private var cellsName = [["Enter Name", "Enter Second Name"],
+                             ["Enter Phone number","Enter Mail"],
                              ["Country","City","Address","Postal Code"],
-                             ["Birthday"],
-                             ["Type of contact"]]
+                             ["Choose date"],
+                             ["Choose Type of contact"]]
     
     private var contactModel: ContactModel
     private var editedContactModel = ContactModel()
@@ -95,9 +96,7 @@ class EditContactViewController: UIViewController {
         let contact = try! CNContactVCardSerialization.data(with: [shareContact])
         let activityVC = UIActivityViewController(activityItems: [contact], applicationActivities: nil)
         self.present(activityVC, animated: true)
-        
     }
-
     //MARK: - Setup methods
     private func setupView() {
         setupNavigationController()
@@ -152,18 +151,54 @@ class EditContactViewController: UIViewController {
         if MFMailComposeViewController.canSendMail() {
             let vc = MFMailComposeViewController()
             vc.mailComposeDelegate = self
-            let mail = String(describing: model.contactMail)
-            let name = String(describing: model.contactName)
+            guard let name = model.contactName,
+                  let mail = model.contactMail else { return }
             
             vc.setToRecipients([mail])
-            vc.setSubject("Hello from Developers, \(name)")
-            vc.setMessageBody("Hello \(name)", isHTML: false)
+            vc.setSubject("Hello, \(name)")
+            vc.setMessageBody("Some text for sending", isHTML: false)
             
-            self.present(vc, animated: true)
+            show(vc, sender: nil)
         } else {
             alertError(text: "You can't send email. Maybe you don't Have Apple Mail App on your device?")
         }
-        
+    }
+    
+    private func setupPhoneCalling(){
+        guard let phone = contactModel.contactPhoneNumber?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+              let url = URL(string: "tel://\(phone)") else {
+                self.alertError(text: "Incorrect number")
+                return
+        }
+        if UIApplication.shared.canOpenURL(url){
+            UIApplication.shared.open(url)
+        } else {
+            self.alertError(text: "This function is not avaliable.\nTry again later", mainTitle: "Error!")
+        }
+    }
+    
+    
+    private func setupOpenCalendar(){
+        guard let date = contactModel.contactDateBirthday else { alertError(text: "Cant get date", mainTitle: "Error"); return}
+        let vc = CreateTaskForDayController(choosenDate: date)
+        show(vc, sender: nil)
+    }
+    
+    private func setupOpenAddressInMap(){
+        guard let country = contactModel.contactCountry,
+              let city = contactModel.contactCity,
+              let address = contactModel.contactAddress else {
+            alertError(text: "Value is empty. Can't open location", mainTitle: "Error")
+            return
+        }
+        let addressValue = country + " " + city + " " + address
+        let geocoder = CLGeocoder()
+        geocoder.geocodeAddressString(addressValue) { placemarks, error in
+            guard let placemark = placemarks?.first, error == nil else { return }
+            let mapItem = MKMapItem(placemark: MKPlacemark(placemark: placemark))
+            mapItem.name = addressValue
+            mapItem.openInMaps()
+        }
     }
 }
     //MARK: - Segue methods
@@ -192,6 +227,14 @@ extension EditContactViewController: UITableViewDelegate, UITableViewDataSource 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "tasksCell", for: indexPath)
         cell.backgroundColor = UIColor(named: "cellColor")
+        let basicValue = cellsName[indexPath.section][indexPath.row]
+        
+        let segueButton = UIButton()
+        segueButton.frame = CGRect(x: 0, y: 0, width: 30, height: 30)
+        segueButton.sizeToFit()
+        segueButton.tag = indexPath.row
+        
+        
         if let image = contactModel.contactImage {
             viewForTable.contactImageView.image = UIImage(data: image)
             viewForTable.contactImageView.layer.cornerRadius = viewForTable.contactImageView.frame.size.width/2
@@ -200,7 +243,6 @@ extension EditContactViewController: UITableViewDelegate, UITableViewDataSource 
             labelForImageView.isHidden = true
         }
         if !isViewEdited {
-
             switch indexPath {
             case [0,0]:
                 cell.textLabel?.text = contactModel.contactName
@@ -209,31 +251,48 @@ extension EditContactViewController: UITableViewDelegate, UITableViewDataSource 
             case [1,0]:
                 let phoneNumber = String.format(with: "+X (XXX) XXX-XXXX", phone: contactModel.contactPhoneNumber ?? "")
                 cell.textLabel?.text = phoneNumber
+                segueButton.setImage(UIImage(systemName: "phone.fill"), for: .normal)
+                segueButton.tintColor = UIColor(named: "navigationControllerColor")
+                cell.accessoryView = segueButton
             case [1,1]:
                 cell.textLabel?.text = contactModel.contactMail
+                segueButton.setImage(UIImage(systemName: "envelope.fill"), for: .normal)
+                segueButton.tintColor = UIColor(named: "navigationControllerColor")
+                cell.accessoryView = segueButton
             case [2,0]:
-                cell.textLabel?.text = contactModel.contactCountry
+                cell.textLabel?.text = "Contry: " +  (contactModel.contactCountry ?? basicValue)
+                segueButton.setImage(UIImage(systemName: "mappin.circle.fill"), for: .normal)
+                segueButton.tintColor = UIColor(named: "navigationControllerColor")
+                cell.accessoryView = segueButton
             case [2,1]:
-                cell.textLabel?.text = contactModel.contactCity
+                cell.textLabel?.text = "City: " + (contactModel.contactCity ?? basicValue)
             case [2,2]:
-                cell.textLabel?.text = contactModel.contactAddress
+                cell.textLabel?.text = "Street: " + (contactModel.contactAddress ?? basicValue)
             case [2,3]:
-                cell.textLabel?.text = contactModel.contactPostalCode
+                cell.textLabel?.text = "Postal code: " + (contactModel.contactPostalCode ?? basicValue)
             case [3,0]:
-                cell.textLabel?.text = DateFormatter.localizedString(from: contactModel.contactDateBirthday ?? Date(), dateStyle: .medium, timeStyle: .none)
+                if let birthday = contactModel.contactDateBirthday {
+                    cell.textLabel?.text = DateFormatter.localizedString(from: birthday, dateStyle: .medium, timeStyle: .none)
+                } else {
+                    cell.textLabel?.text = ""
+                }
+                segueButton.setImage(UIImage(systemName: "calendar"), for: .normal)
+                segueButton.tintColor = UIColor(named: "navigationControllerColor")
+                cell.accessoryView = segueButton
             case [4,0]:
-                cell.textLabel?.text = contactModel.contactType
+                cell.textLabel?.text = contactModel.contactType ?? "Not indicated"
             default:
                 print("Error")
             }
         } else {
+            cell.accessoryView = nil
             switch indexPath {
             case [0,0]:
                 cell.textLabel?.text = editedContactModel.contactName ?? contactModel.contactName
             case [0,1]:
                 cell.textLabel?.text = editedContactModel.contactSurname ?? contactModel.contactSurname
             case [1,0]:
-                let phoneNumber = String.format(with: "+X (XXX) XXX-XXXX", phone: (editedContactModel.contactPhoneNumber ?? contactModel.contactPhoneNumber) ?? "No value number")
+                let phoneNumber = String.format(with: "+X (XXX) XXX-XX-XX", phone: (editedContactModel.contactPhoneNumber ?? contactModel.contactPhoneNumber) ?? "No value number")
                 cell.textLabel?.text = phoneNumber
             case [1,1]:
                 cell.textLabel?.text = editedContactModel.contactMail ?? contactModel.contactMail
@@ -248,7 +307,7 @@ extension EditContactViewController: UITableViewDelegate, UITableViewDataSource 
             case [3,0]:
                 cell.textLabel?.text = DateFormatter.localizedString(from: (editedContactModel.contactDateBirthday ?? contactModel.contactDateBirthday) ?? Date(), dateStyle: .medium, timeStyle: .none)
             case [4,0]:
-                cell.textLabel?.text = editedContactModel.contactType ?? contactModel.contactType
+                cell.textLabel?.text = editedContactModel.contactType ?? contactModel.contactType ?? "Not indicated"
             default:
                 print("Error")
             }
@@ -269,7 +328,7 @@ extension EditContactViewController: UITableViewDelegate, UITableViewDataSource 
                     editedContactModel.contactName = text
                 }
             case [0,1]:
-                alertTextField(cell: cellName, placeholder: "Enter secon name", keyboard: .default) { [unowned self] text in
+                alertTextField(cell: cellName, placeholder: "Enter second name", keyboard: .default) { [unowned self] text in
                     self.cellsName[indexPath.section][indexPath.row] = text
                     cell?.textLabel?.text = text
                     editedContactModel.contactSurname = text
@@ -320,17 +379,15 @@ extension EditContactViewController: UITableViewDelegate, UITableViewDataSource 
                 print("error")
             }
         } else {
-            switch indexPath.section {
-            case 1:
-                let phone = String(describing: contactModel.contactPhoneNumber)
-                guard let url = URL(string: "tel://\(phone)") else { self.alertError();return}
-                if UIApplication.shared.canOpenURL(url){
-                    UIApplication.shared.open(url)
-                } else {
-                    alertError(text: "", mainTitle: "Can't call to user!")
-                }
-            case 2:
+            switch indexPath {
+            case [1,0]:
+                setupPhoneCalling()
+            case [1,1]:
                 setupComposeView(model: contactModel)
+            case [2,indexPath.row]:
+                setupOpenAddressInMap()
+            case [3,0]:
+                setupOpenCalendar()
             default:
                 print("Error")
             }
@@ -345,6 +402,7 @@ extension EditContactViewController: UITableViewDelegate, UITableViewDataSource 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 40
     }
+    
 }
 
 extension EditContactViewController: UIImagePickerControllerDelegate,UINavigationControllerDelegate {

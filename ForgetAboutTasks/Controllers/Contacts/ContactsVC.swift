@@ -98,7 +98,7 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
                 navigationItem.setRightBarButtonItems([deleteAllEventsButton], animated: true)
                 navigationItem.rightBarButtonItem?.isEnabled = true
             } else {
-                navigationItem.rightBarButtonItem?.isEnabled = false
+                navigationItem.rightBarButtonItem?.isEnabled = true
             }
             
         }
@@ -157,7 +157,7 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
     
     private func actionsWithContact(model: ContactModel){
         let name = model.contactName ?? "No name"
-        let phone = model.contactPhoneNumber ?? "No number to call"
+        let phone = model.contactPhoneNumber?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "No number to call"
         let alert = UIAlertController(title: nil, message: "What exactly do you want?", preferredStyle: .actionSheet)
         alert.addAction(UIAlertAction(title: "Contact Details", style: .default,handler: { [weak self] _ in
             self?.openCurrentContact(model: model,boolean: false)
@@ -213,14 +213,26 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
             
             let phone = contact.phoneNumbers.first?.value ?? CNPhoneNumber(stringValue: "")
             let email = contact.emailAddresses.first?.value
-            var numberPhone = CNPhoneNumber(stringValue: phone.stringValue).stringValue
-            numberPhone = numberPhone.isPhoneNumberValid(text: numberPhone) ?? "No number"
+            let numberPhone = CNPhoneNumber(stringValue: phone.stringValue).stringValue
+            guard let birthDay = contact.birthday else { return }
+            let calendar = Calendar.current
+            let dateBirthday = calendar.date(from: birthDay)
+            guard let address = contact.postalAddresses.first?.value else { return }
+
 
             let emailString = email as? String
+            model.contactDateBirthday = dateBirthday
             model.contactImage = contact.imageData
-            model.contactName = contact.givenName + " " + contact.familyName + " " + contact.middleName
+            model.contactName = contact.givenName + " " + contact.middleName
+            model.contactSurname = contact.familyName
             model.contactPhoneNumber = numberPhone
             model.contactMail = emailString
+            model.contactCountry = address.country
+            model.contactCity = address.city + " " + address.subAdministrativeArea
+            model.contactAddress = "\(address.street)"
+            model.contactPostalCode = address.postalCode
+            
+            
             
             ContactRealmManager.shared.saveContactModel(model: model)
             tableView.reloadData()
@@ -271,11 +283,8 @@ extension ContactsViewController: UITableViewDelegate, UITableViewDataSource {
         cell.imageView?.contentMode = .scaleToFill
         cell.imageView?.tintColor = UIColor(named: "navigationControllerColor")
         let number = data.contactPhoneNumber ?? "No phone number"
-//        if data.contactPhoneNumber?.count ?? 10 > 8 {
-//            number = String.format(with: "+X (XXX) XXX-XXXX", phone: data.contactPhoneNumber ?? "Enter phone number")
-//        }
-        
-        cell.textLabel?.text = data.contactName
+
+        cell.textLabel?.text = (data.contactName ?? "") + " " + (data.contactSurname ?? "")
         cell.detailTextLabel?.text = "Phone number: " + (number)
         cell.imageView?.image = UIImage(systemName: "person.crop.circle.fill")
         cell.imageView?.frame(forAlignmentRect: CGRect(x: 0, y: 0, width: 50, height: 50))

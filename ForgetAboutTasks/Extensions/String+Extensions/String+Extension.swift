@@ -49,30 +49,10 @@ extension String {
     }
 
     
-    func isPhoneNumberValid(text: String) -> String? {
+    func isPhoneNumberValid(text: String) -> Bool {
         let phoneRegex = "^\\+7\\d{10}$"
         let phoneTest = NSPredicate(format: "SELF MATCHES %@", phoneRegex)
-        var returnValue: String? = text
-        if phoneTest.evaluate(with: text){
-           return text
-        } else {
-            if text.unicodeScalars.contains(where: { ["(",")"].contains($0) }) {
-                returnValue = text.replacingOccurrences(of: "(", with: "")
-                returnValue = text.replacingOccurrences(of: ")", with: "")
-            } else if text.unicodeScalars.contains(where: { ["(",")","-"].contains($0) }) {
-                returnValue = text.replacingOccurrences(of: "(", with: "")
-                returnValue = text.replacingOccurrences(of: ")", with: "")
-                returnValue = text.replacingOccurrences(of: "-", with: "")
-            } else if text.unicodeScalars.contains(where: { ["-"].contains($0) }){
-                returnValue = text.replacingOccurrences(of: "-", with: "")
-            } else if text.first != "7" && !text.isEmpty{
-                returnValue = text
-                returnValue?.replaceSubrange(...text.startIndex, with: "+7")
-            } else if text.isEmpty {
-                returnValue = "Empty value"
-            }
-        }
-        return returnValue
+        return phoneTest.evaluate(with: text)
     }
     
     public static func format(with mask: String, phone: String) -> String {
