@@ -13,12 +13,12 @@ import SafariServices
 class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
     
     
-    private let headerArray = ["Details of event","Date and time","Category of event","Color of event","Repeat"]
+    private let headerArray = ["Details of event","Date and time","Category of event","Color of event","Image"]
     private var cellsName = [["Name of event"],
-                     ["Date", "Time"],
+                     ["Start","End", "Reminder status"],
                      ["Name","Type","URL","Note"],
                      [""],
-                     ["Repeat every 7 days"]]
+                     [""]]
     
     private var cellBackgroundColor =  #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
     private var selectedScheduleModel: ScheduleModel
@@ -89,6 +89,12 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
             alertDismissed(view: self.view)
             tableView.deselectRow(at: indexPath, animated: true)
         }
+    }
+    
+    @objc private func didTapLongPressOnImage(){
+        guard let data = selectedScheduleModel.scheduleImage, let image = UIImage(data: data) else { return }
+        let activity = UIActivityViewController(activityItems: [image], applicationActivities: nil)
+        present(activity, animated: true)
     }
     
     //MARK: - Setup Views and secondary methods
@@ -193,14 +199,40 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
             showAlertForUser(text: "Event was edited!", duration: DispatchTime.now()+1, controllerView: view)
         }
     }
-
 }
+
 //MARK: - table view delegates and data sources
 extension OpenTaskDetailViewController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        if indexPath == [4,0] {
+            return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { actions in
+                        let shareAction =
+                            UIAction(title: NSLocalizedString("Share Image", comment: ""),
+                                     image: UIImage(systemName: "square.and.arrow.up.circle.fill")) { action in
+                                self.didTapLongPressOnImage()
+                            }
+                        let copyAction =
+                            UIAction(title: NSLocalizedString("Copy Image", comment: ""),
+                                     image: UIImage(systemName: "arrowshape.turn.up.right.circle.fill")) { action in
+                                if let data = self.selectedScheduleModel.scheduleImage, let image = UIImage(data: data) {
+                                    UIPasteboard.general.image = image
+                                    self.alertDismissed(view: self.view, title: "Image copied")
+                                } else {
+                                    self.alertError(text: "Can't copy image")
+                                }
+                            }
+                        return UIMenu(title: "", children: [shareAction,copyAction])
+            }
+            
+        } else {
+            return nil
+        }
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0: return 1
-        case 1: return 2
+        case 1: return 3
         case 2: return 4
         case 3: return 1
         default: return 1
@@ -214,7 +246,8 @@ extension OpenTaskDetailViewController: UITableViewDelegate, UITableViewDataSour
         let data = cellsName[indexPath.section][indexPath.row]
         let time = DateFormatter.localizedString(from: inheritedData.scheduleTime ?? Date(), dateStyle: .none, timeStyle:.short)
         let date = DateFormatter.localizedString(from: inheritedData.scheduleStartDate ?? Date(), dateStyle: .medium, timeStyle:.none)
-        
+        let endDate = DateFormatter.localizedString(from: inheritedData.scheduleEndDate ?? Date(), dateStyle: .medium, timeStyle: .none)
+        let endTime = DateFormatter.localizedString(from: inheritedData.scheduleEndDate ?? Date(), dateStyle: .none, timeStyle: .short)
         
         cell?.backgroundColor = UIColor(named: "cellColor")
         cell?.textLabel?.numberOfLines = 0
@@ -231,6 +264,8 @@ extension OpenTaskDetailViewController: UITableViewDelegate, UITableViewDataSour
         case [1,0]:
             cell?.textLabel?.text = date + " Time: " + time
         case [1,1]:
+            cell?.textLabel?.text = endDate + " Time: " + time
+        case [1,2]:
             cell?.textLabel?.text = "Reminder status"
             cell?.accessoryView?.isHidden = false
             switchButton.isEnabled = false
@@ -253,8 +288,8 @@ extension OpenTaskDetailViewController: UITableViewDelegate, UITableViewDataSour
             cell?.backgroundColor = UIColor.color(withData: (inheritedData.scheduleColor)!)
         case [4,0]:
             let data = selectedScheduleModel.scheduleImage
-            let image = UIImage(data: data!)
-            customCell?.imageViewSchedule.image = image
+            let image = UIImage(data: data ?? Data())
+            customCell?.imageViewSchedule.image = image ?? UIImage(systemName: "camera.fill")
             return customCell!
         default:
             alertError(text: "Please,try again later\nError getting data", mainTitle: "Error!!")

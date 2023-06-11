@@ -15,13 +15,13 @@ class CreateEventScheduleViewController: UIViewController {
     
     weak var delegate: CheckSuccessSaveProtocol?
     
-    private let headerArray = ["Details of event","Date and time","Category of event","Color of event","Image"]
+    private let headerArray = ["Details of event","Start and End of event","Category of event","Color of event","Choose image"]
     
     private var cellsName = [["Name of event"],
-                     ["Date and Time","Set a reminder"],
+                     ["Start","End","Set a reminder"],
                      ["Name","Type","URL","Note"],
                      [""],
-                     ["Choose photo"]]
+                     [""]]
     
     private var reminderStatus: Bool = false
     private var cancellable: AnyCancellable?//for parallels displaying color in cell and Combine Kit for it
@@ -30,11 +30,7 @@ class CreateEventScheduleViewController: UIViewController {
     private var cellBackgroundColor =  #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
     private var choosenDate: Date
     private var isStartEditing: Bool = false
-    private var cellImageView: UIImageView = {
-       let image = UIImageView()
-        image.image = UIImage(systemName: "photo.circle")
-        return image
-    }()
+    private lazy var startChoosenDate = choosenDate
     
     init(choosenDate: Date){
         self.choosenDate = choosenDate
@@ -48,6 +44,7 @@ class CreateEventScheduleViewController: UIViewController {
     private let picker = UIColorPickerViewController()
     private let tableView = UITableView(frame: CGRectZero, style: .insetGrouped)
     private var imagePicker = UIImagePickerController()
+    private let indicator = UIActivityIndicatorView(style: .medium)
     //MARK: - viewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -101,33 +98,7 @@ class CreateEventScheduleViewController: UIViewController {
         }
     }
 
-    @objc private func didTapChangeCell() {
-        let alert = UIAlertController(title: "", message: "What exactly do you want to do?", preferredStyle: .actionSheet)
-        alert.addAction(UIAlertAction(title: "Set new image", style: .default,handler: { [self] _ in
-            if UIImagePickerController.isSourceTypeAvailable(.photoLibrary){
-                imagePicker.delegate = self
-                imagePicker.sourceType = .photoLibrary
-                imagePicker.allowsEditing = true
-                present(self.imagePicker, animated: true)
-            }
-        }))
-        alert.addAction(UIAlertAction(title: "Make new image", style: .default,handler: { [self] _ in
-            if UIImagePickerController.isSourceTypeAvailable(.camera) {
-                imagePicker.delegate = self
-                imagePicker.sourceType = .camera
-                imagePicker.allowsEditing = true
-                present(self.imagePicker, animated: true)
-            }
-        }))
-        alert.addAction(UIAlertAction(title: "Delete image", style: .destructive,handler: { _ in
-            let cell = self.tableView.cellForRow(at: [4,0])
-            cell?.imageView?.image = UIImage(named: "camera.fill")
-        }))
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        present(alert, animated: true)
 
-        
-    }
     //MARK: - Setup Views and secondary methods
     private func setupAlertSheet(title: String,subtitle: String) {
         let sheet = UIAlertController(title: title, message: subtitle, preferredStyle: .actionSheet)
@@ -204,7 +175,7 @@ class CreateEventScheduleViewController: UIViewController {
     //MARK: - Logics methods
     
     private func setupAlertIfDataEmpty() -> Bool{
-        if scheduleModel.scheduleName == "Unknown" {
+        if scheduleModel.scheduleName.isEmpty {
             alertError(text: "Enter value in Name cell")
             return false
         } else if scheduleModel.scheduleStartDate == nil {
@@ -213,9 +184,38 @@ class CreateEventScheduleViewController: UIViewController {
         } else if scheduleModel.scheduleTime == nil {
             alertError(text: "Choose time of event")
             return false
+        } else if scheduleModel.scheduleStartDate?.compare(scheduleModel.scheduleEndDate ?? startChoosenDate) == .orderedDescending {
+            alertError(text: "End Date can't end earlier than Start Date. Change start or end date", mainTitle: "Error")
+            return false
         } else {
             return true
         }
+    }
+    
+    @objc private func chooseTypeOfImagePicker() {
+        let alert = UIAlertController(title: "", message: "What exactly do you want to do?", preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction(title: "Set new image", style: .default,handler: { [self] _ in
+            if UIImagePickerController.isSourceTypeAvailable(.photoLibrary){
+                imagePicker.delegate = self
+                imagePicker.sourceType = .photoLibrary
+                imagePicker.allowsEditing = true
+                present(self.imagePicker, animated: true)
+            }
+        }))
+        alert.addAction(UIAlertAction(title: "Make new image", style: .default,handler: { [self] _ in
+            if UIImagePickerController.isSourceTypeAvailable(.camera) {
+                imagePicker.delegate = self
+                imagePicker.sourceType = .camera
+                imagePicker.allowsEditing = true
+                present(self.imagePicker, animated: true)
+            }
+        }))
+        alert.addAction(UIAlertAction(title: "Delete image", style: .destructive,handler: { _ in
+            let cell = self.tableView.cellForRow(at: [4,0])
+            cell?.imageView?.image = UIImage(named: "camera.fill")
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        present(alert, animated: true)
     }
 
     //MARK: - Segue methods
@@ -229,22 +229,32 @@ class CreateEventScheduleViewController: UIViewController {
         })
         self.present(picker, animated: true)
     }
+    
+//    @objc private func openImagePicker(){
+//        self.cancellable = imagePicker.publisher(for: \.sourceType)
+//            .sink(receiveValue: { image in
+//                DispatchQueue.main.async {
+//                    self.cellImage = image
+//                    self.isStartEditing = true
+//                }
+//            })
+//        self.present(imagePicker, animated: true)
+//    }
 }
+//MARK: - ImagePicker delegate
 extension CreateEventScheduleViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let image = info[.editedImage] as? UIImage{
             guard let data = image.jpegData(compressionQuality: 1.0) else { return}
-
             scheduleModel.scheduleImage = data
-            guard let cell = tableView.cellForRow(at: [4,0]) else { alertError();return }
-
-            cell.imageView?.image = image
+            tableView.reloadData()
             picker.dismiss(animated: true)
             tableView.deselectRow(at: [4,0], animated: true)
         } else {
             alertError(text: "Error!", mainTitle: "Can't get image and save it to event.\nTry again later!")
         }
+        indicator.stopAnimating()
         
         
     }
@@ -261,7 +271,7 @@ extension CreateEventScheduleViewController: UITableViewDelegate, UITableViewDat
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0: return 1
-        case 1: return 2
+        case 1: return 3
         case 2: return 4
         case 3: return 1
         default: return 1
@@ -283,22 +293,15 @@ extension CreateEventScheduleViewController: UITableViewDelegate, UITableViewDat
         switchButton.isHidden = true
         switchButton.onTintColor = cellBackgroundColor
         switchButton.addTarget(self, action: #selector(didTapSetReminder), for: .touchUpInside)
-        
-        let button = UIButton(type: .custom)
-        button.frame = CGRect(x: 0, y: 0, width: 41, height: 41)
-        button.tintColor = UIColor(named: "navigationControllerColor")
-        button.addTarget(self, action: #selector(didTapChangeCell), for: .touchUpInside)
-        button.sizeToFit()
-        button.setImage(UIImage(systemName: "camera.fill"), for: .normal)
-        button.tintColor = UIColor(named: "navigationControllerColor")
-        button.tag = indexPath.row
     
         if indexPath == [3,0] {
             cell?.backgroundColor = cellBackgroundColor
-        } else if indexPath == [1,1] {
+        } else if indexPath == [1,2] {
             cell?.accessoryView = switchButton
             cell?.accessoryView?.isHidden = false
         } else if indexPath == [4,0] {
+            let image = UIImage(data: scheduleModel.scheduleImage ?? Data())
+            customCell.imageViewSchedule.image = image ?? UIImage(systemName: "camera.fill")
             return customCell
         } else {
             cell?.accessoryView?.isHidden = true
@@ -325,8 +328,17 @@ extension CreateEventScheduleViewController: UITableViewDelegate, UITableViewDat
                 scheduleModel.scheduleTime = date
                 scheduleModel.scheduleStartDate = date
                 scheduleModel.scheduleWeekday = weekday
+                startChoosenDate = date.addingTimeInterval(3600)
                 cell?.textLabel?.text = timeString
                 isStartEditing = true
+            }
+        case [1,1]:
+            let hourPlus = scheduleModel.scheduleStartDate
+            let hour = hourPlus?.addingTimeInterval(3600) ?? startChoosenDate.addingTimeInterval(3600)
+            alertTimeInline(table: tableView, choosenDate: hour) { [weak self] date, dateString, weekday in
+                self?.scheduleModel.scheduleEndDate = date
+                cell?.textLabel?.text = dateString
+                self?.isStartEditing = true
             }
         case [2,0]:
             alertTextField(cell: "Enter Name of event", placeholder: "Enter the text", keyboard: .default) { [self] text in
@@ -364,7 +376,8 @@ extension CreateEventScheduleViewController: UITableViewDelegate, UITableViewDat
         case [3,0]:
             openColorPicker()
         case [4,0]:
-            didTapChangeCell()
+            tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+            chooseTypeOfImagePicker()
         default:
             print("error")
         }

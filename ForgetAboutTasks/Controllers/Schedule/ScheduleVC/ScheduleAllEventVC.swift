@@ -47,27 +47,6 @@ class ScheduleAllEventViewController: UIViewController {
         }
     }
     
-    @objc private func handlerLongPress(_ gesture: UILongPressGestureRecognizer){
-        if gesture.state == .began {
-            let point = gesture.location(in: tableView)
-            guard let indexPath = tableView.indexPathForRow(at: point) else { return }
-            let menu = UIMenuController.shared
-            let sharedItem = UIMenuItem(title: "Shared", action: #selector(handlerAction(_:)))
-            let copyItem = UIMenuItem(title: "Copy", action: #selector(handlerCopy(_:)))
-            menu.menuItems = [sharedItem,copyItem]
-            menu.showMenu(from: tableView, rect: tableView.rectForRow(at: indexPath))
-
-        }
-    }
-
-    @objc private func handlerAction(_ sender: Any){
-        print("Shared")
-    }
-
-    @objc private func handlerCopy(_ indexPath: Any){
-        print("Copy")
-    }
-    
     //MARK: - main setups
     private func setupView(){
         setupNavigationController()
@@ -82,8 +61,6 @@ class ScheduleAllEventViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cellAllEvent")
-        let gesture = UILongPressGestureRecognizer(target: self, action: #selector(handlerLongPress(_:)))
-        tableView.addGestureRecognizer(gesture)
     }
     
     

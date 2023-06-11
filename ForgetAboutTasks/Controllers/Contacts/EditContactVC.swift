@@ -87,7 +87,7 @@ class EditContactViewController: UIViewController {
         print("pressed")
         let shareContact = CNMutableContact()
         let model = contactModel
-//        guard let imageData = model.contactImage else { return }
+
         let phoneValue = CNPhoneNumber(stringValue: model.contactPhoneNumber ?? "No phone number")
         shareContact.givenName = model.contactName ?? "Name is unavaliable"
         shareContact.phoneNumbers = [CNLabeledValue(label: CNLabelPhoneNumberMain, value: phoneValue)]

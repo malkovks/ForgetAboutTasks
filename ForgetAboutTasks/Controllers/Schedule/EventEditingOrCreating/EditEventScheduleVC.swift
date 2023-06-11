@@ -14,10 +14,10 @@ class EditEventScheduleViewController: UIViewController {
     
     weak var delegate: CheckSuccessSaveProtocol?
     
-    private let headerArray = ["Details of event","Date and time","Category of event","Color of event","Repeat"]
+    private let headerArray = ["Details of event","Start and End of event","Category of event","Color of event","Choose image"]
     
     private var cellsName = [[""],
-                     ["","Set a reminder"],
+                     ["","","Set a reminder"],
                      ["","","",""],
                      [""],
                      [""]]
@@ -30,6 +30,7 @@ class EditEventScheduleViewController: UIViewController {
     private var reminderStatus: Bool = false
     private var isStartEditing: Bool = false
     private var cancellable: AnyCancellable?//for parallels displaying color in cell and Combine Kit for it
+    private lazy var changableChoosenDate = choosenDate
     
     init(cellBackgroundColor: UIColor, choosenDate: Date, scheduleModel: ScheduleModel){
         self.cellBackgroundColor = cellBackgroundColor
@@ -172,13 +173,15 @@ class EditEventScheduleViewController: UIViewController {
     
     private func setupCellTitle(model: ScheduleModel,indexPath: IndexPath){
         let dateTime = model.scheduleTime ?? Date()
+        let endDateTime = model.scheduleStartDate ?? Date()
         switch indexPath {
         case [0,0]: cellsName[indexPath.section][indexPath.row] = model.scheduleName
         case [1,0]: cellsName[indexPath.section][indexPath.row] = DateFormatter.localizedString(from: dateTime, dateStyle: .medium, timeStyle: .short)
-        case [2,0]: cellsName[indexPath.section][indexPath.row] = model.scheduleCategoryName ?? "Empty cell"
-        case [2,1]: cellsName[indexPath.section][indexPath.row] = model.scheduleCategoryType ?? "Empty cell"
-        case [2,2]: cellsName[indexPath.section][indexPath.row] = model.scheduleCategoryURL ?? "Empty cell"
-        case [2,3]: cellsName[indexPath.section][indexPath.row] = model.scheduleCategoryNote ?? "Empty cell"
+        case [1,1]: cellsName[indexPath.section][indexPath.row] = DateFormatter.localizedString(from: endDateTime, dateStyle: .medium, timeStyle: .short)
+        case [2,0]: cellsName[indexPath.section][indexPath.row] = model.scheduleCategoryName ?? "Set Name of event"
+        case [2,1]: cellsName[indexPath.section][indexPath.row] = model.scheduleCategoryType ?? "Set Type of event"
+        case [2,2]: cellsName[indexPath.section][indexPath.row] = model.scheduleCategoryURL ?? "Set URL"
+        case [2,3]: cellsName[indexPath.section][indexPath.row] = model.scheduleCategoryNote ?? "Enter some notes"
         default:
             print("Error")
         }
@@ -211,6 +214,34 @@ class EditEventScheduleViewController: UIViewController {
         })
         self.present(picker, animated: true)
     }
+    
+    @objc private func chooseTypeOfImagePicker() {
+        let alert = UIAlertController(title: "", message: "What exactly do you want to do?", preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction(title: "Set new image", style: .default,handler: { [self] _ in
+            if UIImagePickerController.isSourceTypeAvailable(.photoLibrary){
+                imagePicker.delegate = self
+                imagePicker.sourceType = .photoLibrary
+                imagePicker.allowsEditing = true
+                present(self.imagePicker, animated: true)
+            }
+        }))
+        alert.addAction(UIAlertAction(title: "Make new image", style: .default,handler: { [self] _ in
+            if UIImagePickerController.isSourceTypeAvailable(.camera) {
+                imagePicker.delegate = self
+                imagePicker.sourceType = .camera
+                imagePicker.allowsEditing = true
+                present(self.imagePicker, animated: true)
+            }
+        }))
+        alert.addAction(UIAlertAction(title: "Delete image", style: .destructive,handler: { _ in
+            let cell = self.tableView.cellForRow(at: [4,0])
+            cell?.imageView?.image = UIImage(named: "camera.fill")
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        present(alert, animated: true)
+    }
+    //MARK: - Image Picker Delegate
+    
 }
 extension EditEventScheduleViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
@@ -218,9 +249,6 @@ extension EditEventScheduleViewController: UIImagePickerControllerDelegate, UINa
             guard let data = image.jpegData(compressionQuality: 1.0) else { return}
 
             editedScheduleModel.scheduleImage = data
-            guard let cell = tableView.cellForRow(at: [4,0]) else { alertError();return }
-
-//            cell.imageView?.image = image
             tableView.reloadData()
             picker.dismiss(animated: true)
             tableView.deselectRow(at: [4,0], animated: true)
@@ -242,7 +270,7 @@ extension EditEventScheduleViewController: UITableViewDelegate, UITableViewDataS
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0: return 1
-        case 1: return 2
+        case 1: return 3
         case 2: return 4
         case 3: return 1
         default: return 1
@@ -272,7 +300,7 @@ extension EditEventScheduleViewController: UITableViewDelegate, UITableViewDataS
         cell?.textLabel?.text = data
         if indexPath == [3,0] {
             cell?.backgroundColor = cellBackgroundColor
-        } else if indexPath == [1,1] {
+        } else if indexPath == [1,2] {
             cell?.accessoryView?.isHidden = false
             switchButton.addTarget(self, action: #selector(didTapSetReminder), for: .touchUpInside)
             let content = UNMutableNotificationContent()
@@ -280,8 +308,8 @@ extension EditEventScheduleViewController: UITableViewDelegate, UITableViewDataS
                 switchButton.isOn = true
             }
         } else if indexPath == [4,0] {
-            let data = editedScheduleModel.scheduleImage ?? scheduleModel.scheduleImage
-            customCell?.imageViewSchedule.image = UIImage(data: data!)
+            let data = editedScheduleModel.scheduleImage ?? scheduleModel.scheduleImage ?? Data()
+            customCell?.imageViewSchedule.image = UIImage(data: data)
             return customCell!
         } else {
             cell?.accessoryView = nil
@@ -299,7 +327,7 @@ extension EditEventScheduleViewController: UITableViewDelegate, UITableViewDataS
             case [0,0]:
                 alertTextField(cell: cellName, placeholder: "Enter text", keyboard: .default) {[self] text in
                     editedScheduleModel.scheduleName = text
-                    cellsName[indexPath.section][indexPath.row] = text
+                    cell?.textLabel?.text = text
                     isStartEditing = true
                 }
             case [1,0]:
@@ -307,34 +335,36 @@ extension EditEventScheduleViewController: UITableViewDelegate, UITableViewDataS
                     editedScheduleModel.scheduleTime = date
                     editedScheduleModel.scheduleStartDate = date
                     editedScheduleModel.scheduleWeekday = weekday
+                    changableChoosenDate = date.addingTimeInterval(3600)
                     cell?.textLabel?.text = timeString
-                    cellsName[indexPath.section][indexPath.row] = timeString
+                    isStartEditing = true
+                }
+            case [1,1]:
+                alertTimeInline(table: tableView, choosenDate: changableChoosenDate) { [self] date, timeString, _ in
+                    editedScheduleModel.scheduleEndDate = date
+                    cell?.textLabel?.text = timeString
                     isStartEditing = true
                 }
             case [2,0]:
                 alertTextField(cell: "Enter Name of event", placeholder: "Enter the text", keyboard: .default) { [self] text in
                     editedScheduleModel.scheduleCategoryName = text
-                    cellsName[indexPath.section][indexPath.row] = text
                     cell?.textLabel?.text = text
                     isStartEditing = true
                 }
             case [2,1]:
                 alertTextField(cell: "Enter Type of event", placeholder: "Enter the text", keyboard: .default) { [self] text in
                     editedScheduleModel.scheduleCategoryType = text
-                    cellsName[indexPath.section][indexPath.row] = text
                     cell?.textLabel?.text = text
                     isStartEditing = true
                 }
             case [2,2]:
                 alertTextField(cell: "Enter URL name with domain", placeholder: "Enter URL", keyboard: .URL) { [self] text in
                     if text.isURLValid(text: text) {
-                        cellsName[indexPath.section][indexPath.row] = text
                         editedScheduleModel.scheduleCategoryURL = text
                         cell?.textLabel?.text = text
                         isStartEditing = true
                     } else if !text.contains("www.") || !text.contains("http://") && text.contains("."){
                         let editedText = "www." + text
-                        cellsName[indexPath.section][indexPath.row] = editedText
                         editedScheduleModel.scheduleCategoryURL = editedText
                         cell?.textLabel?.text = editedText
                         isStartEditing = true
@@ -345,7 +375,6 @@ extension EditEventScheduleViewController: UITableViewDelegate, UITableViewDataS
             case [2,3]:
                 alertTextField(cell: "Enter Notes of event", placeholder: "Enter the text", keyboard: .default) { [self] text in
                     editedScheduleModel.scheduleCategoryNote = text
-                    cellsName[indexPath.section][indexPath.row] = text
                     cell?.textLabel?.text = text
                     isStartEditing = true
                 }
@@ -353,10 +382,7 @@ extension EditEventScheduleViewController: UITableViewDelegate, UITableViewDataS
                 openColorPicker()
             case [4,0]:
                 tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
-                imagePicker.delegate = self
-                imagePicker.sourceType = .photoLibrary
-                imagePicker.allowsEditing = true
-                present(self.imagePicker, animated: true)
+                chooseTypeOfImagePicker()
             default:
                 print("error")
             
