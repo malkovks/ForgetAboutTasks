@@ -36,10 +36,12 @@ class AllTasksDetailViewController: UIViewController {
     var cancellable: AnyCancellable?//for parallels displaying color in cell and Combine Kit for it
     let picker = UIColorPickerViewController()
     private let tableView = UITableView(frame: .zero, style: .insetGrouped)
+    private var topMenu = UIMenu()
     
     private lazy var shareTableInfo: UIBarButtonItem = {
-        return UIBarButtonItem(image: UIImage(systemName: "square.and.arrow.up.fill"), style: .done, target: self, action: #selector(didTapShareTable))
+        return UIBarButtonItem(image: UIImage(systemName: "square.and.arrow.up.fill"), menu: topMenu)
     }()
+    
     //MARK: - view loading
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -61,14 +63,6 @@ class AllTasksDetailViewController: UIViewController {
         navVC.sheetPresentationController?.prefersGrabberVisible = true
         navVC.isNavigationBarHidden = false
         present(navVC, animated: true)
-    }
-    
-    @objc private func didTapShareTable(_ sender: Any){
-        let vc = UIActivityViewController(activityItems: [tableView], applicationActivities: nil)
-        vc.popoverPresentationController?.barButtonItem = sender as? UIBarButtonItem
-        vc.setValue("Table title", forKey: "subject")
-        vc.excludedActivityTypes = [.markupAsPDF,.airDrop,.mail,.openInIBooks]
-        present(vc, animated: true)
     }
     
     @objc private func didGesturePress(_ gesture: UILongPressGestureRecognizer) {
@@ -123,9 +117,43 @@ class AllTasksDetailViewController: UIViewController {
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(didTapDismiss))
         let editButton = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(didTapEdit))
         navigationItem.rightBarButtonItems = [editButton,shareTableInfo]
-        
-        
     }
+    
+    private func setupMenu(){
+        let shareImage = UIAction(title: "Share Image", image: UIImage(systemName: "photo.circle.fill")) { _ in
+            self.shareTableView("image")
+        }
+        let sharePDF = UIAction(title: "Share PDF File",image: UIImage(systemName: "doc.text.image.fill")) { _ in
+            self.shareTableView("pdf")
+        }
+        topMenu = UIMenu(title: "Share selection", image: UIImage(systemName: "square.and.arrow.up"), options: .singleSelection , children: [shareImage,sharePDF])
+    }
+    
+    func shareTableView(_ typeSharing: String) {
+        //pdf render
+        let pdfRenderer = UIGraphicsPDFRenderer(bounds: tableView.bounds)
+        let pdfData = pdfRenderer.pdfData { context in
+            context.beginPage()
+            tableView.drawHierarchy(in: tableView.bounds, afterScreenUpdates: true)
+        }
+        //screenshot render
+        UIGraphicsBeginImageContextWithOptions(tableView.contentSize, false, 0.0)
+        tableView.layer.render(in: UIGraphicsGetCurrentContext()!)
+        guard let image = UIGraphicsGetImageFromCurrentImageContext() else {
+            alertError(text: "Error making screenshot of table view", mainTitle: "Error!")
+            return
+        }
+        UIGraphicsEndImageContext()
+        var activityItems = [Any]()
+        if typeSharing == "image" {
+            activityItems.append(image)
+        } else {
+            activityItems.append(pdfData)
+        }
+        let activityViewController = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
+        self.present(activityViewController, animated: true, completion: nil)
+    }
+    
     //MARK: - Segue methods
     //methods with dispatch of displaying color in cell while choosing color in picker view
     @objc private func openColorPicker(){

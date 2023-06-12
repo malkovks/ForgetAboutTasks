@@ -42,7 +42,7 @@ class EditContactViewController: UIViewController {
     private let viewForTable = NewContactCustomView()
     
     private lazy var shareModelButton: UIBarButtonItem = {
-        return UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(didTapShareTable))
+        return UIBarButtonItem(image: UIImage(systemName: "square.and.arrow.up.fill"), style: .done, target: self, action: #selector(didTapShareTable))
     }()
     
     private lazy var editModelButton: UIBarButtonItem = {
@@ -84,7 +84,6 @@ class EditContactViewController: UIViewController {
     }
     //НЕ РАБОТАЕТ. НЕ ОТОБРАЖАЕТ КОНТРОЛЛЕР
     @objc private func didTapShareTable(){
-        print("pressed")
         let shareContact = CNMutableContact()
         let model = contactModel
 
@@ -207,7 +206,7 @@ extension EditContactViewController: MFMailComposeViewControllerDelegate{
         controller.dismiss(animated: true)
     }
 }
-
+    //MARK: - Table view delegates and data sources
 extension EditContactViewController: UITableViewDelegate, UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         5

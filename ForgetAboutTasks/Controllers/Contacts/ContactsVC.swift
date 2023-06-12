@@ -149,44 +149,7 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
         self.tableView.reloadData()
     }
     
-    private func openCurrentContact(model: ContactModel,boolean: Bool){
-        let vc = EditContactViewController(contactModel: model,editing: boolean)
-        vc.delegate = self
-        show(vc, sender: nil)
-    }
-    
-    private func actionsWithContact(model: ContactModel){
-        let name = model.contactName ?? "No name"
-        let phone = model.contactPhoneNumber?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "No number to call"
-        let alert = UIAlertController(title: nil, message: "What exactly do you want?", preferredStyle: .actionSheet)
-        alert.addAction(UIAlertAction(title: "Contact Details", style: .default,handler: { [weak self] _ in
-            self?.openCurrentContact(model: model,boolean: false)
-        }))
-        alert.addAction(UIAlertAction(title: "Call to \(name)", style: .default,handler: { [weak self] _ in
-            guard let url = URL(string: "tel://\(phone)") else { self?.alertError(text: "Incorrect number");return}
-            if UIApplication.shared.canOpenURL(url){
-                UIApplication.shared.open(url)
-            } else {
-                self?.alertError(text: "This function is not avaliable.\nTry again later", mainTitle: "Error!")
-            }
-        }))
-        alert.addAction(UIAlertAction(title: "Write message", style: .default,handler: { [weak self] _ in
-            if MFMessageComposeViewController.canSendText() {
-                let vc = MFMessageComposeViewController()
-                vc.body = "Hello!"
-                vc.recipients = ["\(phone)"]
-                vc.messageComposeDelegate = self
-                
-                self?.show(vc, sender: nil)
-            } else {
-                self?.alertError(text: "This function is not avaliable.\nTry again later", mainTitle: "Error!")
-            }
-        }))
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        present(alert, animated: true)
-    }
-    
-    func alertForDeleting(){
+    private func alertForDeleting(){
         let alert = UIAlertController(title: "Warning!", message: "Are you sure you want to delete all contacts permanently?", preferredStyle: .actionSheet)
         alert.addAction(UIAlertAction(title: "Delete", style: .destructive,handler: { [self] _ in
             ContactRealmManager.shared.deleteAllContactModel()
@@ -200,43 +163,110 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         present(alert, animated: true)
     }
+
     
-    func isSavedCompletely(boolean: Bool) {
-        if boolean {
-            showAlertForUser(text: "Contact saved successfully", duration: DispatchTime.now()+1, controllerView: view)
-        }
-    }
-    
-    func importContact(contacts: [CNContact]){
+    private func importContact(contacts: [CNContact]){
         for contact in contacts {
             let model = ContactModel()
             
             let phone = contact.phoneNumbers.first?.value ?? CNPhoneNumber(stringValue: "")
             let email = contact.emailAddresses.first?.value
             let numberPhone = CNPhoneNumber(stringValue: phone.stringValue).stringValue
-            guard let birthDay = contact.birthday else { return }
-            let calendar = Calendar.current
-            let dateBirthday = calendar.date(from: birthDay)
-            guard let address = contact.postalAddresses.first?.value else { return }
-
+            if let birthDay = contact.birthday {
+                let calendar = Calendar.current
+                let dateBirthday = calendar.date(from: birthDay)
+                model.contactDateBirthday = dateBirthday
+            }
+            
+            let address = contact.postalAddresses.first?.value
 
             let emailString = email as? String
-            model.contactDateBirthday = dateBirthday
+            
             model.contactImage = contact.imageData
             model.contactName = contact.givenName + " " + contact.middleName
             model.contactSurname = contact.familyName
             model.contactPhoneNumber = numberPhone
             model.contactMail = emailString
-            model.contactCountry = address.country
-            model.contactCity = address.city + " " + address.subAdministrativeArea
-            model.contactAddress = "\(address.street)"
-            model.contactPostalCode = address.postalCode
-            
-            
+            model.contactCountry = address?.country ?? ""
+            model.contactCity = (address?.city ?? "") + " " + (address?.subAdministrativeArea ?? "")
+            model.contactAddress = address?.street ?? ""
+            model.contactPostalCode = address?.postalCode ?? ""
             
             ContactRealmManager.shared.saveContactModel(model: model)
             tableView.reloadData()
             showAlertForUser(text: "Choosen contact imported successfully", duration: DispatchTime.now()+1, controllerView: view)
+        }
+    }
+    
+    private func shareChoosenContact(indexPath: IndexPath){
+        let model = viewIsFiltered ? filteredContactData[indexPath.row] : contactData[indexPath.row]
+        let contact = CNMutableContact()
+        let phoneNumber = [CNLabeledValue(label: CNLabelPhoneNumberMain, value: CNPhoneNumber(stringValue: model.contactPhoneNumber ?? ""))]
+        let email = [CNLabeledValue(label: CNLabelWork, value: model.contactMail as? NSString ?? "")]
+
+        contact.givenName = model.contactName ?? ""
+        contact.familyName = model.contactSurname ?? ""
+        contact.imageData = model.contactImage
+        contact.phoneNumbers = phoneNumber
+        contact.emailAddresses = email
+
+        do {
+//            let card = CNContact
+            let contactCard = try CNContactVCardSerialization.data(with: [contact])
+            let activity = UIActivityViewController(activityItems: [contactCard], applicationActivities: nil)
+            present(activity, animated: true)
+        } catch {
+            print(error.localizedDescription)
+        }
+        
+        
+        
+        
+    }
+    
+    private func openChoosenContact(indexPath: IndexPath){
+        let model = viewIsFiltered ? filteredContactData[indexPath.row] : contactData[indexPath.row]
+        let vc = EditContactViewController(contactModel: model, editing: false)
+        show(vc, sender: nil)
+    }
+    
+    private func deleteChoosenContact(indexPath: IndexPath){
+        tableView.beginUpdates()
+        let model = viewIsFiltered ? filteredContactData : contactData
+        ContactRealmManager.shared.deleteContactModel(model: (model?[indexPath.row])!)//не забыть убрать форс анреп
+        tableView.deleteRows(at: [indexPath], with: .fade)
+        tableView.endUpdates()
+    }
+    
+    private func makeCallContact(indexPath: IndexPath){
+        let model = viewIsFiltered ? filteredContactData[indexPath.row] : contactData[indexPath.row]
+        let phone = model.contactPhoneNumber?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "No number to call"
+        guard let url = URL(string: "tel://\(phone)") else { self.alertError(text: "Incorrect number");return}
+        if UIApplication.shared.canOpenURL(url){
+            UIApplication.shared.open(url)
+        } else {
+            self.alertError(text: "This function is not avaliable.\nTry again later", mainTitle: "Error!")
+        }
+    }
+    
+    private func makeSendMessage(indexPath: IndexPath){
+        let model = viewIsFiltered ? filteredContactData[indexPath.row] : contactData[indexPath.row]
+        let phone = model.contactPhoneNumber ?? "No number to call"
+        if MFMessageComposeViewController.canSendText() {
+            let vc = MFMessageComposeViewController()
+            vc.body = "Hello!"
+            vc.recipients = ["\(phone)"]
+            vc.messageComposeDelegate = self
+            show(vc, sender: nil)
+        } else {
+            alertError(text: "This function is not avaliable.\nTry again later", mainTitle: "Error!")
+        }
+    }
+    
+    //delegate method
+    func isSavedCompletely(boolean: Bool) {
+        if boolean {
+            showAlertForUser(text: "Contact saved successfully", duration: DispatchTime.now()+1, controllerView: view)
         }
     }
 
@@ -248,6 +278,10 @@ extension ContactsViewController: CNContactPickerDelegate {
     func contactPicker(_ picker: CNContactPickerViewController, didSelect contacts: [CNContact]) {
         importContact(contacts: contacts)
     }
+}
+
+extension ContactsViewController: CNContactViewControllerDelegate {
+    
 }
 
 //MARK: - Search delegates
@@ -265,6 +299,26 @@ extension ContactsViewController: UISearchResultsUpdating {
 }
 //MARK: - Table view delegates
 extension ContactsViewController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { actions in
+            let shareAction = UIAction(title: NSLocalizedString("Share Contact Card", comment: ""), image: UIImage(systemName: "square.and.arrow.up.circle.fill")) { [ weak self] _ in
+                self?.shareChoosenContact(indexPath: indexPath)
+            }
+            let openAction = UIAction(title: NSLocalizedString("Open Contact", comment: ""),image: UIImage(systemName: "info.circle.fill")) { [unowned self] action in
+                self.openChoosenContact(indexPath: indexPath)
+            }
+            let callAction = UIAction(title: NSLocalizedString("Call to contact", comment: ""),image: UIImage(systemName: "phone.fill")) { [unowned self] _ in
+                self.makeCallContact(indexPath: indexPath)
+            }
+            let messageAction = UIAction(title: NSLocalizedString("Send message", comment: ""),image: UIImage(systemName: "message.fill")) { [unowned self] _ in
+                self.makeSendMessage(indexPath: indexPath)
+            }
+            let deleteAction = UIAction(title: NSLocalizedString("Delete Contact", comment: ""),image: UIImage(systemName: "trash"),attributes: .destructive) { [unowned self] _ in
+                self.deleteChoosenContact(indexPath: indexPath)
+            }
+            return UIMenu(title: "", children: [shareAction,callAction,messageAction,openAction,deleteAction])
+        }
+    }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return (viewIsFiltered ? filteredContactData.count : contactData.count)
@@ -293,9 +347,8 @@ extension ContactsViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let cellData = contactData[indexPath.row]
         let detailInstance = UIContextualAction(style: .normal, title: "") { [weak self] _, _, handler in
-            self?.openCurrentContact(model: cellData,boolean: false)
+            self?.openChoosenContact(indexPath: indexPath)
         }
         detailInstance.backgroundColor = .lightGray
         detailInstance.image = UIImage(systemName: "ellipsis")
@@ -305,10 +358,8 @@ extension ContactsViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let model = contactData[indexPath.row]
-        let deleteInstance = UIContextualAction(style: .destructive, title: "") { _, _, _ in
-            ContactRealmManager.shared.deleteContactModel(model: model)
-            tableView.deleteRows(at: [indexPath], with: .fade)
+        let deleteInstance = UIContextualAction(style: .destructive, title: "") { [unowned self] _, _, _ in
+            self.deleteChoosenContact(indexPath: indexPath)
         }
         deleteInstance.backgroundColor = .systemRed
         deleteInstance.image = UIImage(systemName: "trash.fill")
@@ -320,8 +371,7 @@ extension ContactsViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let model = contactData[indexPath.row]
-        actionsWithContact(model: model)
+        openChoosenContact(indexPath: indexPath)
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

@@ -34,7 +34,7 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
 
     //MARK: - UI Setups view
     private lazy var shareModelButton: UIBarButtonItem = {
-        return UIBarButtonItem(systemItem: .action,menu: topMenu)
+        return UIBarButtonItem(image: UIImage(systemName: "square.and.arrow.up.fill"), menu: topMenu)
     }()
     
     private lazy var startEditButton: UIBarButtonItem = {
@@ -86,7 +86,7 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
                 print("None")
             }
             UIPasteboard.general.string = model
-            alertDismissed(view: self.view)
+            showAlertForUser(text: "Text was copied", duration: DispatchTime.now()+0.5, controllerView: view)
             tableView.deselectRow(at: indexPath, animated: true)
         }
     }
@@ -167,7 +167,6 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
         }
         let activityViewController = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
         self.present(activityViewController, animated: true, completion: nil)
-        
     }
     
     private func checkPlannedNotification() -> Bool {
@@ -206,24 +205,23 @@ extension OpenTaskDetailViewController: UITableViewDelegate, UITableViewDataSour
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         if indexPath == [4,0] {
             return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { actions in
-                        let shareAction =
-                            UIAction(title: NSLocalizedString("Share Image", comment: ""),
-                                     image: UIImage(systemName: "square.and.arrow.up.circle.fill")) { action in
-                                self.didTapLongPressOnImage()
-                            }
-                        let copyAction =
-                            UIAction(title: NSLocalizedString("Copy Image", comment: ""),
-                                     image: UIImage(systemName: "arrowshape.turn.up.right.circle.fill")) { action in
-                                if let data = self.selectedScheduleModel.scheduleImage, let image = UIImage(data: data) {
-                                    UIPasteboard.general.image = image
-                                    self.alertDismissed(view: self.view, title: "Image copied")
-                                } else {
-                                    self.alertError(text: "Can't copy image")
-                                }
-                            }
-                        return UIMenu(title: "", children: [shareAction,copyAction])
+                let shareAction =
+                    UIAction(title: NSLocalizedString("Share Image", comment: ""),
+                                image: UIImage(systemName: "square.and.arrow.up.circle.fill")) { action in
+                        self.didTapLongPressOnImage()
+                    }
+                let copyAction =
+                    UIAction(title: NSLocalizedString("Copy Image", comment: ""),
+                                image: UIImage(systemName: "arrowshape.turn.up.right.circle.fill")) { action in
+                        if let data = self.selectedScheduleModel.scheduleImage, let image = UIImage(data: data) {
+                            UIPasteboard.general.image = image
+                            self.alertDismissed(view: self.view, title: "Image copied")
+                        } else {
+                            self.alertError(text: "Can't copy image")
+                        }
+                    }
+                return UIMenu(title: "", children: [shareAction,copyAction])
             }
-            
         } else {
             return nil
         }
@@ -264,7 +262,7 @@ extension OpenTaskDetailViewController: UITableViewDelegate, UITableViewDataSour
         case [1,0]:
             cell?.textLabel?.text = date + " Time: " + time
         case [1,1]:
-            cell?.textLabel?.text = endDate + " Time: " + time
+            cell?.textLabel?.text = endDate + " Time: " + endTime
         case [1,2]:
             cell?.textLabel?.text = "Reminder status"
             cell?.accessoryView?.isHidden = false

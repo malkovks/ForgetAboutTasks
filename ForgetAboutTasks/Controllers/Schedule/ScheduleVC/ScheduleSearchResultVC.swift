@@ -39,8 +39,10 @@ class ScheduleSearchResultViewController: UIViewController {
     private func setupNavigationController(){
         navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
     }
-
 }
+
+//MARK: - TableView delegates and data sources
+
 extension ScheduleSearchResultViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cellSearchResult")
