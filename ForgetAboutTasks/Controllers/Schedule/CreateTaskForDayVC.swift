@@ -107,8 +107,7 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
     }
     
     @objc private func didTapCreate(){
-        let date = Calendar.current.date(byAdding: .hour,value: 12, to: choosenDate) ?? Date()
-        let vc = CreateEventScheduleViewController(choosenDate: date)
+        let vc = CreateEventScheduleViewController(choosenDate: Date())
         vc.delegate = self
         let navVC = UINavigationController(rootViewController: vc)
         navVC.modalTransitionStyle = .flipHorizontal

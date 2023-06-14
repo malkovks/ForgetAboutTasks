@@ -172,12 +172,21 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
     private func checkPlannedNotification() -> Bool {
         var value = Bool()
         let center = UNUserNotificationCenter.current()
-        let date = selectedScheduleModel.scheduleStartDate!
-        print(date)
+        let calendar = Calendar.current
+        let date = selectedScheduleModel.scheduleStartDate ?? Date()
+        let dateEnd = selectedScheduleModel.scheduleEndDate ?? Date()
+        print("Start date \(date)\nEnd date \(dateEnd)")
+        let components = calendar.dateComponents([.year,.month,.day,.hour,.minute,.second], from: date)
+        let secondComponents = calendar.dateComponents([.year,.month,.day,.hour,.minute,.second], from: dateEnd)
+        let startDate = calendar.date(from: components) ?? date
+        let endDate = calendar.date(from: secondComponents) ?? dateEnd
+        
+        
         center.getPendingNotificationRequests { requests in
             let notOnDate = requests.filter { request in
                 if let trigger = request.trigger as? UNCalendarNotificationTrigger {
-                    return Calendar.current.isDate(trigger.nextTriggerDate()!, inSameDayAs: date)
+                    let triggerDate = trigger.nextTriggerDate()!
+                    return triggerDate >= date && triggerDate < dateEnd
                 }
                 return false
             }
@@ -189,6 +198,7 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
                 value = false
             }
         }
+        print(value)
         return value
     }
     
@@ -267,6 +277,7 @@ extension OpenTaskDetailViewController: UITableViewDelegate, UITableViewDataSour
             cell?.textLabel?.text = "Reminder status"
             cell?.accessoryView?.isHidden = false
             switchButton.isEnabled = false
+            switchButton.isOn = checkPlannedNotification()
         case[2,0]:
             cell?.textLabel?.text = inheritedData.scheduleCategoryName ?? data
         case [2,1]:

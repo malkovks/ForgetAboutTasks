@@ -155,13 +155,12 @@ class CreateEventScheduleViewController: UIViewController {
         let content = UNMutableNotificationContent()
         
         let dateS = model.scheduleTime ?? Date()
-        print(dateS)
         let date = DateFormatter.localizedString(from: dateS, dateStyle: .medium, timeStyle: .none)
         content.title = "Planned reminder"
         content.body = "\(date)"
         content.subtitle = "\(model.scheduleName)"
         content.sound = .defaultRingtone
-        let dateFormat = DateFormatter.localizedString(from: scheduleModel.scheduleStartDate ?? Date(), dateStyle: .medium, timeStyle:.none)
+        let dateFormat = DateFormatter.localizedString(from: scheduleModel.scheduleStartDate ?? Date(), dateStyle: .medium, timeStyle:.short)
         content.userInfo = ["userNotification": dateFormat]
         let components = Calendar.current.dateComponents([.day,.month,.year,.hour,.minute,.second], from: dateS)
         let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)

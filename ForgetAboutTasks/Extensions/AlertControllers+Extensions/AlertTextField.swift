@@ -53,7 +53,7 @@ extension UIViewController{
         let toolbar = UIToolbar()
         toolbar.sizeToFit()
         //НЕ РАБОТАЕТ кнопка скрытия клавиатуры
-        let doneB = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(self.toolBarDoneButtonTapped))
+        let doneB = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(toolBarDoneButtonTapped))
         doneB.tintColor = UIColor(named: "navigationControllerColor")
         let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         toolbar.setItems([flexibleSpace,doneB], animated: true)
@@ -64,8 +64,11 @@ extension UIViewController{
         present(alert, animated: true)
     }
     
-    @objc func toolBarDoneButtonTapped(_ textField: UITextField){
-        print("work")
+    @objc func toolBarDoneButtonTapped(){
+        view.endEditing(true)
+        if let textField = (presentedViewController as? UIAlertController)?.textFields?.first {
+            textField.resignFirstResponder()
+        }
     }
     
     @objc func textFieldDidChange(_ textField: UITextField){

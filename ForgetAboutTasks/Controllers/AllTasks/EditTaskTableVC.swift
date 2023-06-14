@@ -58,6 +58,8 @@ class EditTaskTableViewController: UIViewController {
     @objc private func didTapDismiss(){
         if isStartEditing {
             setupAlertSheet()
+        } else {
+            dismiss(animated: true)
         }
     }
     

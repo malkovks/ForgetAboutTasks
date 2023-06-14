@@ -18,8 +18,7 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
     private var contactData: Results<ContactModel>!
     private var filteredContactData: Results<ContactModel>!
     private var localRealmData = try! Realm()
-    
-    //MARK: - UI elements
+
     private var searchBarIsEmpty: Bool {
         guard let text = searchController.searchBar.text else { return true }
         return text.isEmpty
@@ -29,6 +28,7 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
         return searchController.isActive && !searchBarIsEmpty
     }
     
+    //MARK: - UI elements
     private let searchController = UISearchController()
     
     private let tableView = UITableView()
@@ -120,6 +120,7 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
     
     private func setupTableView(){
         tableView.backgroundColor = UIColor(named: "backgroundColor")
+        tableView.separatorStyle = .singleLine
         tableView.delegate = self
         tableView.dataSource = self
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -299,6 +300,10 @@ extension ContactsViewController: UISearchResultsUpdating {
 }
 //MARK: - Table view delegates
 extension ContactsViewController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return (viewIsFiltered ? filteredContactData.count : contactData.count)
+    }
+    
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { actions in
             let shareAction = UIAction(title: NSLocalizedString("Share Contact Card", comment: ""), image: UIImage(systemName: "square.and.arrow.up.circle.fill")) { [ weak self] _ in
@@ -319,11 +324,7 @@ extension ContactsViewController: UITableViewDelegate, UITableViewDataSource {
             return UIMenu(title: "", children: [shareAction,callAction,messageAction,openAction,deleteAction])
         }
     }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return (viewIsFiltered ? filteredContactData.count : contactData.count)
-    }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "contactCell")
         let data = (viewIsFiltered ? filteredContactData[indexPath.row] : contactData[indexPath.row])

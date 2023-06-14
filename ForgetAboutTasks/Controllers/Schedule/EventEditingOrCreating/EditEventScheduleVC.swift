@@ -82,7 +82,7 @@ class EditEventScheduleViewController: UIViewController {
         let color = cellBackgroundColor.encode()
         editedScheduleModel.scheduleColor = color
         let id = scheduleModel.scheduleModelId
-        if !editedScheduleModel.scheduleName.isEmpty {
+        if isStartEditing {
             if reminderStatus {
                 setupUserNotification(model: scheduleModel)
                 reminderStatus = false
@@ -223,6 +223,7 @@ class EditEventScheduleViewController: UIViewController {
                 imagePicker.sourceType = .photoLibrary
                 imagePicker.allowsEditing = true
                 present(self.imagePicker, animated: true)
+                isStartEditing = true
             }
         }))
         alert.addAction(UIAlertAction(title: "Make new image", style: .default,handler: { [self] _ in
@@ -231,11 +232,13 @@ class EditEventScheduleViewController: UIViewController {
                 imagePicker.sourceType = .camera
                 imagePicker.allowsEditing = true
                 present(self.imagePicker, animated: true)
+                isStartEditing = true
             }
         }))
         alert.addAction(UIAlertAction(title: "Delete image", style: .destructive,handler: { _ in
             let cell = self.tableView.cellForRow(at: [4,0])
             cell?.imageView?.image = UIImage(named: "camera.fill")
+            self.isStartEditing = true
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         present(alert, animated: true)

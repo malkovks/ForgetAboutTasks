@@ -21,6 +21,8 @@ class NewContactViewController: UIViewController{
                              ["Choose date"],
                              ["Choose Type of contact"]]
     private var contactModel = ContactModel()
+    
+    private var isStartEditing: Bool = false
     //MARK: - UI elements
     private let tableView = UITableView(frame: .zero, style: .insetGrouped)
     private let viewForTable = NewContactCustomView()
@@ -62,6 +64,13 @@ class NewContactViewController: UIViewController{
             self?.chooseImagePicker(source: sourceType)
         }
     }
+    @objc private func didTapDismiss(){
+        if isStartEditing {
+            setupAlertSheet()
+        } else {
+            navigationController?.popViewController(animated: true)
+        }
+    }
     //MARK: - Setup methods
     private func setupView() {
         setupNavigationController()
@@ -83,6 +92,7 @@ class NewContactViewController: UIViewController{
     
     private func setupNavigationController(){
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(didTapSave))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .done, target: self, action: #selector(didTapDismiss))
         navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
         navigationController?.navigationItem.largeTitleDisplayMode = .never
         navigationController?.navigationBar.prefersLargeTitles = false
@@ -101,12 +111,24 @@ class NewContactViewController: UIViewController{
         let contact = CNMutableContact()
         
         guard let data = model.contactImage else { return }
+        
+        let email = CNLabeledValue(label: CNLabelHome, value: model.contactMail as? NSString ?? "No email")
+        
+        let phone = String.format(with: "+X (XXX) XXX-XXXX", phone: model.contactPhoneNumber ?? "No number")
+        let address = CNMutablePostalAddress()
+        address.country = model.contactCountry ?? ""
+        address.city = model.contactCity ?? ""
+        address.street = model.contactAddress ?? ""
+        address.postalCode = model.contactPostalCode ?? ""
+        _ = CNLabeledValue(label: CNLabelHome, value: address)//Доделать
+        
+        contact.phoneNumbers = [CNLabeledValue(label: CNLabelPhoneNumberiPhone, value: CNPhoneNumber(stringValue: phone))]
+        contact.emailAddresses = [email]
         contact.imageData = data
         contact.givenName = model.contactName ?? "No name"
-        let email = CNLabeledValue(label: CNLabelHome, value: model.contactMail as? NSString ?? "No email")
-        contact.emailAddresses = [email]
-        let phone = String.format(with: "+X (XXX) XXX-XXXX", phone: model.contactPhoneNumber ?? "No number")
-        contact.phoneNumbers = [CNLabeledValue(label: CNLabelPhoneNumberiPhone, value: CNPhoneNumber(stringValue: phone))]
+        contact.familyName = model.contactSurname ?? ""
+        
+        
         
         let store = CNContactStore()
         let saveRequest = CNSaveRequest()
@@ -164,18 +186,21 @@ extension NewContactViewController: UITableViewDelegate, UITableViewDataSource {
                 self.cellsName[indexPath.section][indexPath.row] = text
                 cell?.textLabel?.text = text
                 contactModel.contactName = text
+                self.isStartEditing = true
             }
         case [0,1]:
             alertTextField(cell: cellName, placeholder: "Enter secon name", keyboard: .default) { [unowned self] text in
                 self.cellsName[indexPath.section][indexPath.row] = text
                 cell?.textLabel?.text = text
                 contactModel.contactSurname = text
+                self.isStartEditing = true
             }
         case [1,0]:
             alertPhoneNumber(cell: cellName, placeholder: "Enter valid number", keyboard: .numberPad) { [unowned self] text in
                 self.cellsName[indexPath.section][indexPath.row] = text
                 cell?.textLabel?.text = text
                 contactModel.contactPhoneNumber = text
+                self.isStartEditing = true
             }
         case [1,1]:
             alertTextField(cell: cellName, placeholder: "Enter mail", keyboard: .emailAddress) { [weak self] text in
@@ -183,6 +208,7 @@ extension NewContactViewController: UITableViewDelegate, UITableViewDataSource {
                     self?.cellsName[indexPath.section][indexPath.row] = text.lowercased()
                     self?.contactModel.contactMail = text
                     cell?.textLabel?.text = text
+                    self?.isStartEditing = true
                 } else {
                     self?.alertError(text: "Enter the @ domain and country domain", mainTitle: "Warning")
                 }
@@ -190,27 +216,33 @@ extension NewContactViewController: UITableViewDelegate, UITableViewDataSource {
         case [2,0]: alertTextField(cell: cellName, placeholder: "Enter name of country", keyboard: .default) { [weak self]  text in
             cell?.textLabel?.text = text
             self?.contactModel.contactCountry = text
+            self?.isStartEditing = true
         }
         case [2,1]: alertTextField(cell: cellName, placeholder: "Enter name of city", keyboard: .default) { [weak self]  text in
             cell?.textLabel?.text = text
             self?.contactModel.contactCity = text
+            self?.isStartEditing = true
         }
         case [2,2]: alertTextField(cell: cellName, placeholder: "Enter the address", keyboard: .default) { [weak self]  text in
             cell?.textLabel?.text = text
             self?.contactModel.contactAddress = text
+            self?.isStartEditing = true
         }
         case [2,3]: alertTextField(cell: cellName, placeholder: "Enter postal code", keyboard: .default) { [weak self]  text in
             cell?.textLabel?.text = text
             self?.contactModel.contactPostalCode = text
+            self?.isStartEditing = true
         }
         case [3,0]: alertDate( choosenDate: Date()) { [weak self] _, birthday, text in
             cell?.textLabel?.text = text
             self?.contactModel.contactDateBirthday = birthday
+            self?.isStartEditing = true
         }
         case [4,0]:
             alertFriends { [ weak self] text in
                 self?.cellsName[indexPath.section][indexPath.row] = text
                 self?.contactModel.contactType = text
+                self?.isStartEditing = true
                 cell?.textLabel?.text = text
             }
         default:
@@ -277,6 +309,18 @@ extension NewContactViewController {
             make.leading.trailing.equalToSuperview().inset(10)
             make.bottom.equalToSuperview().offset(10)
         }
-        
     }
+    
+    private func setupAlertSheet(title: String = "Attention" ,subtitle: String = "You have some changes.\nWhat do you want to do?") {
+        let sheet = UIAlertController(title: title, message: subtitle, preferredStyle: .actionSheet)
+        sheet.addAction(UIAlertAction(title: "Discard changes", style: .destructive,handler: { _ in
+            self.navigationController?.popViewController(animated: true)
+        }))
+        sheet.addAction(UIAlertAction(title: "Save", style: .default,handler: { [self] _ in
+            didTapSave()
+        }))
+        sheet.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        present(sheet, animated: true)
+    }
+
 }

@@ -25,6 +25,7 @@ class EditContactViewController: UIViewController {
     private var contactModel: ContactModel
     private var editedContactModel = ContactModel()
     private var isViewEdited: Bool
+    private var isStartEditing: Bool = false
     
     init(contactModel: ContactModel,editing: Bool){
         self.contactModel = contactModel
@@ -65,10 +66,14 @@ class EditContactViewController: UIViewController {
     
     //MARK: - Targets methods
     @objc private func didTapSave(){
-        let id = contactModel.contactID
-        ContactRealmManager.shared.editAllTasksModel(user: id, newModel: editedContactModel)
-        delegate?.isSavedCompletely(boolean: true)
-        navigationController?.popViewController(animated: true)
+        if isStartEditing {
+            let id = contactModel.contactID
+            ContactRealmManager.shared.editAllTasksModel(user: id, newModel: editedContactModel)
+            delegate?.isSavedCompletely(boolean: true)
+            navigationController?.popViewController(animated: true)
+        } else {
+            
+        }
     }
     
     @objc private func didTapOpenPhoto(){
@@ -96,6 +101,15 @@ class EditContactViewController: UIViewController {
         let activityVC = UIActivityViewController(activityItems: [contact], applicationActivities: nil)
         self.present(activityVC, animated: true)
     }
+    
+    @objc private func didTapDismiss(){
+        if isStartEditing {
+            setupAlertSheet()
+        } else {
+            self.navigationController?.popViewController(animated: true)
+        }
+        
+    }
     //MARK: - Setup methods
     private func setupView() {
         setupNavigationController()
@@ -121,14 +135,20 @@ class EditContactViewController: UIViewController {
             editModelButton = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(didTapEdit))
         } else {
             editModelButton = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(didTapSave))
+            editModelButton.isEnabled = false
             navigationItem.setRightBarButton(editModelButton, animated: true)
             shareModelButton.isHidden = true
-            
+            if isStartEditing {
+                editModelButton.isEnabled = true
+            } else {
+                editModelButton.isEnabled = false
+            }
         }
     }
     
     private func setupNavigationController(){
         navigationItem.rightBarButtonItems = [editModelButton, shareModelButton]
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .done, target: self, action: #selector(didTapDismiss))
         navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
         navigationController?.navigationItem.largeTitleDisplayMode = .never
         navigationController?.navigationBar.prefersLargeTitles = false
@@ -325,18 +345,21 @@ extension EditContactViewController: UITableViewDelegate, UITableViewDataSource 
                     self.cellsName[indexPath.section][indexPath.row] = text
                     cell?.textLabel?.text = text
                     editedContactModel.contactName = text
+                    self.isStartEditing = true
                 }
             case [0,1]:
                 alertTextField(cell: cellName, placeholder: "Enter second name", keyboard: .default) { [unowned self] text in
                     self.cellsName[indexPath.section][indexPath.row] = text
                     cell?.textLabel?.text = text
                     editedContactModel.contactSurname = text
+                    self.isStartEditing = true
                 }
             case [1,0]:
                 alertPhoneNumber(cell: cellName, placeholder: "Enter valid number", keyboard: .numberPad) { [unowned self] text in
                     self.cellsName[indexPath.section][indexPath.row] = text
                     cell?.textLabel?.text = text
                     editedContactModel.contactPhoneNumber = text
+                    self.isStartEditing = true
                 }
             case [1,1]:
                 alertTextField(cell: cellName, placeholder: "Enter mail", keyboard: .emailAddress) { [weak self] text in
@@ -344,6 +367,7 @@ extension EditContactViewController: UITableViewDelegate, UITableViewDataSource 
                         self?.cellsName[indexPath.section][indexPath.row] = text.lowercased()
                         self?.editedContactModel.contactMail = text
                         cell?.textLabel?.text = text
+                        self?.isStartEditing = true
                     } else {
                         self?.alertError(text: "Enter the @ domain and country domain", mainTitle: "Warning")
                     }
@@ -351,28 +375,34 @@ extension EditContactViewController: UITableViewDelegate, UITableViewDataSource 
             case [2,0]: alertTextField(cell: cellName, placeholder: "Enter name of country", keyboard: .default) { [weak self]  text in
                 cell?.textLabel?.text = text
                 self?.editedContactModel.contactCountry = text
+                self?.isStartEditing = true
             }
             case [2,1]: alertTextField(cell: cellName, placeholder: "Enter name of city", keyboard: .default) { [weak self]  text in
                 cell?.textLabel?.text = text
                 self?.editedContactModel.contactCity = text
+                self?.isStartEditing = true
             }
             case [2,2]: alertTextField(cell: cellName, placeholder: "Enter the address", keyboard: .default) { [weak self]  text in
                 cell?.textLabel?.text = text
                 self?.editedContactModel.contactAddress = text
+                self?.isStartEditing = true
             }
             case [2,3]: alertTextField(cell: cellName, placeholder: "Enter postal code", keyboard: .default) { [weak self]  text in
                 cell?.textLabel?.text = text
                 self?.editedContactModel.contactPostalCode = text
+                self?.isStartEditing = true
             }
             case [3,0]: alertDate( choosenDate: Date()) { [weak self] _, birthday, text in
                 cell?.textLabel?.text = text
                 self?.editedContactModel.contactDateBirthday = birthday
+                self?.isStartEditing = true
             }
             case [4,0]:
                 alertFriends { [ weak self] text in
                     self?.cellsName[indexPath.section][indexPath.row] = text
                     self?.editedContactModel.contactType = text
                     cell?.textLabel?.text = text
+                    self?.isStartEditing = true
                 }
             default:
                 print("error")
@@ -453,6 +483,19 @@ extension EditContactViewController {
             make.leading.trailing.equalToSuperview().inset(10)
             make.bottom.equalToSuperview().offset(10)
         }
-        
     }
+    private func setupAlertSheet(title: String = "Attention" ,subtitle: String = "You have some changes.\nWhat do you want to do?") {
+        let sheet = UIAlertController(title: title, message: subtitle, preferredStyle: .actionSheet)
+        sheet.addAction(UIAlertAction(title: "Discard changes", style: .destructive,handler: { _ in
+            self.navigationController?.popViewController(animated: true)
+        }))
+        sheet.addAction(UIAlertAction(title: "Save", style: .default,handler: { [self] _ in
+            didTapSave()
+        }))
+        sheet.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        present(sheet, animated: true)
+    }
+
+    
 }
+
