@@ -34,7 +34,7 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
 
     //MARK: - UI Setups view
     private lazy var shareModelButton: UIBarButtonItem = {
-        return UIBarButtonItem(image: UIImage(systemName: "square.and.arrow.up.fill"), menu: topMenu)
+        return UIBarButtonItem(image: UIImage(systemName: "gearshape.circle.fill"), menu: topMenu)
     }()
     
     private lazy var startEditButton: UIBarButtonItem = {
@@ -46,7 +46,6 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
     
     private let tableView = UITableView(frame: CGRectZero, style: .insetGrouped)
     
-    
     //MARK: - viewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -56,6 +55,7 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
 
     //MARK: - Targets methods
     @objc private func didTapDismiss(){
+        navigationController?.popViewController(animated: true)
         dismiss(animated: true)
     }
     
@@ -114,7 +114,6 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
     }
     
     private func setupTableView(){
-        view.addSubview(tableView)
         tableView.backgroundColor = UIColor(named: "backgroundColor")
         tableView.delegate = self
         tableView.dataSource = self
@@ -141,10 +140,14 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
         let sharePDF = UIAction(title: "Share PDF File",image: UIImage(systemName: "doc.text.image.fill")) { _ in
             self.shareTableView("pdf")
         }
-        topMenu = UIMenu(title: "Share selection", image: UIImage(systemName: "square.and.arrow.up"), options: .singleSelection , children: [shareImage,sharePDF])
+        let sectionShare = UIMenu(title: "Share",  options: .displayInline, children: [sharePDF,shareImage])
+        let deleteCell = UIAction(title: "Delete",image: UIImage(systemName: "trash.fill"),attributes: .destructive) { _ in
+            self.deleteModel()
+        }
+        topMenu = UIMenu(image: UIImage(systemName: "square.and.arrow.up"), children: [sectionShare,deleteCell])
     }
     
-    func shareTableView(_ typeSharing: String) {
+    private func shareTableView(_ typeSharing: String) {
         //pdf render
         let pdfRenderer = UIGraphicsPDFRenderer(bounds: tableView.bounds)
         let pdfData = pdfRenderer.pdfData { context in
@@ -168,6 +171,18 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
         let activityViewController = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
         self.present(activityViewController, animated: true, completion: nil)
     }
+    
+    private func deleteModel(){
+        let alert = UIAlertController(title: "Warning!", message: "Do you want to delete event?", preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction(title: "Delete",style: .destructive,handler: { _ in
+            ScheduleRealmManager.shared.deleteScheduleModel(model: self.selectedScheduleModel)
+            self.navigationController?.popToRootViewController(animated: true)
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel",style: .cancel))
+        present(alert, animated: true)
+    }
+    
+    
     
     private func checkPlannedNotification() -> Bool {
         var value = Bool()
@@ -340,6 +355,7 @@ extension OpenTaskDetailViewController: UITableViewDelegate, UITableViewDataSour
 
 extension OpenTaskDetailViewController {
     private func setupConstraints(){
+        view.addSubview(tableView)
         tableView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
             make.leading.trailing.equalToSuperview()

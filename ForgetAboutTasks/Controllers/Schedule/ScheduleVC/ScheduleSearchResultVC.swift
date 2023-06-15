@@ -11,10 +11,10 @@ import RealmSwift
 
 class ScheduleSearchResultViewController: UIViewController {
     
-    var scheduleModel: Results<ScheduleModel>?
+    var scheduleModel: Results<ScheduleModel>?//non private because we take method in ScheduleVC
+    
     
     let tableView = UITableView(frame: .null, style: .grouped)
-    
     //MARK: - Setup viewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,10 +48,10 @@ extension ScheduleSearchResultViewController: UITableViewDelegate, UITableViewDa
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cellSearchResult")
         let model = scheduleModel?[indexPath.row]
         cell.backgroundView?.tintColor = UIColor(named: "cellColor")
-        
+
         let timeFF = Formatters.instance.timeStringFromDate(date: model?.scheduleStartDate ?? Date())
         let dateF = DateFormatter.localizedString(from: model?.scheduleTime ?? Date(), dateStyle: .medium, timeStyle: .none)
-        
+
         cell.textLabel?.text = model?.scheduleName
         cell.detailTextLabel?.text =  dateF + ". Time: " + timeFF
         cell.imageView?.image = UIImage(systemName: "circle.fill")
@@ -61,7 +61,7 @@ extension ScheduleSearchResultViewController: UITableViewDelegate, UITableViewDa
         }
         return cell
     }
-    
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return scheduleModel?.count ?? 10
     }
@@ -74,11 +74,11 @@ extension ScheduleSearchResultViewController: UITableViewDelegate, UITableViewDa
         nav.isNavigationBarHidden = false
         present(nav, animated: true)
     }
-    
+
     func numberOfSections(in tableView: UITableView) -> Int {
         1
     }
-    
+
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return "Result of search:"
     }

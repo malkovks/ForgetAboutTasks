@@ -15,6 +15,9 @@ class ScheduleAllEventViewController: UIViewController {
     private var scheduleModel: Results<ScheduleModel>
     private var scheduleDates: [Date]
     
+    private var dictionaryScheduleModel = [String: [ScheduleModel]]()
+    private var sectionHeaderModel = [String]()
+    
     init(model: Results<ScheduleModel>){
         let date = model.map({ $0.scheduleStartDate ?? Date ()}).sorted()
         self.scheduleModel = model.sorted(byKeyPath: "scheduleStartDate")
@@ -26,12 +29,8 @@ class ScheduleAllEventViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    
+    //MARK: - UI elements
     private let tableView = UITableView(frame: .null, style: .grouped)
-    
-    private lazy var filterTableData: UIBarButtonItem = {
-        return UIBarButtonItem(image: UIImage(systemName: "line.3.horizontal.decrease.circle"), landscapeImagePhone: nil, style: .done, target: self, action: #selector(didTapOpenCalendar))
-    }()
     
     //MARK: - Setup viewDidLoad
     override func viewDidLoad() {
@@ -49,6 +48,7 @@ class ScheduleAllEventViewController: UIViewController {
     
     //MARK: - main setups
     private func setupView(){
+        createSectionDictionary()
         setupNavigationController()
         setupTableView()
         setupConstraints()
@@ -65,72 +65,77 @@ class ScheduleAllEventViewController: UIViewController {
     
     
     private func setupNavigationController(){
-        navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
-        navigationItem.rightBarButtonItem = filterTableData
         title = "All events"
     }
 }
 //MARK: - Table view delegate
 extension ScheduleAllEventViewController: UITableViewDelegate, UITableViewDataSource {
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        let date = scheduleDates[section]
-        let formatter = DateFormatter()
-        formatter.dateFormat = "EEEE"
-        let dayName = formatter.string(from: date).capitalized
-        return dayName + ", " + DateFormatter.localizedString(from: date, dateStyle: .medium, timeStyle: .none)
+    private func createSectionDictionary(){
+        for model in scheduleModel {
+            let date = model.scheduleStartDate ?? Date()
+            let key = DateFormatter.localizedString(from: date, dateStyle: .medium, timeStyle: .none)
+            
+            if var value = dictionaryScheduleModel[key] {
+                value.append(model)
+                dictionaryScheduleModel[key] = value
+            } else {
+                dictionaryScheduleModel[key] = [model]
+            }
+        }
+        
+        sectionHeaderModel = [String](dictionaryScheduleModel.keys).sorted(by: < )
     }
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let date = scheduleDates[section]
-        return scheduleModel.filter("scheduleStartDate == %@",date).count
+    private func setupSelectionCell(indexPath: IndexPath){
+        let key = sectionHeaderModel[indexPath.section]
+        if let data = dictionaryScheduleModel[key] {
+            let value = data[indexPath.row]
+            let vc = OpenTaskDetailViewController(model: value)
+            show(vc, sender: nil)
+//            let nav = UINavigationController(rootViewController: vc)
+//            nav.modalPresentationStyle = .fullScreen
+//            nav.isNavigationBarHidden = false
+//            present(nav, animated: true)
+        }
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return scheduleDates.count
+        return sectionHeaderModel.count
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return sectionHeaderModel[section]
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        let key = sectionHeaderModel[section]
+        guard let value = dictionaryScheduleModel[key] else { return 0}
+        return value.count
+        
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cellAllEvent")
-        let date = scheduleDates[indexPath.section]
-        let event = scheduleModel.filter("scheduleStartDate == %@",date)
-        let model = event[indexPath.row]
-        let dateConvert = DateFormatter.localizedString(from: model.scheduleStartDate ?? Date(), dateStyle: .medium, timeStyle: .none)
-        let timeConvert = DateFormatter.localizedString(from: model.scheduleTime ?? Date(), dateStyle: .none, timeStyle: .short)
-        cell.textLabel?.text = model.scheduleName
-        cell.detailTextLabel?.text = dateConvert + ", " + timeConvert
-        cell.imageView?.image = UIImage(systemName: "circle.fill")
-        cell.tintColor = UIColor(named: "cellColor")
-        if let color = model.scheduleColor {
+        let key = sectionHeaderModel[indexPath.section]
+        if let values = dictionaryScheduleModel[key],
+           let color = values[indexPath.row].scheduleColor {
+            let value = values[indexPath.row]
+            let startTime = DateFormatter.localizedString(from: value.scheduleStartDate ?? Date(), dateStyle: .none, timeStyle: .short)
+            let endTime = DateFormatter.localizedString(from: value.scheduleEndDate ?? Date(), dateStyle: .none, timeStyle: .short)
+            cell.textLabel?.text = value.scheduleName
+            cell.detailTextLabel?.text = "Start - \(startTime). End - \(endTime)"
+            cell.imageView?.image = UIImage(systemName: "circle.fill")
             cell.imageView?.tintColor = UIColor.color(withData: color)
         }
         return cell
     }
+
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let date = scheduleDates[indexPath.section]
-        let event = scheduleModel.filter("scheduleStartDate == %@ ", date)
-        let model = event[indexPath.row]
-        let vc = OpenTaskDetailViewController(model: model)
-        let nav = UINavigationController(rootViewController: vc)
-        nav.modalPresentationStyle = .fullScreen
-        nav.isNavigationBarHidden = false
-        present(nav, animated: true)
+        setupSelectionCell(indexPath: indexPath)
     }
     
-    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let editingData = scheduleModel[indexPath.row]
-        let deleteInstance = UIContextualAction(style: .destructive, title: "") { _, _, _ in
-            ScheduleRealmManager.shared.deleteScheduleModel(model: editingData)
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        }
-        deleteInstance.backgroundColor = .systemRed
-        deleteInstance.image = UIImage(systemName: "trash.fill")
-        deleteInstance.image?.withTintColor(.systemBackground)
-        let action = UISwipeActionsConfiguration(actions: [deleteInstance])
-        
-        return action
-    }
 }
 
 extension ScheduleAllEventViewController {

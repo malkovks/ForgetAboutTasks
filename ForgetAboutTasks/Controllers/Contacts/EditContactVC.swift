@@ -135,14 +135,8 @@ class EditContactViewController: UIViewController {
             editModelButton = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(didTapEdit))
         } else {
             editModelButton = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(didTapSave))
-            editModelButton.isEnabled = false
             navigationItem.setRightBarButton(editModelButton, animated: true)
             shareModelButton.isHidden = true
-            if isStartEditing {
-                editModelButton.isEnabled = true
-            } else {
-                editModelButton.isEnabled = false
-            }
         }
     }
     
