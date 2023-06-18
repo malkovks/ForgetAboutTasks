@@ -198,6 +198,7 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
     func isSavedCompletely(boolean: Bool) {
         if boolean {
             showAlertForUser(text: "Event saved successfully", duration: DispatchTime.now()+1, controllerView: view)
+            loadingData()
         }
     }
 }

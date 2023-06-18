@@ -81,6 +81,20 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
         table.translatesAutoresizingMaskIntoConstraints = false
         return table
     }()
+    
+    private var actionMenu: UIMenu = UIMenu()
+    
+    private lazy var createEventButton: UIBarButtonItem = {
+       return UIBarButtonItem(image: UIImage(systemName: "plus.circle.fill"), landscapeImagePhone: nil, style: .done, target: self, action: #selector(didTapCreate))
+    }()
+    
+    private lazy var editNavigationButton: UIBarButtonItem = {
+        return UIBarButtonItem(image: UIImage(systemName: "gearshape.circle.fill"), style: .done, target: self, action: #selector(didTapStartEditing))
+    }()
+    
+    private lazy var actionWithTableButton: UIBarButtonItem = {
+        return UIBarButtonItem(image: UIImage(systemName: "trash"), menu: actionMenu)
+    }()
     //MARK: - override views
     
     override func viewWillAppear(_ animated: Bool) {
@@ -99,6 +113,8 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
         setupConstraintsForCalendar()
         let predicate = setupRealmData(date: choosenDate)
         loadingRealmData(predicate: predicate)
+        
+        tableView.allowsMultipleSelectionDuringEditing = true
     }
 
  //MARK: -  actions targets methods
@@ -126,6 +142,36 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
             loadingRealmData(predicate: predicate, typeOf: "scheduleName")
         }
     }
+    
+    @objc private func didTapStartEditing(){
+        if !tableView.isEditing {
+            tableView.setEditing(!tableView.isEditing, animated: true)
+            navigationItem.setRightBarButtonItems([createEventButton,actionWithTableButton], animated: true)
+        } else {
+            tableView.setEditing(!tableView.isEditing, animated: true)
+            navigationItem.setRightBarButtonItems([createEventButton,editNavigationButton], animated: true)
+        }
+    }
+    
+    @objc private func didTapDeleteChoosenCell(){
+        let alert = UIAlertController(title: "Do you want to delete choosen cells?", message: "Warning!", preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction(title: "Delete", style: .destructive,handler: { [self] _ in
+            guard let indexPath = tableView.indexPathsForSelectedRows else {
+                alertError(text: "Can't get index from table view", mainTitle: "Error")
+                return
+            }
+            for index in indexPath {
+                let model = cellDataScheduleModel[index.row]
+                ScheduleRealmManager.shared.deleteScheduleModel(model: model)
+            }
+            tableView.deleteRows(at: indexPath, with: .fade)
+            tableView.setEditing(false, animated:  true)
+            navigationController?.navigationItem.setRightBarButtonItems([createEventButton,editNavigationButton], animated: true)
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        present(alert, animated: true)
+        
+    }
 //MARK: - Setups for view controller
     private func setupGestureForDismiss(){
         let gesture = UISwipeGestureRecognizer(target: self, action: #selector(didTapDismiss))
@@ -134,13 +180,13 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
     }
     
     private func setupView(){
+        setupActionWithTableMenu()
         isSavedCompletely(boolean: false)
         view.backgroundColor = UIColor(named: "backgroundColor")
         calendar.today =  choosenDate
         segmentalController.addTarget(self, action: #selector(didTapSegmentChanged(segment:)), for: .valueChanged)
         calendar.reloadData()
         setupGestureForDismiss()
-        setupTitleView(date: choosenDate)
         
     }
     
@@ -152,6 +198,7 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
                            , forCellReuseIdentifier: "cell")
         calendar.delegate = self
         calendar.dataSource = self
+        tableView.allowsMultipleSelectionDuringEditing = true
     }
     
     
@@ -159,14 +206,35 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
         navigationController?.navigationItem.largeTitleDisplayMode = .never
         navigationController?.navigationBar.prefersLargeTitles = false
         navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "arrow.backward.circle.fill"), landscapeImagePhone: nil, style: .done, target: self, action: #selector(didTapDismiss))
-        let firstBut = UIBarButtonItem(image: UIImage(systemName: "plus.circle.fill"), landscapeImagePhone: nil, style: .done, target: self, action: #selector(didTapCreate))
-        navigationItem.rightBarButtonItems = [firstBut]
+        
+        navigationItem.rightBarButtonItems = [createEventButton,editNavigationButton]
         navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
     }
     
-    private func setupTitleView(date: Date){
-        let convertDate = Formatters.instance.stringFromDate(date: date)
-        title = "Задачи на \(convertDate)"
+    private func setupDeletingCell(indexPath: IndexPath) -> UISwipeActionsConfiguration {
+        let editingData = cellDataScheduleModel[indexPath.row]
+        let deleteInstance = UIContextualAction(style: .destructive, title: "") { _, _, _ in
+            ScheduleRealmManager.shared.deleteScheduleModel(model: editingData)
+            self.tableView.deleteRows(at: [indexPath], with: .fade)
+        }
+        deleteInstance.backgroundColor = .systemRed
+        deleteInstance.image = UIImage(systemName: "trash.fill")
+        deleteInstance.image?.withTintColor(.systemBackground)
+        let action = UISwipeActionsConfiguration(actions: [deleteInstance])
+        
+        return action
+    }
+    
+    private func setupActionWithTableMenu(){
+        let deleteModels = UIAction(title: "Delete choosen", image: UIImage(systemName: "trash"),attributes: .destructive) { _ in
+            self.didTapDeleteChoosenCell()
+        }
+        let stopEdit = UIAction(title: "Cancel editing mode",image: UIImage(systemName: "square.and.pencil.circle.fill")) { _ in
+            self.didTapStartEditing()
+        }
+        let actionSection = UIMenu(title: "Actions",  options: .displayInline, children: [deleteModels,stopEdit])
+
+        actionMenu = UIMenu(image: UIImage(systemName: "square.and.arrow.up"), children: [actionSection])
     }
     
     //MARK: - logics methods
@@ -184,7 +252,6 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
         let predicateUnrepeat = NSPredicate(format: "scheduleRepeat = false AND scheduleStartDate BETWEEN %@", [dateStart,dateEnd])
         let compound = NSCompoundPredicate(type: .or, subpredicates: [predicate,predicateUnrepeat])
         return compound
-        
     }
     
     private func loadingRealmData(predicate compound: NSCompoundPredicate,typeOf sort: String = "scheduleTime") {
@@ -204,9 +271,24 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
 }
 //MARK: - table delegates and datasource
 extension CreateTaskForDayController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         cellDataScheduleModel.count
     }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            let editingData = cellDataScheduleModel[indexPath.row]
+            ScheduleRealmManager.shared.deleteScheduleModel(model: editingData)
+            tableView.beginUpdates()
+            self.tableView.deleteRows(at: [indexPath], with: .fade)
+            tableView.endUpdates()
+        }
+    }
+
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cell")
@@ -230,29 +312,25 @@ extension CreateTaskForDayController: UITableViewDelegate, UITableViewDataSource
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        let data = cellDataScheduleModel[indexPath.row]
-        let vc = OpenTaskDetailViewController(model: data)
-        let nav = UINavigationController(rootViewController: vc)
-        nav.modalPresentationStyle = .fullScreen
-        nav.isNavigationBarHidden = false
-        present(nav, animated: true)
+        
+        if !tableView.isEditing {
+            tableView.deselectRow(at: indexPath, animated: true)
+            let data = cellDataScheduleModel[indexPath.row]
+            let vc = OpenTaskDetailViewController(model: data)
+            let nav = UINavigationController(rootViewController: vc)
+            nav.modalPresentationStyle = .fullScreen
+            nav.isNavigationBarHidden = false
+            present(nav, animated: true)
+        } else {
+            tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+        }
+        
     }
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let editingData = cellDataScheduleModel[indexPath.row]
-        let deleteInstance = UIContextualAction(style: .destructive, title: "") { _, _, _ in
-            ScheduleRealmManager.shared.deleteScheduleModel(model: editingData)
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        }
-        deleteInstance.backgroundColor = .systemRed
-        deleteInstance.image = UIImage(systemName: "trash.fill")
-        deleteInstance.image?.withTintColor(.systemBackground)
-        let action = UISwipeActionsConfiguration(actions: [deleteInstance])
-        
-        return action
+        setupDeletingCell(indexPath: indexPath)
     }
-    
+
     func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         isTrailingSwipeActionActive = true
         let cellData = cellDataScheduleModel[indexPath.row]
@@ -272,7 +350,6 @@ extension CreateTaskForDayController: UITableViewDelegate, UITableViewDataSource
         actionInstance.image = UIImage(systemName: "pencil.line")
         actionInstance.image?.withTintColor(.systemBackground)
         let action = UISwipeActionsConfiguration(actions: [actionInstance])
-        
         return action
     }
     
@@ -290,7 +367,6 @@ extension CreateTaskForDayController: UITableViewDelegate, UITableViewDataSource
 extension CreateTaskForDayController: FSCalendarDelegate, FSCalendarDataSource {
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
         choosenDate = date
-        setupTitleView(date: date)
         let predicate = setupRealmData(date: date)
         loadingRealmData(predicate: predicate)
     }

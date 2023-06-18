@@ -92,7 +92,8 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
     }
     
     @objc private func didTapLongPressOnImage(){
-        guard let data = selectedScheduleModel.scheduleImage, let image = UIImage(data: data) else { return }
+        guard let data = selectedScheduleModel.scheduleImage,
+              let image = UIImage(data: data) else { return }
         let activity = UIActivityViewController(activityItems: [image], applicationActivities: nil)
         present(activity, animated: true)
     }
@@ -228,7 +229,8 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
 //MARK: - table view delegates and data sources
 extension OpenTaskDetailViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
-        if indexPath == [4,0] {
+        let cell = tableView.dequeueReusableCell(withIdentifier: ScheduleTableViewCell.identifier) as? ScheduleTableViewCell
+        if indexPath == [4,0] && cell?.imageViewSchedule.image != UIImage(systemName: "camera.fill"){
             return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { actions in
                 let shareAction =
                     UIAction(title: NSLocalizedString("Share Image", comment: ""),

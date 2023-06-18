@@ -10,6 +10,16 @@ import SnapKit
 import Combine
 import UserNotifications
 import RealmSwift
+import EventKit
+
+struct ScheduleModelStruct {
+    var scheduleStartDate: Date
+    var scheduleEndDate: Date
+    var scheduleName: String
+    var scheduleCategoryNote: String?
+    var scheduleCategoryURL: String?
+
+}
 
 class CreateEventScheduleViewController: UIViewController {
     
@@ -18,19 +28,22 @@ class CreateEventScheduleViewController: UIViewController {
     private let headerArray = ["Details of event","Start and End of event","Category of event","Color of event","Choose image"]
     
     private var cellsName = [["Name of event"],
-                     ["Start","End","Set a reminder"],
+                     ["Start","End","Set a reminder","Add to Calendar"],
                      ["Name","Type","URL","Note"],
                      [""],
                      [""]]
     
     private var reminderStatus: Bool = false
+    private var addingEventStatus: Bool = false
     private var cancellable: AnyCancellable?//for parallels displaying color in cell and Combine Kit for it
     private var scheduleModel = ScheduleModel()
     private let realm = try! Realm()
-    private var cellBackgroundColor =  #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
+    private var cellBackgroundColor: UIColor =  #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
     private var choosenDate: Date
     private var isStartEditing: Bool = false
-    private lazy var startChoosenDate = choosenDate
+    private lazy var startChoosenDate: Date = choosenDate
+    
+    private var scheduleModelStruct: ScheduleModelStruct = ScheduleModelStruct(scheduleStartDate: Date(), scheduleEndDate: Date().addingTimeInterval(3600), scheduleName: "Test", scheduleCategoryNote: "Test")
     
     init(choosenDate: Date){
         self.choosenDate = choosenDate
@@ -62,27 +75,18 @@ class CreateEventScheduleViewController: UIViewController {
     }
     
     @objc private func didTapSave(){
-        scheduleModel.scheduleColor = cellBackgroundColor.encode()
         
         let isClear = setupAlertIfDataEmpty()
         if isClear {
-            if reminderStatus {
-                setupUserNotification(model: scheduleModel)
-                delegate?.isSavedCompletely(boolean: true)
-                reminderStatus = false
-            }
-            ScheduleRealmManager.shared.saveScheduleModel(model: scheduleModel)
+            scheduleModel.scheduleColor = cellBackgroundColor.encode()
+            setupUserNotification(model: scheduleModel, status: reminderStatus)
+            setupAddingEventToEKEvent(model: scheduleModelStruct, status: addingEventStatus)
+            delegate?.isSavedCompletely(boolean: true)
+            ScheduleRealmManager.shared.saveScheduleModel(model: self.scheduleModel)
+            print(scheduleModelStruct)
             DispatchQueue.main.asyncAfter(deadline: .now()) {
                 self.dismiss(animated: true)
             }
-        }
-    }
-    
-    @objc private func didTapSwitch(sender: UISwitch){
-        if sender.isOn {
-            scheduleModel.scheduleRepeat = true
-        } else {
-            scheduleModel.scheduleRepeat = false
         }
     }
     
@@ -95,6 +99,18 @@ class CreateEventScheduleViewController: UIViewController {
             }
         } else {
             reminderStatus = false
+        }
+    }
+    
+    @objc private func didTapSetEKEvent(sender: UISwitch){
+        if sender.isOn {
+            if scheduleModel.scheduleStartDate == nil && scheduleModel.scheduleEndDate == nil {
+                alertError(text: "Enter date for adding event to Calendar", mainTitle: "Error!")
+            } else {
+                addingEventStatus = true
+            }
+        } else {
+            addingEventStatus = false
         }
     }
 
@@ -150,7 +166,8 @@ class CreateEventScheduleViewController: UIViewController {
         navigationItem.rightBarButtonItems = [saveButton]
     }
     
-    private func setupUserNotification(model: ScheduleModel){
+    private func setupUserNotification(model: ScheduleModel,status: Bool){
+        
         let center = UNUserNotificationCenter.current()
         let content = UNMutableNotificationContent()
         
@@ -165,10 +182,59 @@ class CreateEventScheduleViewController: UIViewController {
         let components = Calendar.current.dateComponents([.day,.month,.year,.hour,.minute,.second], from: dateS)
         let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
         let request = UNNotificationRequest(identifier: "request", content: content, trigger: trigger)
-        center.add(request) { [weak self] error in
-            if error != nil {
-                self?.alertError()
+        if status {
+            center.add(request) { [weak self] error in
+                if error != nil {
+                    self?.alertError()
+                }
             }
+        }
+        
+    }
+    
+    private func setupAddingEventToEKEvent(model: ScheduleModelStruct,status: Bool){
+        let eventStore: EKEventStore = EKEventStore()
+        switch EKEventStore.authorizationStatus(for: .event){
+            
+        case .notDetermined:
+            eventStore.requestAccess(to: .event) { success, error in
+                if success {
+                    self.insertEvent(store: eventStore, model: self.scheduleModelStruct, status: status)
+                } else {
+                    print(error?.localizedDescription as Any)
+                }
+            }
+        case .restricted:
+            print("Restricted")
+        case .denied:
+            alertError(text: "Cant save event in Calendar", mainTitle: "Warning!")
+        case .authorized:
+            insertEvent(store: eventStore, model: scheduleModelStruct, status: status)
+        @unknown default:
+            break
+        }
+    }
+    
+    private func insertEvent(store: EKEventStore,model: ScheduleModelStruct,status: Bool){
+        if let calendar = store.defaultCalendarForNewEvents{
+            if status {
+                let event: EKEvent = EKEvent(eventStore: store)
+                event.calendar = calendar
+                event.startDate = model.scheduleStartDate
+                event.endDate = model.scheduleEndDate
+                event.title = model.scheduleName
+                event.url = URL(string: model.scheduleCategoryURL ?? "")
+                let reminder = EKAlarm(absoluteDate: model.scheduleStartDate)
+                event.alarms = [reminder]
+                do {
+                    try store.save(event, span: .thisEvent)
+                    print("Success insert EKEvent")
+                } catch let error as NSError{
+                    alertError(text: error.localizedDescription, mainTitle: "Error!")
+                }
+            }
+        } else {
+            alertError(text: "Error saving event to calendar")
         }
     }
     //MARK: - Logics methods
@@ -180,7 +246,7 @@ class CreateEventScheduleViewController: UIViewController {
         } else if scheduleModel.scheduleStartDate == nil {
             alertError(text: "Choose date of event")
             return false
-        } else if scheduleModel.scheduleTime == nil {
+        } else if scheduleModel.scheduleEndDate == nil {
             alertError(text: "Choose time of event")
             return false
         } else if scheduleModel.scheduleStartDate?.compare(scheduleModel.scheduleEndDate ?? startChoosenDate) == .orderedDescending {
@@ -250,6 +316,7 @@ extension CreateEventScheduleViewController: UIImagePickerControllerDelegate, UI
             tableView.reloadData()
             picker.dismiss(animated: true)
             tableView.deselectRow(at: [4,0], animated: true)
+            
         } else {
             alertError(text: "Error!", mainTitle: "Can't get image and save it to event.\nTry again later!")
         }
@@ -270,7 +337,7 @@ extension CreateEventScheduleViewController: UITableViewDelegate, UITableViewDat
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0: return 1
-        case 1: return 3
+        case 1: return 4
         case 2: return 4
         case 3: return 1
         default: return 1
@@ -291,13 +358,18 @@ extension CreateEventScheduleViewController: UITableViewDelegate, UITableViewDat
         switchButton.isOn = false
         switchButton.isHidden = true
         switchButton.onTintColor = cellBackgroundColor
-        switchButton.addTarget(self, action: #selector(didTapSetReminder), for: .touchUpInside)
+        
     
         if indexPath == [3,0] {
             cell?.backgroundColor = cellBackgroundColor
         } else if indexPath == [1,2] {
             cell?.accessoryView = switchButton
             cell?.accessoryView?.isHidden = false
+            switchButton.addTarget(self, action: #selector(didTapSetReminder), for: .touchUpInside)
+        } else if indexPath == [1,3] {
+            cell?.accessoryView = switchButton
+            cell?.accessoryView?.isHidden = false
+            switchButton.addTarget(self, action: #selector(didTapSetEKEvent), for: .touchUpInside)
         } else if indexPath == [4,0] {
             let image = UIImage(data: scheduleModel.scheduleImage ?? Data())
             customCell.imageViewSchedule.image = image ?? UIImage(systemName: "camera.fill")
@@ -321,15 +393,21 @@ extension CreateEventScheduleViewController: UITableViewDelegate, UITableViewDat
                 scheduleModel.scheduleName = text
                 cell?.textLabel?.text = text
                 isStartEditing = true
+                
+                scheduleModelStruct.scheduleName = text
             }
         case [1,0]:
             alertTimeInline(table: tableView, choosenDate: choosenDate) { [self] date, timeString, weekday in
                 scheduleModel.scheduleTime = date
                 scheduleModel.scheduleStartDate = date
                 scheduleModel.scheduleWeekday = weekday
+                scheduleModel.scheduleEndDate = date.addingTimeInterval(3600)
                 startChoosenDate = date.addingTimeInterval(3600)
                 cell?.textLabel?.text = timeString
                 isStartEditing = true
+                
+                scheduleModelStruct.scheduleStartDate = date
+                
             }
         case [1,1]:
             let hourPlus = scheduleModel.scheduleStartDate
@@ -338,18 +416,22 @@ extension CreateEventScheduleViewController: UITableViewDelegate, UITableViewDat
                 self?.scheduleModel.scheduleEndDate = date
                 cell?.textLabel?.text = dateString
                 self?.isStartEditing = true
+                
+                self?.scheduleModelStruct.scheduleEndDate = date
             }
         case [2,0]:
             alertTextField(cell: "Enter Name of event", placeholder: "Enter the text", keyboard: .default) { [self] text in
                 scheduleModel.scheduleCategoryName = text
                 cell?.textLabel?.text = text
                 isStartEditing = true
+                
             }
         case [2,1]:
             alertTextField(cell: "Enter Type of event", placeholder: "Enter the text", keyboard: .default) { [self] text in
                 scheduleModel.scheduleCategoryType = text
                 cell?.textLabel?.text = text
                 isStartEditing = true
+                
             }
         case [2,2]:
             alertTextField(cell: "Enter URL name with domain", placeholder: "Enter URL", keyboard: .URL) { [self] text in
@@ -357,20 +439,27 @@ extension CreateEventScheduleViewController: UITableViewDelegate, UITableViewDat
                     cell?.textLabel?.text = text
                     scheduleModel.scheduleCategoryURL = text
                     isStartEditing = true
+                    
+                    scheduleModelStruct.scheduleCategoryURL = text
                 } else if !text.contains("www.") || !text.contains("http://") && text.contains("."){
                     let editedText = "www." + text
                     cell?.textLabel?.text = editedText
                     scheduleModel.scheduleCategoryURL = editedText
                     isStartEditing = true
+                    
+                    scheduleModelStruct.scheduleCategoryURL = text
+                    
                 } else {
                     alertError(text: "Enter name of URL link with correct domain", mainTitle: "Incorrect input")
                 }
             }
         case [2,3]:
             alertTextField(cell: "Enter Notes of event", placeholder: "Enter the text", keyboard: .default) { [self] text in
+                scheduleModel.scheduleCategoryNote = text
                 cell?.textLabel?.text = text
-                cellsName[indexPath.section][indexPath.row] = text
                 isStartEditing = true
+                
+                scheduleModelStruct.scheduleCategoryNote = text
             }
         case [3,0]:
             openColorPicker()
@@ -417,7 +506,6 @@ extension CreateEventScheduleViewController: UIColorPickerViewControllerDelegate
             try! self.realm.write {
                 self.scheduleModel.scheduleColor = encodeColor
             }
-//            self.tableView.reloadData()
         }
     }
 }

@@ -17,8 +17,10 @@ class ScheduleRealmManager {
     private init() {}
     
     func saveScheduleModel(model: ScheduleModel){
-        try! localRealm.write {
-            localRealm.add(model)
+        DispatchQueue.main.async {
+            try! self.localRealm.write {
+                self.localRealm.add(model)
+            }
         }
     }
     
@@ -29,21 +31,25 @@ class ScheduleRealmManager {
     }
 
     func editScheduleModel(user id: String,changes: ScheduleModel){
-        let model = localRealm.objects(ScheduleModel.self).filter("scheduleModelId == %@",id).first
-        try! localRealm.write {
-            model?.scheduleCategoryURL = changes.scheduleCategoryURL ?? model?.scheduleCategoryURL
-            model?.scheduleCategoryName = changes.scheduleCategoryName ?? model?.scheduleCategoryName
-            model?.scheduleCategoryNote = changes.scheduleCategoryNote ?? model?.scheduleCategoryNote
-            model?.scheduleCategoryType = changes.scheduleCategoryType ?? model?.scheduleCategoryType
-            model?.scheduleName = changes.scheduleName
-            model?.scheduleStartDate = changes.scheduleStartDate ?? model?.scheduleStartDate
-            model?.scheduleEndDate = changes.scheduleEndDate ?? model?.scheduleEndDate
-            model?.scheduleTime = changes.scheduleTime ?? model?.scheduleTime
-            model?.scheduleColor = changes.scheduleColor ?? model?.scheduleColor
-            model?.scheduleRepeat = ((changes.scheduleRepeat ?? model?.scheduleRepeat) != nil)
-            model?.scheduleWeekday = changes.scheduleWeekday ?? model?.scheduleWeekday
-            model?.scheduleImage = changes.scheduleImage ?? model?.scheduleImage
+        DispatchQueue.main.async {
+            let model = self.localRealm.objects(ScheduleModel.self).filter("scheduleModelId == %@",id).first
+            try! self.localRealm.write {
+                model?.scheduleCategoryURL = changes.scheduleCategoryURL ?? model?.scheduleCategoryURL
+                model?.scheduleCategoryName = changes.scheduleCategoryName ?? model?.scheduleCategoryName
+                model?.scheduleCategoryNote = changes.scheduleCategoryNote ?? model?.scheduleCategoryNote
+                model?.scheduleCategoryType = changes.scheduleCategoryType ?? model?.scheduleCategoryType
+                model?.scheduleName = changes.scheduleName
+                model?.scheduleStartDate = changes.scheduleStartDate ?? model?.scheduleStartDate
+                model?.scheduleEndDate = changes.scheduleEndDate ?? model?.scheduleEndDate
+                model?.scheduleTime = changes.scheduleTime ?? model?.scheduleTime
+                model?.scheduleColor = changes.scheduleColor ?? model?.scheduleColor
+                model?.scheduleRepeat = ((changes.scheduleRepeat ?? model?.scheduleRepeat) != nil)
+                model?.scheduleWeekday = changes.scheduleWeekday ?? model?.scheduleWeekday
+                model?.scheduleImage = changes.scheduleImage ?? model?.scheduleImage
+                self.localRealm.autorefresh = false
+            }
         }
+        
     }
     
 }
