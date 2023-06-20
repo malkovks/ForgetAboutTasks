@@ -9,13 +9,14 @@ import UIKit
 import SnapKit
 import RealmSwift
 import SafariServices
+import EventKit
 
 class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
     
     
     private let headerArray = ["Details of event","Date and time","Category of event","Color of event","Image"]
     private var cellsName = [["Name of event"],
-                     ["Start","End", "Reminder status"],
+                     ["Start","End", "Reminder status","Added to Calendar"],
                      ["Name","Type","URL","Note"],
                      [""],
                      [""]]
@@ -186,6 +187,7 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
     
     
     private func checkPlannedNotification() -> Bool {
+        
         var value = Bool()
         let center = UNUserNotificationCenter.current()
         let calendar = Calendar.current
@@ -194,9 +196,8 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
         print("Start date \(date)\nEnd date \(dateEnd)")
         let components = calendar.dateComponents([.year,.month,.day,.hour,.minute,.second], from: date)
         let secondComponents = calendar.dateComponents([.year,.month,.day,.hour,.minute,.second], from: dateEnd)
-        let startDate = calendar.date(from: components) ?? date
-        let endDate = calendar.date(from: secondComponents) ?? dateEnd
-        
+//        let startDate = calendar.date(from: components) ?? date
+//        let endDate = calendar.date(from: secondComponents) ?? dateEnd
         
         center.getPendingNotificationRequests { requests in
             let notOnDate = requests.filter { request in
@@ -216,6 +217,36 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
         }
         print(value)
         return value
+    }
+    
+//    private func checkInsertedEvent() -> Bool{
+//        let startDate = selectedScheduleModel.scheduleStartDate ?? Date()
+//        let endDate = selectedScheduleModel.scheduleEndDate ?? Date()
+//        let eventStore: EKEventStore = EKEventStore()
+//        let event = EKEvent(eventStore: eventStore)
+//        guard let calendar = eventStore.defaultCalendarForNewEvents else { return false }
+//        let predicate = eventStore.predicateForEvents(withStart: startDate, end: endDate, calendars: [calendar])
+//        let events = eventStore.events(matching: predicate)
+//        if events.contains(event) {
+//            return true
+//        } else {
+//            return false
+//        }
+//    }
+    
+    private func checkInsertedEvent(model: ScheduleModel) -> Bool {
+        let eventStore: EKEventStore = EKEventStore()
+        let event = EKEvent(eventStore: eventStore)
+        let startDate = model.scheduleStartDate ?? Date()
+        let endDate = model.scheduleEndDate ?? Date()
+        let predicate = eventStore.predicateForEvents(withStart: startDate, end: endDate, calendars: nil)
+        return false 
+        
+//        if let identifier = event.value(forKey: model.scheduleModelId) {
+//            return true
+//        } else {
+//            return false
+//        }
     }
     
     func isSavedCompletely(boolean: Bool) {
@@ -257,7 +288,7 @@ extension OpenTaskDetailViewController: UITableViewDelegate, UITableViewDataSour
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0: return 1
-        case 1: return 3
+        case 1: return 4
         case 2: return 4
         case 3: return 1
         default: return 1
@@ -291,10 +322,15 @@ extension OpenTaskDetailViewController: UITableViewDelegate, UITableViewDataSour
         case [1,1]:
             cell?.textLabel?.text = endDate + " Time: " + endTime
         case [1,2]:
-            cell?.textLabel?.text = "Reminder status"
+            cell?.textLabel?.text = data
             cell?.accessoryView?.isHidden = false
             switchButton.isEnabled = false
             switchButton.isOn = checkPlannedNotification()
+        case [1,3]:
+            cell?.textLabel?.text = data
+            cell?.accessoryView?.isHidden = false
+            switchButton.isEnabled = false
+            switchButton.isOn = checkInsertedEvent(model: inheritedData)
         case[2,0]:
             cell?.textLabel?.text = inheritedData.scheduleCategoryName ?? data
         case [2,1]:

@@ -116,6 +116,8 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
         
         tableView.allowsMultipleSelectionDuringEditing = true
     }
+    
+    
 
  //MARK: -  actions targets methods
     @objc private func didTapDismiss(){

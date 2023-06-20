@@ -9,6 +9,7 @@ import UIKit
 import RealmSwift
 import SnapKit
 import Combine
+import EventKit
 
 class EditEventScheduleViewController: UIViewController {
     
@@ -17,7 +18,7 @@ class EditEventScheduleViewController: UIViewController {
     private let headerArray = ["Details of event","Start and End of event","Category of event","Color of event","Choose image"]
     
     private var cellsName = [[""],
-                     ["","","Set a reminder"],
+                     ["","","Set a reminder","Add to Calendar"],
                      ["","","",""],
                      [""],
                      [""]]
@@ -29,6 +30,7 @@ class EditEventScheduleViewController: UIViewController {
     private let realm = try! Realm()
     private var reminderStatus: Bool = false
     private var isStartEditing: Bool = false
+    private var addingToEvent: Bool = false
     private var cancellable: AnyCancellable?//for parallels displaying color in cell and Combine Kit for it
     private lazy var changableChoosenDate = choosenDate
     
@@ -87,6 +89,7 @@ class EditEventScheduleViewController: UIViewController {
                 setupUserNotification(model: scheduleModel)
                 reminderStatus = false
             }
+            checkAuthorizationForCalendar(model: editedScheduleModel, status: addingToEvent)
             ScheduleRealmManager.shared.editScheduleModel(user: id, changes: editedScheduleModel)
             DispatchQueue.main.asyncAfter(deadline: .now()) {
                 self.delegate?.isSavedCompletely(boolean: true)
@@ -107,6 +110,21 @@ class EditEventScheduleViewController: UIViewController {
         } else {
             reminderStatus = false
         }
+    }
+    
+    @objc private func didTapCheck(switchButton: UISwitch){
+        if switchButton.isOn {
+            if  editedScheduleModel.scheduleStartDate != nil &&
+                editedScheduleModel.scheduleEndDate != nil &&
+                !editedScheduleModel.scheduleName.isEmpty {
+                addingToEvent = true
+            } else {
+                alertError(text: "Check Name,Start Date and End Date.\nThey must have some property", mainTitle: "Error!")
+            }
+        } else {
+            addingToEvent = false
+        }
+        
     }
 
     
@@ -168,6 +186,53 @@ class EditEventScheduleViewController: UIViewController {
             if error != nil {
                 self?.alertError()
             }
+        }
+    }
+    
+    private func checkAuthorizationForCalendar(model:ScheduleModel,status: Bool){
+        let eventStore: EKEventStore = EKEventStore()
+        switch EKEventStore.authorizationStatus(for: .event){
+            
+        case .notDetermined:
+            eventStore.requestAccess(to: .event) { success, error in
+                if success {
+                    self.setupAddingEventToCalendar(store: eventStore, model: model, status: status)
+                } else {
+                    print(error?.localizedDescription as Any)
+                }
+            }
+        case .restricted:
+            print("Restricted")
+        case .denied:
+            alertError(text: "Cant save event in Calendar", mainTitle: "Warning!")
+        case .authorized:
+            setupAddingEventToCalendar(store: eventStore, model: model, status: status)
+        @unknown default:
+            break
+        }
+    }
+    
+    private func setupAddingEventToCalendar(store: EKEventStore,model: ScheduleModel, status: Bool){
+        if let calendar = store.defaultCalendarForNewEvents{
+            if status {
+                let event: EKEvent = EKEvent(eventStore: store)
+                event.calendar = calendar
+                event.startDate = model.scheduleStartDate
+                event.endDate = model.scheduleEndDate
+                event.title = model.scheduleName
+                event.url = URL(string: model.scheduleCategoryURL ?? "")
+                event.notes = model.scheduleCategoryNote
+                let reminder = EKAlarm(absoluteDate: model.scheduleStartDate ?? Date())
+                event.alarms = [reminder]
+                do {
+                    try store.save(event, span: .thisEvent)
+                    
+                } catch let error as NSError{
+                    alertError(text: error.localizedDescription, mainTitle: "Error!")
+                }
+            }
+        } else {
+            alertError(text: "Error saving event to calendar")
         }
     }
     
@@ -273,7 +338,7 @@ extension EditEventScheduleViewController: UITableViewDelegate, UITableViewDataS
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0: return 1
-        case 1: return 3
+        case 1: return 4
         case 2: return 4
         case 3: return 1
         default: return 1
@@ -310,6 +375,10 @@ extension EditEventScheduleViewController: UITableViewDelegate, UITableViewDataS
             if content.userInfo["userNotification"] as? String == convertedDate {
                 switchButton.isOn = true
             }
+        } else if indexPath == [1,3] {
+            cell?.accessoryView?.isHidden = false
+            switchButton.addTarget(self, action: #selector(didTapCheck), for: .touchUpInside)
+            
         } else if indexPath == [4,0] {
             let data = editedScheduleModel.scheduleImage ?? scheduleModel.scheduleImage ?? Data()
             customCell?.imageViewSchedule.image = UIImage(data: data)

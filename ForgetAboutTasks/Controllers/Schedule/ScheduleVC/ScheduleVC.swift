@@ -79,6 +79,10 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
         setupAnimation()
     }
     
+    func handleURL(url: URL){
+        
+    }
+    
    //MARK: - target methods
     @objc private func didTapSearch(){
             navigationItem.searchController = searchController
