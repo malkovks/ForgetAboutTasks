@@ -1,11 +1,11 @@
 {
   "images" : [
     {
+      "filename" : "iconMark.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "iconMark.png",
       "idiom" : "universal",
       "scale" : "2x"
     },

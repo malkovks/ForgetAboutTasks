@@ -12,6 +12,7 @@ import FSCalendar
 import EventKit
 import SnapKit
 import RealmSwift
+import WidgetKit
 
 class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
     
@@ -178,11 +179,20 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
         
         let calendar = Calendar.current
         let components = calendar.dateComponents([.weekday], from: date)
-        guard let weekday = components.weekday else { alertError(text: "Can't get weekday numbers. Try again!", mainTitle: "Error value");return }
+        guard let weekday = components.weekday else {
+            alertError(text: "Can't get weekday numbers. Try again!", mainTitle: "Error value")
+            return
+        }
         
         
         let value = localRealm.objects(ScheduleModel.self)
         scheduleModel = value
+        let userDefaults = UserDefaults(suiteName: "group.widgetGroupIdentifier")
+        
+        let currentDatePredicate = NSPredicate(format: "scheduleStartDate BETWEEN %@", [dateStart,dateEnd])
+        let filteredValue = localRealm.objects(ScheduleModel.self).filter(currentDatePredicate)
+        userDefaults?.setValue(filteredValue.count, forKey: "group.integer")
+        WidgetCenter.shared.reloadAllTimelines()
         
         if firstLoad == false {
             if monthPosition == .current {

@@ -42,6 +42,7 @@
 		0A8D250A2A29CED300022622 /* CheckSuccessSaveProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8D25092A29CED300022622 /* CheckSuccessSaveProtocol.swift */; };
 		0A8D250D2A2C108D00022622 /* ScheduleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8D250C2A2C108D00022622 /* ScheduleTableViewCell.swift */; };
 		0A8DD8DB29BC8BEB00B2DDAB /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8DD8DA29BC8BEB00B2DDAB /* Formatters.swift */; };
+		0A9918B22A41B655001004FA /* LockscreenWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA1E9022A406A480052B849 /* LockscreenWidget.swift */; };
 		0A99A8FD29CD855100CC5A42 /* AlertTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A99A8FC29CD855100CC5A42 /* AlertTextField.swift */; };
 		0A99A8FF29CD8FE000CC5A42 /* AllTasksToDoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A99A8FE29CD8FE000CC5A42 /* AllTasksToDoVC.swift */; };
 		0A99A90729CD99CA00CC5A42 /* UserAuthController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A99A90629CD99CA00CC5A42 /* UserAuthController.swift */; };
@@ -58,7 +59,6 @@
 		0AA1E90C2A406A4E0052B849 /* LockscreenWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 0AA1E8F72A406A470052B849 /* LockscreenWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		0AA1E9132A411B7E0052B849 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AA1E8F92A406A470052B849 /* WidgetKit.framework */; };
 		0AA1E91C2A4125560052B849 /* LockscreenWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA1E9022A406A480052B849 /* LockscreenWidget.swift */; };
-		0AA1E9382A41287F0052B849 /* LockscreenWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA1E9022A406A480052B849 /* LockscreenWidget.swift */; };
 		0AA1E9392A4128CA0052B849 /* LockscreenWidget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 0AA1E9042A406A480052B849 /* LockscreenWidget.intentdefinition */; };
 		0AA604DC29E03CB1007ACE58 /* AlertContacts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA604DB29E03CB1007ACE58 /* AlertContacts.swift */; };
 		0AA604DF29E04541007ACE58 /* AlertImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA604DE29E04541007ACE58 /* AlertImagePicker.swift */; };
@@ -152,6 +152,7 @@
 		0A8D25092A29CED300022622 /* CheckSuccessSaveProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckSuccessSaveProtocol.swift; sourceTree = "<group>"; };
 		0A8D250C2A2C108D00022622 /* ScheduleTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleTableViewCell.swift; sourceTree = "<group>"; };
 		0A8DD8DA29BC8BEB00B2DDAB /* Formatters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Formatters.swift; sourceTree = "<group>"; };
+		0A9918B32A41B8FB001004FA /* LockscreenWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LockscreenWidgetExtension.entitlements; sourceTree = "<group>"; };
 		0A99A8FC29CD855100CC5A42 /* AlertTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertTextField.swift; sourceTree = "<group>"; };
 		0A99A8FE29CD8FE000CC5A42 /* AllTasksToDoVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllTasksToDoVC.swift; sourceTree = "<group>"; };
 		0A99A90629CD99CA00CC5A42 /* UserAuthController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAuthController.swift; sourceTree = "<group>"; };
@@ -262,6 +263,7 @@
 		0A86ED0329B5D97F001C9BAF = {
 			isa = PBXGroup;
 			children = (
+				0A9918B32A41B8FB001004FA /* LockscreenWidgetExtension.entitlements */,
 				0A86ED0E29B5D97F001C9BAF /* ForgetAboutTasks */,
 				0AA1E8FD2A406A480052B849 /* LockscreenWidget */,
 				0A86ED2829B5D981001C9BAF /* ForgetAboutTasksTests */,
@@ -802,11 +804,11 @@
 				0A86ED1A29B5D97F001C9BAF /* ForgetAboutTasks.xcdatamodeld in Sources */,
 				0A7FFFC029F1BA1800CAC9DA /* DownloadImage.swift in Sources */,
 				0A7FFFBD29F1326A00CAC9DA /* String+Extension.swift in Sources */,
+				0A9918B22A41B655001004FA /* LockscreenWidget.swift in Sources */,
 				0ACE796B29D9EEAA00599C19 /* AlertSpinner.swift in Sources */,
 				0AEAA9F82A272BB600BE85A4 /* EditContactVC.swift in Sources */,
 				0A99A90729CD99CA00CC5A42 /* UserAuthController.swift in Sources */,
 				0A2717BA2A01F7FE00EFBC11 /* AllTasksDetailVC.swift in Sources */,
-				0AA1E9382A41287F0052B849 /* LockscreenWidget.swift in Sources */,
 				0ACE797229DD95C600599C19 /* CreateTaskTableVC.swift in Sources */,
 				0AACE7A92A1F80D500531C84 /* ScheduleAllEventVC.swift in Sources */,
 				0AF2D6F82A189A390093A824 /* EditEventScheduleVC.swift in Sources */,
@@ -1149,6 +1151,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = LockscreenWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 2275P6FG35;
@@ -1177,6 +1180,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = LockscreenWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 2275P6FG35;

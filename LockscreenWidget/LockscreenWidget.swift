@@ -9,36 +9,52 @@ import WidgetKit
 import SwiftUI
 import Intents
 
+
 struct Provider: IntentTimelineProvider {
     func placeholder(in context: Context) -> DayEntry {
-        DayEntry(date: Date(), configuration: ConfigurationIntent())
+        DayEntry(date: Date(), count: 0, configuration: ConfigurationIntent())
     }
 
     func getSnapshot(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (DayEntry) -> ()) {
-        let entry = DayEntry(date: Date(), configuration: configuration)
+        let entry = DayEntry(date: Date(), count: 0, configuration: configuration)
         completion(entry)
     }
 
     func getTimeline(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
         var entries: [DayEntry] = []
-
-        // Generate a timeline consisting of five entries an hour apart, starting from the current date.
+        
+        let userDefaults = UserDefaults(suiteName: "group.widgetGroupIdentifier")
+        let count = userDefaults?.value(forKey: "group.integer") as? Int ?? 0
         let currentDate = Date()
+        let nextMidnight = Calendar.current.date(byAdding: .day, value: 1, to: currentDate)!
+//        for offset in 0 ..< 60 * 24 {
+//            let entryDate = Calendar.current.date(byAdding: .minute, value: offset, to: currentDate)!
+//            let entry = DayEntry(date: entryDate, count: count, configuration: configuration)
+//            entries.append(entry)
+//        }
+//
         for dayOffset in 0 ..< 7 {
+
             let entryDate = Calendar.current.date(byAdding: .day, value: dayOffset, to: currentDate)!
-            let startOfDate = Calendar.current.startOfDay(for: entryDate)
-            let entry = DayEntry(date: entryDate, configuration: configuration)
+            let entry = DayEntry(date: entryDate, count: count, configuration: configuration)
             entries.append(entry)
         }
 
-        let timeline = Timeline(entries: entries, policy: .atEnd)
+        let timeline = Timeline(entries: entries, policy: .after(nextMidnight))
         completion(timeline)
     }
 }
 
 struct DayEntry: TimelineEntry {
     let date: Date
+    let count: Int
     let configuration: ConfigurationIntent
+    var url: URL?{
+        guard let url = URL(string: "") else {
+            fatalError("Can't get URL link")
+        }
+        return url
+    }
 }
 
 struct WidgetDataModel: Codable {
@@ -46,6 +62,7 @@ struct WidgetDataModel: Codable {
     let scheduleEndDate: Date
     let scheduleName: String
 }
+
 
 struct LockscreenWidgetEntryView : View {
     @Environment(\.widgetFamily) var widgetFamily
@@ -57,24 +74,38 @@ struct LockscreenWidgetEntryView : View {
             case .systemSmall:
                 
                 ContainerRelativeShape()
-                    .fill(.green.gradient)
+                    .fill(.gray.gradient)
                 VStack {
-                    HStack(spacing: 4) {
-                        Text("📅")
+                    HStack(spacing: 2) {
+                        Image("calendar")
+                            .resizable()
+                            .frame(width: 30, height: 30, alignment: .center)
                         Text(entry.date.formatted(.dateTime.weekday(.wide)))
                             .font(.title3)
                             .fontWeight(.bold)
-                            .minimumScaleFactor(0.6)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.4)
                         Spacer()
+                        
                     }
                     Text(entry.date.formatted(.dateTime.day()))
-                        .font(.system(size: 80,weight: .heavy))
+                        .frame(width: 120, height: 60, alignment: .center)
+                        .padding(.bottom)
+                        .font(.system(size: 60,weight: .heavy))
+                    Text("Number of events: \(entry.count)")
+                        .font(.system(size: 12,weight: .medium))
+
                 }
                 .padding()
                 
                 
+                
             case .accessoryInline:
-                Text(entry.date, style: .date)
+                if entry.count == 0 {
+                    Text("No events on today")
+                } else {
+                    Text("Today's event: \(entry.count)")
+                }
             default:
                 Text("Not implemented")
             }
@@ -84,7 +115,7 @@ struct LockscreenWidgetEntryView : View {
 }
 
 struct LockscreenWidget: Widget {
-    let kind: String = "My app test"
+    let kind: String = "Forget About Tasks"
 
     var body: some WidgetConfiguration {
         IntentConfiguration(kind: kind, intent: ConfigurationIntent.self, provider: Provider()) { entry in
@@ -93,15 +124,16 @@ struct LockscreenWidget: Widget {
         .configurationDisplayName("Forget About Tasks Calendar Widget")
         .description("This widget include current day for creating new event on date.")
         .supportedFamilies([.accessoryInline,.systemSmall])
+        
     }
 }
 
 struct LockscreenWidget_Previews: PreviewProvider {
     static var previews: some View {
-        LockscreenWidgetEntryView(entry: DayEntry(date: Date(), configuration: ConfigurationIntent()))
+        LockscreenWidgetEntryView(entry: DayEntry(date: Date(), count: 1, configuration: ConfigurationIntent()))
             .previewContext(WidgetPreviewContext(family: .accessoryInline))
             .previewDisplayName("Test accessory inline")
-        LockscreenWidgetEntryView(entry: DayEntry(date: Date(), configuration: ConfigurationIntent()))
+        LockscreenWidgetEntryView(entry: DayEntry(date: Date(), count: 2 , configuration: ConfigurationIntent()))
             .previewContext(WidgetPreviewContext(family: .systemSmall))
             .previewDisplayName("Test system small")
     }
