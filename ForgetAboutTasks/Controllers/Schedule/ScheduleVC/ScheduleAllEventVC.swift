@@ -65,7 +65,7 @@ class ScheduleAllEventViewController: UIViewController {
     
     
     private func setupNavigationController(){
-        title = "All events"
+        title = "All events".localized()
     }
 }
 //MARK: - Table view delegate
@@ -123,7 +123,7 @@ extension ScheduleAllEventViewController: UITableViewDelegate, UITableViewDataSo
             let startTime = DateFormatter.localizedString(from: value.scheduleStartDate ?? Date(), dateStyle: .none, timeStyle: .short)
             let endTime = DateFormatter.localizedString(from: value.scheduleEndDate ?? Date(), dateStyle: .none, timeStyle: .short)
             cell.textLabel?.text = value.scheduleName
-            cell.detailTextLabel?.text = "Start - \(startTime). End - \(endTime)"
+            cell.detailTextLabel?.text = "Start - ".localized() + startTime +  ".End - ".localized() + endTime
             cell.imageView?.image = UIImage(systemName: "circle.fill")
             cell.imageView?.tintColor = UIColor.color(withData: color)
         }

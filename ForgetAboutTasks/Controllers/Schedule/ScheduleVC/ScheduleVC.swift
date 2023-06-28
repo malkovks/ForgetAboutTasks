@@ -60,7 +60,7 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
     
     private let searchController: UISearchController = {
        let search = UISearchController(searchResultsController: ScheduleSearchResultViewController())
-        search.searchBar.placeholder = "Enter the name of event"
+        search.searchBar.placeholder = "Enter the name of event".localized()
         search.isActive = false
         search.searchBar.searchTextField.clearButtonMode = .whileEditing
         search.obscuresBackgroundDuringPresentation = false
@@ -78,10 +78,6 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
         super.viewWillAppear(animated)
         calendar.reloadData()
         setupAnimation()
-    }
-    
-    func handleURL(url: URL){
-        
     }
     
    //MARK: - target methods
@@ -146,7 +142,7 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
     }
     
     private func setupNavigationController(){
-        title = "Calendar"
+        title = "Calendar".localized()
         navigationItem.leftBarButtonItem = searchNavigationButton
         navigationItem.rightBarButtonItems = [createNewEventNavigationButton,displayAllEvent]
         navigationItem.searchController = searchController
@@ -180,7 +176,7 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
         let calendar = Calendar.current
         let components = calendar.dateComponents([.weekday], from: date)
         guard let weekday = components.weekday else {
-            alertError(text: "Can't get weekday numbers. Try again!", mainTitle: "Error value")
+            alertError(text: "Can't get weekday numbers. Try again!".localized(), mainTitle: "Error value".localized())
             return
         }
         
@@ -188,7 +184,7 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
         let value = localRealm.objects(ScheduleModel.self)
         scheduleModel = value
         let userDefaults = UserDefaults(suiteName: "group.widgetGroupIdentifier")
-        
+    
         let currentDatePredicate = NSPredicate(format: "scheduleStartDate BETWEEN %@", [dateStart,dateEnd])
         let filteredValue = localRealm.objects(ScheduleModel.self).filter(currentDatePredicate)
         userDefaults?.setValue(filteredValue.count, forKey: "group.integer")
@@ -196,8 +192,8 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
         
         if firstLoad == false {
             if monthPosition == .current {
-                let predicate = NSPredicate(format: "scheduleWeekday = \(weekday) AND scheduleRepeat = true")
-                let predicateUnrepeat = NSPredicate(format: "scheduleRepeat = false AND scheduleStartDate BETWEEN %@", [dateStart,dateEnd])
+                let predicate = NSPredicate(format: "scheduleWeekday = \(weekday)")
+                let predicateUnrepeat = NSPredicate(format: "scheduleStartDate BETWEEN %@", [dateStart,dateEnd])
                 let compound = NSCompoundPredicate(type: .or, subpredicates: [predicate,predicateUnrepeat])
                 let value = localRealm.objects(ScheduleModel.self).filter(compound)
                 let vc = CreateTaskForDayController(model: value, choosenDate: date)
@@ -211,7 +207,7 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
     
     func isSavedCompletely(boolean: Bool) {
         if boolean {
-            showAlertForUser(text: "Event saved successfully", duration: DispatchTime.now()+1, controllerView: view)
+            showAlertForUser(text: "Event saved successfully".localized(), duration: DispatchTime.now()+1, controllerView: view)
             loadingData()
         }
     }
@@ -241,13 +237,18 @@ extension ScheduleViewController: FSCalendarDelegate, FSCalendarDataSource {
                 eventCounts[date] = 1
             }
         }
+
         let convertDate = DateFormatter.localizedString(from: date, dateStyle: .medium, timeStyle: .none)
+        calendar.appearance.eventDefaultColor = .systemBlue
         if eventCounts[convertDate] != nil {
             return 1
         } else {
             return 0
         }
     }
+    
+    
+    
 }
 //MARK: - Search delegates
 extension ScheduleViewController: UISearchResultsUpdating,UISearchBarDelegate {

@@ -43,7 +43,8 @@ class ScheduleRealmManager {
                 model?.scheduleEndDate = changes.scheduleEndDate ?? model?.scheduleEndDate
                 model?.scheduleTime = changes.scheduleTime ?? model?.scheduleTime
                 model?.scheduleColor = changes.scheduleColor ?? model?.scheduleColor
-                model?.scheduleRepeat = ((changes.scheduleRepeat ?? model?.scheduleRepeat) != nil)
+                model?.scheduleActiveCalendar = changes.scheduleActiveCalendar ?? model?.scheduleActiveCalendar
+                model?.scheduleActiveNotification = changes.scheduleActiveNotification ?? model?.scheduleActiveNotification
                 model?.scheduleWeekday = changes.scheduleWeekday ?? model?.scheduleWeekday
                 model?.scheduleImage = changes.scheduleImage ?? model?.scheduleImage
                 self.localRealm.autorefresh = false

@@ -1,0 +1,35 @@
+
+
+//Schedule View Controller
+"Calendar" = "Календарь";
+"Enter the name of event" = "Введите название мероприятия";
+"Can't get weekday numbers. Try again!" = "Не получается получить данные о календаре.\nПопробуйте позже!";
+"Error value" = "Ошибка получения значения";
+"Event saved successfully" = "Мероприятие сохранено успешно";
+
+//Schedule Search Result View Controller
+"Result of search:" = "Результат поиска:";
+
+// Schedule All Event View Controller
+"All events" = "Все мероприятия";
+"Start - " = "Начало -";
+".End - " = ". Окончание -";
+
+//Create Task For Day Controller
+"Time" = "Время";
+"Date" = "Дата";
+"A-Z" = "А-Я";
+"Do you want to delete choosen cells?" = "Вы хотите удалить выбранные строки?";
+"Warning!" = "Внимание!";
+"Delete" = "Удалить";
+"Cancel" = "Отменить";
+"Delete choosen" = "Удалить";
+"Cancel editing mode" = "Отменить редактирование";
+"Actions" = "Действия";
+
+//Open Task Detail View Controller;
+"Name of event" = "Детали";
+"Date and time" = "Дата и время";
+"Details of event" = "Детали мероприятия";
+"Color of event" = "Акцентированный цвет";
+"Image" = "Изображение";

@@ -80,7 +80,7 @@ class CreateEventScheduleViewController: UIViewController {
         if isClear {
             scheduleModel.scheduleColor = cellBackgroundColor.encode()
             setupUserNotification(model: scheduleModel, status: reminderStatus)
-            setupAddingEventToEKEvent(model: scheduleModel, status: addingEventStatus)
+            setupCalendarEvent(model: scheduleModel, status: true)
             delegate?.isSavedCompletely(boolean: true)
             ScheduleRealmManager.shared.saveScheduleModel(model: self.scheduleModel)
             print(scheduleModelStruct)
@@ -96,9 +96,11 @@ class CreateEventScheduleViewController: UIViewController {
                 alertError(text: "Enter date for setting reminder", mainTitle: "Error set up reminder!")
             } else {
                 reminderStatus = true
+                scheduleModel.scheduleActiveNotification = true
             }
         } else {
             reminderStatus = false
+            scheduleModel.scheduleActiveNotification = false
         }
     }
     
@@ -130,6 +132,7 @@ class CreateEventScheduleViewController: UIViewController {
 
     
     private func setupView() {
+        setupAddingEventToEKEvent()
         setupNavigationController()
         setupDelegate()
         setupColorPicker()
@@ -192,15 +195,13 @@ class CreateEventScheduleViewController: UIViewController {
         
     }
     
-    private func setupAddingEventToEKEvent(model: ScheduleModel,status: Bool){
+    private func setupAddingEventToEKEvent() {
         let eventStore: EKEventStore = EKEventStore()
         switch EKEventStore.authorizationStatus(for: .event){
             
         case .notDetermined:
             eventStore.requestAccess(to: .event) { success, error in
-                if success {
-                    self.insertEvent(store: eventStore, model: model, status: status)
-                } else {
+                if !success {
                     print(error?.localizedDescription as Any)
                 }
             }
@@ -209,13 +210,16 @@ class CreateEventScheduleViewController: UIViewController {
         case .denied:
             alertError(text: "Cant save event in Calendar", mainTitle: "Warning!")
         case .authorized:
-            insertEvent(store: eventStore, model: model, status: status)
+            print("Authorized")
+//            insertEvent(store: eventStore, model: model, status: status)
         @unknown default:
             break
         }
+        
     }
     
-    private func insertEvent(store: EKEventStore,model: ScheduleModel,status: Bool){
+    private func setupCalendarEvent(model: ScheduleModel,status: Bool){
+        let store = EKEventStore()
         if let calendar = store.defaultCalendarForNewEvents{
             if status {
                 let event: EKEvent = EKEvent(eventStore: store)
@@ -225,12 +229,11 @@ class CreateEventScheduleViewController: UIViewController {
                 event.title = model.scheduleName
                 event.url = URL(string: model.scheduleCategoryURL ?? "")
                 event.notes = model.scheduleCategoryNote
-//                event.setValue(true, forKey: model.scheduleModelId)
                 let reminder = EKAlarm(absoluteDate: model.scheduleStartDate ?? Date())
                 event.alarms = [reminder]
                 do {
                     try store.save(event, span: .thisEvent)
-                    
+                    scheduleModel.scheduleActiveCalendar = true
                 } catch let error as NSError{
                     alertError(text: error.localizedDescription, mainTitle: "Error!")
                 }

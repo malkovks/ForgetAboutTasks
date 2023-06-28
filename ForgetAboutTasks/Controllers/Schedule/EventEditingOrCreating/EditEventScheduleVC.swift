@@ -72,23 +72,12 @@ class EditEventScheduleViewController: UIViewController {
         }
     }
     
-    @objc private func didTapSwitch(sender: UISwitch){
-        if sender.isOn {
-            editedScheduleModel.scheduleRepeat = true
-        } else {
-            editedScheduleModel.scheduleRepeat = false
-        }
-    }
-    
     @objc private func didTapEdit(){
         let color = cellBackgroundColor.encode()
         editedScheduleModel.scheduleColor = color
         let id = scheduleModel.scheduleModelId
         if isStartEditing {
-            if reminderStatus {
-                setupUserNotification(model: scheduleModel)
-                reminderStatus = false
-            }
+            setupUserNotification(model: editedScheduleModel, status: reminderStatus)
             checkAuthorizationForCalendar(model: editedScheduleModel, status: addingToEvent)
             ScheduleRealmManager.shared.editScheduleModel(user: id, changes: editedScheduleModel)
             DispatchQueue.main.asyncAfter(deadline: .now()) {
@@ -168,24 +157,30 @@ class EditEventScheduleViewController: UIViewController {
 
     }
     //MARK: - Main functions for view
-    private func setupUserNotification(model: ScheduleModel){
-        let center = UNUserNotificationCenter.current()
-        let content = UNMutableNotificationContent()
-        let dateS = model.scheduleTime ?? Date()
-        let date = DateFormatter.localizedString(from: dateS, dateStyle: .medium, timeStyle: .none)
-        content.title = "Planned reminder"
-        content.body = "\(date)"
-        content.subtitle = "\(model.scheduleName)"
-        content.sound = .defaultRingtone
-        let dateFormat = DateFormatter.localizedString(from: scheduleModel.scheduleStartDate ?? Date(), dateStyle: .medium, timeStyle:.none)
-        content.userInfo = ["userNotification": dateFormat]
-        let components = Calendar.current.dateComponents([.day,.month,.year,.hour,.minute,.second], from: dateS)
-        let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
-        let request = UNNotificationRequest(identifier: "request", content: content, trigger: trigger)
-        center.add(request) { [weak self] error in
-            if error != nil {
-                self?.alertError()
+    private func setupUserNotification(model: ScheduleModel, status: Bool){
+        if status {
+            let center = UNUserNotificationCenter.current()
+            let content = UNMutableNotificationContent()
+            let dateS = model.scheduleTime ?? Date()
+            let date = DateFormatter.localizedString(from: dateS, dateStyle: .medium, timeStyle: .none)
+            content.title = "Planned reminder"
+            content.body = "\(date)"
+            content.subtitle = "\(model.scheduleName)"
+            content.sound = .defaultRingtone
+            let dateFormat = DateFormatter.localizedString(from: scheduleModel.scheduleStartDate ?? Date(), dateStyle: .medium, timeStyle:.none)
+            content.userInfo = ["userNotification": dateFormat]
+            let components = Calendar.current.dateComponents([.day,.month,.year,.hour,.minute,.second], from: dateS)
+            let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
+            let request = UNNotificationRequest(identifier: "request", content: content, trigger: trigger)
+            center.add(request) { [weak self] error in
+                if error != nil {
+                    self?.alertError()
+                } else {
+                    self?.editedScheduleModel.scheduleActiveNotification = status
+                }
             }
+        } else {
+            editedScheduleModel.scheduleActiveNotification = status
         }
     }
     
@@ -226,13 +221,14 @@ class EditEventScheduleViewController: UIViewController {
                 event.alarms = [reminder]
                 do {
                     try store.save(event, span: .thisEvent)
-                    
+                    editedScheduleModel.scheduleActiveCalendar = true
                 } catch let error as NSError{
                     alertError(text: error.localizedDescription, mainTitle: "Error!")
                 }
             }
         } else {
             alertError(text: "Error saving event to calendar")
+            editedScheduleModel.scheduleActiveCalendar = false
         }
     }
     
@@ -371,14 +367,11 @@ extension EditEventScheduleViewController: UITableViewDelegate, UITableViewDataS
         } else if indexPath == [1,2] {
             cell?.accessoryView?.isHidden = false
             switchButton.addTarget(self, action: #selector(didTapSetReminder), for: .touchUpInside)
-            let content = UNMutableNotificationContent()
-            if content.userInfo["userNotification"] as? String == convertedDate {
-                switchButton.isOn = true
-            }
+            switchButton.isOn = scheduleModel.scheduleActiveNotification ?? false
         } else if indexPath == [1,3] {
             cell?.accessoryView?.isHidden = false
             switchButton.addTarget(self, action: #selector(didTapCheck), for: .touchUpInside)
-            
+            switchButton.isOn = scheduleModel.scheduleActiveCalendar ?? false
         } else if indexPath == [4,0] {
             let data = editedScheduleModel.scheduleImage ?? scheduleModel.scheduleImage ?? Data()
             customCell?.imageViewSchedule.image = UIImage(data: data)

@@ -68,7 +68,7 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
     }()
     
     private var segmentalController: UISegmentedControl = {
-        let controller = UISegmentedControl(items: ["Time","Date","A-Z"])
+        let controller = UISegmentedControl(items: ["Time".localized(),"Date".lowercased(),"A-Z".localized()])
         controller.tintColor = UIColor(named: "navigationControllerColor")
         controller.backgroundColor = UIColor(named: "navigationControllerColor")
         controller.selectedSegmentIndex = 0
@@ -156,8 +156,8 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
     }
     
     @objc private func didTapDeleteChoosenCell(){
-        let alert = UIAlertController(title: "Do you want to delete choosen cells?", message: "Warning!", preferredStyle: .actionSheet)
-        alert.addAction(UIAlertAction(title: "Delete", style: .destructive,handler: { [self] _ in
+        let alert = UIAlertController(title: "Do you want to delete choosen cells?".localized(), message: "Warning!".localized(), preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction(title: "Delete".localized(), style: .destructive,handler: { [self] _ in
             guard let indexPath = tableView.indexPathsForSelectedRows else {
                 alertError(text: "Can't get index from table view", mainTitle: "Error")
                 return
@@ -170,7 +170,7 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
             tableView.setEditing(false, animated:  true)
             navigationController?.navigationItem.setRightBarButtonItems([createEventButton,editNavigationButton], animated: true)
         }))
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Cancel".localized(), style: .cancel))
         present(alert, animated: true)
         
     }
@@ -228,13 +228,13 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
     }
     
     private func setupActionWithTableMenu(){
-        let deleteModels = UIAction(title: "Delete choosen", image: UIImage(systemName: "trash"),attributes: .destructive) { _ in
+        let deleteModels = UIAction(title: "Delete choosen".localized(), image: UIImage(systemName: "trash"),attributes: .destructive) { _ in
             self.didTapDeleteChoosenCell()
         }
-        let stopEdit = UIAction(title: "Cancel editing mode",image: UIImage(systemName: "square.and.pencil.circle.fill")) { _ in
+        let stopEdit = UIAction(title: "Cancel editing mode".localized(),image: UIImage(systemName: "square.and.pencil.circle.fill")) { _ in
             self.didTapStartEditing()
         }
-        let actionSection = UIMenu(title: "Actions",  options: .displayInline, children: [deleteModels,stopEdit])
+        let actionSection = UIMenu(title: "Actions".localized(),  options: .displayInline, children: [deleteModels,stopEdit])
 
         actionMenu = UIMenu(image: UIImage(systemName: "square.and.arrow.up"), children: [actionSection])
     }
@@ -250,8 +250,8 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
         let calendar = Calendar.current
         let components = calendar.dateComponents([.weekday], from: date)
         let weekday = components.weekday ?? 1
-        let predicate = NSPredicate(format: "scheduleWeekday = \(weekday) AND scheduleRepeat = true")
-        let predicateUnrepeat = NSPredicate(format: "scheduleRepeat = false AND scheduleStartDate BETWEEN %@", [dateStart,dateEnd])
+        let predicate = NSPredicate(format: "scheduleWeekday = \(weekday)")
+        let predicateUnrepeat = NSPredicate(format: "scheduleStartDate BETWEEN %@", [dateStart,dateEnd])
         let compound = NSCompoundPredicate(type: .or, subpredicates: [predicate,predicateUnrepeat])
         return compound
     }
@@ -267,7 +267,7 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
     
     func isSavedCompletely(boolean: Bool) {
         if boolean {
-            showAlertForUser(text: "Event saved successfully", duration: DispatchTime.now()+1, controllerView: view)
+            showAlertForUser(text: "Event saved successfully".localized(), duration: DispatchTime.now()+1, controllerView: view)
         }
     }
 }
@@ -304,11 +304,11 @@ extension CreateTaskForDayController: UITableViewDelegate, UITableViewDataSource
             let date = DateFormatter.localizedString(from: date, dateStyle: .medium, timeStyle: .none)
             let time = Formatters.instance.timeStringFromDate(date: time)
             cell.textLabel?.text = data.scheduleName
-            cell.detailTextLabel?.text = date + ". Time: " + time
+            cell.detailTextLabel?.text = date + " " + time
             cell.imageView?.image = UIImage(systemName: "circle.fill")
             cell.imageView?.tintColor = color
         } else {
-            alertError(mainTitle: "Error time or date.\nTry again!")
+            alertError(mainTitle: "Error gettin time or date.\nTry again!")
         }
         return cell
     }

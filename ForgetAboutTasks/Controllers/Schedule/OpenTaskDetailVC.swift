@@ -14,7 +14,7 @@ import EventKit
 class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
     
     
-    private let headerArray = ["Details of event","Date and time","Category of event","Color of event","Image"]
+    private let headerArray = ["Name of event","Date and time","Details of event","Color of event","Image"]
     private var cellsName = [["Name of event"],
                      ["Start","End", "Reminder status","Added to Calendar"],
                      ["Name","Type","URL","Note"],
@@ -84,7 +84,7 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
             case [2,1]: model = selectedScheduleModel.scheduleCategoryType
             case [2,3]: model = selectedScheduleModel.scheduleCategoryNote
             default:
-                print("None")
+                break
             }
             UIPasteboard.general.string = model
             showAlertForUser(text: "Text was copied", duration: DispatchTime.now()+0.5, controllerView: view)
@@ -187,66 +187,19 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
     
     
     private func checkPlannedNotification() -> Bool {
-        
-        var value = Bool()
-        let center = UNUserNotificationCenter.current()
-        let calendar = Calendar.current
-        let date = selectedScheduleModel.scheduleStartDate ?? Date()
-        let dateEnd = selectedScheduleModel.scheduleEndDate ?? Date()
-        print("Start date \(date)\nEnd date \(dateEnd)")
-        let components = calendar.dateComponents([.year,.month,.day,.hour,.minute,.second], from: date)
-        let secondComponents = calendar.dateComponents([.year,.month,.day,.hour,.minute,.second], from: dateEnd)
-//        let startDate = calendar.date(from: components) ?? date
-//        let endDate = calendar.date(from: secondComponents) ?? dateEnd
-        
-        center.getPendingNotificationRequests { requests in
-            let notOnDate = requests.filter { request in
-                if let trigger = request.trigger as? UNCalendarNotificationTrigger {
-                    let triggerDate = trigger.nextTriggerDate()!
-                    return triggerDate >= date && triggerDate < dateEnd
-                }
-                return false
-            }
-            if notOnDate.count > 0 {
-                print("there are \(notOnDate.count) notifications planned for \(date)")
-                value = true
-            } else {
-                print("No notification on current day")
-                value = false
-            }
+        if selectedScheduleModel.scheduleActiveNotification == true {
+            return true
+        } else {
+            return false
         }
-        print(value)
-        return value
     }
     
-//    private func checkInsertedEvent() -> Bool{
-//        let startDate = selectedScheduleModel.scheduleStartDate ?? Date()
-//        let endDate = selectedScheduleModel.scheduleEndDate ?? Date()
-//        let eventStore: EKEventStore = EKEventStore()
-//        let event = EKEvent(eventStore: eventStore)
-//        guard let calendar = eventStore.defaultCalendarForNewEvents else { return false }
-//        let predicate = eventStore.predicateForEvents(withStart: startDate, end: endDate, calendars: [calendar])
-//        let events = eventStore.events(matching: predicate)
-//        if events.contains(event) {
-//            return true
-//        } else {
-//            return false
-//        }
-//    }
-    
-    private func checkInsertedEvent(model: ScheduleModel) -> Bool {
-        let eventStore: EKEventStore = EKEventStore()
-        let event = EKEvent(eventStore: eventStore)
-        let startDate = model.scheduleStartDate ?? Date()
-        let endDate = model.scheduleEndDate ?? Date()
-        let predicate = eventStore.predicateForEvents(withStart: startDate, end: endDate, calendars: nil)
-        return false 
-        
-//        if let identifier = event.value(forKey: model.scheduleModelId) {
-//            return true
-//        } else {
-//            return false
-//        }
+    private func checkInsertedEvent() -> Bool{
+        if selectedScheduleModel.scheduleActiveCalendar == true {
+            return true
+        } else {
+            return false
+        }
     }
     
     func isSavedCompletely(boolean: Bool) {
@@ -330,7 +283,7 @@ extension OpenTaskDetailViewController: UITableViewDelegate, UITableViewDataSour
             cell?.textLabel?.text = data
             cell?.accessoryView?.isHidden = false
             switchButton.isEnabled = false
-            switchButton.isOn = checkInsertedEvent(model: inheritedData)
+            switchButton.isOn = checkInsertedEvent()
         case[2,0]:
             cell?.textLabel?.text = inheritedData.scheduleCategoryName ?? data
         case [2,1]:

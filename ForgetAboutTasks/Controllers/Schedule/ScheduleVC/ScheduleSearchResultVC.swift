@@ -80,7 +80,7 @@ extension ScheduleSearchResultViewController: UITableViewDelegate, UITableViewDa
     }
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return "Result of search:"
+        return "Result of search:".localized()
     }
 }
 
