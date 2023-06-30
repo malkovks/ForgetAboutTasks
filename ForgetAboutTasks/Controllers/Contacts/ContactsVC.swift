@@ -18,6 +18,7 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
     private var contactData: Results<ContactModel>!
     private var filteredContactData: Results<ContactModel>!
     private var localRealmData = try! Realm()
+    private let contactStore = CNContactStore()
 
     private var searchBarIsEmpty: Bool {
         guard let text = searchController.searchBar.text else { return true }
@@ -81,10 +82,18 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
     }
     
     @objc private func didTapOpenContacts(){
-        let vc = contactPicker
-        vc.delegate = self
-        let nav = UINavigationController(rootViewController: vc)
-        present(nav, animated:  true)
+        contactStore.requestAccess(for: .contacts) { success, error in
+            switch success {
+            case true:
+                let vc = self.contactPicker
+                vc.delegate = self
+                let nav = UINavigationController(rootViewController: vc)
+                self.present(nav, animated:  true)
+            case false:
+                print("Not allowed")
+            }
+        }
+        
     }
     
     @objc private func didTapEditTable(){
@@ -100,9 +109,7 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
             } else {
                 navigationItem.rightBarButtonItem?.isEnabled = true
             }
-            
         }
-        
     }
     
     @objc private func didTapClearTable(){

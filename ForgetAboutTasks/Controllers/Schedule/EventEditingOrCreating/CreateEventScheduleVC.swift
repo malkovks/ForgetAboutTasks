@@ -11,6 +11,8 @@ import Combine
 import UserNotifications
 import RealmSwift
 import EventKit
+import Photos
+import AVFoundation
 
 struct ScheduleModelStruct {
     var scheduleStartDate: Date
@@ -33,14 +35,19 @@ class CreateEventScheduleViewController: UIViewController {
                      [""],
                      [""]]
     
-    private var reminderStatus: Bool = false
-    private var addingEventStatus: Bool = false
+    
     private var cancellable: AnyCancellable?//for parallels displaying color in cell and Combine Kit for it
+    private let notificationCenter = UNUserNotificationCenter.current()
+    private let eventStore = EKEventStore()
+    private let library = PHPhotoLibrary.self
+    private let camera = AVCaptureDevice.self
     private var scheduleModel = ScheduleModel()
     private let realm = try! Realm()
     private var cellBackgroundColor: UIColor =  #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
-    private var choosenDate: Date
     private var isStartEditing: Bool = false
+    private var reminderStatus: Bool = false
+    private var addingEventStatus: Bool = false
+    private var choosenDate: Date
     private lazy var startChoosenDate: Date = choosenDate
     
     private var scheduleModelStruct: ScheduleModelStruct = ScheduleModelStruct(scheduleStartDate: Date(), scheduleEndDate: Date().addingTimeInterval(3600), scheduleName: "Test", scheduleCategoryNote: "Test")
@@ -95,6 +102,7 @@ class CreateEventScheduleViewController: UIViewController {
             if scheduleModel.scheduleStartDate == nil && scheduleModel.scheduleTime == nil {
                 alertError(text: "Enter date for setting reminder", mainTitle: "Error set up reminder!")
             } else {
+                request(forUser: notificationCenter)
                 reminderStatus = true
                 scheduleModel.scheduleActiveNotification = true
             }
@@ -109,6 +117,7 @@ class CreateEventScheduleViewController: UIViewController {
             if scheduleModel.scheduleStartDate == nil && scheduleModel.scheduleEndDate == nil {
                 alertError(text: "Enter date for adding event to Calendar", mainTitle: "Error!")
             } else {
+                request(forAllowing: eventStore)
                 addingEventStatus = true
             }
         } else {
@@ -132,7 +141,7 @@ class CreateEventScheduleViewController: UIViewController {
 
     
     private func setupView() {
-        setupAddingEventToEKEvent()
+        
         setupNavigationController()
         setupDelegate()
         setupColorPicker()
@@ -169,6 +178,8 @@ class CreateEventScheduleViewController: UIViewController {
         navigationItem.rightBarButtonItems = [saveButton]
     }
     
+
+    
     private func setupUserNotification(model: ScheduleModel,status: Bool){
         
         let center = UNUserNotificationCenter.current()
@@ -195,28 +206,7 @@ class CreateEventScheduleViewController: UIViewController {
         
     }
     
-    private func setupAddingEventToEKEvent() {
-        let eventStore: EKEventStore = EKEventStore()
-        switch EKEventStore.authorizationStatus(for: .event){
-            
-        case .notDetermined:
-            eventStore.requestAccess(to: .event) { success, error in
-                if !success {
-                    print(error?.localizedDescription as Any)
-                }
-            }
-        case .restricted:
-            print("Restricted")
-        case .denied:
-            alertError(text: "Cant save event in Calendar", mainTitle: "Warning!")
-        case .authorized:
-            print("Authorized")
-//            insertEvent(store: eventStore, model: model, status: status)
-        @unknown default:
-            break
-        }
-        
-    }
+
     
     private func setupCalendarEvent(model: ScheduleModel,status: Bool){
         let store = EKEventStore()
@@ -242,6 +232,71 @@ class CreateEventScheduleViewController: UIViewController {
             alertError(text: "Error saving event to calendar")
         }
     }
+    //MARK: - Setup request for user to get allowing
+    private func request(forAllowing event: EKEventStore) {
+        let eventStore: EKEventStore = EKEventStore()
+        switch EKEventStore.authorizationStatus(for: .event){
+            
+        case .notDetermined:
+            eventStore.requestAccess(to: .event) { success, error in
+                if !success {
+                    print(error?.localizedDescription as Any)
+                }
+            }
+        case .restricted:
+            print("Restricted")
+        case .denied:
+            alertError(text: "Cant save event in Calendar", mainTitle: "Warning!")
+            //добавить расширение с функцией перехода в настройки для включение календаря
+        case .authorized:
+            print("Authorized")
+//            insertEvent(store: eventStore, model: model, status: status)
+        @unknown default:
+            break
+        }
+    }
+    
+    private func request(forUser notification: UNUserNotificationCenter){
+        notification.requestAuthorization(options: [.alert,.badge,.sound]) { success, error in
+            switch success {
+            case true:
+                print("Allowed")
+            case false:
+                DispatchQueue.main.async {
+                    self.showNotificationCenterSetting()
+                }
+            }
+        }
+    }
+    
+    private func requestForUserLibrary(){
+        library.requestAuthorization { success in
+            switch success {
+                
+            case .notDetermined:
+                self.showAlertForUser(text: "You denied access to library. To switch on use system settings", duration: DispatchTime.now()+2, controllerView: self.view)
+            case .restricted:
+                break
+            case .denied:
+                self.showAlertForUser(text: "You denied access to library. To switch on use system settings", duration: DispatchTime.now()+2, controllerView: self.view)
+            case .authorized:
+                print("success")
+            case .limited:
+                print("limited")
+            @unknown default:
+                break
+            }
+        }
+    }
+    
+    private func requestUserForCamera(){
+        camera.requestAccess(for: .video) { success in
+            if !success {
+                self.showAlertForUser(text: "You determined access to camera. To switch on use system settings", duration: DispatchTime.now()+2, controllerView: self.view)
+            }
+        }
+    }
+    
     //MARK: - Logics methods
     
     private func setupAlertIfDataEmpty() -> Bool{
@@ -263,6 +318,7 @@ class CreateEventScheduleViewController: UIViewController {
     }
     
     @objc private func chooseTypeOfImagePicker() {
+        
         let alert = UIAlertController(title: "", message: "What exactly do you want to do?", preferredStyle: .actionSheet)
         alert.addAction(UIAlertAction(title: "Set new image", style: .default,handler: { [self] _ in
             if UIImagePickerController.isSourceTypeAvailable(.photoLibrary){
@@ -318,7 +374,7 @@ extension CreateEventScheduleViewController: UIImagePickerControllerDelegate, UI
         if let image = info[.editedImage] as? UIImage{
             guard let data = image.jpegData(compressionQuality: 1.0) else { return}
             scheduleModel.scheduleImage = data
-            tableView.reloadData()
+            tableView.reloadSections(NSIndexSet(index: 4) as IndexSet, with: .automatic)
             picker.dismiss(animated: true)
             tableView.deselectRow(at: [4,0], animated: true)
             
@@ -470,6 +526,8 @@ extension CreateEventScheduleViewController: UITableViewDelegate, UITableViewDat
             openColorPicker()
         case [4,0]:
             tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+            requestForUserLibrary()
+            requestUserForCamera()
             chooseTypeOfImagePicker()
         default:
             print("error")

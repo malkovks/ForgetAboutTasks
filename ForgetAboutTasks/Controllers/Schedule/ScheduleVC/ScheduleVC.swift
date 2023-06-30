@@ -53,6 +53,7 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
         calendar.appearance.titleDefaultColor = UIColor(named: "textColor")
         calendar.appearance.weekdayTextColor = UIColor(named: "calendarHeaderColor")
         calendar.appearance.headerTitleColor = UIColor(named: "calendarHeaderColor")
+        calendar.appearance.titleWeekendColor = UIColor(named: "textColor")
         calendar.tintColor = UIColor(named: "navigationControllerColor")
         calendar.translatesAutoresizingMaskIntoConstraints = false
         return calendar

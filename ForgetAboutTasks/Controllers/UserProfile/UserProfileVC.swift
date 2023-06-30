@@ -8,25 +8,34 @@
 import UIKit
 import FirebaseAuth
 import SnapKit
+import UserNotifications
+import EventKit
 
 
 struct UserProfileData {
     var cellName: String
     var cellImage: UIImage
+    var cellColor: UIColor
 }
 
 class UserProfileViewController: UIViewController {
     
-    var cellArray = [[UserProfileData(cellName: "Dark Mode", cellImage: UIImage(systemName: "moon.fill")!),
-                     UserProfileData(cellName: "Background Color", cellImage: UIImage(systemName: "circle.fill")!),
-                     UserProfileData(cellName: "Access to Notifications", cellImage: UIImage(systemName: "headphones.circle.fill")!)],[
-                        UserProfileData(cellName: "Language", cellImage: UIImage(systemName: "keyboard.fill")!),
-                     UserProfileData(cellName: "Futures", cellImage: UIImage(systemName: "clock.fill")!),
-                     UserProfileData(cellName: "Information", cellImage: UIImage(systemName: "info.circle.fill")!)],[
-                     UserProfileData(cellName: "Delete Account", cellImage: UIImage(systemName: "trash.fill")!),
-                     UserProfileData(cellName: "Log Out", cellImage: UIImage(systemName: "arrow.uturn.right.square.fill")!)
+    var cellArray = [[UserProfileData(cellName: "Dark Mode", cellImage: UIImage(systemName: "moon.fill")!, cellColor: .purple),
+                      UserProfileData(cellName: "Background Color", cellImage: UIImage(systemName: "circle.fill")!, cellColor: .systemBlue),
+                      UserProfileData(cellName: "Access to Notifications", cellImage: UIImage(systemName: "bell.badge.fill")!, cellColor: .systemRed),
+                      UserProfileData(cellName: "Access to Calendar's Event", cellImage: UIImage(systemName: "calendar.circle.fill")!, cellColor: .systemRed)],
+                     [UserProfileData(cellName: "Language", cellImage: UIImage(systemName: "keyboard.fill")!, cellColor: .systemGreen),
+                      UserProfileData(cellName: "Futures", cellImage: UIImage(systemName: "clock.fill")!, cellColor: .systemGreen),
+                      UserProfileData(cellName: "Information", cellImage: UIImage(systemName: "info.circle.fill")!, cellColor: .systemGray)],[
+                        UserProfileData(cellName: "Delete Account", cellImage: UIImage(systemName: "trash.fill")!, cellColor: .systemRed),
+                        UserProfileData(cellName: "Log Out", cellImage: UIImage(systemName: "arrow.uturn.right.square.fill")!, cellColor: .systemRed)
                      ]]
     
+    private let notificationCenter = UNUserNotificationCenter.current()
+    private let eventStore: EKEventStore = EKEventStore()
+    private let semaphore = DispatchSemaphore(value: 0)
+    
+ //MARK: - UI Elements
     private var imagePicker = UIImagePickerController()
     private let scrollView = UIScrollView()
     private let tableView = UITableView(frame: CGRectZero, style: .insetGrouped)
@@ -93,7 +102,7 @@ class UserProfileViewController: UIViewController {
         label.layer.cornerRadius = 12
         return label
     }()
-    
+ //MARK: - Load cicle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
@@ -172,13 +181,59 @@ class UserProfileViewController: UIViewController {
     }
     
     @objc private func didTapSwitch(sender: UISwitch){
-        if sender.isOn {
-            print("is on")
-        } else {
-            print("is off")
+        let interfaceStyle: UIUserInterfaceStyle = sender.isOn ? .dark : .light
+        UIView.animate(withDuration: 0.5) {
+            UIApplication.shared.windows.forEach { window in
+                window.overrideUserInterfaceStyle = interfaceStyle
+                if let sceneDelegate = window.windowScene?.delegate as? SceneDelegate {
+                    sceneDelegate.currentInterfaceStyle = interfaceStyle
+                }
+            }
         }
     }
+    
+    @objc private func didTapChangeAccessNotifications(sender: UISwitch){
+        
+        if !sender.isOn {
+            let alert = UIAlertController(title: "Warning", message: "Do you want to switch off notification", preferredStyle: .actionSheet)
+            alert.addAction(UIAlertAction(title: "Confirm",style: .destructive,handler: { [self] _ in
+                deniedAccessToNotification()
+            }))
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel,handler: { _ in
+                sender.isOn = true
+            }))
+            present(alert, animated: true)
+        } else {
+            notificationCenter.requestAuthorization(options: [.alert,.badge,.sound]) { success, error in
+                if success {
+                    DispatchQueue.main.async {
+                        self.showAlertForUser(text: "Notifications turn on completely", duration: DispatchTime.now() + 2, controllerView: self.view)
+                        sender.isOn = success
+                    }
+                } else {
+                    self.showNotificationCenterSetting()
+                }
+            }
+        }
+    }
+    
+    @objc private func didTapChangeAccessCalendar(sender: UISwitch){
+        if !sender.isOn {
+            let alert = UIAlertController(title: "Warning!", message: "Do you want do switch off access to Calendar?", preferredStyle: .actionSheet)
+            alert.addAction(UIAlertAction(title: "Confirm", style: .destructive,handler: { [self] _ in
+                denied(accessTo: eventStore)
+            }))
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel,handler: { _ in
+                sender.isOn = true
+            }))
+            present(alert, animated: true)
+        } else {
+            sender.isOn = setup(accessCalendar: eventStore)
+        }
+    }
+    
     //MARK: - Setup methods
+    
     private func setupView(){
         setupNavigationController()
         configureConstraints()
@@ -261,13 +316,95 @@ class UserProfileViewController: UIViewController {
     private func setupTargets(){
         changeUserImageView.addTarget(self, action: #selector(didTapImagePicker), for: .touchUpInside)
     }
+    
+    private func setupSwitchDarkMode() -> Bool {
+        let windows = UIApplication.shared.windows
+        if windows.first?.overrideUserInterfaceStyle == .dark {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    private func setupSwitchAllowingNotification() -> Bool {
+        
+        var result: Bool = false
+        
+        notificationCenter.getNotificationSettings { settings in
+            switch settings.authorizationStatus {
+                
+            case .notDetermined, .denied:
+                result = false
+            case .authorized:
+                result = true
+            case .provisional:
+                result = false
+            case .ephemeral:
+                result = false
+            @unknown default:
+                break
+            }
+            self.semaphore.signal()
+        }
+        semaphore.wait()
+        return result
+    }
+    
+    private func setup(accessCalendar event: EKEventStore) -> Bool{
+        var booleanValue: Bool = false
+        switch EKEventStore.authorizationStatus(for: .event){
+            
+        case .notDetermined:
+            event.requestAccess(to: .event) { success, error in
+                if !success {
+                    booleanValue = false
+                } else {
+                    booleanValue = true
+                }
+            }
+        case .restricted:
+            booleanValue = false
+        case .denied:
+            booleanValue = false
+        case .authorized:
+            booleanValue = true
+        @unknown default:
+            booleanValue = false
+        }
+        return booleanValue
+    }
+    
+    private func denied(accessTo event: EKEventStore) {
+        guard let url = URL(string:  UIApplication.openSettingsURLString) else { return }
+        if UIApplication.shared.canOpenURL(url){
+            UIApplication.shared.open(url)
+        }
+    }
+    
+    private func deniedAccessToNotification(){
+        notificationCenter.getNotificationSettings { settings in
+            if settings.authorizationStatus == .authorized {
+                self.notificationCenter.removeAllDeliveredNotifications()
+                self.notificationCenter.removeAllPendingNotificationRequests()
+                self.notificationCenter.requestAuthorization(options: [.alert,.sound,.badge]) { granted, error in
+                    if !granted {
+                        DispatchQueue.main.async {
+                            self.showAlertForUser(text: "Notifications was switched off", duration: DispatchTime.now()+2, controllerView: self.view)
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
 }
+//MARK: - Table view delegate and data source
 
 extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
-        case 0: return 3
+        case 0: return 4
         case 1: return 3
         case 2: return 2
         default: return 0
@@ -295,23 +432,33 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
         switchButton.isOn = false
         switchButton.onTintColor = #colorLiteral(red: 0.3920767307, green: 0.5687371492, blue: 0.998278439, alpha: 1)
         switchButton.isHidden = true
-        switchButton.addTarget(self, action: #selector(self.didTapSwitch(sender: )), for: .touchUpInside)
+        
         cell.accessoryView = switchButton
-        if indexPath.section == 0 {
+        if indexPath == [0,0] {
+            switchButton.isHidden = false
+            switchButton.isOn = setupSwitchDarkMode()
+            cell.accessoryType = .none
+            switchButton.addTarget(self, action: #selector(self.didTapSwitch(sender: )), for: .touchUpInside)
+        } else if indexPath == [0,1] {
             switchButton.isHidden = false
             cell.accessoryType = .none
+        } else if indexPath == [0,2] {
+            switchButton.isHidden = false
+            cell.accessoryType = .none
+            switchButton.addTarget(self, action: #selector(didTapChangeAccessNotifications), for: .touchUpInside)
+            switchButton.isOn = setupSwitchAllowingNotification()
+        } else if indexPath == [0,3] {
+            switchButton.isHidden = false
+            cell.accessoryType = .none
+            switchButton.addTarget(self, action: #selector(didTapChangeAccessCalendar), for: .touchUpInside)
+            switchButton.isOn = setup(accessCalendar: eventStore)
         } else if indexPath.section == 1 {
             cell.accessoryType = .detailDisclosureButton
-            cell.imageView?.tintColor = #colorLiteral(red: 0.6036810875, green: 0.7805308104, blue: 1, alpha: 1)
-            
-        } else if indexPath == [2,0] {
-            cell.imageView?.tintColor = .systemRed
-        } else if indexPath == [2,1] {
-            cell.imageView?.tintColor = UIColor(named: "textColor")
         }
         
         cell.textLabel?.text = data.cellName
         cell.imageView?.image = data.cellImage
+        cell.imageView?.tintColor = data.cellColor
         return cell
     }
     

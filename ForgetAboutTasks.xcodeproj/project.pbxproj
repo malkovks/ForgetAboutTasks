@@ -44,6 +44,7 @@
 		0A8DD8DB29BC8BEB00B2DDAB /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8DD8DA29BC8BEB00B2DDAB /* Formatters.swift */; };
 		0A9918B22A41B655001004FA /* LockscreenWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA1E9022A406A480052B849 /* LockscreenWidget.swift */; };
 		0A9918B62A498C5A001004FA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0A9918B82A498C5A001004FA /* Localizable.strings */; };
+		0A9918C22A4EC78B001004FA /* NotificationCenterAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9918C12A4EC78B001004FA /* NotificationCenterAccess.swift */; };
 		0A99A8FD29CD855100CC5A42 /* AlertTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A99A8FC29CD855100CC5A42 /* AlertTextField.swift */; };
 		0A99A8FF29CD8FE000CC5A42 /* AllTasksToDoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A99A8FE29CD8FE000CC5A42 /* AllTasksToDoVC.swift */; };
 		0A99A90729CD99CA00CC5A42 /* UserAuthController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A99A90629CD99CA00CC5A42 /* UserAuthController.swift */; };
@@ -156,6 +157,7 @@
 		0A9918B32A41B8FB001004FA /* LockscreenWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LockscreenWidgetExtension.entitlements; sourceTree = "<group>"; };
 		0A9918B72A498C5A001004FA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		0A9918B92A498C8B001004FA /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
+		0A9918C12A4EC78B001004FA /* NotificationCenterAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCenterAccess.swift; sourceTree = "<group>"; };
 		0A99A8FC29CD855100CC5A42 /* AlertTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertTextField.swift; sourceTree = "<group>"; };
 		0A99A8FE29CD8FE000CC5A42 /* AllTasksToDoVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllTasksToDoVC.swift; sourceTree = "<group>"; };
 		0A99A90629CD99CA00CC5A42 /* UserAuthController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAuthController.swift; sourceTree = "<group>"; };
@@ -373,6 +375,14 @@
 			path = DateFormatters;
 			sourceTree = "<group>";
 		};
+		0A9918C02A4EC75D001004FA /* AccessSettings+Extension */ = {
+			isa = PBXGroup;
+			children = (
+				0A9918C12A4EC78B001004FA /* NotificationCenterAccess.swift */,
+			);
+			path = "AccessSettings+Extension";
+			sourceTree = "<group>";
+		};
 		0A99A90029CD98C600CC5A42 /* Schedule */ = {
 			isa = PBXGroup;
 			children = (
@@ -539,6 +549,7 @@
 		0AA8EC7029CAF52E004DC6DD /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				0A9918C02A4EC75D001004FA /* AccessSettings+Extension */,
 				0AB0A96B2A1C41800084AE07 /* UIAcitvityViewController+Extensions */,
 				0AF2D6F22A166A720093A824 /* UIView+Extensions */,
 				0A7FFFBE29F1B9F700CAC9DA /* DownloadImage */,
@@ -828,6 +839,7 @@
 				0AB0A96F2A1C61D30084AE07 /* EditTaskTableVC.swift in Sources */,
 				0AA604DC29E03CB1007ACE58 /* AlertContacts.swift in Sources */,
 				0A8D250A2A29CED300022622 /* CheckSuccessSaveProtocol.swift in Sources */,
+				0A9918C22A4EC78B001004FA /* NotificationCenterAccess.swift in Sources */,
 				0AA74A2829EC524200F01532 /* AllTaskModel.swift in Sources */,
 				0A7FFFB829EFD9E100CAC9DA /* ContactModel.swift in Sources */,
 				0AEAA9F32A264BBF00BE85A4 /* ResetPasswordController.swift in Sources */,

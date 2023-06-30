@@ -9,57 +9,12 @@ import UIKit
 import CoreData
 import Firebase
 import GoogleSignIn
-import UserNotifications
-import Contacts
-import Photos
-import AVFoundation
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-    let current = UNUserNotificationCenter.current()
-    let contactStore = CNContactStore()
-    let library = PHPhotoLibrary.self
-    let camera = AVCaptureDevice.self
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         FirebaseApp.configure()
-        current.delegate = self
-        current.requestAuthorization(options: [.alert,.badge,.sound]) { success, error in
-            if !success {
-                print("Error successing to send notifications")
-            } else {
-                print("Success to get user notification")
-            }
-        }
-        contactStore.requestAccess(for: .contacts) { success, error in
-            if success {
-                print("Allowed to get contacts from phone")
-            }
-        }
-        library.requestAuthorization { success in
-            switch success {
-                
-            case .denied:
-                print("Denied")
-            case .authorized:
-                print("Success allowed to images")
-            case .limited:
-                print("Limit")
-            case .notDetermined:
-                print("Not determined")
-            case .restricted:
-                print("Restricted")
-            @unknown default:
-                break
-            }
-        }
-        camera.requestAccess(for: .video) { success in
-            if success {
-                print("Success allowed to use camera")
-            }
-        }
-        
         return true
     }
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
@@ -127,12 +82,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 }
 
-extension AppDelegate: UNUserNotificationCenterDelegate {
-    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        completionHandler([.badge,.sound])
-    }
-    
-    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
-        print(#function)
-    }
-}
+//extension AppDelegate: UNUserNotificationCenterDelegate {
+//    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+//        completionHandler([.badge,.sound])
+//    }
+//
+//    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
+//        print(#function)
+//    }
+//}
