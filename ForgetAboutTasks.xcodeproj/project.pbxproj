@@ -25,7 +25,6 @@
 		0A7FFFB829EFD9E100CAC9DA /* ContactModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7FFFB729EFD9E100CAC9DA /* ContactModel.swift */; };
 		0A7FFFBA29EFDC0B00CAC9DA /* ContactRealmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7FFFB929EFDC0B00CAC9DA /* ContactRealmManager.swift */; };
 		0A7FFFBD29F1326A00CAC9DA /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7FFFBC29F1326A00CAC9DA /* String+Extension.swift */; };
-		0A7FFFC029F1BA1800CAC9DA /* DownloadImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7FFFBF29F1BA1800CAC9DA /* DownloadImage.swift */; };
 		0A86ED1029B5D97F001C9BAF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A86ED0F29B5D97F001C9BAF /* AppDelegate.swift */; };
 		0A86ED1229B5D97F001C9BAF /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A86ED1129B5D97F001C9BAF /* SceneDelegate.swift */; };
 		0A86ED1A29B5D97F001C9BAF /* ForgetAboutTasks.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 0A86ED1829B5D97F001C9BAF /* ForgetAboutTasks.xcdatamodeld */; };
@@ -45,6 +44,7 @@
 		0A9918B22A41B655001004FA /* LockscreenWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA1E9022A406A480052B849 /* LockscreenWidget.swift */; };
 		0A9918B62A498C5A001004FA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0A9918B82A498C5A001004FA /* Localizable.strings */; };
 		0A9918C22A4EC78B001004FA /* NotificationCenterAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9918C12A4EC78B001004FA /* NotificationCenterAccess.swift */; };
+		0A9918C42A50158A001004FA /* CalendarCenterAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9918C32A50158A001004FA /* CalendarCenterAccess.swift */; };
 		0A99A8FD29CD855100CC5A42 /* AlertTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A99A8FC29CD855100CC5A42 /* AlertTextField.swift */; };
 		0A99A8FF29CD8FE000CC5A42 /* AllTasksToDoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A99A8FE29CD8FE000CC5A42 /* AllTasksToDoVC.swift */; };
 		0A99A90729CD99CA00CC5A42 /* UserAuthController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A99A90629CD99CA00CC5A42 /* UserAuthController.swift */; };
@@ -75,7 +75,6 @@
 		0AA8EC5D29C76968004DC6DD /* AlertDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA8EC5C29C76968004DC6DD /* AlertDate.swift */; };
 		0AA8EC5F29C7AA56004DC6DD /* AlertTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA8EC5E29C7AA56004DC6DD /* AlertTime.swift */; };
 		0AACE7A92A1F80D500531C84 /* ScheduleAllEventVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AACE7A82A1F80D500531C84 /* ScheduleAllEventVC.swift */; };
-		0AB0A96D2A1C41C00084AE07 /* SetupShareAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB0A96C2A1C41C00084AE07 /* SetupShareAction.swift */; };
 		0AB0A96F2A1C61D30084AE07 /* EditTaskTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB0A96E2A1C61D30084AE07 /* EditTaskTableVC.swift */; };
 		0AB763BA29E3FAC900BFDB0D /* AlertError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB763B929E3FAC900BFDB0D /* AlertError.swift */; };
 		0ACE796B29D9EEAA00599C19 /* AlertSpinner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE796A29D9EEAA00599C19 /* AlertSpinner.swift */; };
@@ -88,7 +87,6 @@
 		0AEAA9F82A272BB600BE85A4 /* EditContactVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEAA9F72A272BB600BE85A4 /* EditContactVC.swift */; };
 		0AF2D6EF2A1141360093A824 /* ScheduleSearchResultVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AF2D6EE2A1141360093A824 /* ScheduleSearchResultVC.swift */; };
 		0AF2D6F12A1364EC0093A824 /* AlertUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AF2D6F02A1364EC0093A824 /* AlertUser.swift */; };
-		0AF2D6F42A166C7B0093A824 /* Calendar+UIMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AF2D6F32A166C7B0093A824 /* Calendar+UIMenu.swift */; };
 		0AF2D6F82A189A390093A824 /* EditEventScheduleVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AF2D6F72A189A390093A824 /* EditEventScheduleVC.swift */; };
 /* End PBXBuildFile section */
 
@@ -133,7 +131,6 @@
 		0A7FFFB729EFD9E100CAC9DA /* ContactModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactModel.swift; sourceTree = "<group>"; };
 		0A7FFFB929EFDC0B00CAC9DA /* ContactRealmManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactRealmManager.swift; sourceTree = "<group>"; };
 		0A7FFFBC29F1326A00CAC9DA /* String+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
-		0A7FFFBF29F1BA1800CAC9DA /* DownloadImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadImage.swift; sourceTree = "<group>"; };
 		0A86ED0C29B5D97F001C9BAF /* ForgetAboutTasks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ForgetAboutTasks.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A86ED0F29B5D97F001C9BAF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0A86ED1129B5D97F001C9BAF /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -158,6 +155,7 @@
 		0A9918B72A498C5A001004FA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		0A9918B92A498C8B001004FA /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		0A9918C12A4EC78B001004FA /* NotificationCenterAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCenterAccess.swift; sourceTree = "<group>"; };
+		0A9918C32A50158A001004FA /* CalendarCenterAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarCenterAccess.swift; sourceTree = "<group>"; };
 		0A99A8FC29CD855100CC5A42 /* AlertTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertTextField.swift; sourceTree = "<group>"; };
 		0A99A8FE29CD8FE000CC5A42 /* AllTasksToDoVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllTasksToDoVC.swift; sourceTree = "<group>"; };
 		0A99A90629CD99CA00CC5A42 /* UserAuthController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAuthController.swift; sourceTree = "<group>"; };
@@ -188,7 +186,6 @@
 		0AA8EC5C29C76968004DC6DD /* AlertDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertDate.swift; sourceTree = "<group>"; };
 		0AA8EC5E29C7AA56004DC6DD /* AlertTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertTime.swift; sourceTree = "<group>"; };
 		0AACE7A82A1F80D500531C84 /* ScheduleAllEventVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleAllEventVC.swift; sourceTree = "<group>"; };
-		0AB0A96C2A1C41C00084AE07 /* SetupShareAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupShareAction.swift; sourceTree = "<group>"; };
 		0AB0A96E2A1C61D30084AE07 /* EditTaskTableVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTaskTableVC.swift; sourceTree = "<group>"; };
 		0AB763B929E3FAC900BFDB0D /* AlertError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertError.swift; sourceTree = "<group>"; };
 		0ACE796A29D9EEAA00599C19 /* AlertSpinner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertSpinner.swift; sourceTree = "<group>"; };
@@ -201,7 +198,6 @@
 		0AEAA9F72A272BB600BE85A4 /* EditContactVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditContactVC.swift; sourceTree = "<group>"; };
 		0AF2D6EE2A1141360093A824 /* ScheduleSearchResultVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleSearchResultVC.swift; sourceTree = "<group>"; };
 		0AF2D6F02A1364EC0093A824 /* AlertUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertUser.swift; sourceTree = "<group>"; };
-		0AF2D6F32A166C7B0093A824 /* Calendar+UIMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Calendar+UIMenu.swift"; sourceTree = "<group>"; };
 		0AF2D6F72A189A390093A824 /* EditEventScheduleVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditEventScheduleVC.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -255,14 +251,6 @@
 				0A7FFFBC29F1326A00CAC9DA /* String+Extension.swift */,
 			);
 			path = "String+Extensions";
-			sourceTree = "<group>";
-		};
-		0A7FFFBE29F1B9F700CAC9DA /* DownloadImage */ = {
-			isa = PBXGroup;
-			children = (
-				0A7FFFBF29F1BA1800CAC9DA /* DownloadImage.swift */,
-			);
-			path = DownloadImage;
 			sourceTree = "<group>";
 		};
 		0A86ED0329B5D97F001C9BAF = {
@@ -379,6 +367,7 @@
 			isa = PBXGroup;
 			children = (
 				0A9918C12A4EC78B001004FA /* NotificationCenterAccess.swift */,
+				0A9918C32A50158A001004FA /* CalendarCenterAccess.swift */,
 			);
 			path = "AccessSettings+Extension";
 			sourceTree = "<group>";
@@ -550,23 +539,13 @@
 			isa = PBXGroup;
 			children = (
 				0A9918C02A4EC75D001004FA /* AccessSettings+Extension */,
-				0AB0A96B2A1C41800084AE07 /* UIAcitvityViewController+Extensions */,
 				0AF2D6F22A166A720093A824 /* UIView+Extensions */,
-				0A7FFFBE29F1B9F700CAC9DA /* DownloadImage */,
 				0A7FFFBB29F1325500CAC9DA /* String+Extensions */,
 				0AA74A2229E715DA00F01532 /* Date */,
 				0AA604E729E16BF6007ACE58 /* UIColor+Extensions */,
 				0AA8EC5B29C76897004DC6DD /* AlertControllers+Extensions */,
 			);
 			path = Extensions;
-			sourceTree = "<group>";
-		};
-		0AB0A96B2A1C41800084AE07 /* UIAcitvityViewController+Extensions */ = {
-			isa = PBXGroup;
-			children = (
-				0AB0A96C2A1C41C00084AE07 /* SetupShareAction.swift */,
-			);
-			path = "UIAcitvityViewController+Extensions";
 			sourceTree = "<group>";
 		};
 		0AEAA9F42A2687D400BE85A4 /* KeyChain  */ = {
@@ -581,7 +560,6 @@
 			isa = PBXGroup;
 			children = (
 				0AF2D6F02A1364EC0093A824 /* AlertUser.swift */,
-				0AF2D6F32A166C7B0093A824 /* Calendar+UIMenu.swift */,
 			);
 			path = "UIView+Extensions";
 			sourceTree = "<group>";
@@ -790,7 +768,6 @@
 				0AEAA9F62A26884A00BE85A4 /* KeyChainClass.swift in Sources */,
 				0ACE797829DECF3300599C19 /* NewContactVC.swift in Sources */,
 				0AA1E9392A4128CA0052B849 /* LockscreenWidget.intentdefinition in Sources */,
-				0AB0A96D2A1C41C00084AE07 /* SetupShareAction.swift in Sources */,
 				0A525DAF29FC3C3B009D116F /* AlertNewName.swift in Sources */,
 				0AA604EC29E16DC1007ACE58 /* PressButtonProtocols.swift in Sources */,
 				0ACE797A29DED2D400599C19 /* NewContactCustomView.swift in Sources */,
@@ -819,7 +796,6 @@
 				0A8AC1A129B9D46D00EA052B /* ScheduleVC.swift in Sources */,
 				0AF2D6EF2A1141360093A824 /* ScheduleSearchResultVC.swift in Sources */,
 				0A86ED1A29B5D97F001C9BAF /* ForgetAboutTasks.xcdatamodeld in Sources */,
-				0A7FFFC029F1BA1800CAC9DA /* DownloadImage.swift in Sources */,
 				0A7FFFBD29F1326A00CAC9DA /* String+Extension.swift in Sources */,
 				0A9918B22A41B655001004FA /* LockscreenWidget.swift in Sources */,
 				0ACE796B29D9EEAA00599C19 /* AlertSpinner.swift in Sources */,
@@ -832,7 +808,7 @@
 				0A86ED1029B5D97F001C9BAF /* AppDelegate.swift in Sources */,
 				0A9E1C3A29CEEDCE000CC9A9 /* LoginController.swift in Sources */,
 				0A8AC1A429B9D4EB00EA052B /* CreateTaskForDayVC.swift in Sources */,
-				0AF2D6F42A166C7B0093A824 /* Calendar+UIMenu.swift in Sources */,
+				0A9918C42A50158A001004FA /* CalendarCenterAccess.swift in Sources */,
 				0A7FFFBA29EFDC0B00CAC9DA /* ContactRealmManager.swift in Sources */,
 				0A9E1C3C29D0778F000CC9A9 /* RegisterAccountController.swift in Sources */,
 				0A86ED1229B5D97F001C9BAF /* SceneDelegate.swift in Sources */,
@@ -1048,8 +1024,8 @@
 				INFOPLIST_KEY_NSRemindersUsageDescription = "Please allow to use notification to get fresh reminders from calendar";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIStatusBarStyle = "";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1084,8 +1060,8 @@
 				INFOPLIST_KEY_NSRemindersUsageDescription = "Please allow to use notification to get fresh reminders from calendar";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIStatusBarStyle = "";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

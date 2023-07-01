@@ -10,14 +10,11 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-    var currentInterfaceStyle: UIUserInterfaceStyle = .unspecified
-
-
+    
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
 
-        currentInterfaceStyle = .unspecified
-        window?.overrideUserInterfaceStyle = currentInterfaceStyle
+        
         let window = UIWindow(windowScene: windowScene)
         let mainVC = TabBarViewController()
         window.rootViewController = mainVC

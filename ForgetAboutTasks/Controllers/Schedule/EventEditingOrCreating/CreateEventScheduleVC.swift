@@ -87,7 +87,7 @@ class CreateEventScheduleViewController: UIViewController {
         if isClear {
             scheduleModel.scheduleColor = cellBackgroundColor.encode()
             setupUserNotification(model: scheduleModel, status: reminderStatus)
-            setupCalendarEvent(model: scheduleModel, status: true)
+            setupCalendarEvent(model: scheduleModel, status: addingEventStatus)
             delegate?.isSavedCompletely(boolean: true)
             ScheduleRealmManager.shared.saveScheduleModel(model: self.scheduleModel)
             print(scheduleModelStruct)
@@ -102,9 +102,11 @@ class CreateEventScheduleViewController: UIViewController {
             if scheduleModel.scheduleStartDate == nil && scheduleModel.scheduleTime == nil {
                 alertError(text: "Enter date for setting reminder", mainTitle: "Error set up reminder!")
             } else {
-                request(forUser: notificationCenter)
-                reminderStatus = true
-                scheduleModel.scheduleActiveNotification = true
+                request(forUser: notificationCenter) { access in
+                    self.reminderStatus = access
+                    self.scheduleModel.scheduleActiveNotification = access
+                    sender.isOn = access
+                }
             }
         } else {
             reminderStatus = false
@@ -117,11 +119,15 @@ class CreateEventScheduleViewController: UIViewController {
             if scheduleModel.scheduleStartDate == nil && scheduleModel.scheduleEndDate == nil {
                 alertError(text: "Enter date for adding event to Calendar", mainTitle: "Error!")
             } else {
-                request(forAllowing: eventStore)
-                addingEventStatus = true
+                request(forAllowing: eventStore) { access in
+                    self.addingEventStatus = access
+                    self.scheduleModel.scheduleActiveCalendar = access
+                    sender.isOn = access
+                }
             }
         } else {
             addingEventStatus = false
+            scheduleModel.scheduleActiveCalendar = false
         }
     }
 
@@ -233,41 +239,6 @@ class CreateEventScheduleViewController: UIViewController {
         }
     }
     //MARK: - Setup request for user to get allowing
-    private func request(forAllowing event: EKEventStore) {
-        let eventStore: EKEventStore = EKEventStore()
-        switch EKEventStore.authorizationStatus(for: .event){
-            
-        case .notDetermined:
-            eventStore.requestAccess(to: .event) { success, error in
-                if !success {
-                    print(error?.localizedDescription as Any)
-                }
-            }
-        case .restricted:
-            print("Restricted")
-        case .denied:
-            alertError(text: "Cant save event in Calendar", mainTitle: "Warning!")
-            //добавить расширение с функцией перехода в настройки для включение календаря
-        case .authorized:
-            print("Authorized")
-//            insertEvent(store: eventStore, model: model, status: status)
-        @unknown default:
-            break
-        }
-    }
-    
-    private func request(forUser notification: UNUserNotificationCenter){
-        notification.requestAuthorization(options: [.alert,.badge,.sound]) { success, error in
-            switch success {
-            case true:
-                print("Allowed")
-            case false:
-                DispatchQueue.main.async {
-                    self.showNotificationCenterSetting()
-                }
-            }
-        }
-    }
     
     private func requestForUserLibrary(){
         library.requestAuthorization { success in
@@ -300,7 +271,7 @@ class CreateEventScheduleViewController: UIViewController {
     //MARK: - Logics methods
     
     private func setupAlertIfDataEmpty() -> Bool{
-        if scheduleModel.scheduleName.isEmpty {
+        if scheduleModel.scheduleName == "" {
             alertError(text: "Enter value in Name cell")
             return false
         } else if scheduleModel.scheduleStartDate == nil {

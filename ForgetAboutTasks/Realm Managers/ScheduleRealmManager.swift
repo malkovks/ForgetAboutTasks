@@ -38,7 +38,7 @@ class ScheduleRealmManager {
                 model?.scheduleCategoryName = changes.scheduleCategoryName ?? model?.scheduleCategoryName
                 model?.scheduleCategoryNote = changes.scheduleCategoryNote ?? model?.scheduleCategoryNote
                 model?.scheduleCategoryType = changes.scheduleCategoryType ?? model?.scheduleCategoryType
-                model?.scheduleName = changes.scheduleName
+                model?.scheduleName = changes.scheduleName ?? model?.scheduleName
                 model?.scheduleStartDate = changes.scheduleStartDate ?? model?.scheduleStartDate
                 model?.scheduleEndDate = changes.scheduleEndDate ?? model?.scheduleEndDate
                 model?.scheduleTime = changes.scheduleTime ?? model?.scheduleTime

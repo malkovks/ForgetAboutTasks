@@ -87,8 +87,10 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
             case true:
                 let vc = self.contactPicker
                 vc.delegate = self
-                let nav = UINavigationController(rootViewController: vc)
-                self.present(nav, animated:  true)
+                DispatchQueue.main.async {
+                    let nav = UINavigationController(rootViewController: vc)
+                    self.present(nav, animated:  true)
+                }
             case false:
                 print("Not allowed")
             }

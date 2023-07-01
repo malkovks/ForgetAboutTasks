@@ -28,6 +28,9 @@ class EditEventScheduleViewController: UIViewController {
     private var scheduleModel: ScheduleModel
     private var editedScheduleModel = ScheduleModel()
     private let realm = try! Realm()
+    private let notificationCenter = UNUserNotificationCenter.current()
+    private let eventStore = EKEventStore()
+    
     private var reminderStatus: Bool = false
     private var isStartEditing: Bool = false
     private var addingToEvent: Bool = false
@@ -77,41 +80,48 @@ class EditEventScheduleViewController: UIViewController {
         editedScheduleModel.scheduleColor = color
         let id = scheduleModel.scheduleModelId
         if isStartEditing {
-            setupUserNotification(model: editedScheduleModel, status: reminderStatus)
-            checkAuthorizationForCalendar(model: editedScheduleModel, status: addingToEvent)
             ScheduleRealmManager.shared.editScheduleModel(user: id, changes: editedScheduleModel)
-            DispatchQueue.main.asyncAfter(deadline: .now()) {
+            DispatchQueue.main.async {
+                self.setupUserNotification(model: self.editedScheduleModel, status: self.reminderStatus)
+                self.checkAuthorizationForCalendar(model: self.editedScheduleModel, status: self.addingToEvent)
                 self.delegate?.isSavedCompletely(boolean: true)
                 self.dismiss(animated: true)
             }
-        } else {
-            alertError(text: "Enter value in first section!")
         }
     }
     
     @objc private func didTapSetReminder(sender: UISwitch){
         if sender.isOn {
-            if editedScheduleModel.scheduleStartDate == nil && editedScheduleModel.scheduleTime == nil {
+            if dataFieldCheck() {
                 alertError(text: "Enter date for setting reminder", mainTitle: "Error set up reminder!")
+                sender.isOn = false
             } else {
-                reminderStatus = true
+                request(forUser: notificationCenter) { access in
+                    self.reminderStatus = access
+                    self.isStartEditing = access
+                    self.editedScheduleModel.scheduleActiveNotification = access
+                }
             }
         } else {
             reminderStatus = false
+            editedScheduleModel.scheduleActiveNotification = false
         }
     }
     
-    @objc private func didTapCheck(switchButton: UISwitch){
+    @objc private func didTapAddEvent(switchButton: UISwitch){
         if switchButton.isOn {
-            if  editedScheduleModel.scheduleStartDate != nil &&
-                editedScheduleModel.scheduleEndDate != nil &&
-                !editedScheduleModel.scheduleName.isEmpty {
-                addingToEvent = true
-            } else {
+            if  dataFieldCheck() && editedScheduleModel.scheduleName == "" {
                 alertError(text: "Check Name,Start Date and End Date.\nThey must have some property", mainTitle: "Error!")
+            } else {
+                request(forAllowing: eventStore) { access in
+                    self.addingToEvent = access
+                    self.isStartEditing = access
+                    self.editedScheduleModel.scheduleActiveCalendar = access
+                }
             }
         } else {
             addingToEvent = false
+            editedScheduleModel.scheduleActiveCalendar = false
         }
         
     }
@@ -125,7 +135,14 @@ class EditEventScheduleViewController: UIViewController {
         setupTableView()
         view.backgroundColor = UIColor(named: "backgroundColor")
         title = "Editing event"
-        
+    }
+    
+    private func dataFieldCheck() -> Bool {
+        if (editedScheduleModel.scheduleStartDate == nil || scheduleModel.scheduleStartDate == nil) && (editedScheduleModel.scheduleTime == nil || scheduleModel.scheduleEndDate == nil) {
+            return false
+        } else {
+            return true
+        }
     }
     
     private func setupDelegate(){
@@ -236,7 +253,7 @@ class EditEventScheduleViewController: UIViewController {
         let dateTime = model.scheduleTime ?? Date()
         let endDateTime = model.scheduleStartDate ?? Date()
         switch indexPath {
-        case [0,0]: cellsName[indexPath.section][indexPath.row] = model.scheduleName
+        case [0,0]: cellsName[indexPath.section][indexPath.row] = model.scheduleName ?? ""
         case [1,0]: cellsName[indexPath.section][indexPath.row] = DateFormatter.localizedString(from: dateTime, dateStyle: .medium, timeStyle: .short)
         case [1,1]: cellsName[indexPath.section][indexPath.row] = DateFormatter.localizedString(from: endDateTime, dateStyle: .medium, timeStyle: .short)
         case [2,0]: cellsName[indexPath.section][indexPath.row] = model.scheduleCategoryName ?? "Set Name of event"
@@ -370,7 +387,7 @@ extension EditEventScheduleViewController: UITableViewDelegate, UITableViewDataS
             switchButton.isOn = scheduleModel.scheduleActiveNotification ?? false
         } else if indexPath == [1,3] {
             cell?.accessoryView?.isHidden = false
-            switchButton.addTarget(self, action: #selector(didTapCheck), for: .touchUpInside)
+            switchButton.addTarget(self, action: #selector(didTapAddEvent), for: .touchUpInside)
             switchButton.isOn = scheduleModel.scheduleActiveCalendar ?? false
         } else if indexPath == [4,0] {
             let data = editedScheduleModel.scheduleImage ?? scheduleModel.scheduleImage ?? Data()

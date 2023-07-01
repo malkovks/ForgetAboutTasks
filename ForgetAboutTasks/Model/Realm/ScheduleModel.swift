@@ -13,7 +13,7 @@ class ScheduleModel: Object {
     @Persisted var scheduleStartDate: Date?
     @Persisted var scheduleTime: Date?
     @Persisted var scheduleEndDate: Date?
-    @Persisted var scheduleName: String
+    @Persisted var scheduleName: String?
     @Persisted var scheduleCategoryName: String?
     @Persisted var scheduleCategoryType: String?
     @Persisted var scheduleCategoryURL: String?

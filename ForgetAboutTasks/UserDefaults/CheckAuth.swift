@@ -53,5 +53,17 @@ class CheckAuth: UIViewController {
         UserDefaults.standard.setValue(result.user.email, forKey: "userMail")
     }
     
+    func checkDarkModeUserDefaults() -> Bool? {
+        let userDefaults = UserDefaults.standard
+        let windows = UIApplication.shared.windows
+        if userDefaults.bool(forKey: "setUserInterfaceStyle"){
+            windows.first?.overrideUserInterfaceStyle = .dark
+            return true
+        } else {
+            windows.first?.overrideUserInterfaceStyle = .light
+            return false
+        }
+    }
+    
     
 }

@@ -137,7 +137,7 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
         setupConstraints()
         setupSearchController()
         loadingData()
-
+        CheckAuth.shared.checkDarkModeUserDefaults()
         loadingDataByDate(date: Date(), at: .current, is: true)
         view.backgroundColor = UIColor(named: "backgroundColor")
     }
