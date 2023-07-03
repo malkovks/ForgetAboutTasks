@@ -13,23 +13,30 @@ import EventKit
 
 
 struct UserProfileData {
-    var cellName: String
+    var title: String
     var cellImage: UIImage
-    var cellColor: UIColor
+    var cellImageColor: UIColor
+}
+
+struct UserProfileTableData {
+    var opened = Bool()
+    var title = String()
+    var sectionData = [String]()
 }
 
 class UserProfileViewController: UIViewController {
     
-    var cellArray = [[UserProfileData(cellName: "Dark Mode", cellImage: UIImage(systemName: "moon.fill")!, cellColor: .purple),
-                      UserProfileData(cellName: "Change App Icon", cellImage: UIImage(systemName: "app.fill")!, cellColor: .systemBlue),
-                      UserProfileData(cellName: "Access to Notifications", cellImage: UIImage(systemName: "bell.badge.fill")!, cellColor: .systemRed),
-                      UserProfileData(cellName: "Access to Calendar's Event", cellImage: UIImage(systemName: "calendar.circle.fill")!, cellColor: .systemRed)],
-                     [UserProfileData(cellName: "Language", cellImage: UIImage(systemName: "keyboard.fill")!, cellColor: .systemGreen),
-                      UserProfileData(cellName: "Futures", cellImage: UIImage(systemName: "clock.fill")!, cellColor: .systemGreen),
-                      UserProfileData(cellName: "Information", cellImage: UIImage(systemName: "info.circle.fill")!, cellColor: .systemGray)],[
-                        UserProfileData(cellName: "Delete Account", cellImage: UIImage(systemName: "trash.fill")!, cellColor: .systemRed),
-                        UserProfileData(cellName: "Log Out", cellImage: UIImage(systemName: "arrow.uturn.right.square.fill")!, cellColor: .systemRed)
+    var cellArray = [[UserProfileData(title: "Dark Mode", cellImage: UIImage(systemName: "moon.fill")!, cellImageColor: .purple),
+                      UserProfileData(title: "Change App Icon", cellImage: UIImage(systemName: "app.fill")!, cellImageColor: .systemBlue),
+                      UserProfileData(title: "Access to Notifications", cellImage: UIImage(systemName: "bell.badge.fill")!, cellImageColor: .systemRed),
+                      UserProfileData(title: "Access to Calendar's Event", cellImage: UIImage(systemName: "calendar.circle.fill")!, cellImageColor: .systemRed)],
+                     [UserProfileData(title: "Language", cellImage: UIImage(systemName: "keyboard.fill")!, cellImageColor: .systemGreen),
+                      UserProfileData(title: "Futures", cellImage: UIImage(systemName: "clock.fill")!, cellImageColor: .systemGreen),
+                      UserProfileData(title: "Information", cellImage: UIImage(systemName: "info.circle.fill")!, cellImageColor: .systemGray)],[
+                        UserProfileData(title: "Delete Account", cellImage: UIImage(systemName: "trash.fill")!, cellImageColor: .systemRed),
+                        UserProfileData(title: "Log Out", cellImage: UIImage(systemName: "arrow.uturn.right.square.fill")!, cellImageColor: .systemRed)
                      ]]
+
     
     private let notificationCenter = UNUserNotificationCenter.current()
     private let eventStore: EKEventStore = EKEventStore()
@@ -372,6 +379,16 @@ class UserProfileViewController: UIViewController {
         alertController.addAction(cancel)
         present(alertController, animated: true)
     }
+    
+    private func openSelectionChangeIcon(){
+        let vc = UserProfileAppIconViewViewController()
+        let nav = UINavigationController(rootViewController: vc)
+        nav.modalPresentationStyle = .formSheet
+        nav.sheetPresentationController?.detents = [.custom(resolver: { _ in return self.view.frame.size.height/5 })]
+        nav.sheetPresentationController?.prefersGrabberVisible = true
+        nav.isNavigationBarHidden = false
+        present(nav, animated: true)
+    }
 }
 //MARK: - Table view delegate and data source
 
@@ -439,9 +456,9 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
             cell.accessoryView = .none
         }
         
-        cell.textLabel?.text = data.cellName
+        cell.textLabel?.text = data.title
         cell.imageView?.image = data.cellImage
-        cell.imageView?.tintColor = data.cellColor
+        cell.imageView?.tintColor = data.cellImageColor
         return cell
     }
     
@@ -449,7 +466,8 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
         tableView.deselectRow(at: indexPath, animated: true)
         switch indexPath {
         case [0,1]:
-            chooseAppIcon()
+//            chooseAppIcon()
+            openSelectionChangeIcon()
         case [2,0]:
             print("Delete")
         case [2,1]:

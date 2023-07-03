@@ -45,6 +45,11 @@
 		0A9918B62A498C5A001004FA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0A9918B82A498C5A001004FA /* Localizable.strings */; };
 		0A9918C22A4EC78B001004FA /* NotificationCenterAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9918C12A4EC78B001004FA /* NotificationCenterAccess.swift */; };
 		0A9918C42A50158A001004FA /* CalendarCenterAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9918C32A50158A001004FA /* CalendarCenterAccess.swift */; };
+		0A9918CE2A52AA2B001004FA /* AppIcon3.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A9918CB2A52AA2A001004FA /* AppIcon3.png */; };
+		0A9918CF2A52AA2B001004FA /* AppIcon2.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A9918CC2A52AA2B001004FA /* AppIcon2.png */; };
+		0A9918D02A52AA2B001004FA /* AppIcon4.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A9918CD2A52AA2B001004FA /* AppIcon4.png */; };
+		0A9918D22A52AC4D001004FA /* AppIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A9918D12A52AC4D001004FA /* AppIcon.png */; };
+		0A9918D42A52BCA0001004FA /* UserProfileAppIconViewVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9918D32A52BCA0001004FA /* UserProfileAppIconViewVC.swift */; };
 		0A99A8FD29CD855100CC5A42 /* AlertTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A99A8FC29CD855100CC5A42 /* AlertTextField.swift */; };
 		0A99A8FF29CD8FE000CC5A42 /* AllTasksToDoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A99A8FE29CD8FE000CC5A42 /* AllTasksToDoVC.swift */; };
 		0A99A90729CD99CA00CC5A42 /* UserAuthController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A99A90629CD99CA00CC5A42 /* UserAuthController.swift */; };
@@ -156,6 +161,11 @@
 		0A9918B92A498C8B001004FA /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		0A9918C12A4EC78B001004FA /* NotificationCenterAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCenterAccess.swift; sourceTree = "<group>"; };
 		0A9918C32A50158A001004FA /* CalendarCenterAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarCenterAccess.swift; sourceTree = "<group>"; };
+		0A9918CB2A52AA2A001004FA /* AppIcon3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = AppIcon3.png; sourceTree = "<group>"; };
+		0A9918CC2A52AA2B001004FA /* AppIcon2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = AppIcon2.png; sourceTree = "<group>"; };
+		0A9918CD2A52AA2B001004FA /* AppIcon4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = AppIcon4.png; sourceTree = "<group>"; };
+		0A9918D12A52AC4D001004FA /* AppIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = AppIcon.png; sourceTree = "<group>"; };
+		0A9918D32A52BCA0001004FA /* UserProfileAppIconViewVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileAppIconViewVC.swift; sourceTree = "<group>"; };
 		0A99A8FC29CD855100CC5A42 /* AlertTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertTextField.swift; sourceTree = "<group>"; };
 		0A99A8FE29CD8FE000CC5A42 /* AllTasksToDoVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllTasksToDoVC.swift; sourceTree = "<group>"; };
 		0A99A90629CD99CA00CC5A42 /* UserAuthController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAuthController.swift; sourceTree = "<group>"; };
@@ -325,6 +335,7 @@
 		0A8AC19C29B9C8A400EA052B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				0A9918CA2A52AA01001004FA /* AppImages */,
 				0A9918B82A498C5A001004FA /* Localizable.strings */,
 				0A86ED1B29B5D981001C9BAF /* Assets.xcassets */,
 				0A86ED1D29B5D981001C9BAF /* LaunchScreen.storyboard */,
@@ -372,6 +383,17 @@
 			path = "AccessSettings+Extension";
 			sourceTree = "<group>";
 		};
+		0A9918CA2A52AA01001004FA /* AppImages */ = {
+			isa = PBXGroup;
+			children = (
+				0A9918D12A52AC4D001004FA /* AppIcon.png */,
+				0A9918CC2A52AA2B001004FA /* AppIcon2.png */,
+				0A9918CB2A52AA2A001004FA /* AppIcon3.png */,
+				0A9918CD2A52AA2B001004FA /* AppIcon4.png */,
+			);
+			path = AppImages;
+			sourceTree = "<group>";
+		};
 		0A99A90029CD98C600CC5A42 /* Schedule */ = {
 			isa = PBXGroup;
 			children = (
@@ -409,6 +431,7 @@
 			isa = PBXGroup;
 			children = (
 				0A8AC1A729B9DBD300EA052B /* UserProfileVC.swift */,
+				0A9918D32A52BCA0001004FA /* UserProfileAppIconViewVC.swift */,
 			);
 			path = UserProfile;
 			sourceTree = "<group>";
@@ -728,10 +751,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0A9918D22A52AC4D001004FA /* AppIcon.png in Resources */,
 				0A86ED1F29B5D981001C9BAF /* LaunchScreen.storyboard in Resources */,
+				0A9918CE2A52AA2B001004FA /* AppIcon3.png in Resources */,
+				0A9918D02A52AA2B001004FA /* AppIcon4.png in Resources */,
 				0A9918B62A498C5A001004FA /* Localizable.strings in Resources */,
 				0A86ED1C29B5D981001C9BAF /* Assets.xcassets in Resources */,
 				0A9E1C3829CEEC4B000CC9A9 /* GoogleService-Info.plist in Resources */,
+				0A9918CF2A52AA2B001004FA /* AppIcon2.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -771,6 +798,7 @@
 				0A525DAF29FC3C3B009D116F /* AlertNewName.swift in Sources */,
 				0AA604EC29E16DC1007ACE58 /* PressButtonProtocols.swift in Sources */,
 				0ACE797A29DED2D400599C19 /* NewContactCustomView.swift in Sources */,
+				0A9918D42A52BCA0001004FA /* UserProfileAppIconViewVC.swift in Sources */,
 				0AA8EC5D29C76968004DC6DD /* AlertDate.swift in Sources */,
 				0A8AC19F29B9D00A00EA052B /* TabBarViewController.swift in Sources */,
 				0A6152142A09E57700A26792 /* AlertActionWithURL.swift in Sources */,
