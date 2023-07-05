@@ -33,7 +33,8 @@ class AllTasksToDoViewController: UIViewController, CheckSuccessSaveProtocol {
     private let searchController = UISearchController()
     
     private var segmentalController: UISegmentedControl = {
-        let controller = UISegmentedControl(items: ["Date","A-Z"])
+        let controller = UISegmentedControl(items: ["Date".localized()
+                                                    ,"A-Z".localized()])
         controller.titleTextAttributes(for: .highlighted)
         controller.tintColor = UIColor(named: "navigationControllerColor")
         controller.backgroundColor = UIColor(named: "navigationControllerColor")
@@ -45,7 +46,7 @@ class AllTasksToDoViewController: UIViewController, CheckSuccessSaveProtocol {
     private let refreshController: UIRefreshControl = {
        let controller = UIRefreshControl()
         controller.tintColor = UIColor(named: "navigationControllerColor")
-        controller.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        controller.attributedTitle = NSAttributedString(string: "Pull to refresh".localized())
         return controller
     }()
   
@@ -69,7 +70,6 @@ class AllTasksToDoViewController: UIViewController, CheckSuccessSaveProtocol {
     //MARK: - Targets methods
     @objc private func didTapCreateNewTask(){
         let vc = CreateTaskTableViewController()
-        vc.title = "New event"
         vc.delegate = self
         let navVC = UINavigationController(rootViewController: vc)
         navVC.modalPresentationStyle = .formSheet
@@ -126,7 +126,7 @@ class AllTasksToDoViewController: UIViewController, CheckSuccessSaveProtocol {
     }
     
     private func setupNavigationController(){
-        title = "All Tasks"
+        title = "All Tasks".localized()
         navigationController?.navigationItem.largeTitleDisplayMode = .always
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
@@ -141,7 +141,7 @@ class AllTasksToDoViewController: UIViewController, CheckSuccessSaveProtocol {
     }
     
     private func setupSearchController(){
-        searchController.searchBar.placeholder = "Enter text"
+        searchController.searchBar.placeholder = "Search tasks".localized()
         searchController.searchResultsUpdater = self
         searchController.searchBar.delegate = self
         searchController.obscuresBackgroundDuringPresentation = false
@@ -175,7 +175,7 @@ class AllTasksToDoViewController: UIViewController, CheckSuccessSaveProtocol {
     //MARK: - Delegate method for displaying alert
     func isSavedCompletely(boolean: Bool) {
         if boolean {
-            showAlertForUser(text: "Event saved successfully", duration: DispatchTime.now()+2, controllerView: view)
+            showAlertForUser(text: "Task saved successfully".localized(), duration: DispatchTime.now()+2, controllerView: view)
         }
     }
 }
@@ -205,7 +205,7 @@ extension AllTasksToDoViewController: UITableViewDelegate, UITableViewDataSource
         let timeFF = Formatters.instance.timeStringFromDate(date: data.allTaskTime ?? Date())
         let dateF = DateFormatter.localizedString(from: data.allTaskDate ?? Date(), dateStyle: .medium, timeStyle: .none)
         cell.textLabel?.text = data.allTaskNameEvent
-        cell.detailTextLabel?.text = dateF + " Time: " + timeFF
+        cell.detailTextLabel?.text = dateF + " | " + timeFF
         cell.imageView?.image = UIImage(systemName: "circle.fill")
         
         if data.allTaskCompleted {

@@ -18,23 +18,44 @@ struct UserProfileData {
     var cellImageColor: UIColor
 }
 
-struct UserProfileTableData {
-    var opened = Bool()
-    var title = String()
-    var sectionData = [String]()
-}
-
 class UserProfileViewController: UIViewController {
     
-    var cellArray = [[UserProfileData(title: "Dark Mode", cellImage: UIImage(systemName: "moon.fill")!, cellImageColor: .purple),
-                      UserProfileData(title: "Change App Icon", cellImage: UIImage(systemName: "app.fill")!, cellImageColor: .systemBlue),
-                      UserProfileData(title: "Access to Notifications", cellImage: UIImage(systemName: "bell.badge.fill")!, cellImageColor: .systemRed),
-                      UserProfileData(title: "Access to Calendar's Event", cellImage: UIImage(systemName: "calendar.circle.fill")!, cellImageColor: .systemRed)],
-                     [UserProfileData(title: "Language", cellImage: UIImage(systemName: "keyboard.fill")!, cellImageColor: .systemGreen),
-                      UserProfileData(title: "Futures", cellImage: UIImage(systemName: "clock.fill")!, cellImageColor: .systemGreen),
-                      UserProfileData(title: "Information", cellImage: UIImage(systemName: "info.circle.fill")!, cellImageColor: .systemGray)],[
-                        UserProfileData(title: "Delete Account", cellImage: UIImage(systemName: "trash.fill")!, cellImageColor: .systemRed),
-                        UserProfileData(title: "Log Out", cellImage: UIImage(systemName: "arrow.uturn.right.square.fill")!, cellImageColor: .systemRed)
+    var cellArray = [[
+                        UserProfileData(title: "Dark Mode".localized(),
+                                        cellImage: UIImage(systemName: "moon.fill")!,
+                                        cellImageColor: .purple),
+                        
+                        UserProfileData(title: "Access to Notifications".localized(),
+                                        cellImage: UIImage(systemName: "bell.square.fill")!,
+                                        cellImageColor: .systemRed),
+                        UserProfileData(title: "Access to Calendar's Event".localized(),
+                                        cellImage: UIImage(systemName: "calendar.badge.clock")!,
+                                        cellImageColor: .systemRed)],
+                     [
+                        UserProfileData(title: "Change App Icon".localized(),
+                                        cellImage: UIImage(systemName: "app.fill")!,
+                                        cellImageColor: .systemBlue),
+                        UserProfileData(title: "Change Ringtone".localized(),
+                                        cellImage: UIImage(systemName: "bell.and.waveform.fill")!,
+                                        cellImageColor: .systemGreen)
+                     ],
+                     [
+                        UserProfileData(title: "Language".localized(),
+                                        cellImage: UIImage(systemName: "keyboard.fill")!,
+                                        cellImageColor: .systemGreen),
+                        UserProfileData(title: "Futures".localized(),
+                                        cellImage: UIImage(systemName: "clock.fill")!,
+                                        cellImageColor: .systemGreen),
+                        UserProfileData(title: "Information".localized(),
+                                        cellImage: UIImage(systemName: "info.circle.fill")!,
+                                        cellImageColor: .systemGray)],
+                     [
+                        UserProfileData(title: "Delete Account".localized(),
+                                        cellImage: UIImage(systemName: "trash.fill")!,
+                                        cellImageColor: .systemRed),
+                        UserProfileData(title: "Log Out".localized(),
+                                        cellImage: UIImage(systemName: "arrow.uturn.right.square.fill")!,
+                                        cellImageColor: .systemRed)
                      ]]
 
     
@@ -71,7 +92,7 @@ class UserProfileViewController: UIViewController {
     
     private let changeUserImageView: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Set new image", for: .normal)
+        button.setTitle("Set new image".localized(), for: .normal)
         button.setTitleColor(UIColor(named: "textColor"), for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.backgroundColor = .clear
@@ -80,7 +101,7 @@ class UserProfileViewController: UIViewController {
     
     private let userNameLabel: UILabel = {
         let label = UILabel()
-        label.text = "Press to set name of user"
+        label.text = "Press to set name of user".localized()
         label.numberOfLines = 2
         label.textAlignment = .center
         label.font = .systemFont(ofSize: 24, weight: .medium)
@@ -91,7 +112,7 @@ class UserProfileViewController: UIViewController {
     
     private let mailLabel: UILabel = {
         let label = UILabel()
-        label.text = "User email"
+        label.text = "User email".localized()
         label.numberOfLines = 2
         label.textAlignment = .center
         label.font = .systemFont(ofSize: 16, weight: .light)
@@ -102,7 +123,7 @@ class UserProfileViewController: UIViewController {
     
     private let ageLabel: UILabel = {
         let label = UILabel()
-        label.text = "Press to set user's age"
+        label.text = "Press to set user's age".localized()
         label.numberOfLines = 2
         label.textAlignment = .center
         label.font = .systemFont(ofSize: 16, weight: .light)
@@ -175,15 +196,18 @@ class UserProfileViewController: UIViewController {
     }
     
     @objc private func didTapOnName(sender: UITapGestureRecognizer){
-        alertNewName(title: "Enter new name and second name", placeholder: "Enter the text") { [weak self] text in
+        alertNewName(title: "Enter new name and second name".localized(),
+                     placeholder: "Enter the text".localized()) { [weak self] text in
             self?.userNameLabel.text = text
             UserDefaults.standard.set(text, forKey: "userName")
         }
     }
     
     @objc private func didTapOnAge(sender: UITapGestureRecognizer){
-        alertNewName(title: "Enter your age", placeholder: "Enter age number",type: .numberPad) { [weak self] text in
-            self?.ageLabel.text = "Age: " + text
+        alertNewName(title: "Enter your age".localized(),
+                     placeholder: "Enter age number".localized(),
+                     type: .numberPad) { [weak self] text in
+            self?.ageLabel.text = "Age: ".localized() + text
             UserDefaults.standard.set(text, forKey: "userAge")
         }
     }
@@ -297,12 +321,12 @@ class UserProfileViewController: UIViewController {
         let (name,mail,age,image) = CheckAuth.shared.loadData()
         userImageView.image = image
         mailLabel.text = mail
-        ageLabel.text = "Age: \(age)"
+        ageLabel.text = "Age: \(age)".localized()
         userNameLabel.text = name
     }
     
     private func setupNavigationController(){
-        title = "My Profile"
+        title = "My Profile".localized()
         navigationController?.navigationBar.tintColor = UIColor(named: "textColor")
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "arrow.uturn.right.square"), style: .done, target: self, action: #selector(didTapLogout))
     }
@@ -344,44 +368,9 @@ class UserProfileViewController: UIViewController {
             return false
         }
     }
-    
-    private func setupAppIcon(named iconName: String?) {
-        
-        guard UIApplication.shared.supportsAlternateIcons else { alertError(text: "Cant get access to change Image"); return }
-        UIApplication.shared.setAlternateIconName(iconName) { error in
-            if let error = error {
-                self.alertError(text: error.localizedDescription)
-            } else {
-                self.showAlertForUser(text: "Icon was changed successfully", duration: DispatchTime.now()+1, controllerView: self.view)
-            }
-        }
-    }
-    
-    private func chooseAppIcon(){
-        let alertController = UIAlertController(title: "Choose App Icon", message: nil, preferredStyle: .actionSheet)
-        let iconAction = UIAlertAction(title: "App Icon", style: .default) { _ in
-            self.setupAppIcon(named: "AppIcon")
-        }
-        alertController.addAction(iconAction)
-        let icon1Action = UIAlertAction(title: "App Icon 1", style: .default) { _ in
-            self.setupAppIcon(named: "AppIcon2")
-        }
-        alertController.addAction(icon1Action)
-        let icon2Action = UIAlertAction(title: "App Icon 2", style: .default) { _ in
-            self.setupAppIcon(named: "AppIcon3")
-        }
-        alertController.addAction(icon2Action)
-        let icon3Action = UIAlertAction(title: "App Icon 3", style: .default) { _ in
-            self.setupAppIcon(named: "AppIcon4")
-        }
-        alertController.addAction(icon3Action)
-        let cancel = UIAlertAction(title: "Cancel", style: .cancel)
-        alertController.addAction(cancel)
-        present(alertController, animated: true)
-    }
-    
+
     private func openSelectionChangeIcon(){
-        let vc = UserProfileAppIconViewViewController()
+        let vc = UserProfileAppIconViewController()
         let nav = UINavigationController(rootViewController: vc)
         nav.modalPresentationStyle = .formSheet
         nav.sheetPresentationController?.detents = [.custom(resolver: { _ in return self.view.frame.size.height/5 })]
@@ -389,6 +378,20 @@ class UserProfileViewController: UIViewController {
         nav.isNavigationBarHidden = false
         present(nav, animated: true)
     }
+    
+    private  func changeAppLanguage(){
+        let langString = Locale.current.language.languageCode?.identifier
+
+        let manager = LanguageManager.shared
+        if langString == "ru" {
+            manager.setLanguage(languageCode: "en")
+            setupView()
+        } else {
+            manager.setLanguage(languageCode: "ru")
+            setupView()
+        }
+    }
+    
 }
 //MARK: - Table view delegate and data source
 
@@ -396,23 +399,25 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
-        case 0: return 4
-        case 1: return 3
-        case 2: return 2
+        case 0: return 3
+        case 1: return 2
+        case 2: return 3
+        case 3: return 2
         default: return 0
         }
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 3
+        return 4
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch section {
-        case 0: return "Main setups"
-        case 1: return "Secondary setups"
-        case 2: return ""
-        default: return "Error"
+        case 0: return "Main setups".localized()
+        case 1: return "Secondary setups".localized()
+        case 2: return "Info".localized()
+        case 3: return ""
+        default: return ""
         }
     }
     
@@ -432,9 +437,6 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
             cell.accessoryType = .none
             switchButton.addTarget(self, action: #selector(self.didTapSwitch(sender: )), for: .touchUpInside)
         } else if indexPath == [0,1] {
-            cell.accessoryView = .none
-            cell.accessoryType = .disclosureIndicator
-        } else if indexPath == [0,2] {
             switchButton.isHidden = false
             cell.accessoryType = .none
             switchButton.addTarget(self, action: #selector(didTapChangeAccessNotifications), for: .touchUpInside)
@@ -443,7 +445,7 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
                     switchButton.isOn = access
                 }
             }
-        } else if indexPath == [0,3] {
+        } else if indexPath == [0,2] {
             switchButton.isHidden = false
             cell.accessoryType = .none
             switchButton.addTarget(self, action: #selector(didTapChangeAccessCalendar), for: .touchUpInside)
@@ -453,6 +455,7 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
                 }
             }
         } else if indexPath.section == 1 {
+            cell.accessoryType = .disclosureIndicator
             cell.accessoryView = .none
         }
         
@@ -465,12 +468,16 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         switch indexPath {
-        case [0,1]:
-//            chooseAppIcon()
+        case [1,0]:
             openSelectionChangeIcon()
+        case [1,1]:
+            alertError(text: "This function in development", mainTitle: "Warning!")
         case [2,0]:
+//            changeAppLanguage()
+            alertError(text: "This function in developments")
+        case [3,0]:
             print("Delete")
-        case [2,1]:
+        case [3,1]:
             didTapLogout()
         default:
             print("Error")

@@ -14,12 +14,21 @@ class NewContactViewController: UIViewController{
 
     weak var delegate: CheckSuccessSaveProtocol?
     
-    private let headerArray = ["Name","Main Data","Address","Birthday","Type of contact"]
-    private var cellsName = [["Enter Name", "Enter Second Name"],
-                             ["Enter Phone number","Enter Mail"],
-                             ["Country","City","Address","Postal Code"],
-                             ["Choose date"],
-                             ["Choose Type of contact"]]
+    private let headerArray = ["Name".localized()
+                               ,"Main Info".localized()
+                               ,"Address".localized()
+                               ,"Birthday".localized()
+                               ,"Type of contact".localized()]
+    private var cellsName = [["Enter Name".localized()
+                              , "Enter Second Name".localized()],
+                             ["Enter Phone number".localized()
+                              ,"Enter Mail".localized()],
+                             ["Country".localized()
+                              ,"City".localized()
+                              ,"Address".localized()
+                              ,"Postal Code".localized()],
+                             ["Choose date".localized()],
+                             ["Choose Type of contact".localized()]]
     private var contactModel = ContactModel()
     
     private var isStartEditing: Bool = false
@@ -29,7 +38,7 @@ class NewContactViewController: UIViewController{
     
     private let labelForImageView: UILabel = {
         let label = UILabel()
-        label.text = "Choose image"
+        label.text = "Choose image".localized()
         let attributedText2 = NSAttributedString(string: label.text ?? "", attributes: [NSAttributedString.Key.underlineStyle : NSUnderlineStyle.single.rawValue])
         label.attributedText = attributedText2
         label.textColor = .systemGray
@@ -53,9 +62,8 @@ class NewContactViewController: UIViewController{
             delegate?.isSavedCompletely(boolean: true)
             
             navigationController?.popViewController(animated: true)
-            print("Contact was saved successfully")
         } else {
-            alertError(text: "Enter value in Name and Phone sections", mainTitle: "Error saving!")
+            alertError(text: "Enter value in Name and Phone sections".localized(), mainTitle: "Error saving!".localized())
         }
     }
     
@@ -77,7 +85,7 @@ class NewContactViewController: UIViewController{
         setupConstraints()
         customiseView()
         view.backgroundColor = UIColor(named: "backgroundColor")
-        title = "New Contact"
+        title = "New Contact".localized()
     }
     
     private func setupTableView(){
@@ -92,7 +100,7 @@ class NewContactViewController: UIViewController{
     
     private func setupNavigationController(){
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(didTapSave))
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .done, target: self, action: #selector(didTapDismiss))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel".localized(), style: .done, target: self, action: #selector(didTapDismiss))
         navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
         navigationController?.navigationItem.largeTitleDisplayMode = .never
         navigationController?.navigationBar.prefersLargeTitles = false
@@ -137,7 +145,7 @@ class NewContactViewController: UIViewController{
         do {
             try store.execute(saveRequest)
         } catch {
-            alertError(text: "Could not saved contact in Contacts List. Try again later", mainTitle: "Error saving!")
+            alertError(text: "Could not saved contact in Contacts List. Try again later".localized(), mainTitle: "Error saving!".localized())
         }
         
     }
@@ -182,53 +190,53 @@ extension NewContactViewController: UITableViewDelegate, UITableViewDataSource {
         let cellName = cellsName[indexPath.section][indexPath.row]
         switch indexPath{
         case [0,0]:
-            alertTextField(cell: cellName, placeholder: "Enter first name", keyboard: .default) { [unowned self] text in
+            alertTextField(cell: cellName, placeholder: "Enter first name".localized(), keyboard: .default) { [unowned self] text in
                 self.cellsName[indexPath.section][indexPath.row] = text
                 cell?.textLabel?.text = text
                 contactModel.contactName = text
                 self.isStartEditing = true
             }
         case [0,1]:
-            alertTextField(cell: cellName, placeholder: "Enter secon name", keyboard: .default) { [unowned self] text in
+            alertTextField(cell: cellName, placeholder: "Enter secon name".localized(), keyboard: .default) { [unowned self] text in
                 self.cellsName[indexPath.section][indexPath.row] = text
                 cell?.textLabel?.text = text
                 contactModel.contactSurname = text
                 self.isStartEditing = true
             }
         case [1,0]:
-            alertPhoneNumber(cell: cellName, placeholder: "Enter valid number", keyboard: .numberPad) { [unowned self] text in
+            alertPhoneNumber(cell: cellName, placeholder: "Enter valid number".localized(), keyboard: .numberPad) { [unowned self] text in
                 self.cellsName[indexPath.section][indexPath.row] = text
                 cell?.textLabel?.text = text
                 contactModel.contactPhoneNumber = text
                 self.isStartEditing = true
             }
         case [1,1]:
-            alertTextField(cell: cellName, placeholder: "Enter mail", keyboard: .emailAddress) { [weak self] text in
+            alertTextField(cell: cellName, placeholder: "Enter mail".localized(), keyboard: .emailAddress) { [weak self] text in
                 if text.emailValidation(email: text) {
                     self?.cellsName[indexPath.section][indexPath.row] = text.lowercased()
                     self?.contactModel.contactMail = text
                     cell?.textLabel?.text = text
                     self?.isStartEditing = true
                 } else {
-                    self?.alertError(text: "Enter the @ domain and country domain", mainTitle: "Warning")
+                    self?.alertError(text: "Enter the @ domain and country domain".localized(), mainTitle: "Warning!".localized())
                 }
             }
-        case [2,0]: alertTextField(cell: cellName, placeholder: "Enter name of country", keyboard: .default) { [weak self]  text in
+        case [2,0]: alertTextField(cell: cellName, placeholder: "Enter name of country".localized(), keyboard: .default) { [weak self]  text in
             cell?.textLabel?.text = text
             self?.contactModel.contactCountry = text
             self?.isStartEditing = true
         }
-        case [2,1]: alertTextField(cell: cellName, placeholder: "Enter name of city", keyboard: .default) { [weak self]  text in
+        case [2,1]: alertTextField(cell: cellName, placeholder: "Enter name of city".localized(), keyboard: .default) { [weak self]  text in
             cell?.textLabel?.text = text
             self?.contactModel.contactCity = text
             self?.isStartEditing = true
         }
-        case [2,2]: alertTextField(cell: cellName, placeholder: "Enter the address", keyboard: .default) { [weak self]  text in
+        case [2,2]: alertTextField(cell: cellName, placeholder: "Enter the address".localized(), keyboard: .default) { [weak self]  text in
             cell?.textLabel?.text = text
             self?.contactModel.contactAddress = text
             self?.isStartEditing = true
         }
-        case [2,3]: alertTextField(cell: cellName, placeholder: "Enter postal code", keyboard: .default) { [weak self]  text in
+        case [2,3]: alertTextField(cell: cellName, placeholder: "Enter postal code".localized(), keyboard: .default) { [weak self]  text in
             cell?.textLabel?.text = text
             self?.contactModel.contactPostalCode = text
             self?.isStartEditing = true
@@ -246,7 +254,7 @@ extension NewContactViewController: UITableViewDelegate, UITableViewDataSource {
                 cell?.textLabel?.text = text
             }
         default:
-            print("error")
+            break
         }
         
     }
@@ -311,15 +319,15 @@ extension NewContactViewController {
         }
     }
     
-    private func setupAlertSheet(title: String = "Attention" ,subtitle: String = "You have some changes.\nWhat do you want to do?") {
+    private func setupAlertSheet(title: String = "Attention".localized() ,subtitle: String = "You inputed the data that was not saved.\nWhat do you want to do?".localized()) {
         let sheet = UIAlertController(title: title, message: subtitle, preferredStyle: .actionSheet)
-        sheet.addAction(UIAlertAction(title: "Discard changes", style: .destructive,handler: { _ in
+        sheet.addAction(UIAlertAction(title: "Discard changes".localized(), style: .destructive,handler: { _ in
             self.navigationController?.popViewController(animated: true)
         }))
-        sheet.addAction(UIAlertAction(title: "Save", style: .default,handler: { [self] _ in
+        sheet.addAction(UIAlertAction(title: "Save".localized(), style: .default,handler: { [self] _ in
             didTapSave()
         }))
-        sheet.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        sheet.addAction(UIAlertAction(title: "Cancel".localized(), style: .cancel))
         present(sheet, animated: true)
     }
 

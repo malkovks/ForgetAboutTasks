@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class UserProfileAppIconViewViewController: UIViewController {
+class UserProfileAppIconViewController: UIViewController {
     
     private let images = ["AppIcon", "AppIcon2","AppIcon3","AppIcon4"]
     
@@ -30,7 +30,6 @@ class UserProfileAppIconViewViewController: UIViewController {
         button.layer.borderColor = UIColor.darkGray.cgColor
         button.tag = 1
         button.setImage(UIImage(named: "AppIcon2"), for: .normal)
-//        button.addTarget(UserProfileAppIconViewViewController.self, action: #selector(didTapChangeImage), for: .touchUpInside)
         return button
     }()
     
@@ -41,7 +40,6 @@ class UserProfileAppIconViewViewController: UIViewController {
         button.layer.borderColor = UIColor.darkGray.cgColor
         button.tag = 2
         button.setImage(UIImage(named: "AppIcon3"), for: .normal)
-//        button.addTarget(UserProfileAppIconViewViewController.self, action: #selector(didTapChangeImage), for: .touchUpInside)
         return button
     }()
     
@@ -52,7 +50,6 @@ class UserProfileAppIconViewViewController: UIViewController {
         button.layer.borderColor = UIColor.darkGray.cgColor
         button.tag = 3
         button.setImage(UIImage(named: "AppIcon4"), for: .normal)
-//        button.addTarget(UserProfileAppIconViewViewController.self, action: #selector(didTapChangeImage), for: .touchUpInside)
         return button
     }()
     
@@ -83,20 +80,16 @@ class UserProfileAppIconViewViewController: UIViewController {
         setConstraints()
         view.backgroundColor = UIColor(named: "backgroundColor")
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(didTapDismiss))
-        title = "Choose App Icon"
+        title = "Choose App Icon".localized()
         firstIconButton.addTarget(self, action: #selector(didTapChangeImage(sender: )), for: .touchUpInside)
         secondIconButton.addTarget(self, action: #selector(didTapChangeImage(sender: )), for: .touchUpInside)
         thirdIconButton.addTarget(self, action: #selector(didTapChangeImage(sender: )), for: .touchUpInside)
         forthIconButton.addTarget(self, action: #selector(didTapChangeImage(sender: )), for: .touchUpInside)
     }
     
-    private func setAppIconImage(){
-        
-    }
-    
     private func setupAppIcon(named iconName: String?) {
         
-        guard UIApplication.shared.supportsAlternateIcons else { alertError(text: "Cant get access to change Image"); return }
+        guard UIApplication.shared.supportsAlternateIcons else { alertError(text: "Cant get access to change Image".localized()); return }
         UIApplication.shared.setAlternateIconName(iconName) { error in
             if let error = error {
                 self.alertError(text: error.localizedDescription)
@@ -110,7 +103,7 @@ class UserProfileAppIconViewViewController: UIViewController {
     
 }
 
-extension UserProfileAppIconViewViewController {
+extension UserProfileAppIconViewController {
     private func setConstraints(){
         view.addSubview(firstIconButton)
         firstIconButton.snp.makeConstraints { make in

@@ -13,13 +13,19 @@ import SafariServices
 
 class AllTasksDetailViewController: UIViewController {
     
-    private let headerArray = ["Name","Date","Time","Notes","URL","Color accent"]
-    private var cellsName = [["Name of event"],
-                     ["Date"],
-                     ["Time"],
-                     ["Notes"],
-                     ["URL"],
-                     [""]]
+    private let headerArray = ["Name".localized()
+                               ,"Date".localized()
+                               ,"Time".localized()
+                               ,"Notes".localized()
+                               ,"URL".localized()
+                               ,"Color accent".localized()]
+    private var cellsName = [
+        ["Name of event".localized()],
+        ["Date".localized()],
+        ["Time".localized()],
+        ["Notes".localized()],
+        ["URL"],
+        [""]]
     private var cellBackgroundColor =  #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
     private var tasksModel = AllTaskModel()
     
@@ -86,6 +92,7 @@ class AllTasksDetailViewController: UIViewController {
     }
     //MARK: - Setup methods
     private func setupView() {
+        title = "Details".localized()
         setupNavigationController()
         setupDelegate()
         setupColorPicker()
@@ -120,13 +127,13 @@ class AllTasksDetailViewController: UIViewController {
     }
     
     private func setupMenu(){
-        let shareImage = UIAction(title: "Share Image", image: UIImage(systemName: "photo.circle.fill")) { _ in
+        let shareImage = UIAction(title: "Share Image".localized(), image: UIImage(systemName: "photo.circle.fill")) { _ in
             self.shareTableView("image")
         }
-        let sharePDF = UIAction(title: "Share PDF File",image: UIImage(systemName: "doc.text.image.fill")) { _ in
+        let sharePDF = UIAction(title: "Share PDF File".localized(),image: UIImage(systemName: "doc.text.image.fill")) { _ in
             self.shareTableView("pdf")
         }
-        topMenu = UIMenu(title: "Share selection", image: UIImage(systemName: "square.and.arrow.up"), options: .singleSelection , children: [shareImage,sharePDF])
+        topMenu = UIMenu(title: "Share selection".localized(), image: UIImage(systemName: "square.and.arrow.up"), options: .singleSelection , children: [shareImage,sharePDF])
     }
     
     func shareTableView(_ typeSharing: String) {
@@ -140,7 +147,8 @@ class AllTasksDetailViewController: UIViewController {
         UIGraphicsBeginImageContextWithOptions(tableView.contentSize, false, 0.0)
         tableView.layer.render(in: UIGraphicsGetCurrentContext()!)
         guard let image = UIGraphicsGetImageFromCurrentImageContext() else {
-            alertError(text: "Error making screenshot of table view", mainTitle: "Error!")
+            alertError(text: "Error making screenshot of table view".localized()
+                       , mainTitle: "Error!".localized())
             return
         }
         UIGraphicsEndImageContext()

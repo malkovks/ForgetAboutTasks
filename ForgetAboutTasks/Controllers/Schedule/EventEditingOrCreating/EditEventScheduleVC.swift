@@ -15,10 +15,14 @@ class EditEventScheduleViewController: UIViewController {
     
     weak var delegate: CheckSuccessSaveProtocol?
     
-    private let headerArray = ["Details of event","Start and End of event","Category of event","Color of event","Choose image"]
+    private let headerArray = ["Details of event".localized()
+                               ,"Start and End of event".localized()
+                               ,"Category of event".localized()
+                               ,"Color of event".localized()
+                               ,"Choose image".localized()]
     
     private var cellsName = [[""],
-                     ["","","Set a reminder","Add to Calendar"],
+                     ["","","Set a reminder".localized(),"Add to Calendar".localized()],
                      ["","","",""],
                      [""],
                      [""]]
@@ -69,7 +73,8 @@ class EditEventScheduleViewController: UIViewController {
     //MARK: - Targets methods
     @objc private func didTapDismiss(){
         if isStartEditing {
-            setupAlertSheet(title: "Attention", subtitle: "You have some changes.\nWhat do you want to do")
+            setupAlertSheet(title: "Attention".localized()
+                            ,subtitle: "You have some changes.\nWhat do you want to do".localized())
         } else {
             dismiss(animated: true)
         }
@@ -93,7 +98,8 @@ class EditEventScheduleViewController: UIViewController {
     @objc private func didTapSetReminder(sender: UISwitch){
         if sender.isOn {
             if dataFieldCheck() {
-                alertError(text: "Enter date for setting reminder", mainTitle: "Error set up reminder!")
+                alertError(text: "Enter date for setting reminder".localized()
+                           ,mainTitle: "Error set up reminder!".localized())
                 sender.isOn = false
             } else {
                 request(forUser: notificationCenter) { access in
@@ -111,7 +117,8 @@ class EditEventScheduleViewController: UIViewController {
     @objc private func didTapAddEvent(switchButton: UISwitch){
         if switchButton.isOn {
             if  dataFieldCheck() && editedScheduleModel.scheduleName == "" {
-                alertError(text: "Check Name,Start Date and End Date.\nThey must have some property", mainTitle: "Error!")
+                alertError(text: "Check Name,Start Date and End Date.\nThey must have some property".localized()
+                           , mainTitle: "Error!".localized())
             } else {
                 request(forAllowing: eventStore) { access in
                     self.addingToEvent = access
@@ -134,7 +141,7 @@ class EditEventScheduleViewController: UIViewController {
         setupColorPicker()
         setupTableView()
         view.backgroundColor = UIColor(named: "backgroundColor")
-        title = "Editing event"
+        title = "Editing event".localized()
     }
     
     private func dataFieldCheck() -> Bool {
@@ -180,7 +187,7 @@ class EditEventScheduleViewController: UIViewController {
             let content = UNMutableNotificationContent()
             let dateS = model.scheduleTime ?? Date()
             let date = DateFormatter.localizedString(from: dateS, dateStyle: .medium, timeStyle: .none)
-            content.title = "Planned reminder"
+            content.title = "Planned reminder".localized()
             content.body = "\(date)"
             content.subtitle = "\(model.scheduleName)"
             content.sound = .defaultRingtone
@@ -271,10 +278,10 @@ class EditEventScheduleViewController: UIViewController {
             alertError(text: "Enter value in Name cell")
             return false
         } else if scheduleModel.scheduleStartDate == nil {
-            alertError(text: "Choose date of event")
+            alertError(text: "Specify start of event")
             return false
         } else if scheduleModel.scheduleTime == nil {
-            alertError(text: "Choose time of event")
+            alertError(text: "Specify end of event")
             return false
         } else {
             return true
@@ -294,8 +301,8 @@ class EditEventScheduleViewController: UIViewController {
     }
     
     @objc private func chooseTypeOfImagePicker() {
-        let alert = UIAlertController(title: "", message: "What exactly do you want to do?", preferredStyle: .actionSheet)
-        alert.addAction(UIAlertAction(title: "Set new image", style: .default,handler: { [self] _ in
+        let alert = UIAlertController(title: "", message: "What exactly do you want to do?".localized(), preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction(title: "Set new image".localized(), style: .default,handler: { [self] _ in
             if UIImagePickerController.isSourceTypeAvailable(.photoLibrary){
                 imagePicker.delegate = self
                 imagePicker.sourceType = .photoLibrary
@@ -304,7 +311,7 @@ class EditEventScheduleViewController: UIViewController {
                 isStartEditing = true
             }
         }))
-        alert.addAction(UIAlertAction(title: "Make new image", style: .default,handler: { [self] _ in
+        alert.addAction(UIAlertAction(title: "Make new image".localized(), style: .default,handler: { [self] _ in
             if UIImagePickerController.isSourceTypeAvailable(.camera) {
                 imagePicker.delegate = self
                 imagePicker.sourceType = .camera
@@ -313,12 +320,12 @@ class EditEventScheduleViewController: UIViewController {
                 isStartEditing = true
             }
         }))
-        alert.addAction(UIAlertAction(title: "Delete image", style: .destructive,handler: { _ in
+        alert.addAction(UIAlertAction(title: "Delete image".localized(), style: .destructive,handler: { _ in
             let cell = self.tableView.cellForRow(at: [4,0])
             cell?.imageView?.image = UIImage(named: "camera.fill")
             self.isStartEditing = true
         }))
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Cancel".localized(), style: .cancel))
         present(alert, animated: true)
     }
     //MARK: - Image Picker Delegate
@@ -334,7 +341,7 @@ extension EditEventScheduleViewController: UIImagePickerControllerDelegate, UINa
             picker.dismiss(animated: true)
             tableView.deselectRow(at: [4,0], animated: true)
         } else {
-            alertError(text: "Error!", mainTitle: "Can't get image and save it to event.\nTry again later!")
+            alertError(text: "Error!".localized(), mainTitle: "Can't get image and save it to event.\nTry again later!".localized())
         }
         
         
@@ -407,7 +414,7 @@ extension EditEventScheduleViewController: UITableViewDelegate, UITableViewDataS
         
             switch indexPath {
             case [0,0]:
-                alertTextField(cell: cellName, placeholder: "Enter text", keyboard: .default) {[self] text in
+                alertTextField(cell: cellName, placeholder: "Enter the text".localized(), keyboard: .default) {[self] text in
                     editedScheduleModel.scheduleName = text
                     cell?.textLabel?.text = text
                     isStartEditing = true
@@ -428,19 +435,19 @@ extension EditEventScheduleViewController: UITableViewDelegate, UITableViewDataS
                     isStartEditing = true
                 }
             case [2,0]:
-                alertTextField(cell: "Enter Name of event", placeholder: "Enter the text", keyboard: .default) { [self] text in
+                alertTextField(cell: "Enter Name of event".localized(), placeholder: "Enter the text".localized(), keyboard: .default) { [self] text in
                     editedScheduleModel.scheduleCategoryName = text
                     cell?.textLabel?.text = text
                     isStartEditing = true
                 }
             case [2,1]:
-                alertTextField(cell: "Enter Type of event", placeholder: "Enter the text", keyboard: .default) { [self] text in
+                alertTextField(cell: "Enter Type of event".localized(), placeholder: "Enter the text".localized(), keyboard: .default) { [self] text in
                     editedScheduleModel.scheduleCategoryType = text
                     cell?.textLabel?.text = text
                     isStartEditing = true
                 }
             case [2,2]:
-                alertTextField(cell: "Enter URL name with domain", placeholder: "Enter URL", keyboard: .URL) { [self] text in
+                alertTextField(cell: "Enter URL name with domain".localized(), placeholder: "Enter URL".localized(), keyboard: .URL) { [self] text in
                     if text.isURLValid(text: text) {
                         editedScheduleModel.scheduleCategoryURL = text
                         cell?.textLabel?.text = text
@@ -451,11 +458,11 @@ extension EditEventScheduleViewController: UITableViewDelegate, UITableViewDataS
                         cell?.textLabel?.text = editedText
                         isStartEditing = true
                     } else {
-                        alertError(text: "Enter name of URL link with correct domain", mainTitle: "Incorrect input")
+                        alertError(text: "Enter name of URL link with correct domain".localized(), mainTitle: "Incorrect input".localized())
                     }
                 }
             case [2,3]:
-                alertTextField(cell: "Enter Notes of event", placeholder: "Enter the text", keyboard: .default) { [self] text in
+                alertTextField(cell: "Enter Notes of event".localized(), placeholder: "Enter the text".localized(), keyboard: .default) { [self] text in
                     editedScheduleModel.scheduleCategoryNote = text
                     cell?.textLabel?.text = text
                     isStartEditing = true
@@ -507,13 +514,13 @@ extension EditEventScheduleViewController: UIColorPickerViewControllerDelegate {
 extension EditEventScheduleViewController {
     private func setupAlertSheet(title: String,subtitle: String) {
         let sheet = UIAlertController(title: title, message: subtitle, preferredStyle: .actionSheet)
-        sheet.addAction(UIAlertAction(title: "Discard changes", style: .destructive,handler: { _ in
+        sheet.addAction(UIAlertAction(title: "Discard changes".localized(), style: .destructive,handler: { _ in
             self.dismiss(animated: true)
         }))
-        sheet.addAction(UIAlertAction(title: "Save", style: .default,handler: { [self] _ in
+        sheet.addAction(UIAlertAction(title: "Save".localized(), style: .default,handler: { [self] _ in
             didTapEdit()
         }))
-        sheet.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        sheet.addAction(UIAlertAction(title: "Cancel".localized(), style: .cancel))
         present(sheet, animated: true)
     }
 }

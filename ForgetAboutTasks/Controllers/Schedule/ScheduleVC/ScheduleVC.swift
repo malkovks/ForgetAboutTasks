@@ -72,7 +72,7 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
     override func viewDidLoad() {
         super.viewDidLoad()
         setupAuthentification()
-        calendar.transform = CGAffineTransform(translationX: 0.01, y: 0.01)
+        print(Bundle.main.bundlePath)
     }
     
     override func viewWillAppear(_ animated: Bool) {

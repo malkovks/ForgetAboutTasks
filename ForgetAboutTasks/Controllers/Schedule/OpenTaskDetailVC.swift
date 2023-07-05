@@ -14,10 +14,21 @@ import EventKit
 class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
     
     
-    private let headerArray = ["Name of event","Date and time","Details of event","Color of event","Image"]
-    private var cellsName = [["Name of event"],
-                     ["Start","End", "Reminder status","Added to Calendar"],
-                     ["Name","Type","URL","Note"],
+    private let headerArray = ["Name of event".localized(),
+                               "Date and time".localized(),
+                               "Details of event".localized(),
+                               "Color of event".localized(),
+                               "Image".localized()]
+    private var cellsName = [
+                    ["Name of event".localized()],
+                     ["Start".localized(),
+                      "End".localized(),
+                      "Reminder status".localized(),
+                      "Added to Calendar".localized()],
+                     ["Name".localized(),
+                      "Type".localized(),
+                      "URL".localized(),
+                      "Note".localized()],
                      [""],
                      [""]]
     
@@ -87,7 +98,7 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
                 break
             }
             UIPasteboard.general.string = model
-            showAlertForUser(text: "Text was copied", duration: DispatchTime.now()+0.5, controllerView: view)
+            showAlertForUser(text: "Text was copied".localized(), duration: DispatchTime.now()+0.5, controllerView: view)
             tableView.deselectRow(at: indexPath, animated: true)
         }
     }
@@ -132,18 +143,18 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(didTapDismiss))
         navigationItem.rightBarButtonItems = [startEditButton,shareModelButton]
         navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
-        title = "Details"
+        title = "Details".localized()
     }
     
     private func setupMenu(){
-        let shareImage = UIAction(title: "Share Image", image: UIImage(systemName: "photo.circle.fill")) { _ in
+        let shareImage = UIAction(title: "Share Image".localized(), image: UIImage(systemName: "photo.circle.fill")) { _ in
             self.shareTableView("image")
         }
-        let sharePDF = UIAction(title: "Share PDF File",image: UIImage(systemName: "doc.text.image.fill")) { _ in
+        let sharePDF = UIAction(title: "Share PDF File".localized(),image: UIImage(systemName: "doc.text.image.fill")) { _ in
             self.shareTableView("pdf")
         }
-        let sectionShare = UIMenu(title: "Share",  options: .displayInline, children: [sharePDF,shareImage])
-        let deleteCell = UIAction(title: "Delete",image: UIImage(systemName: "trash.fill"),attributes: .destructive) { _ in
+        let sectionShare = UIMenu(title: "Share".localized(),  options: .displayInline, children: [sharePDF,shareImage])
+        let deleteCell = UIAction(title: "Delete".localized(),image: UIImage(systemName: "trash.fill"),attributes: .destructive) { _ in
             self.deleteModel()
         }
         topMenu = UIMenu(image: UIImage(systemName: "square.and.arrow.up"), children: [sectionShare,deleteCell])
@@ -175,12 +186,14 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
     }
     
     private func deleteModel(){
-        let alert = UIAlertController(title: "Warning!", message: "Do you want to delete event?", preferredStyle: .actionSheet)
-        alert.addAction(UIAlertAction(title: "Delete",style: .destructive,handler: { _ in
+        let alert = UIAlertController(title: "Warning!".localized(),
+                                      message: "Do you want to delete event?".localized(), preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction(title: "Delete".localized(),
+                                      style: .destructive,handler: { _ in
             ScheduleRealmManager.shared.deleteScheduleModel(model: self.selectedScheduleModel)
             self.navigationController?.popToRootViewController(animated: true)
         }))
-        alert.addAction(UIAlertAction(title: "Cancel",style: .cancel))
+        alert.addAction(UIAlertAction(title: "Cancel".localized(),style: .cancel))
         present(alert, animated: true)
     }
     
@@ -205,7 +218,7 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
     func isSavedCompletely(boolean: Bool) {
         if boolean {
             tableView.reloadData()
-            showAlertForUser(text: "Event was edited!", duration: DispatchTime.now()+1, controllerView: view)
+            showAlertForUser(text: "Event was edited!".localized(), duration: DispatchTime.now()+1, controllerView: view)
         }
     }
 }
@@ -271,9 +284,9 @@ extension OpenTaskDetailViewController: UITableViewDelegate, UITableViewDataSour
         case [0,0]:
             cell?.textLabel?.text = inheritedData.scheduleName
         case [1,0]:
-            cell?.textLabel?.text = date + " Time: " + time
+            cell?.textLabel?.text = date + " | " + time
         case [1,1]:
-            cell?.textLabel?.text = endDate + " Time: " + endTime
+            cell?.textLabel?.text = endDate + " | " + endTime
         case [1,2]:
             cell?.textLabel?.text = data
             cell?.accessoryView?.isHidden = false

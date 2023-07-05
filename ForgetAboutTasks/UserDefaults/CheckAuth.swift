@@ -26,8 +26,8 @@ class CheckAuth: UIViewController {
     }
     
     func signOut(){
-        UserDefaults.standard.setValue("Set your name", forKey: "userName")
-        UserDefaults.standard.setValue("No email", forKey: "userMail")
+        UserDefaults.standard.setValue("Set your name".localized(), forKey: "userName")
+        UserDefaults.standard.setValue("No email".localized(), forKey: "userMail")
         UserDefaults.standard.setValue(nil, forKey: "userImage")
         UserDefaults.standard.setValue("", forKey: "userAge")
     }
@@ -42,9 +42,9 @@ class CheckAuth: UIViewController {
         } else {
             alertError()
         }
-        let name = UserDefaults.standard.string(forKey: "userName") ?? "Error loading name"
-        let mail = UserDefaults.standard.string(forKey: "userMail") ?? "Error loading email"
-        let age = UserDefaults.standard.string(forKey: "userAge") ?? "Not indicated"
+        let name = UserDefaults.standard.string(forKey: "userName") ?? "Error loading name".localized()
+        let mail = UserDefaults.standard.string(forKey: "userMail") ?? "Error loading email".localized()
+        let age = UserDefaults.standard.string(forKey: "userAge") ?? "Not indicated".localized()
         return (name,mail,age,image ?? UIImage(systemName: "person.crop.circle")!)
     }
     

@@ -15,12 +15,21 @@ class EditContactViewController: UIViewController {
     
     weak var delegate: CheckSuccessSaveProtocol?
     
-    private let headerArray = ["Name","Phone and Mail","Address","Birthday","Type of contact"]
-    private var cellsName = [["Enter Name", "Enter Second Name"],
-                             ["Enter Phone number","Enter Mail"],
-                             ["Country","City","Address","Postal Code"],
-                             ["Choose date"],
-                             ["Choose Type of contact"]]
+    private let headerArray = ["Name".localized()
+                               ,"Main Info".localized()
+                               ,"Address".localized()
+                               ,"Birthday".localized()
+                               ,"Type of contact".localized()]
+    private var cellsName = [["Enter Name".localized()
+                              , "Enter Second Name".localized()],
+                             ["Enter Phone number".localized()
+                              ,"Enter Mail".localized()],
+                             ["Country".localized()
+                              ,"City".localized()
+                              ,"Address".localized()
+                              ,"Postal Code".localized()],
+                             ["Choose date".localized()],
+                             ["Choose Type of contact".localized()]]
     
     private var contactModel: ContactModel
     private var editedContactModel = ContactModel()
@@ -52,7 +61,7 @@ class EditContactViewController: UIViewController {
     
     private let labelForImageView: UILabel = {
         let label = UILabel()
-        label.text = "Choose image"
+        label.text = "Choose image".localized()
         label.textColor = .systemGray
         label.font = .systemFont(ofSize: 16, weight: .semibold)
         return label
@@ -117,7 +126,7 @@ class EditContactViewController: UIViewController {
         customiseView()
         setupSelection(boolean: isViewEdited)
         view.backgroundColor = UIColor(named: "backgroundColor")
-        title = "Edit Contact"
+        title = "Edit Contact".localized()
     }
     
     private func setupTableView(){
@@ -142,7 +151,7 @@ class EditContactViewController: UIViewController {
     
     private func setupNavigationController(){
         navigationItem.rightBarButtonItems = [editModelButton, shareModelButton]
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .done, target: self, action: #selector(didTapDismiss))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel".localized(), style: .done, target: self, action: #selector(didTapDismiss))
         navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
         navigationController?.navigationItem.largeTitleDisplayMode = .never
         navigationController?.navigationBar.prefersLargeTitles = false
@@ -169,11 +178,11 @@ class EditContactViewController: UIViewController {
             
             vc.setToRecipients([mail])
             vc.setSubject("Hello, \(name)")
-            vc.setMessageBody("Some text for sending", isHTML: false)
+            vc.setMessageBody("", isHTML: false)
             
             show(vc, sender: nil)
         } else {
-            alertError(text: "You can't send email. Maybe you don't Have Apple Mail App on your device?")
+            alertError(text: "You can't send email. Maybe you don't Have Apple Mail App on your device?".localized())
         }
     }
     
@@ -186,13 +195,13 @@ class EditContactViewController: UIViewController {
         if UIApplication.shared.canOpenURL(url){
             UIApplication.shared.open(url)
         } else {
-            self.alertError(text: "This function is not avaliable.\nTry again later", mainTitle: "Error!")
+            self.alertError(text: "This function is not avaliable.\nTry again later".localized(), mainTitle: "Error!".localized())
         }
     }
     
     
     private func setupOpenCalendar(){
-        guard let date = contactModel.contactDateBirthday else { alertError(text: "Cant get date", mainTitle: "Error"); return}
+        guard let date = contactModel.contactDateBirthday else { alertError(text: "Cant get date".localized(), mainTitle: "Error".localized()); return}
         let vc = CreateTaskForDayController(choosenDate: date)
         show(vc, sender: nil)
     }
@@ -201,7 +210,7 @@ class EditContactViewController: UIViewController {
         guard let country = contactModel.contactCountry,
               let city = contactModel.contactCity,
               let address = contactModel.contactAddress else {
-            alertError(text: "Value is empty. Can't open location", mainTitle: "Error")
+            alertError(text: "Value is empty. Can't open location".localized(), mainTitle: "Error!".localized())
             return
         }
         let addressValue = country + " " + city + " " + address
@@ -273,16 +282,16 @@ extension EditContactViewController: UITableViewDelegate, UITableViewDataSource 
                 segueButton.tintColor = UIColor(named: "navigationControllerColor")
                 cell.accessoryView = segueButton
             case [2,0]:
-                cell.textLabel?.text = "Contry: " +  (contactModel.contactCountry ?? basicValue)
+                cell.textLabel?.text = "Contry: ".localized() +  (contactModel.contactCountry ?? basicValue)
                 segueButton.setImage(UIImage(systemName: "mappin.circle.fill"), for: .normal)
                 segueButton.tintColor = UIColor(named: "navigationControllerColor")
                 cell.accessoryView = segueButton
             case [2,1]:
-                cell.textLabel?.text = "City: " + (contactModel.contactCity ?? basicValue)
+                cell.textLabel?.text = "City: ".localized() + (contactModel.contactCity ?? basicValue)
             case [2,2]:
-                cell.textLabel?.text = "Street: " + (contactModel.contactAddress ?? basicValue)
+                cell.textLabel?.text = "Street: ".localized() + (contactModel.contactAddress ?? basicValue)
             case [2,3]:
-                cell.textLabel?.text = "Postal code: " + (contactModel.contactPostalCode ?? basicValue)
+                cell.textLabel?.text = "Postal code: ".localized() + (contactModel.contactPostalCode ?? basicValue)
             case [3,0]:
                 if let birthday = contactModel.contactDateBirthday {
                     cell.textLabel?.text = DateFormatter.localizedString(from: birthday, dateStyle: .medium, timeStyle: .none)
@@ -335,53 +344,53 @@ extension EditContactViewController: UITableViewDelegate, UITableViewDataSource 
         if isViewEdited {
             switch indexPath{
             case [0,0]:
-                alertTextField(cell: cellName, placeholder: "Enter first name", keyboard: .default) { [unowned self] text in
+                alertTextField(cell: cellName, placeholder: "Enter first name".localized(), keyboard: .default) { [unowned self] text in
                     self.cellsName[indexPath.section][indexPath.row] = text
                     cell?.textLabel?.text = text
                     editedContactModel.contactName = text
                     self.isStartEditing = true
                 }
             case [0,1]:
-                alertTextField(cell: cellName, placeholder: "Enter second name", keyboard: .default) { [unowned self] text in
+                alertTextField(cell: cellName, placeholder: "Enter second name".localized(), keyboard: .default) { [unowned self] text in
                     self.cellsName[indexPath.section][indexPath.row] = text
                     cell?.textLabel?.text = text
                     editedContactModel.contactSurname = text
                     self.isStartEditing = true
                 }
             case [1,0]:
-                alertPhoneNumber(cell: cellName, placeholder: "Enter valid number", keyboard: .numberPad) { [unowned self] text in
+                alertPhoneNumber(cell: cellName, placeholder: "Enter valid number".localized(), keyboard: .numberPad) { [unowned self] text in
                     self.cellsName[indexPath.section][indexPath.row] = text
                     cell?.textLabel?.text = text
                     editedContactModel.contactPhoneNumber = text
                     self.isStartEditing = true
                 }
             case [1,1]:
-                alertTextField(cell: cellName, placeholder: "Enter mail", keyboard: .emailAddress) { [weak self] text in
+                alertTextField(cell: cellName, placeholder: "Enter mail".localized(), keyboard: .emailAddress) { [weak self] text in
                     if text.emailValidation(email: text) {
                         self?.cellsName[indexPath.section][indexPath.row] = text.lowercased()
                         self?.editedContactModel.contactMail = text
                         cell?.textLabel?.text = text
                         self?.isStartEditing = true
                     } else {
-                        self?.alertError(text: "Enter the @ domain and country domain", mainTitle: "Warning")
+                        self?.alertError(text: "Enter the @ domain and country domain".localized(), mainTitle: "Warning".localized())
                     }
                 }
-            case [2,0]: alertTextField(cell: cellName, placeholder: "Enter name of country", keyboard: .default) { [weak self]  text in
+            case [2,0]: alertTextField(cell: cellName, placeholder: "Enter name of country".localized(), keyboard: .default) { [weak self]  text in
                 cell?.textLabel?.text = text
                 self?.editedContactModel.contactCountry = text
                 self?.isStartEditing = true
             }
-            case [2,1]: alertTextField(cell: cellName, placeholder: "Enter name of city", keyboard: .default) { [weak self]  text in
+            case [2,1]: alertTextField(cell: cellName, placeholder: "Enter name of city".localized(), keyboard: .default) { [weak self]  text in
                 cell?.textLabel?.text = text
                 self?.editedContactModel.contactCity = text
                 self?.isStartEditing = true
             }
-            case [2,2]: alertTextField(cell: cellName, placeholder: "Enter the address", keyboard: .default) { [weak self]  text in
+            case [2,2]: alertTextField(cell: cellName, placeholder: "Enter the address".localized(), keyboard: .default) { [weak self]  text in
                 cell?.textLabel?.text = text
                 self?.editedContactModel.contactAddress = text
                 self?.isStartEditing = true
             }
-            case [2,3]: alertTextField(cell: cellName, placeholder: "Enter postal code", keyboard: .default) { [weak self]  text in
+            case [2,3]: alertTextField(cell: cellName, placeholder: "Enter postal code".localized(), keyboard: .default) { [weak self]  text in
                 cell?.textLabel?.text = text
                 self?.editedContactModel.contactPostalCode = text
                 self?.isStartEditing = true
@@ -478,15 +487,15 @@ extension EditContactViewController {
             make.bottom.equalToSuperview().offset(10)
         }
     }
-    private func setupAlertSheet(title: String = "Attention" ,subtitle: String = "You have some changes.\nWhat do you want to do?") {
+    private func setupAlertSheet(title: String = "Attention".localized() ,subtitle: String = "You have some changes.\nWhat do you want to do?".localized()) {
         let sheet = UIAlertController(title: title, message: subtitle, preferredStyle: .actionSheet)
-        sheet.addAction(UIAlertAction(title: "Discard changes", style: .destructive,handler: { _ in
+        sheet.addAction(UIAlertAction(title: "Discard changes".localized(), style: .destructive,handler: { _ in
             self.navigationController?.popViewController(animated: true)
         }))
-        sheet.addAction(UIAlertAction(title: "Save", style: .default,handler: { [self] _ in
+        sheet.addAction(UIAlertAction(title: "Save".localized(), style: .default,handler: { [self] _ in
             didTapSave()
         }))
-        sheet.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        sheet.addAction(UIAlertAction(title: "Cancel".localized(), style: .cancel))
         present(sheet, animated: true)
     }
 

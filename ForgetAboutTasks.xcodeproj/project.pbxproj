@@ -50,6 +50,7 @@
 		0A9918D02A52AA2B001004FA /* AppIcon4.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A9918CD2A52AA2B001004FA /* AppIcon4.png */; };
 		0A9918D22A52AC4D001004FA /* AppIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A9918D12A52AC4D001004FA /* AppIcon.png */; };
 		0A9918D42A52BCA0001004FA /* UserProfileAppIconViewVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9918D32A52BCA0001004FA /* UserProfileAppIconViewVC.swift */; };
+		0A9918D82A542470001004FA /* LanguageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9918D72A542470001004FA /* LanguageManager.swift */; };
 		0A99A8FD29CD855100CC5A42 /* AlertTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A99A8FC29CD855100CC5A42 /* AlertTextField.swift */; };
 		0A99A8FF29CD8FE000CC5A42 /* AllTasksToDoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A99A8FE29CD8FE000CC5A42 /* AllTasksToDoVC.swift */; };
 		0A99A90729CD99CA00CC5A42 /* UserAuthController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A99A90629CD99CA00CC5A42 /* UserAuthController.swift */; };
@@ -72,7 +73,6 @@
 		0AA604E329E14673007ACE58 /* ScheduleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA604E229E14673007ACE58 /* ScheduleModel.swift */; };
 		0AA604E629E14814007ACE58 /* ScheduleRealmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA604E529E14814007ACE58 /* ScheduleRealmManager.swift */; };
 		0AA604E929E16C05007ACE58 /* ColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA604E829E16C05007ACE58 /* ColorExtensions.swift */; };
-		0AA604EC29E16DC1007ACE58 /* PressButtonProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA604EB29E16DC1007ACE58 /* PressButtonProtocols.swift */; };
 		0AA74A2129E6EAB200F01532 /* ColorConverters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA74A2029E6EAB200F01532 /* ColorConverters.swift */; };
 		0AA74A2429E715ED00F01532 /* DateFormatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA74A2329E715ED00F01532 /* DateFormatters.swift */; };
 		0AA74A2629EC521800F01532 /* AllTasksRealmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA74A2529EC521800F01532 /* AllTasksRealmManager.swift */; };
@@ -166,6 +166,7 @@
 		0A9918CD2A52AA2B001004FA /* AppIcon4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = AppIcon4.png; sourceTree = "<group>"; };
 		0A9918D12A52AC4D001004FA /* AppIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = AppIcon.png; sourceTree = "<group>"; };
 		0A9918D32A52BCA0001004FA /* UserProfileAppIconViewVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileAppIconViewVC.swift; sourceTree = "<group>"; };
+		0A9918D72A542470001004FA /* LanguageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageManager.swift; sourceTree = "<group>"; };
 		0A99A8FC29CD855100CC5A42 /* AlertTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertTextField.swift; sourceTree = "<group>"; };
 		0A99A8FE29CD8FE000CC5A42 /* AllTasksToDoVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllTasksToDoVC.swift; sourceTree = "<group>"; };
 		0A99A90629CD99CA00CC5A42 /* UserAuthController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAuthController.swift; sourceTree = "<group>"; };
@@ -188,7 +189,6 @@
 		0AA604E229E14673007ACE58 /* ScheduleModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleModel.swift; sourceTree = "<group>"; };
 		0AA604E529E14814007ACE58 /* ScheduleRealmManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleRealmManager.swift; sourceTree = "<group>"; };
 		0AA604E829E16C05007ACE58 /* ColorExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtensions.swift; sourceTree = "<group>"; };
-		0AA604EB29E16DC1007ACE58 /* PressButtonProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PressButtonProtocols.swift; sourceTree = "<group>"; };
 		0AA74A2029E6EAB200F01532 /* ColorConverters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorConverters.swift; sourceTree = "<group>"; };
 		0AA74A2329E715ED00F01532 /* DateFormatters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormatters.swift; sourceTree = "<group>"; };
 		0AA74A2529EC521800F01532 /* AllTasksRealmManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllTasksRealmManager.swift; sourceTree = "<group>"; };
@@ -290,6 +290,7 @@
 		0A86ED0E29B5D97F001C9BAF /* ForgetAboutTasks */ = {
 			isa = PBXGroup;
 			children = (
+				0A9918D62A542458001004FA /* Managers */,
 				0A9E1C4329D46851000CC9A9 /* ForgetAboutTasks.entitlements */,
 				0A8AC1A229B9D4D700EA052B /* Controllers */,
 				0A8D250B2A2C105800022622 /* Table VIew Custom Cells */,
@@ -392,6 +393,14 @@
 				0A9918CD2A52AA2B001004FA /* AppIcon4.png */,
 			);
 			path = AppImages;
+			sourceTree = "<group>";
+		};
+		0A9918D62A542458001004FA /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				0A9918D72A542470001004FA /* LanguageManager.swift */,
+			);
+			path = Managers;
 			sourceTree = "<group>";
 		};
 		0A99A90029CD98C600CC5A42 /* Schedule */ = {
@@ -526,7 +535,6 @@
 		0AA604EA29E16DA1007ACE58 /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
-				0AA604EB29E16DC1007ACE58 /* PressButtonProtocols.swift */,
 				0A8D25092A29CED300022622 /* CheckSuccessSaveProtocol.swift */,
 			);
 			path = Protocols;
@@ -794,9 +802,9 @@
 				0AA74A2629EC521800F01532 /* AllTasksRealmManager.swift in Sources */,
 				0AEAA9F62A26884A00BE85A4 /* KeyChainClass.swift in Sources */,
 				0ACE797829DECF3300599C19 /* NewContactVC.swift in Sources */,
+				0A9918D82A542470001004FA /* LanguageManager.swift in Sources */,
 				0AA1E9392A4128CA0052B849 /* LockscreenWidget.intentdefinition in Sources */,
 				0A525DAF29FC3C3B009D116F /* AlertNewName.swift in Sources */,
-				0AA604EC29E16DC1007ACE58 /* PressButtonProtocols.swift in Sources */,
 				0ACE797A29DED2D400599C19 /* NewContactCustomView.swift in Sources */,
 				0A9918D42A52BCA0001004FA /* UserProfileAppIconViewVC.swift in Sources */,
 				0AA8EC5D29C76968004DC6DD /* AlertDate.swift in Sources */,

@@ -37,7 +37,7 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
     private let refreshController: UIRefreshControl = {
         let controller = UIRefreshControl()
         controller.tintColor = #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
-        controller.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        controller.attributedTitle = NSAttributedString(string: "Pull to refresh".localized())
         return controller
     }()
     
@@ -92,7 +92,7 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
                     self.present(nav, animated:  true)
                 }
             case false:
-                print("Not allowed")
+                self.alertError(text: "Give access to app in Settings if it will be neccessary".localized(), mainTitle: "Error!".localized())
             }
         }
         
@@ -150,7 +150,7 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .done, target: nil, action: nil)
-        title = "Contacts"
+        title = "Contacts".localized()
     }
     //MARK: -Loading methods
     private func loadingRealmData(typeOf sort: String = "contactName") {
@@ -160,8 +160,9 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
     }
     
     private func alertForDeleting(){
-        let alert = UIAlertController(title: "Warning!", message: "Are you sure you want to delete all contacts permanently?", preferredStyle: .actionSheet)
-        alert.addAction(UIAlertAction(title: "Delete", style: .destructive,handler: { [self] _ in
+        let alert = UIAlertController(title: "Warning!".localized(),
+                                      message: "Are you sure you want to delete all contacts permanently?".localized(), preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction(title: "Delete".localized(), style: .destructive,handler: { [self] _ in
             ContactRealmManager.shared.deleteAllContactModel()
             let indexPaths = (0..<tableView.numberOfRows(inSection: 0)).map { IndexPath(row: $0, section: 0) }
             tableView.deleteRows(at: indexPaths, with: .top)
@@ -170,7 +171,7 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
             navigationItem.rightBarButtonItem?.isEnabled = true
             
         }))
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Cancel".localized(), style: .cancel))
         present(alert, animated: true)
     }
 
@@ -204,7 +205,7 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
             
             ContactRealmManager.shared.saveContactModel(model: model)
             tableView.reloadData()
-            showAlertForUser(text: "Choosen contact imported successfully", duration: DispatchTime.now()+1, controllerView: view)
+            showAlertForUser(text: "Choosen contact imported successfully".localized(), duration: DispatchTime.now()+1, controllerView: view)
         }
     }
     
@@ -255,7 +256,7 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
         if UIApplication.shared.canOpenURL(url){
             UIApplication.shared.open(url)
         } else {
-            self.alertError(text: "This function is not avaliable.\nTry again later", mainTitle: "Error!")
+            self.alertError(text: "This function is not avaliable.\nTry again later".localized(), mainTitle: "Error!".localized())
         }
     }
     
@@ -269,14 +270,14 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
             vc.messageComposeDelegate = self
             show(vc, sender: nil)
         } else {
-            alertError(text: "This function is not avaliable.\nTry again later", mainTitle: "Error!")
+            alertError(text: "This function is not avaliable.\nTry again later".localized(), mainTitle: "Error!".localized())
         }
     }
     
     //delegate method
     func isSavedCompletely(boolean: Bool) {
         if boolean {
-            showAlertForUser(text: "Contact saved successfully", duration: DispatchTime.now()+1, controllerView: view)
+            showAlertForUser(text: "Contact saved successfully".localized(), duration: DispatchTime.now()+1, controllerView: view)
         }
     }
 
@@ -315,19 +316,19 @@ extension ContactsViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { actions in
-            let shareAction = UIAction(title: NSLocalizedString("Share Contact Card", comment: ""), image: UIImage(systemName: "square.and.arrow.up.circle.fill")) { [ weak self] _ in
+            let shareAction = UIAction(title: NSLocalizedString("Share Contact Card".localized(), comment: ""), image: UIImage(systemName: "square.and.arrow.up.circle.fill")) { [ weak self] _ in
                 self?.shareChoosenContact(indexPath: indexPath)
             }
-            let openAction = UIAction(title: NSLocalizedString("Open Contact", comment: ""),image: UIImage(systemName: "info.circle.fill")) { [unowned self] action in
+            let openAction = UIAction(title: NSLocalizedString("Open Contact".localized(), comment: ""),image: UIImage(systemName: "info.circle.fill")) { [unowned self] action in
                 self.openChoosenContact(indexPath: indexPath)
             }
-            let callAction = UIAction(title: NSLocalizedString("Call to contact", comment: ""),image: UIImage(systemName: "phone.fill")) { [unowned self] _ in
+            let callAction = UIAction(title: NSLocalizedString("Call to contact".localized(), comment: ""),image: UIImage(systemName: "phone.fill")) { [unowned self] _ in
                 self.makeCallContact(indexPath: indexPath)
             }
-            let messageAction = UIAction(title: NSLocalizedString("Send message", comment: ""),image: UIImage(systemName: "message.fill")) { [unowned self] _ in
+            let messageAction = UIAction(title: NSLocalizedString("Send message".localized(), comment: ""),image: UIImage(systemName: "message.fill")) { [unowned self] _ in
                 self.makeSendMessage(indexPath: indexPath)
             }
-            let deleteAction = UIAction(title: NSLocalizedString("Delete Contact", comment: ""),image: UIImage(systemName: "trash"),attributes: .destructive) { [unowned self] _ in
+            let deleteAction = UIAction(title: NSLocalizedString("Delete Contact".localized(), comment: ""),image: UIImage(systemName: "trash"),attributes: .destructive) { [unowned self] _ in
                 self.deleteChoosenContact(indexPath: indexPath)
             }
             return UIMenu(title: "", children: [shareAction,callAction,messageAction,openAction,deleteAction])

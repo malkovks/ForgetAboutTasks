@@ -15,11 +15,16 @@ class EditTaskTableViewController: UIViewController {
     
     weak var delegate: CheckSuccessSaveProtocol?
     
-    private let headerArray = ["Name","Date","Time","Notes","URL","Color accent"]
-    private var cellsName = [["Name of event"],
-                     ["Date"],
-                     ["Time"],
-                     ["Notes"],
+    private let headerArray = ["Name".localized()
+                               ,"Date".localized()
+                               ,"Time".localized()
+                               ,"Notes".localized()
+                               ,"URL"
+                               ,"Color accent".localized()]
+    private var cellsName = [["Name of event".localized()],
+                     ["Date".localized()],
+                     ["Time".localized()],
+                     ["Notes".localized()],
                      ["URL"],
                      [""]]
 
@@ -104,7 +109,7 @@ class EditTaskTableViewController: UIViewController {
     }
     
     private func setupNavigationController(){
-        title = "Editing"
+        title = "Editing Task".localized()
         navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(didTapDismiss))
         navigationItem.rightBarButtonItem = navigationButton
@@ -171,7 +176,7 @@ extension EditTaskTableViewController: UITableViewDelegate, UITableViewDataSourc
     
         switch indexPath {
         case [0,0]:
-            alertTextField(cell: cellName, placeholder: "Enter title of event", keyboard: .default) { [self] text in
+            alertTextField(cell: cellName, placeholder: "Enter title of event".localized(), keyboard: .default) { [self] text in
                 cellsName[indexPath.section][indexPath.row] = text
                 cell?.textLabel?.text = text
                 editedTaskModel.allTaskNameEvent = text
@@ -195,7 +200,7 @@ extension EditTaskTableViewController: UITableViewDelegate, UITableViewDataSourc
                 isStartEditing = true
             }
         case [3,0]:
-            alertTextField(cell: cellName, placeholder: "Enter notes value", keyboard: .default) { [self] text in
+            alertTextField(cell: cellName, placeholder: "Enter notes value".localized(), keyboard: .default) { [self] text in
                 cellsName[indexPath.section][indexPath.row] = text
                 editedTaskModel.allTaskNotes = text
                 cell?.textLabel?.text = text
@@ -203,7 +208,7 @@ extension EditTaskTableViewController: UITableViewDelegate, UITableViewDataSourc
                 isStartEditing = true
             }
         case [4,0]:
-            alertTextField(cell: cellName, placeholder: "Enter URL value", keyboard: .URL, completion: { [self] text in
+            alertTextField(cell: cellName, placeholder: "Enter URL value".localized(), keyboard: .URL, completion: { [self] text in
                 if text.isURLValid(text: text){
                     cellsName[indexPath.section][indexPath.row] = text
                     editedTaskModel.allTaskURL = text
@@ -211,13 +216,13 @@ extension EditTaskTableViewController: UITableViewDelegate, UITableViewDataSourc
                     navigationButton.isEnabled = true
                     isStartEditing = true
                 } else {
-                    alertError(text: "Try again!\nEnter www. in URL link and pick a domain", mainTitle: "Warning!")
+                    alertError(text: "Enter name of URL link with correct domain".localized(), mainTitle: "Error!".localized())
                 }
             })
         case [5,0]:
             openColorPicker()
         default:
-            print("error")
+            break
         
         }
     }
@@ -259,15 +264,15 @@ extension EditTaskTableViewController {
         }
     }
     
-    private func setupAlertSheet(title: String = "Attention" ,subtitle: String = "You have some changes.\nWhat do you want to do?") {
+    private func setupAlertSheet(title: String = "Attention".localized() ,subtitle: String = "You have some changes.\nWhat do you want to do?".localized()) {
         let sheet = UIAlertController(title: title, message: subtitle, preferredStyle: .actionSheet)
-        sheet.addAction(UIAlertAction(title: "Discard changes", style: .destructive,handler: { _ in
+        sheet.addAction(UIAlertAction(title: "Discard changes".localized(), style: .destructive,handler: { _ in
             self.dismiss(animated: true)
         }))
-        sheet.addAction(UIAlertAction(title: "Save", style: .default,handler: { [self] _ in
+        sheet.addAction(UIAlertAction(title: "Save".localized(), style: .default,handler: { [self] _ in
             didTapEdit()
         }))
-        sheet.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        sheet.addAction(UIAlertAction(title: "Cancel".localized(), style: .cancel))
         present(sheet, animated: true)
     }
 }

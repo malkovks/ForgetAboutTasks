@@ -14,24 +14,26 @@ import EventKit
 import Photos
 import AVFoundation
 
-struct ScheduleModelStruct {
-    var scheduleStartDate: Date
-    var scheduleEndDate: Date
-    var scheduleName: String
-    var scheduleCategoryNote: String?
-    var scheduleCategoryURL: String?
-
-}
 
 class CreateEventScheduleViewController: UIViewController {
     
     weak var delegate: CheckSuccessSaveProtocol?
     
-    private let headerArray = ["Details of event","Start and End of event","Category of event","Color of event","Choose image"]
+    private let headerArray = ["Details of event".localized(),
+                               "Start and End of event".localized(),
+                               "Category of event".localized(),
+                               "Color of event".localized(),
+                               "Choose image".localized()]
     
-    private var cellsName = [["Name of event"],
-                     ["Start","End","Set a reminder","Add to Calendar"],
-                     ["Name","Type","URL","Note"],
+    private var cellsName = [["Name of event".localized()],
+                     ["Start".localized()
+                      ,"End".localized()
+                      ,"Set a reminder".localized()
+                      ,"Add to Calendar".localized()],
+                     ["Name".localized()
+                      ,"Type".localized()
+                      ,"URL".localized()
+                      ,"Note".localized()],
                      [""],
                      [""]]
     
@@ -49,9 +51,7 @@ class CreateEventScheduleViewController: UIViewController {
     private var addingEventStatus: Bool = false
     private var choosenDate: Date
     private lazy var startChoosenDate: Date = choosenDate
-    
-    private var scheduleModelStruct: ScheduleModelStruct = ScheduleModelStruct(scheduleStartDate: Date(), scheduleEndDate: Date().addingTimeInterval(3600), scheduleName: "Test", scheduleCategoryNote: "Test")
-    
+
     init(choosenDate: Date){
         self.choosenDate = choosenDate
         super.init(nibName: nil, bundle: nil)
@@ -90,7 +90,6 @@ class CreateEventScheduleViewController: UIViewController {
             setupCalendarEvent(model: scheduleModel, status: addingEventStatus)
             delegate?.isSavedCompletely(boolean: true)
             ScheduleRealmManager.shared.saveScheduleModel(model: self.scheduleModel)
-            print(scheduleModelStruct)
             DispatchQueue.main.asyncAfter(deadline: .now()) {
                 self.dismiss(animated: true)
             }
@@ -100,7 +99,7 @@ class CreateEventScheduleViewController: UIViewController {
     @objc private func didTapSetReminder(sender: UISwitch){
         if sender.isOn {
             if scheduleModel.scheduleStartDate == nil && scheduleModel.scheduleTime == nil {
-                alertError(text: "Enter date for setting reminder", mainTitle: "Error set up reminder!")
+                alertError(text: "Enter date for setting reminder".localized(), mainTitle: "Error set up reminder!".localized())
             } else {
                 request(forUser: notificationCenter) { access in
                     self.reminderStatus = access
@@ -135,13 +134,13 @@ class CreateEventScheduleViewController: UIViewController {
     //MARK: - Setup Views and secondary methods
     private func setupAlertSheet(title: String,subtitle: String) {
         let sheet = UIAlertController(title: title, message: subtitle, preferredStyle: .actionSheet)
-        sheet.addAction(UIAlertAction(title: "Discard changes", style: .destructive,handler: { _ in
+        sheet.addAction(UIAlertAction(title: "Discard changes".localized(), style: .destructive,handler: { _ in
             self.dismiss(animated: true)
         }))
-        sheet.addAction(UIAlertAction(title: "Save", style: .default,handler: { [self] _ in
+        sheet.addAction(UIAlertAction(title: "Save".localized(), style: .default,handler: { [self] _ in
             didTapSave()
         }))
-        sheet.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        sheet.addAction(UIAlertAction(title: "Cancel".localized(), style: .cancel))
         present(sheet, animated: true)
     }
 
@@ -154,7 +153,7 @@ class CreateEventScheduleViewController: UIViewController {
         setupConstraints()
         
         view.backgroundColor = UIColor(named: "backgroundColor")
-        title = "Options"
+        title = "Options".localized()
         
     }
     
@@ -193,7 +192,7 @@ class CreateEventScheduleViewController: UIViewController {
         
         let dateS = model.scheduleTime ?? Date()
         let date = DateFormatter.localizedString(from: dateS, dateStyle: .medium, timeStyle: .none)
-        content.title = "Planned reminder"
+        content.title = "Planned reminder".localized()
         content.body = "\(date)"
         content.subtitle = "\(model.scheduleName)"
         content.sound = .defaultRingtone
@@ -290,8 +289,8 @@ class CreateEventScheduleViewController: UIViewController {
     
     @objc private func chooseTypeOfImagePicker() {
         
-        let alert = UIAlertController(title: "", message: "What exactly do you want to do?", preferredStyle: .actionSheet)
-        alert.addAction(UIAlertAction(title: "Set new image", style: .default,handler: { [self] _ in
+        let alert = UIAlertController(title: "", message: "What exactly do you want to do?".localized(), preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction(title: "Set new image".localized(), style: .default,handler: { [self] _ in
             if UIImagePickerController.isSourceTypeAvailable(.photoLibrary){
                 imagePicker.delegate = self
                 imagePicker.sourceType = .photoLibrary
@@ -299,7 +298,7 @@ class CreateEventScheduleViewController: UIViewController {
                 present(self.imagePicker, animated: true)
             }
         }))
-        alert.addAction(UIAlertAction(title: "Make new image", style: .default,handler: { [self] _ in
+        alert.addAction(UIAlertAction(title: "Make new image".localized(), style: .default,handler: { [self] _ in
             if UIImagePickerController.isSourceTypeAvailable(.camera) {
                 imagePicker.delegate = self
                 imagePicker.sourceType = .camera
@@ -307,11 +306,11 @@ class CreateEventScheduleViewController: UIViewController {
                 present(self.imagePicker, animated: true)
             }
         }))
-        alert.addAction(UIAlertAction(title: "Delete image", style: .destructive,handler: { _ in
+        alert.addAction(UIAlertAction(title: "Delete image".localized(), style: .destructive,handler: { _ in
             let cell = self.tableView.cellForRow(at: [4,0])
             cell?.imageView?.image = UIImage(named: "camera.fill")
         }))
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Cancel".localized(), style: .cancel))
         present(alert, animated: true)
     }
 
@@ -350,7 +349,7 @@ extension CreateEventScheduleViewController: UIImagePickerControllerDelegate, UI
             tableView.deselectRow(at: [4,0], animated: true)
             
         } else {
-            alertError(text: "Error!", mainTitle: "Can't get image and save it to event.\nTry again later!")
+            alertError(text: "Error!".localized(), mainTitle: "Can't get image and save it to event.\nTry again later!".localized())
         }
         indicator.stopAnimating()
         
@@ -421,12 +420,10 @@ extension CreateEventScheduleViewController: UITableViewDelegate, UITableViewDat
         
         switch indexPath {
         case [0,0]:
-            alertTextField(cell: cellName, placeholder: "Enter text", keyboard: .default) {[self] text in
+            alertTextField(cell: cellName, placeholder: "Enter the text".localized(), keyboard: .default) {[self] text in
                 scheduleModel.scheduleName = text
                 cell?.textLabel?.text = text
                 isStartEditing = true
-                
-                scheduleModelStruct.scheduleName = text
             }
         case [1,0]:
             alertTimeInline(table: tableView, choosenDate: choosenDate) { [self] date, timeString, weekday in
@@ -437,9 +434,6 @@ extension CreateEventScheduleViewController: UITableViewDelegate, UITableViewDat
                 startChoosenDate = date.addingTimeInterval(3600)
                 cell?.textLabel?.text = timeString
                 isStartEditing = true
-                
-                scheduleModelStruct.scheduleStartDate = date
-                
             }
         case [1,1]:
             let hourPlus = scheduleModel.scheduleStartDate
@@ -448,50 +442,41 @@ extension CreateEventScheduleViewController: UITableViewDelegate, UITableViewDat
                 self?.scheduleModel.scheduleEndDate = date
                 cell?.textLabel?.text = dateString
                 self?.isStartEditing = true
-                
-                self?.scheduleModelStruct.scheduleEndDate = date
             }
         case [2,0]:
-            alertTextField(cell: "Enter Name of event", placeholder: "Enter the text", keyboard: .default) { [self] text in
+            alertTextField(cell: "Enter Name of event".localized(), placeholder: "Enter the text".localized(), keyboard: .default) { [self] text in
                 scheduleModel.scheduleCategoryName = text
                 cell?.textLabel?.text = text
                 isStartEditing = true
                 
             }
         case [2,1]:
-            alertTextField(cell: "Enter Type of event", placeholder: "Enter the text", keyboard: .default) { [self] text in
+            alertTextField(cell: "Enter Type of event".localized(), placeholder: "Enter the text".localized(), keyboard: .default) { [self] text in
                 scheduleModel.scheduleCategoryType = text
                 cell?.textLabel?.text = text
                 isStartEditing = true
                 
             }
         case [2,2]:
-            alertTextField(cell: "Enter URL name with domain", placeholder: "Enter URL", keyboard: .URL) { [self] text in
+            alertTextField(cell: "Enter URL name with domain".localized(), placeholder: "Enter URL".localized(), keyboard: .URL) { [self] text in
                 if text.isURLValid(text: text) {
                     cell?.textLabel?.text = text
                     scheduleModel.scheduleCategoryURL = text
                     isStartEditing = true
-                    
-                    scheduleModelStruct.scheduleCategoryURL = text
                 } else if !text.contains("www.") || !text.contains("http://") && text.contains("."){
                     let editedText = "www." + text
                     cell?.textLabel?.text = editedText
                     scheduleModel.scheduleCategoryURL = editedText
                     isStartEditing = true
-                    
-                    scheduleModelStruct.scheduleCategoryURL = text
-                    
                 } else {
                     alertError(text: "Enter name of URL link with correct domain", mainTitle: "Incorrect input")
                 }
             }
         case [2,3]:
-            alertTextField(cell: "Enter Notes of event", placeholder: "Enter the text", keyboard: .default) { [self] text in
+            alertTextField(cell: "Enter Notes of event".localized(), placeholder: "Enter the text".localized(), keyboard: .default) { [self] text in
                 scheduleModel.scheduleCategoryNote = text
                 cell?.textLabel?.text = text
                 isStartEditing = true
-                
-                scheduleModelStruct.scheduleCategoryNote = text
             }
         case [3,0]:
             openColorPicker()

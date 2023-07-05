@@ -33,3 +33,179 @@
 "Details of event" = "Детали мероприятия";
 "Color of event" = "Акцентированный цвет";
 "Image" = "Изображение";
+"Name of event" = "Название мероприятия";
+"Start" = "Начало";
+"End" = "Конец";
+"Reminder status" = "Добавлено в напоминания";
+"Added to Calendar" = "Добавлено в Календарь";
+"Name" = "Детали";
+"Type" = "Тип";
+"URL" = "Ссылка";
+"Note" = "Заметки";
+"Text was copied" = "Текст был скопирован";
+"Details" = "Детали";
+"Delete" = "Удалить";
+"Cancel" = "Отменить";
+"Share PDF File" = "Поделиться PDF файлом";
+"Share Image" = "Поделиться скриншотом";
+"Warning!" = "Внимание!";
+"Do you want to delete event?" = "Вы хотите удалить мероприятие?";
+"Event was edited!" = "Мероприятие отредактировано!";
+"Share Image" = "Поделиться изображением";
+"Copy Image" = "Скопировать изображение";
+//Create Event Schedule View Controller
+"Details of event" = "Детали мероприятия";
+"Start and End of event" = "Начало и окончание мероприятия";
+ "Category of event" = "Дополнительная информация";
+"Color of event" = "Акцентированный цвет";
+"Choose image" = "Выберите изображение";
+"Start" = "Начало";
+ "End" = "Окончание";
+ "Set a reminder" = "Установить напоминание";
+ "Add to Calendar" = "Добавить в Календарь";
+ "Name" = "Инфо";
+ "Type" = "Тип";
+ "URL" = "Ссылка";
+ "Note" = "Заметки";
+"Attention" = "Внимание";
+"You inputed the data that was not saved.\nWhat do you want to do?" = "Вы хотите отменить введенные данные?";
+"Enter date for adding event to Calendar" = "Выберите дату для добавления мероприятия в Календарь";
+"Error!" = "Ошибка!";
+"Discard changes" = "Отменить изменения";
+"Save" = "Сохранить";
+"Cancel" = "Отмена";
+"Options" = "Настройка";
+"Planned reminder" = "Запланированное напоминание";
+"What exactly do you want to do?" = "Что вы хотите сделать?";
+"Set new image" = "Выбрать изображение из медиатеки";
+"Make new image" = "Сделать новое изображение";
+"Delete image" = "Удалить изображение";
+"Can't get image and save it to event.\nTry again later!" = "Не удалось сохранить изображение\nПопробуйте позже!";
+"Enter text" = "Введите текст";
+"Enter Name of event" = "Детали мероприятия";
+"Enter Type of event" = "Тип мероприятия";
+"Enter URL name with domain" = "Веб-ссылка";
+"Enter URL" = "Введите URL";
+"Enter name of URL link with correct domain" = "Введите корректный адрес сайта с указанием домена";
+"Incorrect input" = "Некорректный ввод";
+"Enter Notes of event" = "Заметки";
+//Edit Event Schedule View Controller
+
+"You have some changes.\nWhat do you want to do" = "Вы внесли некоторые изменения\nНе желаете их сохранить?";
+"Enter date for setting reminder" = "Укажите начала и окончание мероприятия для установки напоминания";
+"Error set up reminder!" = "Ошибка напоминания!";
+"Check Name,Start Date and End Date.\nThey must have some property" = "Укажите Название мероприятия, Начала и Окончание мероприятия";
+"Editing event" = "Редактирование мероприятия";
+"Share selection" = "Поделиться";
+"Error making screenshot of table view" = "Не удалось сделать скриншот таблицы";
+
+//All Tasks ToDo View Controller
+"Date" = "Дата";
+"A-Z" = "А-Я";
+"Pull to refresh" = "Потяните, чтобы обновить";
+"All Tasks" = "Задачи";
+"Search tasks" = "Поиск по задачам";
+"Task saved successfully" = "Задача сохранена успешно";
+//All Tasks Detail View Controller
+"Name" = "Название";
+"Date" = "Дата";
+"Time" = "Время";
+"Notes" = "Заметки";
+"Color accent" = "Цветовой акцент";
+"Details" = "Детали";
+//Create Task Table View Controller
+"Enter value in Name cell" = "Введите название задачи для сохранения";
+"Error saving!" = "Ошибка сохранения";
+"Enter title of task" = "Введите название задачи";
+"Date: " = "Дата: ";
+"Time: " = "Время: ";
+"Enter notes value" = "Введите данные для заметок";
+"Enter URL value" = "Введите или вставьте ссылку";
+//Edit Task Table View Controller
+"Editing Task" = "Редактирование задачи";
+"You have some changes.\nWhat do you want to do?" = "У вас есть некоторые изменения\nЧто вы хотите с ними сделать?";
+//Contact View Controller
+"Give access to app in Settings if it will be neccessary" = "Дайте доступ в настройках если это будет необходимо";
+"Contacts" = "Контакты";
+"Are you sure you want to delete all contacts permanently?" = "Уверены, что хотите удалить все контакты?";
+"Choosen contact imported successfully" = "Выбранные контакты импортированы успешно";
+"This function is not avaliable.\nTry again later" = "Эта функция недоступна. Попробуйте позже";
+"Contact saved successfully" = "Контакт сохранен успешно!";
+"Share Contact Card" = "Поделиться картой выбранного контакта";
+"Open Contact" = "Открыть Контакт";
+"Call to contact" = "Позвонить";
+"Send message" = "Отправить сообщение";
+"Delete Contact" = "Удалить Контакт";
+//New Contact View Controller
+"Name" = "Имя";
+"Main Info" = "Основная информация";
+"Address" = "Адрес";
+"Birthday" = "Дата рождения";
+"Type of contact" = "Тип Контакта";
+"Enter Name" = "Введите имя";
+ "Enter Second Name" = "Введите фамилию";
+"Enter Phone number" = "Номер телефона";
+"Enter Mail" = "Почта";
+"Country" = "Страна";
+"City" = "Город";
+"Address" = "Адрес";
+"Postal Code" = "Почтовый индекс";
+"Choose date" = "Выберите дату";
+"Choose Type of contact" = "Выберите тип контакта";
+"Enter value in Name and Phone sections" = "Укажите имя и номер телефона нового контакта";
+"New Contact" = "Новый Контакт";
+"Could not saved contact in Contacts List. Try again later" = "Не удалось сохранить Контакт в телефонну книгу. Попробуйте позже";
+"Enter first name" = "Укажите имя";
+"Enter secon name" = "Укажите фамилию";
+"Enter valid number" = "Номер телефона";
+"Enter mail" = "Почта";
+"Enter the @ domain and country domain" = "Укажите почтовый домен и регион";
+"Enter name of country" = "Укажите название страны";
+    "Enter name of city" = "Укажите название города";
+    "Enter the address" = "Укажите адресс";
+    "Enter postal code" = "Введите почтовый индекс";
+//Edit Contact View Controller
+"Edit Contact" = "Редактирование Контакта";
+"You can't send email. Maybe you don't Have Apple Mail App on your device?" = "Вы не можете отправить письмо. Возможно у вас не установлено приложение Почта?";
+"Cant get date" = "Не удалось получить информацию";
+"Value is empty. Can't open location" = "Не удается найти выбранный адрес";
+"Contry: " = "Страна: ";
+"City: " = "Город: ";
+"Street: " = "Улица: ";
+"Postal code: " = "Почтовый индекс: ";
+
+
+//UserProfile View Controller
+"Age: " = "Возраст: ";
+"My Profile" = "Мой Профиль";
+"Enter your age" = "Введите ваш возраст";
+"Enter age number" = "Введите число";
+"Enter new name and second name" = "Введите Имя и Фамилию";
+"Enter the text" = "Введите текст";
+"Press to set user's age" = "Нажмите, чтобы указать возраст";
+"User email" = "Ваша почта";
+"Press to set name of user" = "Нажмите чтобы указать имя";
+"Set new image" = "Фото";
+"Dark Mode" = "Темный Режим";
+"Access to Notifications" = "Доступ к уведомлениям";
+"Access to Calendar's Event" = "Доступ к Календарю";
+"Change App Icon" = "Изменить Иконку";
+"Change Ringtone" = "Изменить Звук Уведомлений";
+"Language" = "Язык";
+"Futures" = "Нововведения";
+"Information" = "Информация";
+"Delete Account" = "Удалить аккаунт";
+"Log Out" = "Выйти";
+"Main setups" = "Основные настройки";
+"Secondary setups" = "Допольнительные настройки";
+"Info" = "Информация";
+//User Profile App Icon View Controller
+"Choose App Icon" = "Выберите иконку";
+"Cant get access to change Image" = "Не удается изменить изображение";
+//CheckAuth
+"Not indicated" = "Недоступен";
+"Error loading email" = "Почта недоступна";
+"Error loading name" = "Имя недоступно";
+"Set your name" = "Укажите Ваше Имя";
+"No email" = "Почта отсутствует";
+ 

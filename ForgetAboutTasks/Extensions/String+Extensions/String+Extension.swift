@@ -17,6 +17,12 @@ extension String {
                                  comment: self)
     }
     
+    func localText(_ text: String) -> String {
+        guard let path = Bundle.main.path(forResource: text, ofType: "lproj") else { return "" }
+        guard let bundle = Bundle(path: path) else { return ""}
+        return NSLocalizedString(self, tableName: "Localizable", bundle: bundle, value: self, comment: self)
+    }
+    
     struct EmailValidation {
         private static let firstPart = "[A-Z0-9a-z]([A-Z0-9a-z._%+-]{0,30}[A-Z0-9a-z])?"
         private static let secondPart = "[A-Z0-9a-z]([A-Z0-9a-z-]{0,30}[A-Z0-9a-z])"
@@ -47,23 +53,23 @@ extension String {
         }
     }
     
-    func formatPhoneNumber(phoneNumber: String) -> String? {
-        let cleanedPhoneNumber = phoneNumber.replacingOccurrences(of: "[^0-9]", with: "", options: .regularExpression)
-        guard cleanedPhoneNumber.count == 10 else { return nil}
-        let areaCode = cleanedPhoneNumber.prefix(3)
-        let prefix = cleanedPhoneNumber.dropFirst(3).prefix(3)
-        let suffix = cleanedPhoneNumber.dropFirst(6)
-        
-        return "\(areaCode) \(prefix) + \(suffix)"
-    }
-
-    
-    func isPhoneNumberValid(text: String) -> Bool {
-        let phoneRegex = "^\\+7\\d{10}$"
-        let phoneTest = NSPredicate(format: "SELF MATCHES %@", phoneRegex)
-        return phoneTest.evaluate(with: text)
-    }
-    
+//    func formatPhoneNumber(phoneNumber: String) -> String? {
+//        let cleanedPhoneNumber = phoneNumber.replacingOccurrences(of: "[^0-9]", with: "", options: .regularExpression)
+//        guard cleanedPhoneNumber.count == 10 else { return nil}
+//        let areaCode = cleanedPhoneNumber.prefix(3)
+//        let prefix = cleanedPhoneNumber.dropFirst(3).prefix(3)
+//        let suffix = cleanedPhoneNumber.dropFirst(6)
+//        
+//        return "\(areaCode) \(prefix) + \(suffix)"
+//    }
+//
+//    
+//    func isPhoneNumberValid(text: String) -> Bool {
+//        let phoneRegex = "^\\+7\\d{10}$"
+//        let phoneTest = NSPredicate(format: "SELF MATCHES %@", phoneRegex)
+//        return phoneTest.evaluate(with: text)
+//    }
+//    
     public static func format(with mask: String, phone: String) -> String {
         let numbers = phone.replacingOccurrences(of: "[^0-9]", with: "",options: .regularExpression)
         var result = ""
