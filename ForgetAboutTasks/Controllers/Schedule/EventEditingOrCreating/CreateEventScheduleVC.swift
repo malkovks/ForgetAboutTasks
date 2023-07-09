@@ -101,11 +101,14 @@ class CreateEventScheduleViewController: UIViewController {
             if scheduleModel.scheduleStartDate == nil && scheduleModel.scheduleTime == nil {
                 alertError(text: "Enter date for setting reminder".localized(), mainTitle: "Error set up reminder!".localized())
             } else {
-                request(forUser: notificationCenter) { access in
-                    self.reminderStatus = access
-                    self.scheduleModel.scheduleActiveNotification = access
-                    sender.isOn = access
+                DispatchQueue.main.async {
+                    self.request(forUser: self.notificationCenter) { access in
+                        self.reminderStatus = access
+                        self.scheduleModel.scheduleActiveNotification = access
+                        sender.isOn = access
+                    }
                 }
+                
             }
         } else {
             reminderStatus = false
@@ -118,10 +121,12 @@ class CreateEventScheduleViewController: UIViewController {
             if scheduleModel.scheduleStartDate == nil && scheduleModel.scheduleEndDate == nil {
                 alertError(text: "Enter date for adding event to Calendar", mainTitle: "Error!")
             } else {
-                request(forAllowing: eventStore) { access in
-                    self.addingEventStatus = access
-                    self.scheduleModel.scheduleActiveCalendar = access
-                    sender.isOn = access
+                DispatchQueue.main.async {
+                    self.request(forAllowing: self.eventStore) { access in
+                        self.addingEventStatus = access
+                        self.scheduleModel.scheduleActiveCalendar = access
+                        sender.isOn = access
+                    }
                 }
             }
         } else {

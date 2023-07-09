@@ -113,7 +113,7 @@ class LogInViewController: UIViewController {
             self?.view.window?.rootViewController?.dismiss(animated: true)
             self?.setupLoadingSpinner()
             UserDefaults.standard.setValue(email, forKey: "userMail")
-            CheckAuth.shared.setupForAuth()
+            UserDefaultsManager.shared.setupForAuth()
             self?.getPassword(email)
             self?.indicatorView.stopAnimating()
         }

@@ -30,7 +30,11 @@ class UserProfileViewController: UIViewController {
                                         cellImageColor: .systemRed),
                         UserProfileData(title: "Access to Calendar's Event".localized(),
                                         cellImage: UIImage(systemName: "calendar.badge.clock")!,
-                                        cellImageColor: .systemRed)],
+                                        cellImageColor: .systemRed),
+                        UserProfileData(title: "Code-password and Face ID".localized(),
+                                        cellImage: UIImage(systemName: "lock.fill")!,
+                                        cellImageColor: .systemBlue)
+                     ],
                      [
                         UserProfileData(title: "Change App Icon".localized(),
                                         cellImage: UIImage(systemName: "app.fill")!,
@@ -58,11 +62,13 @@ class UserProfileViewController: UIViewController {
                                         cellImageColor: .systemRed)
                      ]]
 
-    
+    private var passwordBoolean = UserDefaults.standard.bool(forKey: "isPasswordCodeEnabled")
     private let notificationCenter = UNUserNotificationCenter.current()
+    private let provider = DataProvider()
     private let eventStore: EKEventStore = EKEventStore()
     private let semaphore = DispatchSemaphore(value: 0)
-    private let userInterface = CheckAuth.shared
+    private let userInterface = UserDefaultsManager.shared
+    private let activityIndicator = UIActivityIndicatorView(style: .large)
     
  //MARK: - UI Elements
     private var imagePicker = UIImagePickerController()
@@ -150,7 +156,7 @@ class UserProfileViewController: UIViewController {
                 UserDefaults.standard.set(false, forKey: "isAuthorised")
                 do {
                     try FirebaseAuth.Auth.auth().signOut()
-                    CheckAuth.shared.signOut()
+                    UserDefaultsManager.shared.signOut()
                 } catch let error {
                     print("Error signing out from Firebase \(error)")
                 }
@@ -169,29 +175,36 @@ class UserProfileViewController: UIViewController {
     }
     
     @objc private func didTapImagePicker(){
-        let alert = UIAlertController(title: nil, message: "What exactly do you want to do?", preferredStyle: .actionSheet)
-        alert.addAction(UIAlertAction(title: "Set new image", style: .default,handler: { [self] _ in
+        view.alpha = 0.7
+        let alert = UIAlertController(title: nil, message: "What exactly do you want to do?".localized(), preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction(title: "Set new image".localized(), style: .default,handler: { [self] _ in
             if UIImagePickerController.isSourceTypeAvailable(.photoLibrary){
                 imagePicker.delegate = self
                 imagePicker.sourceType = .photoLibrary
                 imagePicker.allowsEditing = true
+                activityIndicator.startAnimating()
                 present(self.imagePicker, animated: true)
             }
         }))
-        alert.addAction(UIAlertAction(title: "Make new image", style: .default,handler: { [self] _ in
+        alert.addAction(UIAlertAction(title: "Make new image".localized(), style: .default,handler: { [self] _ in
             if UIImagePickerController.isSourceTypeAvailable(.camera) {
                 imagePicker.delegate = self
                 imagePicker.sourceType = .camera
                 imagePicker.allowsEditing = true
+                activityIndicator.startAnimating()
                 present(self.imagePicker, animated: true)
             }
         }))
-        alert.addAction(UIAlertAction(title: "Delete image", style: .destructive,handler: { _ in
+        alert.addAction(UIAlertAction(title: "Delete image".localized(), style: .destructive,handler: { _ in
             self.userImageView.image = UIImage(systemName: "photo.circle")
             self.userImageView.sizeToFit()
             UserDefaults.standard.set(nil,forKey: "userImage")
+            self.view.alpha = 1
         }))
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Cancel".localized(), style: .cancel,handler: { _ in
+            self.view.alpha = 1
+            self.activityIndicator.stopAnimating()
+        }))
         present(alert, animated: true)
     }
     
@@ -275,6 +288,9 @@ class UserProfileViewController: UIViewController {
     //MARK: - Setup methods
     
     private func setupView(){
+//        setupIndicatorView()
+ //        setupScrollView()
+        
         setupNavigationController()
         configureConstraints()
         setupDelegates()
@@ -283,7 +299,7 @@ class UserProfileViewController: UIViewController {
         setTapGestureForLabel()
         setTapGestureForAgeLabel()
         loadingData()
-//        setupScrollView()
+
         setupTableView()
         setupLabelUnderline()
         view.backgroundColor = UIColor(named: "backgroundColor")
@@ -291,6 +307,12 @@ class UserProfileViewController: UIViewController {
     
     private func setupScrollView(){
         scrollView.contentSize = CGSize(width: view.frame.size.width, height: view.frame.size.height)
+    }
+    
+    private func setupIndicatorView(){
+        activityIndicator.center = view.center
+        view.addSubview(activityIndicator)
+        activityIndicator.startAnimating()
     }
     
     private func setupTableView(){
@@ -310,18 +332,21 @@ class UserProfileViewController: UIViewController {
         changeUserImageView.titleLabel?.attributedText = attributedText
     }
     
-//    private func imageLoad(){
-//        guard let currentUser = Auth.auth().currentUser,
-//              let imageURL = currentUser.photoURL,
-//              let data = try? Data(contentsOf: imageURL) else { return }
-//        userImageView.image = UIImage(data: data)
-//    }
-    
     private func loadingData(){
-        let (name,mail,age,image) = CheckAuth.shared.loadData()
-        userImageView.image = image
+        let (name,mail,age) = UserDefaultsManager.shared.loadData()
+        guard let url = UserDefaults.standard.url(forKey: "userImageURL") else { return }
+        
+        if let _ = UserDefaults.standard.data(forKey: "userImage") {
+            userImageView.image = UserDefaultsManager.shared.loadSettedImage()
+        } else {
+            provider.dataProvider(url: url) { image in
+                self.userImageView.image = image
+            }
+        }
+        
+        
         mailLabel.text = mail
-        ageLabel.text = "Age: \(age)".localized()
+        ageLabel.text = "Age: ".localized() + age
         userNameLabel.text = name
     }
     
@@ -329,6 +354,7 @@ class UserProfileViewController: UIViewController {
         title = "My Profile".localized()
         navigationController?.navigationBar.tintColor = UIColor(named: "textColor")
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "arrow.uturn.right.square"), style: .done, target: self, action: #selector(didTapLogout))
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .done, target: nil, action: nil)
     }
     
     private func setupDelegates(){
@@ -379,27 +405,49 @@ class UserProfileViewController: UIViewController {
         present(nav, animated: true)
     }
     
-    private  func changeAppLanguage(){
-        let langString = Locale.current.language.languageCode?.identifier
-
-        let manager = LanguageManager.shared
-        if langString == "ru" {
-            manager.setLanguage(languageCode: "en")
-            setupView()
-        } else {
-            manager.setLanguage(languageCode: "ru")
-            setupView()
+    private func openPasswordController(title: String = "Code-password",message: String = "This function allow you to switch on password if it neccesary. Any time you could change it",alertTitle: String = "Switch on code-password"){
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction(title: alertTitle, style: .default,handler: { [weak self] _ in
+            KeychainManager.delete()
+            self?.passwordBoolean = UserDefaults.standard.bool(forKey: "isPasswordCodeEnabled")
+            let vc = UserProfileSwitchPasswordViewController(isCheckPassword: false)
+            vc.delegate = self
+            self?.show(vc, sender: nil)
+        }))
+        if passwordBoolean {
+            alert.addAction(UIAlertAction(title: "Switch off", style: .default,handler: { [weak self]_ in
+                UserDefaults.standard.setValue(false, forKey: "isPasswordCodeEnabled")
+                KeychainManager.delete()
+                self?.passwordBoolean = UserDefaults.standard.bool(forKey: "isPasswordCodeEnabled")
+            }))
         }
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        present(alert, animated: true)
+        
     }
     
 }
-//MARK: - Table view delegate and data source
+//MARK: - Check Success Delegate
+extension UserProfileViewController: CheckSuccessSaveProtocol {
+    func isSavedCompletely(boolean: Bool) {
+        tabBarController?.tabBar.isHidden = false
+        if boolean {
+            showAlertForUser(text: "Password was created", duration: .now()+1, controllerView: view)
+            
+            passwordBoolean = UserDefaults.standard.bool(forKey: "isPasswordCodeEnabled")
+        }
+        
+    }
+    
+    
+}
 
+//MARK: - Table view delegate and data source
 extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
-        case 0: return 3
+        case 0: return 4
         case 1: return 2
         case 2: return 3
         case 3: return 2
@@ -454,9 +502,9 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
                     switchButton.isOn = access
                 }
             }
-        } else if indexPath.section == 1 {
-            cell.accessoryType = .disclosureIndicator
+        } else {
             cell.accessoryView = .none
+            cell.accessoryType = .disclosureIndicator
         }
         
         cell.textLabel?.text = data.title
@@ -467,14 +515,23 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        
         switch indexPath {
+        case [0,3]:
+            if passwordBoolean {
+                openPasswordController(title: "Warning!", message: "Do you want to switch off or change password?", alertTitle: "Change password")
+            } else {
+                openPasswordController()
+            }
+            
         case [1,0]:
             openSelectionChangeIcon()
         case [1,1]:
-            alertError(text: "This function in development", mainTitle: "Warning!")
+            alertError(text: "This function in development", mainTitle: "Warning!".localized())
         case [2,0]:
-//            changeAppLanguage()
-            alertError(text: "This function in developments")
+            showSettingsForChangingAccess(title: "Changing App Language".localized(),
+                                          message: "Would you like to change the language of your application?".localized()) { _ in }
+            
         case [3,0]:
             print("Delete")
         case [3,1]:
@@ -493,15 +550,20 @@ extension UserProfileViewController: UIImagePickerControllerDelegate,UINavigatio
             guard let data = image.jpegData(compressionQuality: 0.5) else { return}
             let encode = try! PropertyListEncoder().encode(data)
             UserDefaults.standard.setValue(encode, forKey: "userImage")
+            UserDefaults.standard.set(nil, forKey: "userImageURL")
             userImageView.image = image
         } else {
             print("Error")
         }
         picker.dismiss(animated: true)
+        activityIndicator.stopAnimating()
+        view.alpha = 1
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true)
+        view.alpha = 1
+        
     }
 }
 

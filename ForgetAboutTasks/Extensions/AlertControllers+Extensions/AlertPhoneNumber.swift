@@ -8,7 +8,7 @@
 import UIKit
 
 
-extension UIViewController: UITextFieldDelegate {
+extension UIViewController {
     
     
     func alertPhoneNumber(cell title: String,placeholder: String,keyboard type: UIKeyboardType, completion: @escaping (String) -> Void) {
@@ -19,7 +19,6 @@ extension UIViewController: UITextFieldDelegate {
             textField.clearButtonMode = .whileEditing
             textField.keyboardType = type
             textField.resignFirstResponder()
-            textField.delegate = self
             textField.returnKeyType = .continue
             
             if type == .default {

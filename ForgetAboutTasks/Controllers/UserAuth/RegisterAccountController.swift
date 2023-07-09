@@ -130,7 +130,7 @@ class RegisterAccountViewController: UIViewController {
                     UserDefaults.standard.setValue(userName, forKey: "userName")
                     UserDefaults.standard.setValue(mailField, forKey: "userMail")
                     self?.view.window?.rootViewController?.dismiss(animated: true)
-                    CheckAuth.shared.setupForAuth()
+                    UserDefaultsManager.shared.setupForAuth()
                     self?.indicator.stopAnimating()
                     try! KeychainManager.save(service: "Firebase Auth", account: mailField, password: firstPassword.data(using: .utf8) ?? Data())
                 }

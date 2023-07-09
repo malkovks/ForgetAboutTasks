@@ -7,15 +7,11 @@
 
 import UIKit
 import FirebaseAuth
+import GoogleSignIn
 
-struct UserModel{
-    var userName: String
-    var userSecondName: String
-    var userImage: UIImage
-}
 
-class CheckAuth: UIViewController {
-    static let shared = CheckAuth()
+class UserDefaultsManager: UIViewController {
+    static let shared = UserDefaultsManager()
     
     func isNotAuth() -> Bool {
         return !UserDefaults.standard.bool(forKey: "isAuthorised")  
@@ -32,25 +28,32 @@ class CheckAuth: UIViewController {
         UserDefaults.standard.setValue("", forKey: "userAge")
     }
     
-    
-    
-    func loadData() -> (String,String,String,UIImage) {
+    func loadSettedImage() -> UIImage {
         var image: UIImage?
         if let data = UserDefaults.standard.data(forKey: "userImage") {
             let decode = try! PropertyListDecoder().decode(Data.self, from: data)
-            image = UIImage(data: decode) ?? UIImage(systemName: "photo.circle")!
+            image = UIImage(data: decode)
         } else {
-            alertError()
+            alertError(text: "Can't get user's image", mainTitle: "Error!".localized())
         }
+        return image ?? UIImage(systemName: "photo.circle")!
+    }
+
+    
+    func loadData() -> (String,String,String) {
         let name = UserDefaults.standard.string(forKey: "userName") ?? "Error loading name".localized()
         let mail = UserDefaults.standard.string(forKey: "userMail") ?? "Error loading email".localized()
         let age = UserDefaults.standard.string(forKey: "userAge") ?? "Not indicated".localized()
-        return (name,mail,age,image ?? UIImage(systemName: "person.crop.circle")!)
+        return (name,mail,age)
     }
     
-    func saveData(result: AuthDataResult) {
+    func saveData(result: AuthDataResult, user:  GIDGoogleUser) {
+        let profile = user.profile?.imageURL(withDimension: 320)
+
         UserDefaults.standard.setValue(result.user.displayName, forKey: "userName")
         UserDefaults.standard.setValue(result.user.email, forKey: "userMail")
+        UserDefaults.standard.set(profile, forKey: "userImageURL")
+        
     }
     
     func checkDarkModeUserDefaults() -> Bool? {
@@ -64,6 +67,5 @@ class CheckAuth: UIViewController {
             return false
         }
     }
-    
-    
 }
+

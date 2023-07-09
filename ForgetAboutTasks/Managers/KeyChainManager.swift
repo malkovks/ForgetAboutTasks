@@ -30,7 +30,19 @@ class KeychainManager {
         guard status == errSecSuccess else {
             throw KeychainError.unknonw(status)
         }
-        print("saved")
+    }
+    
+    static func delete(){
+        let secItems = [kSecClassGenericPassword,
+                        kSecClassInternetPassword,
+                        kSecClassCertificate,
+                        kSecClassKey,
+                        kSecClassIdentity]
+        
+        for item in secItems {
+            let spec: NSDictionary = [kSecClass:item]
+            SecItemDelete(spec)
+        }
     }
     
     static func get(service: String, account: String) -> Data? {

@@ -18,7 +18,6 @@ extension UIViewController {
             case false:
                 handler(false)
                 DispatchQueue.main.async {
-                    
                     self.showSettingsForChangingAccess(title: "Switching on Notifications", message: "Do you want to switch on Notifications?") { _ in
                     }
                 }

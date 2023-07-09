@@ -10,16 +10,24 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
+    var isSecureViewPresented: Bool = false//UserDefaults.standard.bool(forKey: "isPasswordCodeEnabled")
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
-
-        
         let window = UIWindow(windowScene: windowScene)
+
+//        if isSecureViewPresented {
+//            let vc = UserProfileSwitchPasswordViewController()
+//            window.rootViewController = vc
+//            isSecureViewPresented = false
+//        } else {
+//
+//        }
+        
         let mainVC = TabBarViewController()
         window.rootViewController = mainVC
-        window.makeKeyAndVisible()
         
+        window.makeKeyAndVisible()
         self.window = window
         
     }

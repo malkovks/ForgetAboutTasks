@@ -199,6 +199,9 @@
 "Main setups" = "Основные настройки";
 "Secondary setups" = "Допольнительные настройки";
 "Info" = "Информация";
+"Changing App Language" = "Изменение языка приложения";
+"Would you like to change the language of your application?" = "Вы хотели бы изменить язык вашего приложения?";
+"Code-password and Face ID" = "Код-пароль и Face ID";
 //User Profile App Icon View Controller
 "Choose App Icon" = "Выберите иконку";
 "Cant get access to change Image" = "Не удается изменить изображение";

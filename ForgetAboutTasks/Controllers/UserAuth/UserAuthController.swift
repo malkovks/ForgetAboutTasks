@@ -102,8 +102,8 @@ class UserAuthViewController: UIViewController {
                     self.alertError(text: "Error getting data from account", mainTitle: "Attention")
                     return
                 }
-                CheckAuth.shared.setupForAuth()
-                CheckAuth.shared.saveData(result: result)
+                UserDefaultsManager.shared.setupForAuth()
+                UserDefaultsManager.shared.saveData(result: result, user: user)
                 self.dismiss(animated: true)
                 self.spinner.stopAnimating()
                 self.view.alpha = 1.0

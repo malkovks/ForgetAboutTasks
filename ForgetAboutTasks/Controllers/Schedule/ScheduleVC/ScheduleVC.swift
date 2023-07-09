@@ -72,16 +72,16 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
     override func viewDidLoad() {
         super.viewDidLoad()
         setupAuthentification()
-        print(Bundle.main.bundlePath)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+//        checkPasswordEntryEnable()
         calendar.reloadData()
-        setupAnimation()
     }
     
    //MARK: - target methods
+    
     @objc private func didTapSearch(){
             navigationItem.searchController = searchController
             searchController.isActive = true
@@ -116,7 +116,7 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
     }
     
     private func setupAuthentification(){
-        if CheckAuth.shared.isNotAuth() {
+        if UserDefaultsManager.shared.isNotAuth() {
             let vc = UserAuthViewController()
             let navVC = UINavigationController(rootViewController: vc)
             navVC.modalPresentationStyle = .fullScreen
@@ -130,6 +130,18 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
         }
     }
     
+    private func checkPasswordEntryEnable(){
+        let success = UserDefaults.standard.bool(forKey: "isPasswordCodeEnabled")
+        if success {
+            let vc = UserProfileSwitchPasswordViewController(isCheckPassword: true)
+            let nav = UINavigationController(rootViewController: vc)
+            nav.modalPresentationStyle = .fullScreen
+            present(nav, animated: true)
+        } else {
+            alertError()
+        }
+    }
+    
     private func setupView(){
         isSavedCompletely(boolean: false)
         calendar.reloadData()
@@ -137,7 +149,7 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
         setupConstraints()
         setupSearchController()
         loadingData()
-        CheckAuth.shared.checkDarkModeUserDefaults()
+        UserDefaultsManager.shared.checkDarkModeUserDefaults()
         loadingDataByDate(date: Date(), at: .current, is: true)
         view.backgroundColor = UIColor(named: "backgroundColor")
     }
@@ -190,14 +202,18 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
         let filteredValue = localRealm.objects(ScheduleModel.self).filter(currentDatePredicate)
         userDefaults?.setValue(filteredValue.count, forKey: "group.integer")
         WidgetCenter.shared.reloadAllTimelines()
+        openCreateTaskController(firstLoad: firstLoad, monthPosition: .current, weekday: weekday, dateStart: dateStart, dateEnd: dateEnd)
         
+    }
+    
+    private func openCreateTaskController(firstLoad: Bool,monthPosition: FSCalendarMonthPosition,weekday: Int,dateStart: Date,dateEnd: Date){
         if firstLoad == false {
             if monthPosition == .current {
                 let predicate = NSPredicate(format: "scheduleWeekday = \(weekday)")
                 let predicateUnrepeat = NSPredicate(format: "scheduleStartDate BETWEEN %@", [dateStart,dateEnd])
                 let compound = NSCompoundPredicate(type: .or, subpredicates: [predicate,predicateUnrepeat])
                 let value = localRealm.objects(ScheduleModel.self).filter(compound)
-                let vc = CreateTaskForDayController(model: value, choosenDate: date)
+                let vc = CreateTaskForDayController(model: value, choosenDate: dateStart)
                 let nav = UINavigationController(rootViewController: vc)
                 nav.modalPresentationStyle = .fullScreen
                 nav.isNavigationBarHidden = false
