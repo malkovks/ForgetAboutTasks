@@ -106,20 +106,25 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
         return button
     }()
     
+    private let faceIdButton: UIButton = {
+        let button = UIButton()
+        let config = UIImage.SymbolConfiguration(pointSize: 50, weight: .thin)
+        button.isHidden = true
+        button.setImage(UIImage(systemName: "faceid")?.withRenderingMode(.alwaysTemplate).withConfiguration(config), for: .normal)
+        button.tintColor = UIColor(named: "textColor")
+        button.backgroundColor = .clear
+        button.imageView?.contentMode = .scaleAspectFit
+        button.imageView?.clipsToBounds = true
+        return button
+    }()
     
     override func viewDidLoad(){
         super.viewDidLoad()
         
         if isCheckPassword {
-            confirmPasswordButton.isHidden = true
-            addConstrains()
-            setupTextField()
-            confirmPasswordButton.isHidden = true
-            view.backgroundColor = UIColor(named: "navigationControllerColor")
-            safetyEnterApplicationWithFaceID()
+            setupEntryView()
         } else {
-            firstTextField.becomeFirstResponder()
-            confirmPasswordButton.isHidden = false
+            setupRegistrationView()
             setupView()
         }
         
@@ -134,17 +139,21 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
         if text.utf16.count == 1 {
             switch textField {
             case firstTextField:
+                passwordDigits += firstTextField.text!
                 secondTextField.becomeFirstResponder()
                 break
             case secondTextField:
+                passwordDigits += secondTextField.text!
                 thirdTextField.becomeFirstResponder()
                 break
             case thirdTextField:
+                passwordDigits += thirdTextField.text!
                 forthTextField.becomeFirstResponder()
                 break
             case forthTextField:
+                passwordDigits += forthTextField.text!
                 forthTextField.resignFirstResponder()
-//                safetyEnterApplication(password: passwordDigits)
+                confirmPasswordButton.isEnabled = true
                 break
             default:
                 break
@@ -153,14 +162,20 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
     }
     
     @objc private func didTapConfirmPassword(sender: UIButton) {
+        let emailUser = UserDefaults.standard.string(forKey: "userMail") ?? "No email"
+        let passwordData = passwordDigits.data(using: .utf8) ?? Data()
+        let data = KeychainManager.get(service: "Local Password", account: emailUser)
         if passwordDigits.count == 4 {
             confirmPasswordButton.setImage(UIImage(systemName: "lock.fill"), for: .normal)
             confirmPasswordButton.setTitle("Confirmed", for: .normal)
             authenticateWithFaceID { [weak self] success in
                 UserDefaults.standard.setValue(success, forKey: "accessToFaceID")
                 UserDefaults.standard.setValue(true, forKey: "isPasswordCodeEnabled")
-                let emailUser = UserDefaults.standard.string(forKey: "userMail") ?? "No email"
-                try! KeychainManager.save(service: "Local Password", account: emailUser, password: self?.passwordDigits.data(using: .utf8) ?? Data())
+                if data != nil {
+                    KeychainManager.delete()
+                }
+                
+                try! KeychainManager.save(service: "Local Password", account: emailUser, password: passwordData)
                 self?.delegate?.isSavedCompletely(boolean: true)
                 self?.navigationController?.popToRootViewController(animated: true)
                 
@@ -168,47 +183,34 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
         } else {
             alertError(text: "Fill all 4 text fields", mainTitle: "Error!".localized())
         }
-        
     }
+    @objc private func didTapActiveFaceID(){
+        safetyEnterApplicationWithFaceID()
+    }
+    
     //MARK: - Setups for view
-    
-    private func safetyEnterApplicationWithFaceID(){
-        let context = LAContext()
-        context.localizedCancelTitle = "Enter Password"
-        var error: NSError?
-        
-        guard context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) else {
-            return
-        }
-        context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: "Log in to your Account") { [weak self] success, error in
-            DispatchQueue.main.async {
-                if success {
-                    self?.dismiss(animated: true)
-                } else {
-                    self?.firstTextField.becomeFirstResponder()
-                }
-            }
-            
-        }
-    }
-    
-    private func safetyEnterApplication(password: String){
-        let emailUser = UserDefaults.standard.string(forKey: "userMail") ?? "No email"
-        guard let data = KeychainManager.get(service: "Local Password", account: emailUser) else { return }
-        let passwordKeyChain = String(decoding: data, as: UTF8.self)
-        if passwordKeyChain == password {
-            self.dismiss(animated: true)
-        } else {
-            alertError(text: "Incorrect password.\nTry again later", mainTitle: "Error!".localized())
-        }
-    }
-    
     private func setupView(){
         tabBarController?.tabBar.isHidden = true
         setupTextField()
         addConstrains()
         view.backgroundColor = UIColor(named: "navigationControllerColor")
         confirmPasswordButton.addTarget(self, action: #selector(didTapConfirmPassword(sender: )), for: .touchUpInside)
+    }
+    
+    private func setupRegistrationView(){
+        firstTextField.becomeFirstResponder()
+        confirmPasswordButton.isHidden = false
+    }
+    
+    private func setupEntryView(){
+        confirmPasswordButton.isHidden = true
+        faceIdButton.isHidden = false
+        faceIdButton.addTarget(self, action: #selector(didTapActiveFaceID), for: .touchUpInside)
+        addConstrains()
+        setupTextField()
+        confirmPasswordButton.isHidden = true
+        view.backgroundColor = UIColor(named: "navigationControllerColor")
+        safetyEnterApplicationWithFaceID()
     }
     
     private func setupTextField(){
@@ -223,7 +225,6 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
         forthTextField.addTarget(self, action: #selector(textDidChangeValue(textField: )), for: UIControl.Event.editingChanged)
         
     }
-    //сделать функции для авторизации перед загрузкой вью
     
     private func authenticateWithFaceID(handler: @escaping (Bool) -> ()) {
         let context = LAContext()
@@ -245,15 +246,82 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
             handler(false)
         }
     }
+    //MARK: - Actions with FaceID and Password
+    
+    private func safetyEnterApplicationWithFaceID(){
+        let context = LAContext()
+        context.localizedCancelTitle = "Enter Password"
+        var error: NSError?
+        
+        guard context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) else {
+            return
+        }
+        context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: "Log in to your Account") { [weak self] success, error in
+            if success {
+                UserDefaults.standard.setValue(true, forKey: "isUserConfirmPassword")
+                DispatchQueue.main.asyncAfter(deadline: .now()+1) {
+                    self?.dismiss(animated: true)
+                }
+            } else {
+                DispatchQueue.main.async {
+                    self?.firstTextField.becomeFirstResponder()
+                }
+                
+            }
+            
+        }
+    }
+    
+    private func safetyEnterApplication(password: String){
+        let emailUser = UserDefaults.standard.string(forKey: "userMail") ?? "No email"
+        guard let data = KeychainManager.get(service: "Local Password", account: emailUser) else { return }
+        let passwordKeyChain = String(decoding: data, as: UTF8.self)
+        if passwordKeyChain == password {
+            self.dismiss(animated: true)
+            UserDefaults.standard.setValue(true, forKey: "isUserConfirmPassword")
+        } else {
+            alertError(text: "Incorrect password.\nTry again later", mainTitle: "Error!".localized())
+        }
+    }
+    
+    private func clearRequest(){
+        firstTextField.text = ""
+        secondTextField.text = ""
+        thirdTextField.text = ""
+        forthTextField.text = ""
+        passwordDigits = ""
+    }
+    
+    private func checkCorrectPassword(textField: UITextField){
+        let emailUser = UserDefaults.standard.string(forKey: "userMail") ?? "No email"
+        let value = KeychainManager.get(service: "Local Password", account: emailUser)
+        let textValue = String(decoding: value ?? Data(), as: UTF8.self)
+        if textField.tag == 4 && !UserDefaults.standard.bool(forKey: "isUserConfirmPassword"){
+            if textValue.contains(passwordDigits){
+                UserDefaults.standard.setValue(true, forKey: "isUserConfirmPassword")
+                showAlertForUser(text: "Success", duration: .now()+1, controllerView: view)
+                DispatchQueue.main.asyncAfter(deadline: .now()+1) {
+                    self.dismiss(animated: true)
+                }
+            } else {
+                alertError(text: "Incorrect password.Please try again!",mainTitle: "Error")
+                clearRequest()
+            }
+        }
+    }
+    
     //MARK: - UITextField Delegate
     func textFieldDidEndEditing(_ textField: UITextField) {
         if let digit = textField.text,
+           
            !digit.isEmpty {
             passwordDigits += digit
         }
-        
-        if textField.tag == 4 {
-            confirmPasswordButton.isEnabled = true
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
+        if isCheckPassword {
+            checkCorrectPassword(textField: textField)
         }
     }
     
@@ -294,6 +362,12 @@ extension UserProfileSwitchPasswordViewController {
             make.height.equalTo(50)
         }
         
+        view.addSubview(faceIdButton)
+        faceIdButton.snp.makeConstraints { make in
+            make.top.equalTo(stackView.snp.bottom).offset(50)
+            make.centerX.equalToSuperview()
+            make.width.height.equalTo(view.frame.size.width/4)
+        }
         
         
         

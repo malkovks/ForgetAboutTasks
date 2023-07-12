@@ -76,7 +76,7 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-//        checkPasswordEntryEnable()
+        checkPasswordEntryEnable()
         calendar.reloadData()
     }
     
@@ -132,13 +132,12 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
     
     private func checkPasswordEntryEnable(){
         let success = UserDefaults.standard.bool(forKey: "isPasswordCodeEnabled")
-        if success {
+        let isAuthorized = UserDefaults.standard.bool(forKey: "isUserConfirmPassword")
+        if success && !isAuthorized {
             let vc = UserProfileSwitchPasswordViewController(isCheckPassword: true)
             let nav = UINavigationController(rootViewController: vc)
             nav.modalPresentationStyle = .fullScreen
             present(nav, animated: true)
-        } else {
-            alertError()
         }
     }
     

@@ -53,7 +53,6 @@
 		0A9918D82A542470001004FA /* LanguageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9918D72A542470001004FA /* LanguageManager.swift */; };
 		0A9918F52A5651EF001004FA /* DataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9918F42A5651EF001004FA /* DataProvider.swift */; };
 		0A9918F72A57F524001004FA /* UserProfileSwitchPasswordVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9918F62A57F524001004FA /* UserProfileSwitchPasswordVC.swift */; };
-		0A9918FA2A5806CC001004FA /* CustomTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9918F92A5806CC001004FA /* CustomTextField.swift */; };
 		0A99A8FD29CD855100CC5A42 /* AlertTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A99A8FC29CD855100CC5A42 /* AlertTextField.swift */; };
 		0A99A8FF29CD8FE000CC5A42 /* AllTasksToDoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A99A8FE29CD8FE000CC5A42 /* AllTasksToDoVC.swift */; };
 		0A99A90729CD99CA00CC5A42 /* UserAuthController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A99A90629CD99CA00CC5A42 /* UserAuthController.swift */; };
@@ -171,7 +170,6 @@
 		0A9918D72A542470001004FA /* LanguageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageManager.swift; sourceTree = "<group>"; };
 		0A9918F42A5651EF001004FA /* DataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataProvider.swift; sourceTree = "<group>"; };
 		0A9918F62A57F524001004FA /* UserProfileSwitchPasswordVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileSwitchPasswordVC.swift; sourceTree = "<group>"; };
-		0A9918F92A5806CC001004FA /* CustomTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextField.swift; sourceTree = "<group>"; };
 		0A99A8FC29CD855100CC5A42 /* AlertTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertTextField.swift; sourceTree = "<group>"; };
 		0A99A8FE29CD8FE000CC5A42 /* AllTasksToDoVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllTasksToDoVC.swift; sourceTree = "<group>"; };
 		0A99A90629CD99CA00CC5A42 /* UserAuthController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAuthController.swift; sourceTree = "<group>"; };
@@ -409,14 +407,6 @@
 			path = Managers;
 			sourceTree = "<group>";
 		};
-		0A9918F82A5806A8001004FA /* CustomTextField */ = {
-			isa = PBXGroup;
-			children = (
-				0A9918F92A5806CC001004FA /* CustomTextField.swift */,
-			);
-			path = CustomTextField;
-			sourceTree = "<group>";
-		};
 		0A99A90029CD98C600CC5A42 /* Schedule */ = {
 			isa = PBXGroup;
 			children = (
@@ -452,7 +442,6 @@
 		0A99A90329CD98E600CC5A42 /* UserProfile */ = {
 			isa = PBXGroup;
 			children = (
-				0A9918F82A5806A8001004FA /* CustomTextField */,
 				0A8AC1A729B9DBD300EA052B /* UserProfileVC.swift */,
 				0A9918D32A52BCA0001004FA /* UserProfileAppIconVC.swift */,
 				0A9918F62A57F524001004FA /* UserProfileSwitchPasswordVC.swift */,
@@ -842,7 +831,6 @@
 				0AACE7A92A1F80D500531C84 /* ScheduleAllEventVC.swift in Sources */,
 				0AF2D6F82A189A390093A824 /* EditEventScheduleVC.swift in Sources */,
 				0A86ED1029B5D97F001C9BAF /* AppDelegate.swift in Sources */,
-				0A9918FA2A5806CC001004FA /* CustomTextField.swift in Sources */,
 				0A9E1C3A29CEEDCE000CC9A9 /* LoginController.swift in Sources */,
 				0A8AC1A429B9D4EB00EA052B /* CreateTaskForDayVC.swift in Sources */,
 				0A9918C42A50158A001004FA /* CalendarCenterAccess.swift in Sources */,

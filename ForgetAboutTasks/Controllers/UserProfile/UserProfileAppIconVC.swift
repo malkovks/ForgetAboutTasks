@@ -105,30 +105,45 @@ class UserProfileAppIconViewController: UIViewController {
 
 extension UserProfileAppIconViewController {
     private func setConstraints(){
-        view.addSubview(firstIconButton)
-        firstIconButton.snp.makeConstraints { make in
+
+        let stackView = UIStackView(arrangedSubviews: [firstIconButton,secondIconButton,thirdIconButton,forthIconButton])
+        stackView.alignment = .fill
+        stackView.distribution = .fillEqually
+        stackView.contentMode = .scaleAspectFit
+        stackView.axis = .horizontal
+        stackView.spacing = 10
+        
+        view.addSubview(stackView)
+        stackView.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(60)
-            make.leading.equalToSuperview().offset(15)
-            make.height.width.equalTo(80)
+            make.leading.trailing.equalToSuperview().inset(10)
+            make.height.equalTo(80)
         }
-        view.addSubview(secondIconButton)
-        secondIconButton.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(60)
-            make.leading.equalTo(firstIconButton.snp.trailing).offset(15)
-            make.height.width.equalTo(80)
-        }
-        view.addSubview(thirdIconButton)
-        thirdIconButton.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(60)
-            make.leading.equalTo(secondIconButton.snp.trailing).offset(15)
-            make.height.width.equalTo(80)
-        }
-        view.addSubview(forthIconButton)
-        forthIconButton.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(60)
-            make.leading.equalTo(thirdIconButton.snp.trailing).offset(15)
-            make.trailing.equalToSuperview().inset(15)
-            make.height.width.equalTo(80)
-        }
+        
+//        view.addSubview(firstIconButton)
+//        firstIconButton.snp.makeConstraints { make in
+//            make.top.equalToSuperview().offset(60)
+//            make.leading.equalToSuperview().offset(15)
+//            make.height.width.equalTo(80)
+//        }
+//        view.addSubview(secondIconButton)
+//        secondIconButton.snp.makeConstraints { make in
+//            make.top.equalToSuperview().offset(60)
+//            make.leading.equalTo(firstIconButton.snp.trailing).offset(15)
+//            make.height.width.equalTo(80)
+//        }
+//        view.addSubview(thirdIconButton)
+//        thirdIconButton.snp.makeConstraints { make in
+//            make.top.equalToSuperview().offset(60)
+//            make.leading.equalTo(secondIconButton.snp.trailing).offset(15)
+//            make.height.width.equalTo(80)
+//        }
+//        view.addSubview(forthIconButton)
+//        forthIconButton.snp.makeConstraints { make in
+//            make.top.equalToSuperview().offset(60)
+//            make.leading.equalTo(thirdIconButton.snp.trailing).offset(15)
+//            make.trailing.equalToSuperview().inset(15)
+//            make.height.width.equalTo(80)
+//        }
     }
 }

@@ -56,7 +56,6 @@ class KeychainManager {
         
         var result: AnyObject?
         let status = SecItemCopyMatching(query as CFDictionary, &result)
-        print(status)
         return result as? Data
     }
 }

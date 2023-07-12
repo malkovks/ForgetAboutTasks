@@ -10,6 +10,7 @@ import FirebaseAuth
 import SnapKit
 import UserNotifications
 import EventKit
+import LocalAuthentication
 
 
 struct UserProfileData {
@@ -316,6 +317,14 @@ class UserProfileViewController: UIViewController {
     }
     
     private func setupTableView(){
+        self.cellArray[0].append(UserProfileData(title: "Face ID", cellImage: UIImage(systemName: "faceid")!, cellImageColor: .systemBlue))
+//        checkAuthForFaceID { allowed in
+//            if true {
+//                self.cellArray[0].append(UserProfileData(title: "Face ID", cellImage: UIImage(systemName: "faceid")!, cellImageColor: .systemBlue))
+//            } else {
+//                self.cellArray[0].remove(at: 4)
+//            }
+//        }
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "settingsIdentifier")
         tableView.delegate = self
         tableView.dataSource = self
@@ -408,7 +417,6 @@ class UserProfileViewController: UIViewController {
     private func openPasswordController(title: String = "Code-password",message: String = "This function allow you to switch on password if it neccesary. Any time you could change it",alertTitle: String = "Switch on code-password"){
         let alert = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
         alert.addAction(UIAlertAction(title: alertTitle, style: .default,handler: { [weak self] _ in
-            KeychainManager.delete()
             self?.passwordBoolean = UserDefaults.standard.bool(forKey: "isPasswordCodeEnabled")
             let vc = UserProfileSwitchPasswordViewController(isCheckPassword: false)
             vc.delegate = self
@@ -423,7 +431,22 @@ class UserProfileViewController: UIViewController {
         }
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         present(alert, animated: true)
+    }
+    
+    private func checkAuthForFaceID(handler: @escaping (Bool) -> Void){
+        let context = LAContext()
+        var error: NSError?
         
+        
+        if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics,error: &error) {
+            DispatchQueue.main.async {
+                handler(true)
+            }
+        } else {
+            DispatchQueue.main.async {
+                handler(false)
+            }
+        }
     }
     
 }
@@ -447,7 +470,7 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
-        case 0: return 4
+        case 0: return cellArray[0].count
         case 1: return 2
         case 2: return 3
         case 3: return 2
