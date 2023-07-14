@@ -82,20 +82,13 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
     }
     
     @objc private func didTapOpenContacts(){
-        contactStore.requestAccess(for: .contacts) { success, error in
-            switch success {
-            case true:
-                let vc = self.contactPicker
-                vc.delegate = self
-                DispatchQueue.main.async {
-                    let nav = UINavigationController(rootViewController: vc)
-                    self.present(nav, animated:  true)
-                }
-            case false:
-                self.alertError(text: "Give access to app in Settings if it will be neccessary".localized(), mainTitle: "Error!".localized())
+        requestAccessForInheritContacts { [weak self] success in
+            if let _ = success {
+                let vc = self?.contactPicker
+                let nav = UINavigationController(rootViewController: vc!)
+                self?.present(nav, animated: true)
             }
         }
-        
     }
     
     @objc private func didTapEditTable(){
@@ -125,6 +118,7 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
         loadingRealmData()
         contactPicker.delegate = self
         view.backgroundColor = UIColor(named: "backgroundColor")
+        contactPicker.delegate = self
     }
     
     private func setupTableView(){
@@ -220,20 +214,19 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
         contact.imageData = model.contactImage
         contact.phoneNumbers = phoneNumber
         contact.emailAddresses = email
-
+        
+        let documentaryPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first
+        let fileURL = URL.init(fileURLWithPath: (documentaryPath?.appending("/My Contacts.vcf"))!)
+        let data: NSData?
         do {
-//            let card = CNContact
-            let contactCard = try CNContactVCardSerialization.data(with: [contact])
-            let activity = UIActivityViewController(activityItems: [contactCard], applicationActivities: nil)
+            try data = CNContactVCardSerialization.data(with: [contact]) as NSData
+            let activity = UIActivityViewController(activityItems: [data as Any], applicationActivities: nil)
             present(activity, animated: true)
         } catch {
-            print(error.localizedDescription)
+            alertError(text: "Cant share contact", mainTitle: "warning!")
         }
-        
-        
-        
-        
     }
+    
     
     private func openChoosenContact(indexPath: IndexPath){
         let model = viewIsFiltered ? filteredContactData[indexPath.row] : contactData[indexPath.row]

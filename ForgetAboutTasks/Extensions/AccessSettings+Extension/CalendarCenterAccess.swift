@@ -10,22 +10,25 @@ import EventKit
 
 extension UIViewController {
     func request(forAllowing event: EKEventStore,handler: @escaping (Bool)-> ()) {
-        switch EKEventStore.authorizationStatus(for: .event){
-            
-        case .notDetermined:
-            event.requestAccess(to: .event) { success, error in
-                handler(success)
+        DispatchQueue.main.async {
+            switch EKEventStore.authorizationStatus(for: .event){
+
+            case .notDetermined:
+                event.requestAccess(to: .event) { success, error in
+                    handler(success)
+                }
+            case .restricted:
+                handler(false)
+            case .denied:
+                event.requestAccess(to: .event) { success, error in
+                    handler(success)
+                }
+            case .authorized:
+                handler(true)
+            @unknown default:
+                break
             }
-        case .restricted:
-            handler(false)
-        case .denied:
-            showSettingsForChangingAccess(title: "Switching on Calendar", message: "Do you want to switch on Calendar?") { success in
-                handler(success)
-            }
-        case .authorized:
-            handler(true)
-        @unknown default:
-            break
         }
+        
     }
 }

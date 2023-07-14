@@ -108,7 +108,6 @@ class CreateEventScheduleViewController: UIViewController {
                         sender.isOn = access
                     }
                 }
-                
             }
         } else {
             reminderStatus = false
@@ -121,12 +120,10 @@ class CreateEventScheduleViewController: UIViewController {
             if scheduleModel.scheduleStartDate == nil && scheduleModel.scheduleEndDate == nil {
                 alertError(text: "Enter date for adding event to Calendar", mainTitle: "Error!")
             } else {
-                DispatchQueue.main.async {
-                    self.request(forAllowing: self.eventStore) { access in
-                        self.addingEventStatus = access
-                        self.scheduleModel.scheduleActiveCalendar = access
-                        sender.isOn = access
-                    }
+                self.request(forAllowing: self.eventStore) { access in
+                    self.addingEventStatus = access
+                    self.scheduleModel.scheduleActiveCalendar = access
+                    sender.isOn = access
                 }
             }
         } else {
@@ -199,7 +196,7 @@ class CreateEventScheduleViewController: UIViewController {
         let date = DateFormatter.localizedString(from: dateS, dateStyle: .medium, timeStyle: .none)
         content.title = "Planned reminder".localized()
         content.body = "\(date)"
-        content.subtitle = "\(model.scheduleName)"
+        content.subtitle = "\(String(describing:model.scheduleName))"
         content.sound = .defaultRingtone
         let dateFormat = DateFormatter.localizedString(from: scheduleModel.scheduleStartDate ?? Date(), dateStyle: .medium, timeStyle:.short)
         content.userInfo = ["userNotification": dateFormat]
@@ -240,35 +237,6 @@ class CreateEventScheduleViewController: UIViewController {
             }
         } else {
             alertError(text: "Error saving event to calendar")
-        }
-    }
-    //MARK: - Setup request for user to get allowing
-    
-    private func requestForUserLibrary(){
-        library.requestAuthorization { success in
-            switch success {
-                
-            case .notDetermined:
-                self.showAlertForUser(text: "You denied access to library. To switch on use system settings", duration: DispatchTime.now()+2, controllerView: self.view)
-            case .restricted:
-                break
-            case .denied:
-                self.showAlertForUser(text: "You denied access to library. To switch on use system settings", duration: DispatchTime.now()+2, controllerView: self.view)
-            case .authorized:
-                print("success")
-            case .limited:
-                print("limited")
-            @unknown default:
-                break
-            }
-        }
-    }
-    
-    private func requestUserForCamera(){
-        camera.requestAccess(for: .video) { success in
-            if !success {
-                self.showAlertForUser(text: "You determined access to camera. To switch on use system settings", duration: DispatchTime.now()+2, controllerView: self.view)
-            }
         }
     }
     
@@ -487,7 +455,7 @@ extension CreateEventScheduleViewController: UITableViewDelegate, UITableViewDat
             openColorPicker()
         case [4,0]:
             tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
-            requestForUserLibrary()
+            requestForUserLibrary { status in }
             requestUserForCamera()
             chooseTypeOfImagePicker()
         default:

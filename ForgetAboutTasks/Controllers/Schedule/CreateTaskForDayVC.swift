@@ -55,7 +55,8 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
         calendar.locale = .current
         
         calendar.appearance.titleFont = UIFont.systemFont(ofSize: 18)
-        
+        calendar.appearance.todayColor = .systemRed
+        calendar.appearance.todaySelectionColor = .systemBlue
         calendar.appearance.headerTitleFont = .systemFont(ofSize: 20)
         calendar.appearance.borderDefaultColor = .clear
         calendar.appearance.titleWeekendColor = #colorLiteral(red: 0.3826281726, green: 0.4247716069, blue: 0.4593068957, alpha: 0.916589598)
@@ -186,6 +187,7 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
         isSavedCompletely(boolean: false)
         view.backgroundColor = UIColor(named: "backgroundColor")
         calendar.today =  choosenDate
+        calendar.currentPage = choosenDate
         segmentalController.addTarget(self, action: #selector(didTapSegmentChanged(segment:)), for: .valueChanged)
         calendar.reloadData()
         setupGestureForDismiss()

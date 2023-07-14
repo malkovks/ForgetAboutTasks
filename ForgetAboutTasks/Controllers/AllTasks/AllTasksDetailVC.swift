@@ -93,6 +93,7 @@ class AllTasksDetailViewController: UIViewController {
     //MARK: - Setup methods
     private func setupView() {
         title = "Details".localized()
+        setupMenu()
         setupNavigationController()
         setupDelegate()
         setupColorPicker()

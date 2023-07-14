@@ -43,7 +43,7 @@
 		0A8DD8DB29BC8BEB00B2DDAB /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8DD8DA29BC8BEB00B2DDAB /* Formatters.swift */; };
 		0A9918B22A41B655001004FA /* LockscreenWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA1E9022A406A480052B849 /* LockscreenWidget.swift */; };
 		0A9918B62A498C5A001004FA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0A9918B82A498C5A001004FA /* Localizable.strings */; };
-		0A9918C22A4EC78B001004FA /* NotificationCenterAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9918C12A4EC78B001004FA /* NotificationCenterAccess.swift */; };
+		0A9918C22A4EC78B001004FA /* UserNotificationAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9918C12A4EC78B001004FA /* UserNotificationAccess.swift */; };
 		0A9918C42A50158A001004FA /* CalendarCenterAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9918C32A50158A001004FA /* CalendarCenterAccess.swift */; };
 		0A9918CE2A52AA2B001004FA /* AppIcon3.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A9918CB2A52AA2A001004FA /* AppIcon3.png */; };
 		0A9918CF2A52AA2B001004FA /* AppIcon2.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A9918CC2A52AA2B001004FA /* AppIcon2.png */; };
@@ -60,6 +60,9 @@
 		0A9E1C3829CEEC4B000CC9A9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0A9E1C3729CEEC4B000CC9A9 /* GoogleService-Info.plist */; };
 		0A9E1C3A29CEEDCE000CC9A9 /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9E1C3929CEEDCE000CC9A9 /* LoginController.swift */; };
 		0A9E1C3C29D0778F000CC9A9 /* RegisterAccountController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9E1C3B29D0778F000CC9A9 /* RegisterAccountController.swift */; };
+		0AA0E9382A60C68B00911C0D /* FaceIDAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA0E9372A60C68B00911C0D /* FaceIDAccess.swift */; };
+		0AA0E93A2A60C69B00911C0D /* MediaAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA0E9392A60C69B00911C0D /* MediaAccess.swift */; };
+		0AA0E93C2A60D24B00911C0D /* ContactsAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA0E93B2A60D24B00911C0D /* ContactsAccess.swift */; };
 		0AA1E8FA2A406A480052B849 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AA1E8F92A406A470052B849 /* WidgetKit.framework */; };
 		0AA1E8FC2A406A480052B849 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AA1E8FB2A406A480052B849 /* SwiftUI.framework */; };
 		0AA1E8FF2A406A480052B849 /* LockscreenWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA1E8FE2A406A480052B849 /* LockscreenWidgetBundle.swift */; };
@@ -160,7 +163,7 @@
 		0A8DD8DA29BC8BEB00B2DDAB /* Formatters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Formatters.swift; sourceTree = "<group>"; };
 		0A9918B72A498C5A001004FA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		0A9918B92A498C8B001004FA /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
-		0A9918C12A4EC78B001004FA /* NotificationCenterAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCenterAccess.swift; sourceTree = "<group>"; };
+		0A9918C12A4EC78B001004FA /* UserNotificationAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserNotificationAccess.swift; sourceTree = "<group>"; };
 		0A9918C32A50158A001004FA /* CalendarCenterAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarCenterAccess.swift; sourceTree = "<group>"; };
 		0A9918CB2A52AA2A001004FA /* AppIcon3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = AppIcon3.png; sourceTree = "<group>"; };
 		0A9918CC2A52AA2B001004FA /* AppIcon2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = AppIcon2.png; sourceTree = "<group>"; };
@@ -178,6 +181,9 @@
 		0A9E1C3929CEEDCE000CC9A9 /* LoginController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
 		0A9E1C3B29D0778F000CC9A9 /* RegisterAccountController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterAccountController.swift; sourceTree = "<group>"; };
 		0A9E1C4329D46851000CC9A9 /* ForgetAboutTasks.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ForgetAboutTasks.entitlements; sourceTree = "<group>"; };
+		0AA0E9372A60C68B00911C0D /* FaceIDAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceIDAccess.swift; sourceTree = "<group>"; };
+		0AA0E9392A60C69B00911C0D /* MediaAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaAccess.swift; sourceTree = "<group>"; };
+		0AA0E93B2A60D24B00911C0D /* ContactsAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsAccess.swift; sourceTree = "<group>"; };
 		0AA1E8F72A406A470052B849 /* LockscreenWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = LockscreenWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		0AA1E8F92A406A470052B849 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		0AA1E8FB2A406A480052B849 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
@@ -379,8 +385,11 @@
 		0A9918C02A4EC75D001004FA /* AccessSettings+Extension */ = {
 			isa = PBXGroup;
 			children = (
-				0A9918C12A4EC78B001004FA /* NotificationCenterAccess.swift */,
+				0A9918C12A4EC78B001004FA /* UserNotificationAccess.swift */,
 				0A9918C32A50158A001004FA /* CalendarCenterAccess.swift */,
+				0AA0E9372A60C68B00911C0D /* FaceIDAccess.swift */,
+				0AA0E9392A60C69B00911C0D /* MediaAccess.swift */,
+				0AA0E93B2A60D24B00911C0D /* ContactsAccess.swift */,
 			);
 			path = "AccessSettings+Extension";
 			sourceTree = "<group>";
@@ -795,6 +804,7 @@
 				0AA1E9392A4128CA0052B849 /* LockscreenWidget.intentdefinition in Sources */,
 				0A525DAF29FC3C3B009D116F /* AlertNewName.swift in Sources */,
 				0ACE797A29DED2D400599C19 /* NewContactCustomView.swift in Sources */,
+				0AA0E93A2A60C69B00911C0D /* MediaAccess.swift in Sources */,
 				0A9918D42A52BCA0001004FA /* UserProfileAppIconVC.swift in Sources */,
 				0AA8EC5D29C76968004DC6DD /* AlertDate.swift in Sources */,
 				0A8AC19F29B9D00A00EA052B /* TabBarViewController.swift in Sources */,
@@ -808,6 +818,7 @@
 				0A8AC1A629B9D4FA00EA052B /* ContactsVC.swift in Sources */,
 				0AA604E929E16C05007ACE58 /* ColorExtensions.swift in Sources */,
 				0AA604DF29E04541007ACE58 /* AlertImagePicker.swift in Sources */,
+				0AA0E93C2A60D24B00911C0D /* ContactsAccess.swift in Sources */,
 				0ADAB9FC2A310EEA00A5C2B2 /* AlertPhoneNumber.swift in Sources */,
 				0AA74A2429E715ED00F01532 /* DateFormatters.swift in Sources */,
 				0A0CE6F729C461F600A14648 /* CreateEventScheduleVC.swift in Sources */,
@@ -818,6 +829,7 @@
 				0AA74A2129E6EAB200F01532 /* ColorConverters.swift in Sources */,
 				0A8D250D2A2C108D00022622 /* ScheduleTableViewCell.swift in Sources */,
 				0A99A8FF29CD8FE000CC5A42 /* AllTasksToDoVC.swift in Sources */,
+				0AA0E9382A60C68B00911C0D /* FaceIDAccess.swift in Sources */,
 				0A8AC1A129B9D46D00EA052B /* ScheduleVC.swift in Sources */,
 				0AF2D6EF2A1141360093A824 /* ScheduleSearchResultVC.swift in Sources */,
 				0A86ED1A29B5D97F001C9BAF /* ForgetAboutTasks.xcdatamodeld in Sources */,
@@ -841,7 +853,7 @@
 				0AB0A96F2A1C61D30084AE07 /* EditTaskTableVC.swift in Sources */,
 				0AA604DC29E03CB1007ACE58 /* AlertContacts.swift in Sources */,
 				0A8D250A2A29CED300022622 /* CheckSuccessSaveProtocol.swift in Sources */,
-				0A9918C22A4EC78B001004FA /* NotificationCenterAccess.swift in Sources */,
+				0A9918C22A4EC78B001004FA /* UserNotificationAccess.swift in Sources */,
 				0AA74A2829EC524200F01532 /* AllTaskModel.swift in Sources */,
 				0A7FFFB829EFD9E100CAC9DA /* ContactModel.swift in Sources */,
 				0AEAA9F32A264BBF00BE85A4 /* ResetPasswordController.swift in Sources */,

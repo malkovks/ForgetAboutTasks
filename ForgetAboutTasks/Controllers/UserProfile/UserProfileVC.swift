@@ -11,6 +11,8 @@ import SnapKit
 import UserNotifications
 import EventKit
 import LocalAuthentication
+import Contacts
+import Photos
 
 
 struct UserProfileData {
@@ -20,18 +22,26 @@ struct UserProfileData {
 }
 
 class UserProfileViewController: UIViewController {
-    
+
     var cellArray = [[
                         UserProfileData(title: "Dark Mode".localized(),
                                         cellImage: UIImage(systemName: "moon.fill")!,
                                         cellImageColor: .purple),
-                        
                         UserProfileData(title: "Access to Notifications".localized(),
                                         cellImage: UIImage(systemName: "bell.square.fill")!,
                                         cellImageColor: .systemRed),
                         UserProfileData(title: "Access to Calendar's Event".localized(),
                                         cellImage: UIImage(systemName: "calendar.badge.clock")!,
                                         cellImageColor: .systemRed),
+                        UserProfileData(title: "Access to Contacts",
+                                        cellImage: UIImage(systemName: "character.book.closed.fill")!,
+                                        cellImageColor: .lightGray ),
+                        UserProfileData(title: "Access to Photo and Camera",
+                                        cellImage: UIImage(systemName: "camera.circle")!,
+                                        cellImageColor: .lightGray ),
+                        UserProfileData(title: "Access to Face ID",
+                                        cellImage: UIImage(systemName: "faceid")!,
+                                        cellImageColor: .systemBlue),
                         UserProfileData(title: "Code-password and Face ID".localized(),
                                         cellImage: UIImage(systemName: "lock.fill")!,
                                         cellImageColor: .systemBlue)
@@ -239,42 +249,40 @@ class UserProfileViewController: UIViewController {
     }
     
     @objc private func didTapChangeAccessNotifications(sender: UISwitch){
-        
-        if !sender.isOn {
-            DispatchQueue.main.async {
-                self.showSettingsForChangingAccess(title: "Switching off Notifications", message: "Do you want to switch off notifications?") { success in
+        DispatchQueue.main.async { [weak self] in
+            if !sender.isOn {
+                self?.showSettingsForChangingAccess(title: "Switching off access Notifications", message: "Do you want to switch off notifications?") { success in
                     if !success {
                         sender.isOn = true
                     } else {
                         sender.isOn = false
                     }
                 }
-            }
-        } else {
-            notificationCenter.requestAuthorization(options: [.alert,.badge,.sound]) { success, error in
-                if success {
-                    DispatchQueue.main.async {
-                        self.showAlertForUser(text: "Notifications turn on completely", duration: DispatchTime.now() + 2, controllerView: self.view)
-                        sender.isOn = success
-                    }
-                } else {
-                    DispatchQueue.main.async {
-                        self.showSettingsForChangingAccess(title: "Switching on Notifications", message: "Do you want to switch on notifications?") { success in
+            } else {
+                self?.notificationCenter.requestAuthorization(options: [.alert,.badge,.sound]) { success, error in
+                    if success {
+                        DispatchQueue.main.async {
+                            self?.showAlertForUser(text: "Notifications turn on completely", duration: DispatchTime.now() + 2, controllerView: (self?.view)!)
+                            sender.isOn = success
+                        }
+                    } else {
+                        self?.showSettingsForChangingAccess(title: "Switching on Notifications", message: "Do you want to switch on notifications?") { success in
                             if !success {
                                 sender.isOn = false
                             } else {
                                 sender.isOn = true
                             }
                         }
-                    } 
+                    }
                 }
             }
         }
+        
     }
     
     @objc private func didTapChangeAccessCalendar(sender: UISwitch){
         if !sender.isOn {
-            showSettingsForChangingAccess(title: "Switching off Calendar", message: "Do you want to switch off access to Calendar?") { success in
+            showSettingsForChangingAccess(title: "Switching off access Calendar", message: "Do you want to switch off access to Calendar?") { success in
                 if !success {
                     sender.isOn = true
                 }
@@ -286,11 +294,54 @@ class UserProfileViewController: UIViewController {
         }
     }
     
+    @objc private func didTapChangeAccessToFaceID(sender: UISwitch){
+        DispatchQueue.main.async { [weak self] in
+            if !sender.isOn {
+                self?.showSettingsForChangingAccess(title: "Switching Off Face ID", message: "Do you want to switch off access to Face ID. You could always change access if it will be necessary ") { success in
+                    if !success {
+                        sender.isOn = true
+                    }
+                }
+            } else {
+                self?.checkAuthForFaceID { success in
+                    sender.isOn = success
+                }
+            }
+        }
+    }
+    
+    @objc private func didTapChangeAccessToContacts(sender: UISwitch){
+        DispatchQueue.main.async { [weak self] in
+            if !sender.isOn {
+                self?.showSettingsForChangingAccess(title: "Switching off access to Contacts", message: "Do you want to switch off access to Contacts? You could always change access if it will be necessary") { success in
+                    if !success {
+                        sender.isOn = true
+                    }
+                }
+            } else {
+                self?.checkAuthForContacts { success in
+                    sender.isOn = success 
+                }
+            }
+        }
+    }
+    
+    @objc private func didTapChangeAccessToMedia(sender: UISwitch){
+        DispatchQueue.main.async { [weak self] in
+            if !sender.isOn {
+                self?.showSettingsForChangingAccess(title: "Switching off access to Media", message: "Do you want to switch off access to Media? You could always change access if it will be necessary") { success in
+                    if !success {
+                        sender.isOn = true
+                    }
+                }
+            } else {
+                
+            }
+        }
+    }
     //MARK: - Setup methods
     
     private func setupView(){
-//        setupIndicatorView()
- //        setupScrollView()
         
         setupNavigationController()
         configureConstraints()
@@ -306,25 +357,7 @@ class UserProfileViewController: UIViewController {
         view.backgroundColor = UIColor(named: "backgroundColor")
     }
     
-    private func setupScrollView(){
-        scrollView.contentSize = CGSize(width: view.frame.size.width, height: view.frame.size.height)
-    }
-    
-    private func setupIndicatorView(){
-        activityIndicator.center = view.center
-        view.addSubview(activityIndicator)
-        activityIndicator.startAnimating()
-    }
-    
     private func setupTableView(){
-        self.cellArray[0].append(UserProfileData(title: "Face ID", cellImage: UIImage(systemName: "faceid")!, cellImageColor: .systemBlue))
-//        checkAuthForFaceID { allowed in
-//            if true {
-//                self.cellArray[0].append(UserProfileData(title: "Face ID", cellImage: UIImage(systemName: "faceid")!, cellImageColor: .systemBlue))
-//            } else {
-//                self.cellArray[0].remove(at: 4)
-//            }
-//        }
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "settingsIdentifier")
         tableView.delegate = self
         tableView.dataSource = self
@@ -433,21 +466,6 @@ class UserProfileViewController: UIViewController {
         present(alert, animated: true)
     }
     
-    private func checkAuthForFaceID(handler: @escaping (Bool) -> Void){
-        let context = LAContext()
-        var error: NSError?
-        
-        
-        if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics,error: &error) {
-            DispatchQueue.main.async {
-                handler(true)
-            }
-        } else {
-            DispatchQueue.main.async {
-                handler(false)
-            }
-        }
-    }
     
 }
 //MARK: - Check Success Delegate
@@ -470,10 +488,10 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
-        case 0: return cellArray[0].count
-        case 1: return 2
-        case 2: return 3
-        case 3: return 2
+        case 0: return cellArray[section].count
+        case 1: return cellArray[section].count
+        case 2: return cellArray[section].count
+        case 3: return cellArray[section].count
         default: return 0
         }
     }
@@ -496,6 +514,7 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "settingsIdentifier")
         let data = cellArray[indexPath.section][indexPath.row]
         cell.backgroundColor = UIColor(named: "cellColor")
+        cell.selectionStyle = .none
         let switchButton = UISwitch()
         switchButton.isOn = false
         switchButton.onTintColor = #colorLiteral(red: 0.3920767307, green: 0.5687371492, blue: 0.998278439, alpha: 1)
@@ -525,9 +544,38 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
                     switchButton.isOn = access
                 }
             }
+        } else if indexPath == [0,3] {
+            switchButton.isHidden = false
+            cell.accessoryType = .none
+            switchButton.addTarget(self, action: #selector(didTapChangeAccessToContacts), for: .touchUpInside)
+            checkAuthForContacts { success in
+                DispatchQueue.main.async {
+                    switchButton.isOn = success
+                }
+            }
+        } else if indexPath == [0,4] {
+            switchButton.isHidden = false
+            cell.accessoryType = .none
+            switchButton.addTarget(self, action: #selector(didTapChangeAccessToMedia), for: .touchUpInside)
+            checkAccessForMedia { success in
+                DispatchQueue.main.async {
+                    switchButton.isOn = success
+                }
+            }
+        } else if indexPath == [0,5] {
+            
+            switchButton.isHidden = false
+            cell.accessoryType = .none
+            switchButton.addTarget(self, action: #selector(didTapChangeAccessToFaceID), for: .touchUpInside)
+            checkAuthForFaceID { success in
+                DispatchQueue.main.async {
+                    switchButton.isOn = success
+                }
+            }
         } else {
             cell.accessoryView = .none
             cell.accessoryType = .disclosureIndicator
+            cell.selectionStyle = .blue
         }
         
         cell.textLabel?.text = data.title
@@ -540,7 +588,7 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
         tableView.deselectRow(at: indexPath, animated: true)
         
         switch indexPath {
-        case [0,3]:
+        case [0,6]:
             if passwordBoolean {
                 openPasswordController(title: "Warning!", message: "Do you want to switch off or change password?", alertTitle: "Change password")
             } else {
