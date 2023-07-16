@@ -35,21 +35,23 @@ extension UIViewController {
     
     
     func checkAuthForFaceID(handler: @escaping (Bool) -> Void){
-        let booleanFaceID: Bool? = UserDefaults.standard.bool(forKey: "isUserConfirmPassword")
+        let result = UserDefaults.standard.bool(forKey: "isUserConfirmPassword")
         let context = LAContext()
         var error: NSError?
         
-        if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics,error: &error) {
-            context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: "Access to Face ID") { success , error in
-                DispatchQueue.main.async {
-                    UserDefaults.standard.setValue(true, forKey: "isUserConfirmPassword")
-                    handler(success)
-                }
-            }
+        
+        
+        if result == true {
+            handler(result)
         } else {
-            DispatchQueue.main.async {
-                UserDefaults.standard.setValue(false, forKey: "isUserConfirmPassword")
-                handler(false)
+            if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics,error: &error) {
+                context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: "Access to Face ID") { success , error in
+                    DispatchQueue.main.async {
+                        
+                        UserDefaults.standard.setValue(success, forKey: "isUserConfirmPassword")
+                        handler(success)
+                    }
+                }
             }
         }
     }

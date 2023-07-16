@@ -35,10 +35,10 @@ class UserProfileViewController: UIViewController {
                                         cellImageColor: .systemRed),
                         UserProfileData(title: "Access to Contacts",
                                         cellImage: UIImage(systemName: "character.book.closed.fill")!,
-                                        cellImageColor: .lightGray ),
+                                        cellImageColor: .systemBrown ),
                         UserProfileData(title: "Access to Photo and Camera",
                                         cellImage: UIImage(systemName: "camera.circle")!,
-                                        cellImageColor: .lightGray ),
+                                        cellImageColor: UIColor(named: "textColor")! ),
                         UserProfileData(title: "Access to Face ID",
                                         cellImage: UIImage(systemName: "faceid")!,
                                         cellImageColor: .systemBlue),
@@ -50,9 +50,9 @@ class UserProfileViewController: UIViewController {
                         UserProfileData(title: "Change App Icon".localized(),
                                         cellImage: UIImage(systemName: "app.fill")!,
                                         cellImageColor: .systemBlue),
-                        UserProfileData(title: "Change Ringtone".localized(),
-                                        cellImage: UIImage(systemName: "bell.and.waveform.fill")!,
-                                        cellImageColor: .systemGreen)
+                        UserProfileData(title: "Change Font Size".localized(),
+                                        cellImage: UIImage(systemName: "character.cursor.ibeam")!,
+                                        cellImageColor: .systemIndigo)
                      ],
                      [
                         UserProfileData(title: "Language".localized(),
@@ -300,6 +300,8 @@ class UserProfileViewController: UIViewController {
                 self?.showSettingsForChangingAccess(title: "Switching Off Face ID", message: "Do you want to switch off access to Face ID. You could always change access if it will be necessary ") { success in
                     if !success {
                         sender.isOn = true
+                    } else {
+                        UserDefaults.standard.setValue(false, forKey: "isUserConfirmPassword")
                     }
                 }
             } else {
@@ -339,9 +341,20 @@ class UserProfileViewController: UIViewController {
             }
         }
     }
+ 
     //MARK: - Setup methods
     
     private func setupView(){
+        let value = UserDefaults.standard.float(forKey: "fontSizeChanging")
+        let fontSize = CGFloat(value)
+        ageLabel.font = .systemFont(ofSize: fontSize)
+        userNameLabel.font = .systemFont(ofSize: fontSize)
+        mailLabel.font = .systemFont(ofSize: fontSize)
+        changeUserImageView.titleLabel?.font = .systemFont(ofSize: fontSize)
+        let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "settingsIdentifier")
+        cell.textLabel?.font = .systemFont(ofSize: fontSize)
+        
+        
         
         setupNavigationController()
         configureConstraints()
@@ -466,6 +479,11 @@ class UserProfileViewController: UIViewController {
         present(alert, animated: true)
     }
     
+    private func openChangeFontController(){
+        let vc = ChangeFontViewController()
+        show(vc, sender: nil)
+    }
+    
     
 }
 //MARK: - Check Success Delegate
@@ -563,7 +581,6 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
                 }
             }
         } else if indexPath == [0,5] {
-            
             switchButton.isHidden = false
             cell.accessoryType = .none
             switchButton.addTarget(self, action: #selector(didTapChangeAccessToFaceID), for: .touchUpInside)
@@ -598,7 +615,7 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
         case [1,0]:
             openSelectionChangeIcon()
         case [1,1]:
-            alertError(text: "This function in development", mainTitle: "Warning!".localized())
+            openChangeFontController()
         case [2,0]:
             showSettingsForChangingAccess(title: "Changing App Language".localized(),
                                           message: "Would you like to change the language of your application?".localized()) { _ in }
