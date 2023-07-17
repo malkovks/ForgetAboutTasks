@@ -13,7 +13,7 @@ class ScheduleSearchResultViewController: UIViewController {
     
     var scheduleModel: Results<ScheduleModel>?//non private because we take method in ScheduleVC
     private let fontSizeValue : CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
-    
+    private let fontNameValue: String = UserDefaults.standard.string(forKey: "fontNameChanging") ?? "Charter"
     
     let tableView = UITableView(frame: .null, style: .grouped)
     //MARK: - Setup viewDidLoad
@@ -49,7 +49,8 @@ extension ScheduleSearchResultViewController: UITableViewDelegate, UITableViewDa
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cellSearchResult")
         let model = scheduleModel?[indexPath.row]
         cell.backgroundView?.tintColor = UIColor(named: "cellColor")
-        cell.textLabel?.font = .systemFont(ofSize: fontSizeValue)
+        cell.textLabel?.font = UIFont(name: fontNameValue, size: fontSizeValue)
+        cell.detailTextLabel?.font = UIFont(name: fontNameValue, size: fontSizeValue * 0.7)
 
         let timeFF = Formatters.instance.timeStringFromDate(date: model?.scheduleStartDate ?? Date())
         let dateF = DateFormatter.localizedString(from: model?.scheduleTime ?? Date(), dateStyle: .medium, timeStyle: .none)
@@ -83,6 +84,10 @@ extension ScheduleSearchResultViewController: UITableViewDelegate, UITableViewDa
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return "Result of search:".localized()
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return fontSizeValue * 4
     }
 }
 

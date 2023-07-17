@@ -23,6 +23,7 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
     private var indexOfCell = Int()
     private var isCellEdited = Bool()
     private let fontSizeValue : CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
+    private let fontNameValue: String = UserDefaults.standard.string(forKey: "fontNameChanging") ?? "Charter"
     
     init(model: Results<ScheduleModel>,choosenDate: Date){
         self.cellDataScheduleModel = model
@@ -299,7 +300,8 @@ extension CreateTaskForDayController: UITableViewDelegate, UITableViewDataSource
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cell")
         cell.accessoryType = .disclosureIndicator
         cell.backgroundColor = UIColor(named: "backgroundColor")
-        cell.textLabel?.font = .systemFont(ofSize: fontSizeValue)
+        cell.textLabel?.font = UIFont(name: fontNameValue, size: fontSizeValue)
+        cell.detailTextLabel?.font = UIFont(name: fontNameValue, size: fontSizeValue * 0.7)
         let data = cellDataScheduleModel[indexPath.row]
         
         let color = UIColor.color(withData: data.scheduleColor!) ?? #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
@@ -365,6 +367,10 @@ extension CreateTaskForDayController: UITableViewDelegate, UITableViewDataSource
     
     func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
         return true
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return fontSizeValue * 4
     }
     
 }

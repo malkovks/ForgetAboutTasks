@@ -52,6 +52,7 @@ class CreateEventScheduleViewController: UIViewController {
     private var choosenDate: Date
     private lazy var startChoosenDate: Date = choosenDate
     private let fontSizeValue : CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
+    private let fontNameValue: String = UserDefaults.standard.string(forKey: "fontNameChanging") ?? "Charter"
 
     init(choosenDate: Date){
         self.choosenDate = choosenDate
@@ -102,13 +103,13 @@ class CreateEventScheduleViewController: UIViewController {
             if scheduleModel.scheduleStartDate == nil && scheduleModel.scheduleTime == nil {
                 alertError(text: "Enter date for setting reminder".localized(), mainTitle: "Error set up reminder!".localized())
             } else {
-                DispatchQueue.main.async {
                     self.request(forUser: self.notificationCenter) { access in
                         self.reminderStatus = access
                         self.scheduleModel.scheduleActiveNotification = access
-                        sender.isOn = access
+                        DispatchQueue.main.async {
+                            sender.isOn = access
+                        }
                     }
-                }
             }
         } else {
             reminderStatus = false
@@ -355,7 +356,7 @@ extension CreateEventScheduleViewController: UITableViewDelegate, UITableViewDat
         let data = cellsName[indexPath.section][indexPath.row]
         
         cell?.textLabel?.numberOfLines = 0
-        cell?.textLabel?.font = .systemFont(ofSize: fontSizeValue)
+        cell?.textLabel?.font = UIFont(name: fontNameValue, size: fontSizeValue)
         cell?.contentView.layer.cornerRadius = 10
         cell?.backgroundColor = UIColor(named: "cellColor")
         cell?.textLabel?.text = data

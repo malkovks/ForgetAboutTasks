@@ -20,6 +20,7 @@ class AllTasksToDoViewController: UIViewController, CheckSuccessSaveProtocol {
     var allTasksDataSections = [Date]()
     var taskDate = Set<Date>()
     private let fontSizeValue : CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
+    private let fontNameValue: String = UserDefaults.standard.string(forKey: "fontNameChanging") ?? "Charter"
     
     private var viewIsFiltered: Bool {
         return searchController.isActive && !searchBarIsEmpty
@@ -192,7 +193,10 @@ extension AllTasksToDoViewController: UITableViewDelegate, UITableViewDataSource
         let data = viewIsFiltered ?  allTasksDataFiltered[indexPath.row] : allTasksData[indexPath.row]
         let color = UIColor.color(withData: data.allTaskColor!)
         cell.backgroundColor = UIColor(named: "backgroundColor")
-        cell.textLabel?.font = .systemFont(ofSize: fontSizeValue)
+        cell.textLabel?.font = UIFont(name: fontNameValue, size: fontSizeValue)
+        cell.textLabel?.font = .systemFont(ofSize: fontSizeValue,weight: .semibold)
+        cell.detailTextLabel?.font = UIFont(name: fontNameValue, size: fontSizeValue*0.7)
+        
 
         let button = UIButton(type: .custom)
         button.frame = CGRect(x: 0, y: 0, width: 30, height: 30)
@@ -252,6 +256,10 @@ extension AllTasksToDoViewController: UITableViewDelegate, UITableViewDataSource
         let action = UISwipeActionsConfiguration(actions: [deleteInstance])
         
         return action
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return fontSizeValue * 4
     }
 }
 //MARK: - Search Controller:

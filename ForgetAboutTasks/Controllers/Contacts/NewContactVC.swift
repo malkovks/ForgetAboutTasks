@@ -33,6 +33,7 @@ class NewContactViewController: UIViewController{
     
     private var isStartEditing: Bool = false
     private let fontSizeValue: CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
+    private let fontNameValue: String = UserDefaults.standard.string(forKey: "fontNameChanging") ?? "Charter"
     //MARK: - UI elements
     private let tableView = UITableView(frame: .zero, style: .insetGrouped)
     private let viewForTable = NewContactCustomView()
@@ -181,7 +182,7 @@ extension NewContactViewController: UITableViewDelegate, UITableViewDataSource {
         let data = cellsName[indexPath.section][indexPath.row]
         cell.backgroundColor = UIColor(named: "cellColor")
         cell.textLabel?.text = data
-        cell.textLabel?.font = .systemFont(ofSize: fontSizeValue)
+        cell.textLabel?.font = UIFont(name: fontNameValue, size: fontSizeValue)
         
         
         return cell

@@ -33,6 +33,7 @@ class EditTaskTableViewController: UIViewController {
     private var tasksModel: AllTaskModel
     private var editedTaskModel = AllTaskModel()
     private let fontSizeValue : CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
+    private let fontNameValue: String = UserDefaults.standard.string(forKey: "fontNameChanging") ?? "Charter"
     
     init?(color: UIColor,model: AllTaskModel){
         self.cellBackgroundColor = color
@@ -160,7 +161,7 @@ extension EditTaskTableViewController: UITableViewDelegate, UITableViewDataSourc
             setupCellTitle(model: tasksModel, indexPath: indexPath)
         }
         let data = cellsName[indexPath.section][indexPath.row]
-        cell.textLabel?.font = .systemFont(ofSize: fontSizeValue)
+        cell.textLabel?.font = UIFont(name: fontNameValue, size: fontSizeValue)
         cell.textLabel?.numberOfLines = 0
         cell.contentView.layer.cornerRadius = 10
         cell.backgroundColor = UIColor(named: "cellColor")

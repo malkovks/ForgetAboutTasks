@@ -26,6 +26,8 @@ class UserDefaultsManager: UIViewController {
         UserDefaults.standard.setValue("No email".localized(), forKey: "userMail")
         UserDefaults.standard.setValue(nil, forKey: "userImage")
         UserDefaults.standard.setValue("", forKey: "userAge")
+        UserDefaults.standard.setValue("Times New Roman", forKey: "fontNameChanging")
+        UserDefaults.standard.setValue(16, forKey: "fontSizeChanging")
     }
     
     func loadSettedImage() -> UIImage {
@@ -54,6 +56,7 @@ class UserDefaultsManager: UIViewController {
         UserDefaults.standard.setValue(result.user.email, forKey: "userMail")
         UserDefaults.standard.set(profile, forKey: "userImageURL")
         UserDefaults.standard.setValue(16, forKey: "fontSizeChanging")
+        UserDefaults.standard.setValue("Times New Roman", forKey: "fontNameChanging")
         
     }
     

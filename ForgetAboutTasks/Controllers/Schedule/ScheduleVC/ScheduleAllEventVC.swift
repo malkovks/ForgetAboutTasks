@@ -15,6 +15,7 @@ class ScheduleAllEventViewController: UIViewController {
     private var scheduleModel: Results<ScheduleModel>
     private var scheduleDates: [Date]
     private let fontSizeValue : CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
+    private let fontNameValue: String = UserDefaults.standard.string(forKey: "fontNameChanging") ?? "Charter"
     
     private var dictionaryScheduleModel = [String: [ScheduleModel]]()
     private var sectionHeaderModel = [String]()
@@ -124,9 +125,9 @@ extension ScheduleAllEventViewController: UITableViewDelegate, UITableViewDataSo
             let startTime = DateFormatter.localizedString(from: value.scheduleStartDate ?? Date(), dateStyle: .none, timeStyle: .short)
             let endTime = DateFormatter.localizedString(from: value.scheduleEndDate ?? Date(), dateStyle: .none, timeStyle: .short)
             cell.textLabel?.text = value.scheduleName
-            cell.textLabel?.font = .systemFont(ofSize: fontSizeValue)
+            cell.textLabel?.font = UIFont(name: fontNameValue, size: fontSizeValue)
             cell.detailTextLabel?.text = "Start - ".localized() + startTime +  ".End - ".localized() + endTime
-            cell.detailTextLabel?.font = .systemFont(ofSize: fontSizeValue)
+            cell.detailTextLabel?.font = UIFont(name: fontNameValue, size: fontSizeValue * 0.7)
             cell.imageView?.image = UIImage(systemName: "circle.fill")
             cell.imageView?.tintColor = UIColor.color(withData: color)
         }
@@ -137,6 +138,10 @@ extension ScheduleAllEventViewController: UITableViewDelegate, UITableViewDataSo
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         setupSelectionCell(indexPath: indexPath)
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return fontSizeValue * 4
     }
     
 }

@@ -36,6 +36,7 @@ class EditContactViewController: UIViewController {
     private var isViewEdited: Bool
     private var isStartEditing: Bool = false
     private let fontSizeValue : CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
+    private let fontNameValue: String = UserDefaults.standard.string(forKey: "fontNameChanging") ?? "Charter"
     
     init(contactModel: ContactModel,editing: Bool){
         self.contactModel = contactModel
@@ -129,7 +130,7 @@ class EditContactViewController: UIViewController {
         setupSelection(boolean: isViewEdited)
         view.backgroundColor = UIColor(named: "backgroundColor")
         title = "Edit Contact".localized()
-        labelForImageView.font = .systemFont(ofSize: fontSizeValue )
+        labelForImageView.font = UIFont(name: fontNameValue, size: fontSizeValue)
     }
     
     private func setupTableView(){
@@ -252,7 +253,7 @@ extension EditContactViewController: UITableViewDelegate, UITableViewDataSource 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "tasksCell", for: indexPath)
         cell.backgroundColor = UIColor(named: "cellColor")
-        cell.textLabel?.font = .systemFont(ofSize: fontSizeValue)
+        cell.textLabel?.font = UIFont(name: fontNameValue, size: fontSizeValue)
         let basicValue = cellsName[indexPath.section][indexPath.row]
         
         let segueButton = UIButton()

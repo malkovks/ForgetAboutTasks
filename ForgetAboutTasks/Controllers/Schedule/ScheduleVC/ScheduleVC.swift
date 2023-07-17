@@ -20,6 +20,7 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
     private var scheduleModel: Results<ScheduleModel>!
     private var filteredModel: Results<ScheduleModel>!
     private let fontSizeValue : CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
+    private let fontNameValue: String = UserDefaults.standard.string(forKey: "fontNameChanging") ?? "Charter"
     
     //MARK: - UI elements setups
     private lazy var searchNavigationButton: UIBarButtonItem = {
@@ -152,9 +153,9 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
         UserDefaultsManager.shared.checkDarkModeUserDefaults()
         loadingDataByDate(date: Date(), at: .current, is: true)
         view.backgroundColor = UIColor(named: "backgroundColor")
-        calendar.appearance.titleFont = .systemFont(ofSize: fontSizeValue)
-        calendar.appearance.weekdayFont = .systemFont(ofSize: fontSizeValue)
-        calendar.appearance.headerTitleFont = .systemFont(ofSize: fontSizeValue)
+        calendar.appearance.titleFont = UIFont(name: fontNameValue, size: fontSizeValue)
+        calendar.appearance.weekdayFont = UIFont(name: fontNameValue, size: fontSizeValue)
+        calendar.appearance.headerTitleFont = UIFont(name: fontNameValue, size: fontSizeValue)
     }
     
     private func setupNavigationController(){

@@ -11,8 +11,7 @@ import Photos
 extension UIViewController {
     func requestForUserLibrary(handler: @escaping (Bool?) -> ()){
         DispatchQueue.main.async {
-            PHPhotoLibrary.requestAuthorization { [weak self] success in
-                guard let strongSelf = self else { return }
+            PHPhotoLibrary.requestAuthorization { success in
                 switch success {
                 case .notDetermined:
                     handler(false)

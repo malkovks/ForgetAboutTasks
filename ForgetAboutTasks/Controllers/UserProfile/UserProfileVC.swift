@@ -50,7 +50,7 @@ class UserProfileViewController: UIViewController {
                         UserProfileData(title: "Change App Icon".localized(),
                                         cellImage: UIImage(systemName: "app.fill")!,
                                         cellImageColor: .systemBlue),
-                        UserProfileData(title: "Change Font Size".localized(),
+                        UserProfileData(title: "Change Font".localized(),
                                         cellImage: UIImage(systemName: "character.cursor.ibeam")!,
                                         cellImageColor: .systemIndigo)
                      ],
@@ -74,6 +74,7 @@ class UserProfileViewController: UIViewController {
                      ]]
 
     private var passwordBoolean = UserDefaults.standard.bool(forKey: "isPasswordCodeEnabled")
+    private let fontNameValue: String = UserDefaults.standard.string(forKey: "fontNameChanging") ?? "Charter"
     private let fontSizeValue : CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
     private let notificationCenter = UNUserNotificationCenter.current()
     private let provider = DataProvider()
@@ -120,8 +121,8 @@ class UserProfileViewController: UIViewController {
     private let userNameLabel: UILabel = {
         let label = UILabel()
         label.text = "Press to set name of user".localized()
-        label.numberOfLines = 2
-        label.textAlignment = .center
+        label.numberOfLines = 1
+        label.textAlignment = .left
         label.font = .systemFont(ofSize: 24, weight: .medium)
         label.backgroundColor = .clear
         label.layer.cornerRadius = 12
@@ -131,8 +132,8 @@ class UserProfileViewController: UIViewController {
     private let mailLabel: UILabel = {
         let label = UILabel()
         label.text = "User email".localized()
-        label.numberOfLines = 2
-        label.textAlignment = .center
+        label.numberOfLines = 1
+        label.textAlignment = .left
         label.font = .systemFont(ofSize: 16, weight: .light)
         label.backgroundColor = .clear
         label.layer.cornerRadius = 12
@@ -142,8 +143,8 @@ class UserProfileViewController: UIViewController {
     private let ageLabel: UILabel = {
         let label = UILabel()
         label.text = "Press to set user's age".localized()
-        label.numberOfLines = 2
-        label.textAlignment = .center
+        label.numberOfLines = 1
+        label.textAlignment = .left
         label.font = .systemFont(ofSize: 16, weight: .light)
         label.backgroundColor = .clear
         label.layer.cornerRadius = 12
@@ -348,7 +349,7 @@ class UserProfileViewController: UIViewController {
     private func setupView(){
         setupNavigationController()
         configureConstraints()
-        setupFontSize(size: fontSizeValue)
+        setupFontSize(size: fontSizeValue, name: fontNameValue)
         setupDelegates()
         setupTapGestureForImage()
         setupTargets()
@@ -429,11 +430,11 @@ class UserProfileViewController: UIViewController {
         changeUserImageView.addTarget(self, action: #selector(didTapImagePicker), for: .touchUpInside)
     }
     
-    private func setupFontSize(size: CGFloat){
-        ageLabel.font = .systemFont(ofSize: size )
-        userNameLabel.font = .systemFont(ofSize: size )
-        mailLabel.font = .systemFont(ofSize: size )
-        changeUserImageView.titleLabel?.font = .systemFont(ofSize: size )
+    private func setupFontSize(size: CGFloat,name: String){
+        ageLabel.font = UIFont(name: name, size: size)
+        userNameLabel.font = UIFont(name: name, size: size)
+        mailLabel.font = UIFont(name: name, size: size)
+        changeUserImageView.titleLabel?.font = UIFont(name: name, size: size)
         userImageView.layer.cornerRadius = userImageView.frame.size.width/2
         tableView.reloadData()
     }
@@ -494,14 +495,23 @@ class UserProfileViewController: UIViewController {
         self.present(nav, animated: true)
     }
     
+    private func restartApp(){
+        guard let window = UIApplication.shared.keyWindow else { print("error");return }
+        let vc = TabBarViewController()
+        window.rootViewController = vc
+        UIView.transition(with: window, duration: 1,options: .transitionCrossDissolve, animations: nil)
+    }
+    
     
 }
 //MARK: - Check Success Delegate
 extension UserProfileViewController: CheckSuccessSaveProtocol, ChangeFontDelegate {
-    func changeFont(font size: CGFloat) {
-        setupFontSize(size: size)
+    func changeFont(font size: CGFloat, style: String) {
+//        setupFontSize(size: size, name: style)
+        restartApp()
         print("delegate work fine")
     }
+
     
     func isSavedCompletely(boolean: Bool) {
         tabBarController?.tabBar.isHidden = false
@@ -544,7 +554,7 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
         let data = cellArray[indexPath.section][indexPath.row]
         cell.backgroundColor = UIColor(named: "cellColor")
         cell.selectionStyle = .none
-        cell.textLabel?.font = .systemFont(ofSize: fontSizeValue ?? 16)
+        cell.textLabel?.font = UIFont(name: fontNameValue, size: fontSizeValue)
         let switchButton = UISwitch()
         switchButton.isOn = false
         switchButton.onTintColor = #colorLiteral(red: 0.3920767307, green: 0.5687371492, blue: 0.998278439, alpha: 1)
@@ -676,10 +686,10 @@ extension UserProfileViewController  {
     private func configureConstraints(){
 
         let infoStack = UIStackView(arrangedSubviews: [userNameLabel,mailLabel,ageLabel])
-        infoStack.alignment = .leading
+        infoStack.alignment = .fill
         infoStack.contentMode = .scaleAspectFit
         infoStack.axis = .vertical
-        infoStack.spacing = 20
+        infoStack.spacing = 10
         
         view.addSubview(profileView)
         profileView.snp.makeConstraints { make in
@@ -707,7 +717,7 @@ extension UserProfileViewController  {
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(20)
             make.trailing.equalToSuperview().inset(-10)
             make.leading.equalTo(userImageView.snp.trailing).offset(10)
-            make.height.equalTo(110)
+            make.height.equalTo(100)
         }
         
         view.addSubview(tableView)

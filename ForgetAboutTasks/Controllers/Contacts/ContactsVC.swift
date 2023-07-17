@@ -20,6 +20,7 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
     private var localRealmData = try! Realm()
     private let contactStore = CNContactStore()
     private let fontSizeValue: CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
+    private let fontNameValue: String = UserDefaults.standard.string(forKey: "fontNameChanging") ?? "Charter"
 
     private var searchBarIsEmpty: Bool {
         guard let text = searchController.searchBar.text else { return true }
@@ -336,7 +337,7 @@ extension ContactsViewController: UITableViewDelegate, UITableViewDataSource {
         let data = (viewIsFiltered ? filteredContactData[indexPath.row] : contactData[indexPath.row])
 
         cell.backgroundColor = UIColor(named: "backgroundColor")
-        cell.textLabel?.font = .systemFont(ofSize: 20,weight: .semibold)
+        
         cell.accessoryType = .disclosureIndicator
 
         cell.imageView?.clipsToBounds = true
@@ -346,8 +347,9 @@ extension ContactsViewController: UITableViewDelegate, UITableViewDataSource {
         let number = data.contactPhoneNumber ?? "No phone number"
 
         cell.textLabel?.text = (data.contactName ?? "") + " " + (data.contactSurname ?? "")
-        cell.textLabel?.font = .systemFont(ofSize: fontSizeValue ?? 16,weight: .bold)
-        cell.detailTextLabel?.font = .systemFont(ofSize: (fontSizeValue ?? 12)*0.8)
+        cell.textLabel?.font = UIFont(name: fontNameValue, size: fontSizeValue)
+        cell.textLabel?.font = .systemFont(ofSize: fontSizeValue, weight: .bold)
+        cell.detailTextLabel?.font = UIFont(name: fontNameValue, size: fontSizeValue*0.8)
         cell.detailTextLabel?.text = "Phone number: " + (number)
         cell.imageView?.image = UIImage(systemName: "person.crop.circle.fill")
         cell.imageView?.frame(forAlignmentRect: CGRect(x: 0, y: 0, width: 50, height: 50))

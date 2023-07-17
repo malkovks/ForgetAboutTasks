@@ -35,6 +35,7 @@ class EditEventScheduleViewController: UIViewController {
     private let notificationCenter = UNUserNotificationCenter.current()
     private let eventStore = EKEventStore()
     private let fontSizeValue : CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
+    private let fontNameValue: String = UserDefaults.standard.string(forKey: "fontNameChanging") ?? "Charter"
     
     private var reminderStatus: Bool = false
     private var isStartEditing: Bool = false
@@ -375,10 +376,8 @@ extension EditEventScheduleViewController: UITableViewDelegate, UITableViewDataS
         }
         let data = cellsName[indexPath.section][indexPath.row]
         
-        let convertedDate = DateFormatter.localizedString(from: scheduleModel.scheduleTime ?? Date(), dateStyle: .medium, timeStyle: .medium)
-        
         cell?.textLabel?.numberOfLines = 0
-        cell?.textLabel?.font = .systemFont(ofSize: fontSizeValue)
+        cell?.textLabel?.font = UIFont(name: fontNameValue, size: fontSizeValue)
         cell?.contentView.layer.cornerRadius = 10
         cell?.backgroundColor = UIColor(named: "cellColor")
         
