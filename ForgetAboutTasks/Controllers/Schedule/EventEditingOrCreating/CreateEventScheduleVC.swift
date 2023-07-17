@@ -51,6 +51,7 @@ class CreateEventScheduleViewController: UIViewController {
     private var addingEventStatus: Bool = false
     private var choosenDate: Date
     private lazy var startChoosenDate: Date = choosenDate
+    private let fontSizeValue : CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
 
     init(choosenDate: Date){
         self.choosenDate = choosenDate
@@ -354,6 +355,7 @@ extension CreateEventScheduleViewController: UITableViewDelegate, UITableViewDat
         let data = cellsName[indexPath.section][indexPath.row]
         
         cell?.textLabel?.numberOfLines = 0
+        cell?.textLabel?.font = .systemFont(ofSize: fontSizeValue)
         cell?.contentView.layer.cornerRadius = 10
         cell?.backgroundColor = UIColor(named: "cellColor")
         cell?.textLabel?.text = data

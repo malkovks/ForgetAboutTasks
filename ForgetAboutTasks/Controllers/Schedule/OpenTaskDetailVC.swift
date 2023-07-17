@@ -34,6 +34,7 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
     
     private var cellBackgroundColor =  #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
     private var selectedScheduleModel: ScheduleModel
+    private let fontSizeValue : CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
     
     init(model: ScheduleModel) {
         self.selectedScheduleModel = model
@@ -273,6 +274,7 @@ extension OpenTaskDetailViewController: UITableViewDelegate, UITableViewDataSour
         
         cell?.backgroundColor = UIColor(named: "cellColor")
         cell?.textLabel?.numberOfLines = 0
+        cell?.textLabel?.font = .systemFont(ofSize: fontSizeValue)
         
         let switchButton = UISwitch(frame: .zero)
         switchButton.isOn = false

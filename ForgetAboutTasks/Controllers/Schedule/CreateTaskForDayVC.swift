@@ -22,6 +22,7 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
     private var isTrailingSwipeActionActive = Bool()
     private var indexOfCell = Int()
     private var isCellEdited = Bool()
+    private let fontSizeValue : CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
     
     init(model: Results<ScheduleModel>,choosenDate: Date){
         self.cellDataScheduleModel = model
@@ -298,6 +299,7 @@ extension CreateTaskForDayController: UITableViewDelegate, UITableViewDataSource
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cell")
         cell.accessoryType = .disclosureIndicator
         cell.backgroundColor = UIColor(named: "backgroundColor")
+        cell.textLabel?.font = .systemFont(ofSize: fontSizeValue)
         let data = cellDataScheduleModel[indexPath.row]
         
         let color = UIColor.color(withData: data.scheduleColor!) ?? #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)

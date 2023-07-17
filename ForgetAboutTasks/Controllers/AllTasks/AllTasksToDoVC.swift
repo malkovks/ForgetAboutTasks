@@ -19,6 +19,7 @@ class AllTasksToDoViewController: UIViewController, CheckSuccessSaveProtocol {
     private var localRealmData = try! Realm()
     var allTasksDataSections = [Date]()
     var taskDate = Set<Date>()
+    private let fontSizeValue : CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
     
     private var viewIsFiltered: Bool {
         return searchController.isActive && !searchBarIsEmpty
@@ -191,6 +192,7 @@ extension AllTasksToDoViewController: UITableViewDelegate, UITableViewDataSource
         let data = viewIsFiltered ?  allTasksDataFiltered[indexPath.row] : allTasksData[indexPath.row]
         let color = UIColor.color(withData: data.allTaskColor!)
         cell.backgroundColor = UIColor(named: "backgroundColor")
+        cell.textLabel?.font = .systemFont(ofSize: fontSizeValue)
 
         let button = UIButton(type: .custom)
         button.frame = CGRect(x: 0, y: 0, width: 30, height: 30)

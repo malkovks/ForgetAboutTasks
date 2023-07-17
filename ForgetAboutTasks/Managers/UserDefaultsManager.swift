@@ -53,6 +53,7 @@ class UserDefaultsManager: UIViewController {
         UserDefaults.standard.setValue(result.user.displayName, forKey: "userName")
         UserDefaults.standard.setValue(result.user.email, forKey: "userMail")
         UserDefaults.standard.set(profile, forKey: "userImageURL")
+        UserDefaults.standard.setValue(16, forKey: "fontSizeChanging")
         
     }
     

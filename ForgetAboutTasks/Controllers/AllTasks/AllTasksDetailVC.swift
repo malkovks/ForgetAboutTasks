@@ -28,6 +28,7 @@ class AllTasksDetailViewController: UIViewController {
         [""]]
     private var cellBackgroundColor =  #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
     private var tasksModel = AllTaskModel()
+    private let fontSizeValue : CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
     
     init(color: UIColor, model: AllTaskModel){
         self.tasksModel = model
@@ -190,6 +191,7 @@ extension AllTasksDetailViewController: UITableViewDelegate, UITableViewDataSour
         cell.textLabel?.numberOfLines = 0
         cell.contentView.layer.cornerRadius = 10
         cell.backgroundColor = UIColor(named: "cellColor")
+        cell.textLabel?.font = .systemFont(ofSize: fontSizeValue)
         switch indexPath {
         case [0,0]:
             cell.textLabel?.text = tasksModel.allTaskNameEvent

@@ -8,21 +8,28 @@
 import UIKit
 import SnapKit
 
-var appFontSize = 20
+protocol ChangeFontDelegate: AnyObject {
+    func changeFont(font size: CGFloat)
+}
 
 class ChangeFontViewController: UIViewController {
+    
+    var dataReceive: ((CGFloat) -> Void)!
+    private var rounderSize: CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
+    
+    weak var delegate: ChangeFontDelegate?
     
     private let testFontLabel: UILabel = {
        let label = UILabel()
         label.textColor = UIColor(named: "textColor")
-        label.text = "Test font size!"
+        label.text = "Test font size: "
         return label
     }()
     
     private let changeFontSlider: UISlider = {
        let slider = UISlider()
-        slider.minimumValue = 10
-        slider.maximumValue = 40
+        slider.minimumValue = 8
+        slider.maximumValue = 20
         slider.isContinuous = true
         slider.minimumTrackTintColor = UIColor(named: "navigationControllerColor")
         slider.maximumTrackTintColor = UIColor(named: "navigationControllerColor")
@@ -33,32 +40,43 @@ class ChangeFontViewController: UIViewController {
         slider.maximumValueImageRect(forBounds: CGRect(x: 1, y: 1, width: Int(slider.frame.size.width), height: Int(slider.frame.size.height)))
         return slider
     }()
+
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        let value = UserDefaults.standard.float(forKey: "fontSizeChanging")
-        let fontSize = CGFloat(value)
-        changeFontSlider.value = value
-        testFontLabel.font = .systemFont(ofSize: fontSize)
         
         
         setupConstraints()
         setupView()
     }
-    
+    //MARK: - Target methods
     @objc private func didTapChangeFont(sender: UISlider){
         let fontSize = CGFloat(sender.value)
-        testFontLabel.font = .systemFont(ofSize: fontSize)
-        UserDefaults.standard.setValue(sender.value, forKey: "fontSizeChanging")
+        let step = CGFloat(2)
+        rounderSize = round(fontSize / step) * step
         
+        testFontLabel.font = .systemFont(ofSize: rounderSize)
+        testFontLabel.text = "Test font size: \(rounderSize)"
+        UserDefaults.standard.setValue(rounderSize, forKey: "fontSizeChanging")
     }
     
+    @objc private func didTapDismiss(){
+        delegate?.changeFont(font: rounderSize)
+        dismiss(animated: true)
+    }
+    //MARK: - Setup methods
     private func setupView(){
         view.backgroundColor = .systemBackground
-        
+        let fontSize = Float(rounderSize)
         changeFontSlider.addTarget(self, action: #selector(didTapChangeFont), for: .valueChanged)
+        changeFontSlider.value = fontSize
+        testFontLabel.font = .systemFont(ofSize: rounderSize)
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back", image: UIImage(systemName: "chevron.left"), target: self, action: #selector(didTapDismiss))
+        navigationItem.leftBarButtonItem?.tintColor = UIColor(named: "navigationControllerColor")
     }
+    
+ //MARK: - Extension
 }
 
 extension ChangeFontViewController {

@@ -35,6 +35,7 @@ class EditContactViewController: UIViewController {
     private var editedContactModel = ContactModel()
     private var isViewEdited: Bool
     private var isStartEditing: Bool = false
+    private let fontSizeValue : CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
     
     init(contactModel: ContactModel,editing: Bool){
         self.contactModel = contactModel
@@ -121,12 +122,14 @@ class EditContactViewController: UIViewController {
     }
     //MARK: - Setup methods
     private func setupView() {
+        
         setupNavigationController()
         setupConstraints()
         customiseView()
         setupSelection(boolean: isViewEdited)
         view.backgroundColor = UIColor(named: "backgroundColor")
         title = "Edit Contact".localized()
+        labelForImageView.font = .systemFont(ofSize: fontSizeValue )
     }
     
     private func setupTableView(){
@@ -249,6 +252,7 @@ extension EditContactViewController: UITableViewDelegate, UITableViewDataSource 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "tasksCell", for: indexPath)
         cell.backgroundColor = UIColor(named: "cellColor")
+        cell.textLabel?.font = .systemFont(ofSize: fontSizeValue)
         let basicValue = cellsName[indexPath.section][indexPath.row]
         
         let segueButton = UIButton()
@@ -265,6 +269,7 @@ extension EditContactViewController: UITableViewDelegate, UITableViewDataSource 
             labelForImageView.isHidden = true
         }
         if !isViewEdited {
+            cell.selectionStyle = .none
             switch indexPath {
             case [0,0]:
                 cell.textLabel?.text = contactModel.contactName
@@ -331,7 +336,7 @@ extension EditContactViewController: UITableViewDelegate, UITableViewDataSource 
             case [4,0]:
                 cell.textLabel?.text = editedContactModel.contactType ?? contactModel.contactType ?? "Not indicated"
             default:
-                print("Error")
+                break
             }
         }
         return cell

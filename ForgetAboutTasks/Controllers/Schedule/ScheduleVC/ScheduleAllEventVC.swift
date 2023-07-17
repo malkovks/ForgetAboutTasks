@@ -14,6 +14,7 @@ class ScheduleAllEventViewController: UIViewController {
     private let realm = try! Realm()
     private var scheduleModel: Results<ScheduleModel>
     private var scheduleDates: [Date]
+    private let fontSizeValue : CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
     
     private var dictionaryScheduleModel = [String: [ScheduleModel]]()
     private var sectionHeaderModel = [String]()
@@ -123,7 +124,9 @@ extension ScheduleAllEventViewController: UITableViewDelegate, UITableViewDataSo
             let startTime = DateFormatter.localizedString(from: value.scheduleStartDate ?? Date(), dateStyle: .none, timeStyle: .short)
             let endTime = DateFormatter.localizedString(from: value.scheduleEndDate ?? Date(), dateStyle: .none, timeStyle: .short)
             cell.textLabel?.text = value.scheduleName
+            cell.textLabel?.font = .systemFont(ofSize: fontSizeValue)
             cell.detailTextLabel?.text = "Start - ".localized() + startTime +  ".End - ".localized() + endTime
+            cell.detailTextLabel?.font = .systemFont(ofSize: fontSizeValue)
             cell.imageView?.image = UIImage(systemName: "circle.fill")
             cell.imageView?.tintColor = UIColor.color(withData: color)
         }

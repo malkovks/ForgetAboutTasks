@@ -74,6 +74,7 @@ class UserProfileViewController: UIViewController {
                      ]]
 
     private var passwordBoolean = UserDefaults.standard.bool(forKey: "isPasswordCodeEnabled")
+    private let fontSizeValue : CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
     private let notificationCenter = UNUserNotificationCenter.current()
     private let provider = DataProvider()
     private let eventStore: EKEventStore = EKEventStore()
@@ -154,11 +155,11 @@ class UserProfileViewController: UIViewController {
         setupView()
     }
     
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        userImageView.layer.cornerRadius = 0.5 * userImageView.bounds.size.width
-        scrollView.frame = view.bounds
-    }
+//    override func viewWillAppear(_ animated: Bool) {
+//        super.viewWillAppear(animated)
+//        setupView()
+//        tableView.reloadData()
+//    }
     //MARK: - Targets methods
     @objc private func didTapLogout(){
         let alert = UIAlertController(title: "Warning", message: "Do you want to Exit from your account?", preferredStyle: .actionSheet)
@@ -241,7 +242,7 @@ class UserProfileViewController: UIViewController {
         UIView.animate(withDuration: 0.5) {
             UIApplication.shared.windows.forEach { window in
                 window.overrideUserInterfaceStyle = interfaceStyle
-                if let sceneDelegate = window.windowScene?.delegate as? SceneDelegate {
+                if let _ = window.windowScene?.delegate as? SceneDelegate {
                     UserDefaults.standard.setValue(sender.isOn, forKey: "setUserInterfaceStyle")
                 }
             }
@@ -345,19 +346,9 @@ class UserProfileViewController: UIViewController {
     //MARK: - Setup methods
     
     private func setupView(){
-        let value = UserDefaults.standard.float(forKey: "fontSizeChanging")
-        let fontSize = CGFloat(value)
-        ageLabel.font = .systemFont(ofSize: fontSize)
-        userNameLabel.font = .systemFont(ofSize: fontSize)
-        mailLabel.font = .systemFont(ofSize: fontSize)
-        changeUserImageView.titleLabel?.font = .systemFont(ofSize: fontSize)
-        let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "settingsIdentifier")
-        cell.textLabel?.font = .systemFont(ofSize: fontSize)
-        
-        
-        
         setupNavigationController()
         configureConstraints()
+        setupFontSize(size: fontSizeValue)
         setupDelegates()
         setupTapGestureForImage()
         setupTargets()
@@ -438,6 +429,15 @@ class UserProfileViewController: UIViewController {
         changeUserImageView.addTarget(self, action: #selector(didTapImagePicker), for: .touchUpInside)
     }
     
+    private func setupFontSize(size: CGFloat){
+        ageLabel.font = .systemFont(ofSize: size )
+        userNameLabel.font = .systemFont(ofSize: size )
+        mailLabel.font = .systemFont(ofSize: size )
+        changeUserImageView.titleLabel?.font = .systemFont(ofSize: size )
+        userImageView.layer.cornerRadius = userImageView.frame.size.width/2
+        tableView.reloadData()
+    }
+    
     private func setupSwitchDarkMode() -> Bool {
         let windows = UIApplication.shared.windows
         
@@ -481,24 +481,35 @@ class UserProfileViewController: UIViewController {
     
     private func openChangeFontController(){
         let vc = ChangeFontViewController()
-        show(vc, sender: nil)
+        vc.delegate = self
+        vc.dataReceive = { [weak self] _ in
+            self?.setupView()
+            self?.tableView.reloadData()
+            print("closure work fine")
+        }
+        let nav = UINavigationController(rootViewController: vc)
+        nav.modalPresentationStyle = .fullScreen
+        nav.modalTransitionStyle = .coverVertical
+        nav.isNavigationBarHidden = false
+        self.present(nav, animated: true)
     }
     
     
 }
 //MARK: - Check Success Delegate
-extension UserProfileViewController: CheckSuccessSaveProtocol {
+extension UserProfileViewController: CheckSuccessSaveProtocol, ChangeFontDelegate {
+    func changeFont(font size: CGFloat) {
+        setupFontSize(size: size)
+        print("delegate work fine")
+    }
+    
     func isSavedCompletely(boolean: Bool) {
         tabBarController?.tabBar.isHidden = false
         if boolean {
             showAlertForUser(text: "Password was created", duration: .now()+1, controllerView: view)
-            
             passwordBoolean = UserDefaults.standard.bool(forKey: "isPasswordCodeEnabled")
         }
-        
     }
-    
-    
 }
 
 //MARK: - Table view delegate and data source
@@ -529,14 +540,16 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "settingsIdentifier")
+        let cell = UITableViewCell(style: .default, reuseIdentifier: "settingsIdentifier")
         let data = cellArray[indexPath.section][indexPath.row]
         cell.backgroundColor = UIColor(named: "cellColor")
         cell.selectionStyle = .none
+        cell.textLabel?.font = .systemFont(ofSize: fontSizeValue ?? 16)
         let switchButton = UISwitch()
         switchButton.isOn = false
         switchButton.onTintColor = #colorLiteral(red: 0.3920767307, green: 0.5687371492, blue: 0.998278439, alpha: 1)
         switchButton.isHidden = true
+        switchButton.clipsToBounds = true
         
         cell.accessoryView = switchButton
         if indexPath == [0,0] {
@@ -627,6 +640,10 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
         default:
             print("Error")
         }
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        fontSizeValue * 4
     }
     
     

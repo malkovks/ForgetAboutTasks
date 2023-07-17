@@ -34,6 +34,7 @@ class EditEventScheduleViewController: UIViewController {
     private let realm = try! Realm()
     private let notificationCenter = UNUserNotificationCenter.current()
     private let eventStore = EKEventStore()
+    private let fontSizeValue : CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
     
     private var reminderStatus: Bool = false
     private var isStartEditing: Bool = false
@@ -187,9 +188,10 @@ class EditEventScheduleViewController: UIViewController {
             let content = UNMutableNotificationContent()
             let dateS = model.scheduleTime ?? Date()
             let date = DateFormatter.localizedString(from: dateS, dateStyle: .medium, timeStyle: .none)
+            let name = String(describing: model.scheduleName)
             content.title = "Planned reminder".localized()
             content.body = "\(date)"
-            content.subtitle = "\(model.scheduleName)"
+            content.subtitle = "\(name)"
             content.sound = .defaultRingtone
             let dateFormat = DateFormatter.localizedString(from: scheduleModel.scheduleStartDate ?? Date(), dateStyle: .medium, timeStyle:.none)
             content.userInfo = ["userNotification": dateFormat]
@@ -376,6 +378,7 @@ extension EditEventScheduleViewController: UITableViewDelegate, UITableViewDataS
         let convertedDate = DateFormatter.localizedString(from: scheduleModel.scheduleTime ?? Date(), dateStyle: .medium, timeStyle: .medium)
         
         cell?.textLabel?.numberOfLines = 0
+        cell?.textLabel?.font = .systemFont(ofSize: fontSizeValue)
         cell?.contentView.layer.cornerRadius = 10
         cell?.backgroundColor = UIColor(named: "cellColor")
         
