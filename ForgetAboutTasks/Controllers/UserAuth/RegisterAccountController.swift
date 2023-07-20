@@ -127,12 +127,16 @@ class RegisterAccountViewController: UIViewController {
             if secondPassword.count >= 8 {
                 FirebaseAuth.Auth.auth().createUser(withEmail: mailField, password: secondPassword) { [weak self] _, error in
                     guard error == nil else { self?.alertError(text: "This account has already been created", mainTitle: "Error!"); return }
+                    try! KeychainManager.save(service: "Firebase Auth", account: mailField, password: firstPassword.data(using: .utf8) ?? Data())
                     UserDefaults.standard.setValue(userName, forKey: "userName")
                     UserDefaults.standard.setValue(mailField, forKey: "userMail")
-                    self?.view.window?.rootViewController?.dismiss(animated: true)
                     UserDefaultsManager.shared.setupForAuth()
-                    self?.indicator.stopAnimating()
-                    try! KeychainManager.save(service: "Firebase Auth", account: mailField, password: firstPassword.data(using: .utf8) ?? Data())
+                    
+                    UserDefaultsManager.shared.setupForAuth()
+                    DispatchQueue.main.async {
+                        self?.indicator.stopAnimating()
+                        self?.view.window?.rootViewController?.dismiss(animated: true)
+                    }
                 }
             } else {
                 alertError(text: "Password must contains at least 8 symbols", mainTitle: "Warning")

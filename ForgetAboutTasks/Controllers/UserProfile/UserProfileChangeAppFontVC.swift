@@ -17,8 +17,17 @@ class ChangeFontViewController: UIViewController {
     var dataReceive: ((CGFloat) -> Void)!
     private var rounderSize: CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
     private var savedFontName: String = UserDefaults.standard.string(forKey: "fontNameChanging") ?? "Times New Roman"
+    private let fontWeight: [UIFont.Weight] = [ UIFont.Weight.ultraLight,
+                                         UIFont.Weight.thin,
+                                         UIFont.Weight.light,
+                                         UIFont.Weight.regular,
+                                         UIFont.Weight.medium,
+                                         UIFont.Weight.semibold,
+                                         UIFont.Weight.bold,
+                                         UIFont.Weight.heavy,
+                                         UIFont.Weight.black]
     private let fontNames = UIFont.familyNames
-    private var avaliableFonts: [UIFont] = []
+    private var fontWeightString: [CGFloat] = []
     private var choosenFont: String = ""
     
     weak var delegate: ChangeFontDelegate?
@@ -27,6 +36,15 @@ class ChangeFontViewController: UIViewController {
         let label = UILabel()
         label.textColor = UIColor(named: "textColor")
         label.text = "Test font size and style: "
+        label.numberOfLines = 2
+        label.textAlignment = .center
+        return label
+    }()
+    
+    private let changeFontWeightLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = UIColor(named: "textColor")
+        label.text = "Set weight font for table headers"
         label.numberOfLines = 2
         label.textAlignment = .center
         return label
@@ -49,8 +67,13 @@ class ChangeFontViewController: UIViewController {
     
     private let fontNamePicker: UIPickerView = {
         let picker = UIPickerView()
-        picker.layer.borderWidth = 1
-        picker.layer.borderColor = UIColor(named: "navigationControllerColor")?.cgColor
+        picker.tag = 0
+        return picker
+    }()
+    
+    private let fontWeightPicker: UIPickerView = {
+       let picker = UIPickerView()
+        picker.tag = 1
         return picker
     }()
     
@@ -74,23 +97,27 @@ class ChangeFontViewController: UIViewController {
     }
     
     @objc private func didTapDismiss(){
+        self.dismiss(animated: true)
+    }
+    @objc private func didTapSave(){
         delegate?.changeFont(font: rounderSize, style: choosenFont)
         UserDefaults.standard.setValue(rounderSize, forKey: "fontSizeChanging")
         UserDefaults.standard.setValue(choosenFont, forKey: "fontNameChanging")
         DispatchQueue.main.async {
             self.dismiss(animated: true)
         }
-        
     }
+    
     //MARK: - Setup methods
     private func setupView(){
-        getFontsName()
+        fontWeightString = getFontWeights(fonts: fontNames)
         setupFontSize()
         setupNavigation()
         view.backgroundColor = .systemBackground
-        fontNamePicker.delegate = self
-        fontNamePicker.dataSource = self
-        
+        DispatchQueue.main.async {
+            self.fontNamePicker.delegate = self
+            self.fontNamePicker.dataSource = self
+        }
     }
     
     private func setupFontSize(){
@@ -105,21 +132,38 @@ class ChangeFontViewController: UIViewController {
     }
     
     private func setupNavigation(){
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", style: .done, target: self, action: #selector(didTapSave))
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back", image: UIImage(systemName: "chevron.left"), target: self, action: #selector(didTapDismiss))
         navigationItem.leftBarButtonItem?.tintColor = UIColor(named: "navigationControllerColor")
+        navigationItem.rightBarButtonItem?.tintColor = UIColor(named: "navigationControllerColor")
     }
     
-    private func getFontsName(){
-        for name in fontNames {
-            let fonts = UIFont.fontNames(forFamilyName: name)
-            for n in fonts {
-                guard let font = UIFont(name: n, size: rounderSize) else { return  }
-                avaliableFonts.append(font)
+//    private func getFontsName(){
+//        for name in fontNames {
+//            let fonts = UIFont.fontNames(forFamilyName: name)
+//            for n in fonts {
+//                guard let font = UIFont(name: n, size: rounderSize) else { return  }
+//                avaliableFonts.append(font)
+//            }
+//        }
+//    }
+    
+    private func getFontWeights(fonts: [String]) -> [CGFloat]{
+        var weights: [CGFloat] = []
+        for weight in fontWeight {
+            let fontTest = UIFont.systemFont(ofSize: 16,weight: weight)
+            for font in fonts {
+                if fontTest.familyName == font {
+                    weights.append(weight.rawValue)
+                }
             }
+            
         }
+        return weights
     }
+    
 }
-
+//MARK: - Extension for UIPicker View delegate and data source
 extension ChangeFontViewController : UIPickerViewDelegate, UIPickerViewDataSource {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
@@ -131,11 +175,13 @@ extension ChangeFontViewController : UIPickerViewDelegate, UIPickerViewDataSourc
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         return fontNames[row]
+        
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         
         testFontLabel.font = UIFont(name: fontNames[row], size: rounderSize)
+        changeFontWeightLabel.font = UIFont(name: fontNames[row], size: rounderSize)
         choosenFont = fontNames[row]
     }
     
@@ -160,7 +206,7 @@ extension ChangeFontViewController {
         testFontLabel.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10)
             make.leading.trailing.equalToSuperview().inset(20)
-            make.height.equalTo(60)
+            make.height.equalTo(30)
         }
         
         view.addSubview(changeFontSlider)
@@ -172,9 +218,23 @@ extension ChangeFontViewController {
         
         view.addSubview(fontNamePicker)
         fontNamePicker.snp.makeConstraints { make in
-            make.top.equalTo(changeFontSlider.snp.bottom).offset(20)
+            make.top.equalTo(changeFontSlider.snp.bottom)
             make.leading.trailing.equalToSuperview().inset(10)
-            make.height.equalTo(view.frame.size.height/2)
+            make.height.equalTo(view.frame.size.height/4)
         }
+        
+//        view.addSubview(changeFontWeightLabel)
+//        changeFontWeightLabel.snp.makeConstraints { make in
+//            make.top.equalTo(fontNamePicker.snp.bottom)
+//            make.leading.trailing.equalToSuperview().inset(10)
+//            make.height.equalTo(30)
+//        }
+//
+//        view.addSubview(fontWeightPicker)
+//        fontWeightPicker.snp.makeConstraints { make in
+//            make.top.equalTo(changeFontWeightLabel.snp.bottom)
+//            make.leading.trailing.equalToSuperview().inset(10)
+//            make.height.equalTo(view.frame.size.height/4)
+//        }
     }
 }

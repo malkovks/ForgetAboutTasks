@@ -381,14 +381,12 @@ class UserProfileViewController: UIViewController {
     
     private func loadingData(){
         let (name,mail,age) = UserDefaultsManager.shared.loadData()
-        guard let url = UserDefaults.standard.url(forKey: "userImageURL") else { return }
-        
-        if let _ = UserDefaults.standard.data(forKey: "userImage") {
-            userImageView.image = UserDefaultsManager.shared.loadSettedImage()
-        } else {
+        if let url = UserDefaults.standard.url(forKey: "userImageURL"){
             provider.dataProvider(url: url) { image in
                 self.userImageView.image = image
             }
+        } else {
+            userImageView.image = UserDefaultsManager.shared.loadSettedImage()
         }
         
         
@@ -502,6 +500,24 @@ class UserProfileViewController: UIViewController {
         UIView.transition(with: window, duration: 1,options: .transitionCrossDissolve, animations: nil)
     }
     
+    private func customHeaderView(tableView: UITableView, section: Int) -> UIView {
+        let height = fontSizeValue*3
+        let header = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 60))
+        header.backgroundColor = .systemYellow
+        
+        let label = UILabel(frame: CGRect(x: 15, y: -10, width: tableView.frame.width-30, height: 50))
+        label.font = UIFont(name: fontNameValue, size: fontSizeValue)
+        label.textColor = .black
+        switch section {
+        case 0: label.text = "Main setups".localized()
+        case 1: label.text = "Secondary setups".localized()
+        case 2: label.text = "Info".localized()
+        default: break
+        }
+        header.addSubview(label)
+        return header
+    }
+    
     
 }
 //MARK: - Check Success Delegate
@@ -509,6 +525,7 @@ extension UserProfileViewController: CheckSuccessSaveProtocol, ChangeFontDelegat
     func changeFont(font size: CGFloat, style: String) {
 //        setupFontSize(size: size, name: style)
         restartApp()
+        tableView.reloadData()
         print("delegate work fine")
     }
 
@@ -539,14 +556,18 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
         return 4
     }
     
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        switch section {
-        case 0: return "Main setups".localized()
-        case 1: return "Secondary setups".localized()
-        case 2: return "Info".localized()
-        case 3: return ""
-        default: return ""
-        }
+//    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+//        switch section {
+//        case 0: return "Main setups".localized()
+//        case 1: return "Secondary setups".localized()
+//        case 2: return "Info".localized()
+//        case 3: return ""
+//        default: return ""
+//        }
+//    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        customHeaderView(tableView: tableView, section: section)
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

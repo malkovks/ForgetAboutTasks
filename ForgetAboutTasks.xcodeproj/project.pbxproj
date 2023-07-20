@@ -79,6 +79,7 @@
 		0AA604E329E14673007ACE58 /* ScheduleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA604E229E14673007ACE58 /* ScheduleModel.swift */; };
 		0AA604E629E14814007ACE58 /* ScheduleRealmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA604E529E14814007ACE58 /* ScheduleRealmManager.swift */; };
 		0AA604E929E16C05007ACE58 /* ColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA604E829E16C05007ACE58 /* ColorExtensions.swift */; };
+		0AA6857B2A6922950002C533 /* UIFont+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA6857A2A6922950002C533 /* UIFont+Extensions.swift */; };
 		0AA74A2129E6EAB200F01532 /* ColorConverters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA74A2029E6EAB200F01532 /* ColorConverters.swift */; };
 		0AA74A2429E715ED00F01532 /* DateFormatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA74A2329E715ED00F01532 /* DateFormatters.swift */; };
 		0AA74A2629EC521800F01532 /* AllTasksRealmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA74A2529EC521800F01532 /* AllTasksRealmManager.swift */; };
@@ -200,6 +201,7 @@
 		0AA604E229E14673007ACE58 /* ScheduleModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleModel.swift; sourceTree = "<group>"; };
 		0AA604E529E14814007ACE58 /* ScheduleRealmManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleRealmManager.swift; sourceTree = "<group>"; };
 		0AA604E829E16C05007ACE58 /* ColorExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtensions.swift; sourceTree = "<group>"; };
+		0AA6857A2A6922950002C533 /* UIFont+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+Extensions.swift"; sourceTree = "<group>"; };
 		0AA74A2029E6EAB200F01532 /* ColorConverters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorConverters.swift; sourceTree = "<group>"; };
 		0AA74A2329E715ED00F01532 /* DateFormatters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormatters.swift; sourceTree = "<group>"; };
 		0AA74A2529EC521800F01532 /* AllTasksRealmManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllTasksRealmManager.swift; sourceTree = "<group>"; };
@@ -384,7 +386,7 @@
 			path = DateFormatters;
 			sourceTree = "<group>";
 		};
-		0A9918C02A4EC75D001004FA /* AccessSettings+Extension */ = {
+		0A9918C02A4EC75D001004FA /* AccessSettings+Extensions */ = {
 			isa = PBXGroup;
 			children = (
 				0A9918C12A4EC78B001004FA /* UserNotificationAccess.swift */,
@@ -393,7 +395,7 @@
 				0AA0E9392A60C69B00911C0D /* MediaAccess.swift */,
 				0AA0E93B2A60D24B00911C0D /* ContactsAccess.swift */,
 			);
-			path = "AccessSettings+Extension";
+			path = "AccessSettings+Extensions";
 			sourceTree = "<group>";
 		};
 		0A9918CA2A52AA01001004FA /* AppImages */ = {
@@ -548,6 +550,14 @@
 			path = Protocols;
 			sourceTree = "<group>";
 		};
+		0AA685792A6922750002C533 /* UIFont+Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				0AA6857A2A6922950002C533 /* UIFont+Extensions.swift */,
+			);
+			path = "UIFont+Extensions";
+			sourceTree = "<group>";
+		};
 		0AA74A2229E715DA00F01532 /* Date */ = {
 			isa = PBXGroup;
 			children = (
@@ -577,7 +587,8 @@
 		0AA8EC7029CAF52E004DC6DD /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				0A9918C02A4EC75D001004FA /* AccessSettings+Extension */,
+				0AA685792A6922750002C533 /* UIFont+Extensions */,
+				0A9918C02A4EC75D001004FA /* AccessSettings+Extensions */,
 				0AF2D6F22A166A720093A824 /* UIView+Extensions */,
 				0A7FFFBB29F1325500CAC9DA /* String+Extensions */,
 				0AA74A2229E715DA00F01532 /* Date */,
@@ -801,6 +812,7 @@
 			files = (
 				0AA74A2629EC521800F01532 /* AllTasksRealmManager.swift in Sources */,
 				0AEAA9F62A26884A00BE85A4 /* KeyChainManager.swift in Sources */,
+				0AA6857B2A6922950002C533 /* UIFont+Extensions.swift in Sources */,
 				0ACE797829DECF3300599C19 /* NewContactVC.swift in Sources */,
 				0A9918D82A542470001004FA /* LanguageManager.swift in Sources */,
 				0A9918F72A57F524001004FA /* UserProfileSwitchPasswordVC.swift in Sources */,

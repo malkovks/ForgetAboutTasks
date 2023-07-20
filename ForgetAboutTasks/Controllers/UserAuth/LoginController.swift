@@ -106,13 +106,15 @@ class LogInViewController: UIViewController {
         //get auth
         FirebaseAuth.Auth.auth().signIn(withEmail: email, password: password) { [weak self] result, error in
             
-            guard error == nil else {
+            guard error == nil,
+                  let result = result else {
                 self?.alertError(text: "Incorrect email or password.\nTry again!", mainTitle: "Error!")
                 return
             }
             self?.view.window?.rootViewController?.dismiss(animated: true)
             self?.setupLoadingSpinner()
-            UserDefaults.standard.setValue(email, forKey: "userMail")
+            UserDefaultsManager.shared.saveDataWithLogin(result: result)
+//            UserDefaults.standard.setValue(email, forKey: "userMail")
             UserDefaultsManager.shared.setupForAuth()
             self?.getPassword(email)
             self?.indicatorView.stopAnimating()
@@ -136,8 +138,6 @@ class LogInViewController: UIViewController {
     private func getPassword(_ email: String){
         guard let data = KeychainManager.get(service: "Firebase Auth", account: email) else { alertError(text: "Failed to read password", mainTitle: "Error");return }
         let password = String(decoding: data, as: UTF8.self)
-        
-        print("Password is \(password)")
         
     }
     
