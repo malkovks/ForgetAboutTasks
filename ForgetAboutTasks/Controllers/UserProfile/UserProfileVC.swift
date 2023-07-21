@@ -501,12 +501,11 @@ class UserProfileViewController: UIViewController {
     }
     
     private func customHeaderView(tableView: UITableView, section: Int) -> UIView {
-        let height = fontSizeValue*3
-        let header = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 60))
-        header.backgroundColor = .systemYellow
+        let header = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: fontSizeValue*3))
+        header.backgroundColor = .clear
         
-        let label = UILabel(frame: CGRect(x: 15, y: -10, width: tableView.frame.width-30, height: 50))
-        label.font = UIFont(name: fontNameValue, size: fontSizeValue)
+        let label = UILabel(frame: CGRect(x: 15, y: 5, width: tableView.frame.width-30, height: 40))
+        label.font = .systemFont(ofSize: fontSizeValue,weight: .semibold)
         label.textColor = .black
         switch section {
         case 0: label.text = "Main setups".localized()
@@ -518,15 +517,34 @@ class UserProfileViewController: UIViewController {
         return header
     }
     
+    private func customFooterView(tableView: UITableView, section: Int) -> UIView? {
+        let footer = UIView()
+        footer.backgroundColor = .clear
+        
+        let label = UILabel(frame: CGRect(x: 5, y: 5, width: tableView.frame.width-50, height: fontSizeValue*3))
+        label.font = .systemFont(ofSize: fontSizeValue*0.8,weight: .thin)
+        label.textAlignment = .justified
+        label.numberOfLines = 3
+        label.textColor = .systemGray3
+        footer.addSubview(label)
+        switch section {
+        case 0: label.text = "This settings need for switching on/off. It will segue to Main Settings for changing value."
+        case 1: label.text = "This include changing font size and style. Either you can change App Icon"
+        case 2: label.text = "You could change localization of application, read information about developer and read some features, which planned on near future"
+        case 3: return nil
+        default: break
+        }
+        let heightLabel = label.frame.height
+        footer.frame = CGRect(x: 0, y: 0, width: tableView.frame.width, height: heightLabel)
+        return footer
+    }
     
 }
 //MARK: - Check Success Delegate
 extension UserProfileViewController: CheckSuccessSaveProtocol, ChangeFontDelegate {
     func changeFont(font size: CGFloat, style: String) {
-//        setupFontSize(size: size, name: style)
         restartApp()
         tableView.reloadData()
-        print("delegate work fine")
     }
 
     
@@ -541,13 +559,10 @@ extension UserProfileViewController: CheckSuccessSaveProtocol, ChangeFontDelegat
 
 //MARK: - Table view delegate and data source
 extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource {
-    
+    //header and footer setups
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
-        case 0: return cellArray[section].count
-        case 1: return cellArray[section].count
-        case 2: return cellArray[section].count
-        case 3: return cellArray[section].count
+        case 0...3: return cellArray[section].count
         default: return 0
         }
     }
@@ -556,20 +571,29 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
         return 4
     }
     
-//    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-//        switch section {
-//        case 0: return "Main setups".localized()
-//        case 1: return "Secondary setups".localized()
-//        case 2: return "Info".localized()
-//        case 3: return ""
-//        default: return ""
-//        }
-//    }
-    
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         customHeaderView(tableView: tableView, section: section)
     }
     
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        customFooterView(tableView: tableView, section: section)
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        switch section {
+        case 0...2: return fontSizeValue * 3
+        default: return 0
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        switch section {
+        case 0...2: return fontSizeValue * 4
+        default: return 0
+        }
+    }
+    
+    //cell setups
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .default, reuseIdentifier: "settingsIdentifier")
         let data = cellArray[indexPath.section][indexPath.row]
