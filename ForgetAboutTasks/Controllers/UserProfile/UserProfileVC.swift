@@ -22,6 +22,8 @@ struct UserProfileData {
 }
 
 class UserProfileViewController: UIViewController {
+    
+    
 
     var cellArray = [[
                         UserProfileData(title: "Dark Mode".localized(),
@@ -49,7 +51,7 @@ class UserProfileViewController: UIViewController {
                      [
                         UserProfileData(title: "Change App Icon".localized(),
                                         cellImage: UIImage(systemName: "app.fill")!,
-                                        cellImageColor: .systemBlue),
+                                        cellImageColor: .systemIndigo),
                         UserProfileData(title: "Change Font".localized(),
                                         cellImage: UIImage(systemName: "character.cursor.ibeam")!,
                                         cellImageColor: .systemIndigo)
@@ -82,6 +84,7 @@ class UserProfileViewController: UIViewController {
     private let semaphore = DispatchSemaphore(value: 0)
     private let userInterface = UserDefaultsManager.shared
     private let activityIndicator = UIActivityIndicatorView(style: .large)
+    private let windows = UIApplication.shared.windows
     
  //MARK: - UI Elements
     private var imagePicker = UIImagePickerController()
@@ -153,6 +156,9 @@ class UserProfileViewController: UIViewController {
  //MARK: - Load cicle
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        UserDefaults.standard.setValue("bold", forKey: "FontWeight")
+        
         setupView()
     }
     
@@ -364,6 +370,7 @@ class UserProfileViewController: UIViewController {
     
     private func setupTableView(){
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "settingsIdentifier")
+        tableView.bounces = false
         tableView.delegate = self
         tableView.dataSource = self
         tableView.layer.cornerRadius = 8
@@ -438,8 +445,6 @@ class UserProfileViewController: UIViewController {
     }
     
     private func setupSwitchDarkMode() -> Bool {
-        let windows = UIApplication.shared.windows
-        
         if windows.first?.overrideUserInterfaceStyle == .dark {
             UserDefaults.standard.setValue(true, forKey: "setUserInterfaceStyle")
             return true
@@ -487,7 +492,9 @@ class UserProfileViewController: UIViewController {
             print("closure work fine")
         }
         let nav = UINavigationController(rootViewController: vc)
-        nav.modalPresentationStyle = .fullScreen
+        nav.modalPresentationStyle = .pageSheet
+        nav.sheetPresentationController?.detents = [.medium()]
+        nav.sheetPresentationController?.prefersGrabberVisible = true
         nav.modalTransitionStyle = .coverVertical
         nav.isNavigationBarHidden = false
         self.present(nav, animated: true)
@@ -506,7 +513,7 @@ class UserProfileViewController: UIViewController {
         
         let label = UILabel(frame: CGRect(x: 15, y: 5, width: tableView.frame.width-30, height: 40))
         label.font = .systemFont(ofSize: fontSizeValue,weight: .semibold)
-        label.textColor = .black
+        label.textColor = UIColor(named: "textColor")
         switch section {
         case 0: label.text = "Main setups".localized()
         case 1: label.text = "Secondary setups".localized()
@@ -525,7 +532,12 @@ class UserProfileViewController: UIViewController {
         label.font = .systemFont(ofSize: fontSizeValue*0.8,weight: .thin)
         label.textAlignment = .justified
         label.numberOfLines = 3
-        label.textColor = .systemGray3
+        if windows.first?.overrideUserInterfaceStyle == .light {
+            label.textColor = .darkGray
+        } else {
+            label.textColor = .darkText
+        }
+        
         footer.addSubview(label)
         switch section {
         case 0: label.text = "This settings need for switching on/off. It will segue to Main Settings for changing value."
@@ -537,6 +549,15 @@ class UserProfileViewController: UIViewController {
         let heightLabel = label.frame.height
         footer.frame = CGRect(x: 0, y: 0, width: tableView.frame.width, height: heightLabel)
         return footer
+    }
+    
+    private func imageWith(image: UIImage) -> UIImage {
+        let newSize = CGSize(width: image.size.width/2, height: image.size.height/2)
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
+        image.draw(in: CGRect(origin: CGPoint.zero, size: newSize))
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return newImage ?? UIImage(systemName: "square.fill")!
     }
     
 }
@@ -661,11 +682,28 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
             cell.accessoryView = .none
             cell.accessoryType = .disclosureIndicator
             cell.selectionStyle = .blue
+            
         }
         
         cell.textLabel?.text = data.title
         cell.imageView?.image = data.cellImage
         cell.imageView?.tintColor = data.cellImageColor
+        
+        
+        if indexPath == [1,0] {
+            let appIcon = UIApplication.shared.alternateIconName ?? "AppIcon.png"
+            let iconImage = UIImage(named: appIcon)?.withRenderingMode(.alwaysOriginal)
+            let image = imageWith(image: iconImage!)
+            
+            
+            cell.imageView?.image = image
+            cell.imageView?.sizeToFit()
+            cell.imageView?.clipsToBounds = true
+            cell.imageView?.contentMode = .scaleAspectFit
+            cell.imageView?.frame = CGRect(x: 0, y: 0, width: 30, height: 30)
+            cell.imageView?.sizeThatFits(CGSize(width: 30, height: 30))
+        }
+        
         return cell
     }
     

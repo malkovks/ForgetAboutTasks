@@ -93,6 +93,7 @@
 		0ACE797229DD95C600599C19 /* CreateTaskTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE797129DD95C600599C19 /* CreateTaskTableVC.swift */; };
 		0ACE797829DECF3300599C19 /* NewContactVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE797729DECF3300599C19 /* NewContactVC.swift */; };
 		0ACE797A29DED2D400599C19 /* NewContactCustomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE797929DED2D400599C19 /* NewContactCustomView.swift */; };
+		0AD498512A701F3700B0599E /* UserProfileFontCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD498502A701F3700B0599E /* UserProfileFontCollectionViewCell.swift */; };
 		0ADAB9FC2A310EEA00A5C2B2 /* AlertPhoneNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ADAB9FB2A310EEA00A5C2B2 /* AlertPhoneNumber.swift */; };
 		0AEAA9F32A264BBF00BE85A4 /* ResetPasswordController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEAA9F22A264BBF00BE85A4 /* ResetPasswordController.swift */; };
 		0AEAA9F62A26884A00BE85A4 /* KeyChainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEAA9F52A26884A00BE85A4 /* KeyChainManager.swift */; };
@@ -215,6 +216,7 @@
 		0ACE797129DD95C600599C19 /* CreateTaskTableVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTaskTableVC.swift; sourceTree = "<group>"; };
 		0ACE797729DECF3300599C19 /* NewContactVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewContactVC.swift; sourceTree = "<group>"; };
 		0ACE797929DED2D400599C19 /* NewContactCustomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewContactCustomView.swift; sourceTree = "<group>"; };
+		0AD498502A701F3700B0599E /* UserProfileFontCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileFontCollectionViewCell.swift; sourceTree = "<group>"; };
 		0ADAB9FB2A310EEA00A5C2B2 /* AlertPhoneNumber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertPhoneNumber.swift; sourceTree = "<group>"; };
 		0AEAA9F22A264BBF00BE85A4 /* ResetPasswordController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPasswordController.swift; sourceTree = "<group>"; };
 		0AEAA9F52A26884A00BE85A4 /* KeyChainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyChainManager.swift; sourceTree = "<group>"; };
@@ -306,6 +308,7 @@
 				0AA604E029E1460E007ACE58 /* Model */,
 				0A8D250B2A2C105800022622 /* View */,
 				0A8AC1A229B9D4D700EA052B /* Controllers */,
+				0AD4984F2A701E6D00B0599E /* Cells */,
 				0A9918D62A542458001004FA /* Managers */,
 				0AA604E429E14805007ACE58 /* Realm Managers */,
 				0AA604EA29E16DA1007ACE58 /* Protocols */,
@@ -598,6 +601,14 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
+		0AD4984F2A701E6D00B0599E /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				0AD498502A701F3700B0599E /* UserProfileFontCollectionViewCell.swift */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
 		0AF2D6F22A166A720093A824 /* UIView+Extensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -850,6 +861,7 @@
 				0AF2D6EF2A1141360093A824 /* ScheduleSearchResultVC.swift in Sources */,
 				0A86ED1A29B5D97F001C9BAF /* ForgetAboutTasks.xcdatamodeld in Sources */,
 				0A7FFFBD29F1326A00CAC9DA /* String+Extension.swift in Sources */,
+				0AD498512A701F3700B0599E /* UserProfileFontCollectionViewCell.swift in Sources */,
 				0A9918B22A41B655001004FA /* LockscreenWidget.swift in Sources */,
 				0ACE796B29D9EEAA00599C19 /* AlertSpinner.swift in Sources */,
 				0AEAA9F82A272BB600BE85A4 /* EditContactVC.swift in Sources */,

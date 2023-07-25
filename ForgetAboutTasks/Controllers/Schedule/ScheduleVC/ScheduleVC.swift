@@ -19,6 +19,7 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
     private let localRealm = try! Realm()
     private var scheduleModel: Results<ScheduleModel>!
     private var filteredModel: Results<ScheduleModel>!
+    private var birthdayModel: [Date] = []
     private let fontSizeValue : CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
     private let fontNameValue: String = UserDefaults.standard.string(forKey: "fontNameChanging") ?? "Charter"
     
@@ -145,11 +146,12 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
     
     private func setupView(){
         isSavedCompletely(boolean: false)
+        loadingData()
         calendar.reloadData()
         setupDelegates()
         setupConstraints()
         setupSearchController()
-        loadingData()
+        
         UserDefaultsManager.shared.checkDarkModeUserDefaults()
         loadingDataByDate(date: Date(), at: .current, is: true)
         view.backgroundColor = UIColor(named: "backgroundColor")
@@ -181,6 +183,17 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
     private func loadingData(){
         let value = localRealm.objects(ScheduleModel.self)
         filteredModel = value
+        
+        let birthdayDates = localRealm.objects(ContactModel.self)
+        for contact in birthdayDates {
+            if let birthdayDate = contact.contactDateBirthday {
+                self.birthdayModel.append(birthdayDate)
+            }
+        }
+        let dates: [Date] = birthdayDates.compactMap({ $0.contactDateBirthday })
+        
+        birthdayModel = dates
+        
     }
     
     private func loadingDataByDate(date: Date,at monthPosition: FSCalendarMonthPosition,is firstLoad: Bool) {
@@ -262,6 +275,9 @@ extension ScheduleViewController: FSCalendarDelegate, FSCalendarDataSource {
         let convertDate = DateFormatter.localizedString(from: date, dateStyle: .medium, timeStyle: .none)
         calendar.appearance.eventDefaultColor = .systemBlue
         if eventCounts[convertDate] != nil {
+//            if birthdayModel.contains(date){
+//                return 2
+//            }
             return 1
         } else {
             return 0

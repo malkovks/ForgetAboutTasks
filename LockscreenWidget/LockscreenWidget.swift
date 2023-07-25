@@ -27,18 +27,24 @@ struct Provider: IntentTimelineProvider {
         let count = userDefaults?.value(forKey: "group.integer") as? Int ?? 0
         let currentDate = Date()
         let nextMidnight = Calendar.current.date(byAdding: .day, value: 1, to: currentDate)!
-//        for offset in 0 ..< 60 * 24 {
-//            let entryDate = Calendar.current.date(byAdding: .minute, value: offset, to: currentDate)!
+
+        let totalCountdown = 60
+        
+        for i in 0...totalCountdown {
+            let component = DateComponents(minute: i)
+            let refreshDate = Calendar.current.date(byAdding: component, to: Date())!
+            
+            let entry = DayEntry(date: refreshDate, count: count, configuration: configuration)
+            entries.append(entry)
+            
+        }
+        
+//        for dayOffset in 0 ..< 7 {
+//
+//            let entryDate = Calendar.current.date(byAdding: .day, value: dayOffset, to: currentDate)!
 //            let entry = DayEntry(date: entryDate, count: count, configuration: configuration)
 //            entries.append(entry)
 //        }
-//
-        for dayOffset in 0 ..< 7 {
-
-            let entryDate = Calendar.current.date(byAdding: .day, value: dayOffset, to: currentDate)!
-            let entry = DayEntry(date: entryDate, count: count, configuration: configuration)
-            entries.append(entry)
-        }
 
         let timeline = Timeline(entries: entries, policy: .after(nextMidnight))
         completion(timeline)
