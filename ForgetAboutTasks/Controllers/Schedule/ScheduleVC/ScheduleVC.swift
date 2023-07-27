@@ -17,6 +17,7 @@ import WidgetKit
 class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
     
     private let localRealm = try! Realm()
+    private let provider = DataProvider()
     private var scheduleModel: Results<ScheduleModel>!
     private var filteredModel: Results<ScheduleModel>!
     private var birthdayModel: [Date] = []
@@ -162,7 +163,7 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
     
     private func setupNavigationController(){
         title = "Calendar".localized()
-        navigationItem.leftBarButtonItem = searchNavigationButton
+        navigationItem.leftBarButtonItems = [searchNavigationButton]
         navigationItem.rightBarButtonItems = [createNewEventNavigationButton,displayAllEvent]
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = true
@@ -171,6 +172,7 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
         navigationController?.navigationItem.largeTitleDisplayMode = .never
         navigationController?.navigationBar.prefersLargeTitles = false
     }
+
     
     private func setupSearchController(){
         searchController.searchResultsUpdater = self
@@ -193,7 +195,6 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
         let dates: [Date] = birthdayDates.compactMap({ $0.contactDateBirthday })
         
         birthdayModel = dates
-        
     }
     
     private func loadingDataByDate(date: Date,at monthPosition: FSCalendarMonthPosition,is firstLoad: Bool) {

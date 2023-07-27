@@ -15,30 +15,32 @@ protocol ChangeFontDelegate: AnyObject {
 class ChangeFontViewController: UIViewController {
     
     var dataReceive: ((CGFloat) -> Void)!
-    private var rounderSize: CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
+    private var savedFontSize: CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
     private var savedFontName: String = UserDefaults.standard.string(forKey: "fontNameChanging") ?? "Times New Roman"
     private var savedFontWeight: CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontWeightChanging"))
-    private lazy var fontWeight: [UIFont.Weight] = [ UIFont.Weight.ultraLight,
-                                                         UIFont.Weight.thin,
-                                                         UIFont.Weight.light,
-                                                         UIFont.Weight.regular,
-                                                         UIFont.Weight.medium,
-                                                         UIFont.Weight.semibold,
-                                                         UIFont.Weight.bold,
-                                                         UIFont.Weight.heavy,
-                                                         UIFont.Weight.black]
+    private lazy var fontWeight: [UIFont.Weight] = [
+        UIFont.Weight.ultraLight,
+        UIFont.Weight.thin,
+        UIFont.Weight.light,
+        UIFont.Weight.regular,
+        UIFont.Weight.medium,
+        UIFont.Weight.semibold,
+        UIFont.Weight.bold,
+        UIFont.Weight.heavy,
+        UIFont.Weight.black
+    ]
     private let fontNames = UIFont.familyNames
     private var fontWeightString: [String] = [
-        "ultraLight",
-        "thin",
-        "light",
-        "regular",
-        "medium",
-        "semibold",
-        "bold",
-        "heavy",
-        "black"]
-    private var choosenFont: String = ""
+        "UltraLight",
+        "Thin",
+        "Light",
+        "Regular",
+        "Medium",
+        "Semibold",
+        "Bold",
+        "Heavy",
+        "Black"
+    ]
     
     weak var delegate: ChangeFontDelegate?
     
@@ -60,6 +62,16 @@ class ChangeFontViewController: UIViewController {
         return label
     }()
     
+    private let headerForCollectionLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = UIColor(named: "textColor")
+        label.text = "Set Weight for header title of Tables"
+        label.numberOfLines = 1
+        label.textAlignment = .center
+        label.font.setupFont(size: 14, weight: .thin)
+        return label
+    }()
+    
     private var collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     
     private let changeFontSlider: UISlider = {
@@ -67,7 +79,7 @@ class ChangeFontViewController: UIViewController {
         slider.minimumValue = 8
         slider.maximumValue = 20
         slider.isContinuous = true
-        slider.minimumTrackTintColor = UIColor(named: "navigationControllerColor")
+        slider.minimumTrackTintColor = UIColor(named: "calendarHeaderColor")
         slider.maximumTrackTintColor = UIColor(named: "navigationControllerColor")
         slider.thumbTintColor = UIColor(named: "textColor")
         slider.minimumValueImage = UIImage(systemName: "character")
@@ -89,31 +101,40 @@ class ChangeFontViewController: UIViewController {
         return picker
     }()
     
-    private let fontWeightSegmentalController: UISegmentedControl = {
-        let items = ["Ultralight","Light","Thin", "Regular","Medium","Semibold","Bold","Heavy","Black"]
-       let controller = UISegmentedControl(items: items)
-        controller.tintColor = UIColor(named: "navigationControllerColor")
-        controller.backgroundColor = UIColor(named: "navigationControllerColor")
+    private let fontStyleSegmentControl: UISegmentedControl = {
+        let controller = UISegmentedControl(items: ["","",""])
+        controller.setImage(UIImage(systemName: "bold"), forSegmentAt: 0)
+        controller.setImage(UIImage(systemName: "italic"), forSegmentAt: 1)
+        controller.setImage(UIImage(systemName: "underline"), forSegmentAt: 2)
+        controller.tintColor = UIColor(named: "calendarHeaderColor")
+        controller.selectedSegmentTintColor = UIColor(named: "textColor")
         return controller
     }()
     
     private let pageControl: UIPageControl = {
         let page = UIPageControl()
+        page.pageIndicatorTintColor = UIColor(named: "calendarHeaderColor")
+        page.currentPageIndicatorTintColor = UIColor(named: "navigationControllerColor")
+        page.hidesForSinglePage = true
         return page
+    }()
+    
+    private let saveFontSettingsButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.configuration = .tinted()
+        button.configuration?.title = "Save changes"
+        button.configuration?.image = UIImage(systemName: "heart.circle.fill")
+        button.configuration?.imagePadding = 2
+        button.configuration?.imagePlacement = .trailing
+        button.configuration?.baseBackgroundColor = UIColor(named: "calendarHeaderColor")
+        button.configuration?.baseForegroundColor = UIColor(named: "calendarHeaderColor")
+        return button
     }()
     
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        view.addSubview(collectionView)
-//        collectionView.snp.makeConstraints { make in
-//            make.top.equalToSuperview().offset(20)
-//            make.leading.trailing.equalToSuperview()
-//            make.height.equalTo(100)
-//        }
-        
-        
         setupView()
         
     }
@@ -121,19 +142,20 @@ class ChangeFontViewController: UIViewController {
     @objc private func didTapChangeFont(sender: UISlider){
         let fontSize = CGFloat(sender.value)
         let step = CGFloat(2)
-        rounderSize = round(fontSize / step) * step
+        savedFontSize = round(fontSize / step) * step
         
-        testFontLabel.font = .systemFont(ofSize: rounderSize)
-        testFontLabel.text = "Test font size: \(rounderSize)"
+        testFontLabel.font = .systemFont(ofSize: savedFontSize,weight: UIFont.Weight(rawValue: savedFontWeight))
+        testFontLabel.text = "Test font size: \(savedFontSize)"
     }
     
     @objc private func didTapDismiss(){
         self.dismiss(animated: true)
     }
     @objc private func didTapSave(){
-        delegate?.changeFont(font: rounderSize, style: choosenFont)
-        UserDefaults.standard.setValue(rounderSize, forKey: "fontSizeChanging")
-        UserDefaults.standard.setValue(choosenFont, forKey: "fontNameChanging")
+        delegate?.changeFont(font: savedFontSize, style: savedFontName)
+        UserDefaults.standard.setValue(savedFontSize, forKey: "fontSizeChanging")
+        UserDefaults.standard.setValue(savedFontName, forKey: "fontNameChanging")
+        UserDefaults.standard.setValue(savedFontWeight, forKey: "fontWeightChanging")
         DispatchQueue.main.async {
             self.dismiss(animated: true)
         }
@@ -141,11 +163,10 @@ class ChangeFontViewController: UIViewController {
     
     //MARK: - Setup methods
     private func setupView(){
-        testFontLabel.text! += "\(rounderSize)"
+        
         
         setupConstraints()
         setupCollectionView()
-//        fontWeightString = getFontWeights(fonts: fontNames)
         setupFontSize()
         setupNavigation()
         setupPageControll()
@@ -157,7 +178,7 @@ class ChangeFontViewController: UIViewController {
     }
     
     private func setupPageControll(){
-        pageControl.numberOfPages = fontWeight.count
+        pageControl.numberOfPages = 5
     }
     
     private func setupCollectionView(){
@@ -165,26 +186,36 @@ class ChangeFontViewController: UIViewController {
         layout.scrollDirection = .horizontal
         layout.minimumInteritemSpacing = 10
         layout.minimumLineSpacing = 10
-        layout.itemSize = CGSize(width: view.frame.size.width/4, height: 30)
+        layout.itemSize = CGSize(width: view.frame.size.width/2-20, height: 30)
     
 
         collectionView.setCollectionViewLayout(layout, animated: true)
         collectionView.register(UserProfileFontCollectionViewCell.self, forCellWithReuseIdentifier: UserProfileFontCollectionViewCell.identifier)
-        collectionView.isPagingEnabled = false
+        collectionView.isPagingEnabled = true
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.backgroundColor = .clear
         collectionView.contentInsetAdjustmentBehavior = .automatic
         collectionView.allowsMultipleSelection = true
+        collectionView.showsHorizontalScrollIndicator = false
     }
     
     private func setupFontSize(){
-        let fontSize = Float(rounderSize)
+        let fontSize = Float(savedFontSize)
         changeFontSlider.addTarget(self, action: #selector(didTapChangeFont), for: .valueChanged)
         changeFontSlider.value = fontSize
+        
+        testFontLabel.text! += "\(savedFontSize)"
+        testFontLabel.font = UIFont(name: savedFontName, size: savedFontSize)
+        testFontLabel.font = .systemFont(ofSize: savedFontSize, weight: UIFont.Weight(rawValue: savedFontWeight))
+        
+        headerForCollectionLabel.font = UIFont(name: savedFontName, size: savedFontSize)
+        headerForCollectionLabel.font = .systemFont(ofSize: savedFontSize, weight: UIFont.Weight(rawValue: savedFontWeight))
+        saveFontSettingsButton.addTarget(self, action: #selector(didTapSave), for: .touchUpInside)
+        
         if let index = fontNames.firstIndex(where: { $0 == savedFontName }) {
             fontNamePicker.selectRow(index, inComponent: 0, animated: true)
-            testFontLabel.font = UIFont(name: savedFontName, size: rounderSize)
+            testFontLabel.font.setupFont(size: savedFontSize, name: savedFontName, weight: UIFont.Weight(rawValue: savedFontWeight) )
         }
     }
     
@@ -193,30 +224,6 @@ class ChangeFontViewController: UIViewController {
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back", image: UIImage(systemName: "chevron.down"), target: self, action: #selector(didTapDismiss))
         navigationItem.leftBarButtonItem?.tintColor = UIColor(named: "navigationControllerColor")
         navigationItem.rightBarButtonItem?.tintColor = UIColor(named: "navigationControllerColor")
-    }
-    
-//    private func getFontsName(){
-//        for name in fontNames {
-//            let fonts = UIFont.fontNames(forFamilyName: name)
-//            for n in fonts {
-//                guard let font = UIFont(name: n, size: rounderSize) else { return  }
-//                avaliableFonts.append(font)
-//            }
-//        }
-//    }
-    
-    private func getFontWeights(fonts: [String]) -> [CGFloat]{
-        var weights: [CGFloat] = []
-        for weight in fontWeight {
-            let fontTest = UIFont.systemFont(ofSize: 16,weight: weight)
-            for font in fonts {
-                if fontTest.familyName == font {
-                    weights.append(weight.rawValue)
-                }
-            }
-            
-        }
-        return weights
     }
 }
 extension ChangeFontViewController: UICollectionViewDelegate, UICollectionViewDataSource {
@@ -229,21 +236,22 @@ extension ChangeFontViewController: UICollectionViewDelegate, UICollectionViewDa
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: UserProfileFontCollectionViewCell.identifier, for: indexPath) as? UserProfileFontCollectionViewCell
         let weight = fontWeight[indexPath.row]
         let nameWeight = fontWeightString[indexPath.row]
-        cell?.configureCell(withFont: weight, size: rounderSize, style: savedFontName, weightName: nameWeight)
-        cell?.backgroundColor = UIColor(named: "navigationControllerColor")
+        cell?.configureCell(withFont: weight, size: savedFontSize, style: savedFontName, weightName: nameWeight)
+        cell?.backgroundColor = UIColor(named: "calendarHeaderColor")
         return cell ?? UICollectionViewCell()
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let fontWeight = fontWeight[indexPath.row]
+        testFontLabel.font = UIFont(name: savedFontName, size: savedFontSize)
+        testFontLabel.font = .systemFont(ofSize: savedFontSize, weight: fontWeight)
+        
     }
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         let currentPage = Int(scrollView.contentOffset.x / scrollView.frame.width)
         pageControl.currentPage = currentPage
     }
-    
-//    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-//        self.pageControl.currentPage = indexPath.section
-//    }
-    
-    
 }
 
 //MARK: - Extension for UIPicker View delegate and data source
@@ -262,10 +270,11 @@ extension ChangeFontViewController : UIPickerViewDelegate, UIPickerViewDataSourc
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        
-        testFontLabel.font = UIFont(name: fontNames[row], size: rounderSize)
-        changeFontWeightLabel.font = UIFont(name: fontNames[row], size: rounderSize)
-        choosenFont = fontNames[row]
+        let fontName = fontNames[row]
+        testFontLabel.font = UIFont(name: fontName, size: savedFontSize)
+//        testFontLabel.font = .systemFont(ofSize: savedFontSize, weight: UIFont.Weight(rawValue: savedFontWeight))
+
+        savedFontName = fontNames[row]
     }
     
     func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
@@ -299,32 +308,46 @@ extension ChangeFontViewController {
             make.height.equalTo(50)
         }
         
+        view.addSubview(headerForCollectionLabel)
+        headerForCollectionLabel.snp.makeConstraints { make in
+            make.top.equalTo(changeFontSlider.snp.bottom)
+            make.centerX.equalToSuperview()
+            make.height.equalTo(30)
+        }
+        
         view.addSubview(collectionView)
         collectionView.snp.makeConstraints { make in
-            make.top.equalTo(changeFontSlider.snp.bottom).offset(10)
+            make.top.equalTo(headerForCollectionLabel.snp.bottom).offset(10)
             make.leading.trailing.equalToSuperview().inset(10)
             make.height.equalTo(50)
         }
         
+        view.addSubview(pageControl)
+        pageControl.snp.makeConstraints { make in
+            make.top.equalTo(collectionView.snp.bottom)
+            make.centerX.equalToSuperview()
+            make.height.equalTo(20)
+        }
+        
+        view.addSubview(fontStyleSegmentControl)
+        fontStyleSegmentControl.snp.makeConstraints { make in
+            make.top.equalTo(pageControl.snp.bottom).offset(10)
+            make.leading.trailing.equalToSuperview().inset(40)
+            make.height.equalTo(35)
+        }
+        
         view.addSubview(fontNamePicker)
         fontNamePicker.snp.makeConstraints { make in
-            make.top.equalTo(collectionView.snp.bottom)
+            make.top.equalTo(fontStyleSegmentControl.snp.bottom)
             make.leading.trailing.equalToSuperview().inset(10)
             make.height.equalTo(view.frame.size.height/4)
         }
         
-//        view.addSubview(changeFontWeightLabel)
-//        changeFontWeightLabel.snp.makeConstraints { make in
-//            make.top.equalTo(fontNamePicker.snp.bottom)
-//            make.leading.trailing.equalToSuperview().inset(10)
-//            make.height.equalTo(30)
-//        }
-//
-//        view.addSubview(fontWeightPicker)
-//        fontWeightPicker.snp.makeConstraints { make in
-//            make.top.equalTo(changeFontWeightLabel.snp.bottom)
-//            make.leading.trailing.equalToSuperview().inset(10)
-//            make.height.equalTo(view.frame.size.height/4)
-//        }
+        view.addSubview(saveFontSettingsButton)
+        saveFontSettingsButton.snp.makeConstraints { make in
+            make.top.equalTo(fontNamePicker.snp.bottom).offset(20)
+            make.leading.trailing.equalToSuperview().inset(30)
+            make.height.equalTo(40)
+        }
     }
 }

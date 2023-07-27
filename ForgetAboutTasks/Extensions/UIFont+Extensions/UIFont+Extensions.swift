@@ -8,7 +8,8 @@
 import UIKit
 
 extension UIFont {
-    func setupFont(size: CGFloat = 16,name: String = "Times New Roman", weight: UIFont.Weight = .medium){
-        //подумать как сделать эту функцию
+    func setupFont(size: CGFloat = 16,name: String = "Times New Roman", weight: UIFont.Weight = .medium) -> UIFont{
+        let font = UIFont(name: name, size: size)!
+        return font
     }
 }

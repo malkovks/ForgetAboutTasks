@@ -27,8 +27,9 @@ class UserDefaultsManager: UIViewController {
         UserDefaults.standard.setValue(nil, forKey: "userImage")
         UserDefaults.standard.setValue(nil, forKey: "userImageURL")
         UserDefaults.standard.setValue("", forKey: "userAge")
-        UserDefaults.standard.setValue("Times New Roman", forKey: "fontNameChanging")
+        UserDefaults.standard.setValue("Didot", forKey: "fontNameChanging")
         UserDefaults.standard.setValue(16, forKey: "fontSizeChanging")
+        UserDefaults.standard.setValue(0.0, forKey: "fontWeightChanging")
     }
     
     func loadSettedImage() -> UIImage {
@@ -58,6 +59,7 @@ class UserDefaultsManager: UIViewController {
         UserDefaults.standard.set(profile, forKey: "userImageURL")
         UserDefaults.standard.setValue(16, forKey: "fontSizeChanging")
         UserDefaults.standard.setValue("Times New Roman", forKey: "fontNameChanging")
+        UserDefaults.standard.setValue(0.0, forKey: "fontWeightChanging")
     }
     
     func saveDataWithLogin(result: AuthDataResult){
@@ -65,6 +67,7 @@ class UserDefaultsManager: UIViewController {
         UserDefaults.standard.setValue(result.user.email, forKey: "userMail")
         UserDefaults.standard.setValue(16, forKey: "fontSizeChanging")
         UserDefaults.standard.setValue("Times New Roman", forKey: "fontNameChanging")
+        UserDefaults.standard.setValue(0.0, forKey: "fontWeightChanging")
     }
     
     func checkDarkModeUserDefaults() -> Bool? {

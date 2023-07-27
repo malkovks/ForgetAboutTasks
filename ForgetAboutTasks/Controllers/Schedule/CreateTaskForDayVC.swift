@@ -12,7 +12,6 @@ import RealmSwift
 
 
 class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
-
     
     
     private var cellDataScheduleModel: Results<ScheduleModel>!
@@ -24,6 +23,7 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
     private var isCellEdited = Bool()
     private let fontSizeValue : CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
     private let fontNameValue: String = UserDefaults.standard.string(forKey: "fontNameChanging") ?? "Charter"
+    private let fontWeightValue: CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontWeightChanging"))
     
     init(model: Results<ScheduleModel>,choosenDate: Date){
         self.cellDataScheduleModel = model
@@ -41,7 +41,7 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
     }
     
     //MARK: - Setup UI elements
-
+    
     private var calendar: FSCalendar = {
         let calendar = FSCalendar()
         calendar.formatter.timeZone = TimeZone.current
@@ -80,7 +80,7 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
     }()
     
     private let tableView: UITableView = {
-       let table = UITableView()
+        let table = UITableView()
         table.translatesAutoresizingMaskIntoConstraints = false
         return table
     }()
@@ -88,7 +88,7 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
     private var actionMenu: UIMenu = UIMenu()
     
     private lazy var createEventButton: UIBarButtonItem = {
-       return UIBarButtonItem(image: UIImage(systemName: "plus.circle.fill"), landscapeImagePhone: nil, style: .done, target: self, action: #selector(didTapCreate))
+        return UIBarButtonItem(image: UIImage(systemName: "plus.circle.fill"), landscapeImagePhone: nil, style: .done, target: self, action: #selector(didTapCreate))
     }()
     
     private lazy var editNavigationButton: UIBarButtonItem = {
@@ -97,6 +97,14 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
     
     private lazy var actionWithTableButton: UIBarButtonItem = {
         return UIBarButtonItem(image: UIImage(systemName: "trash"), menu: actionMenu)
+    }()
+    
+    private lazy var displayUserProfileView: UIBarButtonItem = {
+        return UIBarButtonItem(image: UIImage(systemName: "person.circle.fill"), style: .done, target: self, action: #selector(didTapDisplayUserView))
+    }()
+    
+    private lazy var dismissViewButton: UIBarButtonItem = {
+       return UIBarButtonItem(image: UIImage(systemName: "arrow.backward.circle.fill"), style: .done, target: self, action: #selector(didTapDismiss))
     }()
     //MARK: - override views
     
@@ -125,6 +133,13 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
  //MARK: -  actions targets methods
     @objc private func didTapDismiss(){
         dismiss(animated: true)
+    }
+    
+    @objc private func didTapDisplayUserView(){
+        dismiss(animated: true)
+        UIView.transition(with: view, duration: 0.5,options: .transitionCrossDissolve) {
+            self.tabBarController?.selectedIndex = 3
+        }
     }
     
     @objc private func didTapCreate(){
@@ -211,7 +226,7 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
     private func setupNavigationController(){
         navigationController?.navigationItem.largeTitleDisplayMode = .never
         navigationController?.navigationBar.prefersLargeTitles = false
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "arrow.backward.circle.fill"), landscapeImagePhone: nil, style: .done, target: self, action: #selector(didTapDismiss))
+        navigationItem.leftBarButtonItems = [dismissViewButton, displayUserProfileView]
         
         navigationItem.rightBarButtonItems = [createEventButton,editNavigationButton]
         navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
@@ -301,6 +316,7 @@ extension CreateTaskForDayController: UITableViewDelegate, UITableViewDataSource
         cell.accessoryType = .disclosureIndicator
         cell.backgroundColor = UIColor(named: "backgroundColor")
         cell.textLabel?.font = UIFont(name: fontNameValue, size: fontSizeValue)
+//        cell.textLabel?.font = .boldSystemFont(ofSize: fontWeightValue)
         cell.detailTextLabel?.font = UIFont(name: fontNameValue, size: fontSizeValue * 0.7)
         let data = cellDataScheduleModel[indexPath.row]
         

@@ -369,12 +369,13 @@ class UserProfileViewController: UIViewController {
     }
     
     private func setupTableView(){
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "settingsIdentifier")
+        tableView.register(UserProfileTableViewCell.self, forCellReuseIdentifier: UserProfileTableViewCell.identifier)
         tableView.bounces = false
         tableView.delegate = self
         tableView.dataSource = self
         tableView.layer.cornerRadius = 8
         tableView.backgroundColor = UIColor(named: "backgroundColor")
+        tableView.separatorStyle = .none
     }
     
     private func setupLabelUnderline(){
@@ -493,7 +494,7 @@ class UserProfileViewController: UIViewController {
         }
         let nav = UINavigationController(rootViewController: vc)
         nav.modalPresentationStyle = .pageSheet
-        nav.sheetPresentationController?.detents = [.medium()]
+        nav.sheetPresentationController?.detents = [.large()]
         nav.sheetPresentationController?.prefersGrabberVisible = true
         nav.modalTransitionStyle = .coverVertical
         nav.isNavigationBarHidden = false
@@ -501,7 +502,7 @@ class UserProfileViewController: UIViewController {
     }
     
     private func restartApp(){
-        guard let window = UIApplication.shared.keyWindow else { print("error");return }
+        guard let window = UIApplication.shared.keyWindow else { return }
         let vc = TabBarViewController()
         window.rootViewController = vc
         UIView.transition(with: window, duration: 1,options: .transitionCrossDissolve, animations: nil)
@@ -616,94 +617,70 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
     
     //cell setups
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell(style: .default, reuseIdentifier: "settingsIdentifier")
+        let cell = tableView.dequeueReusableCell(withIdentifier: UserProfileTableViewCell.identifier,for: indexPath) as! UserProfileTableViewCell
         let data = cellArray[indexPath.section][indexPath.row]
-        cell.backgroundColor = UIColor(named: "cellColor")
-        cell.selectionStyle = .none
-        cell.textLabel?.font = UIFont(name: fontNameValue, size: fontSizeValue)
-        let switchButton = UISwitch()
-        switchButton.isOn = false
-        switchButton.onTintColor = #colorLiteral(red: 0.3920767307, green: 0.5687371492, blue: 0.998278439, alpha: 1)
-        switchButton.isHidden = true
-        switchButton.clipsToBounds = true
-        
-        cell.accessoryView = switchButton
-        if indexPath == [0,0] {
-            switchButton.isHidden = false
-            switchButton.isOn = userInterface.checkDarkModeUserDefaults() ?? setupSwitchDarkMode()
-            cell.accessoryType = .none
-            switchButton.addTarget(self, action: #selector(self.didTapSwitch(sender: )), for: .touchUpInside)
-        } else if indexPath == [0,1] {
-            switchButton.isHidden = false
-            cell.accessoryType = .none
-            switchButton.addTarget(self, action: #selector(didTapChangeAccessNotifications), for: .touchUpInside)
-            showNotificationAccessStatus { access in
-                DispatchQueue.main.async {
-                    switchButton.isOn = access
-                }
-            }
-        } else if indexPath == [0,2] {
-            switchButton.isHidden = false
-            cell.accessoryType = .none
-            switchButton.addTarget(self, action: #selector(didTapChangeAccessCalendar), for: .touchUpInside)
-            request(forAllowing: eventStore) { access in
-                DispatchQueue.main.async {
-                    switchButton.isOn = access
-                }
-            }
-        } else if indexPath == [0,3] {
-            switchButton.isHidden = false
-            cell.accessoryType = .none
-            switchButton.addTarget(self, action: #selector(didTapChangeAccessToContacts), for: .touchUpInside)
-            checkAuthForContacts { success in
-                DispatchQueue.main.async {
-                    switchButton.isOn = success
-                }
-            }
-        } else if indexPath == [0,4] {
-            switchButton.isHidden = false
-            cell.accessoryType = .none
-            switchButton.addTarget(self, action: #selector(didTapChangeAccessToMedia), for: .touchUpInside)
-            checkAccessForMedia { success in
-                DispatchQueue.main.async {
-                    switchButton.isOn = success
-                }
-            }
-        } else if indexPath == [0,5] {
-            switchButton.isHidden = false
-            cell.accessoryType = .none
-            switchButton.addTarget(self, action: #selector(didTapChangeAccessToFaceID), for: .touchUpInside)
-            checkAuthForFaceID { success in
-                DispatchQueue.main.async {
-                    switchButton.isOn = success
-                }
-            }
-        } else {
-            cell.accessoryView = .none
-            cell.accessoryType = .disclosureIndicator
-            cell.selectionStyle = .blue
-            
-        }
-        
-        cell.textLabel?.text = data.title
-        cell.imageView?.image = data.cellImage
-        cell.imageView?.tintColor = data.cellImageColor
-        
-        
+        cell.configureCell(text: data.title, imageCell: data.cellImage, image: data.cellImageColor)
+        cell.separatorInset = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15)
+        cell.configureSwitch(indexPath: indexPath)
         if indexPath == [1,0] {
             let appIcon = UIApplication.shared.alternateIconName ?? "AppIcon.png"
             let iconImage = UIImage(named: appIcon)?.withRenderingMode(.alwaysOriginal)
             let image = imageWith(image: iconImage!)
-            
-            
-            cell.imageView?.image = image
-            cell.imageView?.sizeToFit()
-            cell.imageView?.clipsToBounds = true
-            cell.imageView?.contentMode = .scaleAspectFit
-            cell.imageView?.frame = CGRect(x: 0, y: 0, width: 30, height: 30)
-            cell.imageView?.sizeThatFits(CGSize(width: 30, height: 30))
+            cell.cellImageView.image = image
+            cell.cellImageView.contentMode = .scaleAspectFit
         }
         
+        switch indexPath {
+        case [0,0]:
+            cell.switchButton.isOn = userInterface.checkDarkModeUserDefaults() ?? setupSwitchDarkMode()
+            cell.switchButton.addTarget(self, action: #selector(didTapSwitch(sender: )), for: .valueChanged)
+        case [0,1]:
+            cell.switchButton.isHidden = false
+            cell.switchButton.addTarget(self, action: #selector(didTapChangeAccessNotifications), for: .touchUpInside)
+            showNotificationAccessStatus { access in
+                DispatchQueue.main.async {
+                    cell.switchButton.isOn = access
+                }
+            }
+        case [0,2]:
+            cell.switchButton.isHidden = false
+            cell.switchButton.addTarget(self, action: #selector(didTapChangeAccessCalendar), for: .touchUpInside)
+            request(forAllowing: eventStore) { access in
+                DispatchQueue.main.async {
+                    cell.switchButton.isOn = access
+                }
+            }
+        case [0,3]:
+            cell.switchButton.isHidden = false
+            cell.switchButton.addTarget(self, action: #selector(didTapChangeAccessToContacts), for: .touchUpInside)
+            checkAuthForContacts { success in
+                DispatchQueue.main.async {
+                    cell.switchButton.isOn = success
+                }
+            }
+        case [0,4]:
+            cell.switchButton.isHidden = false
+            cell.switchButton.addTarget(self, action: #selector(didTapChangeAccessToMedia), for: .touchUpInside)
+            checkAccessForMedia { success in
+                DispatchQueue.main.async {
+                    cell.switchButton.isOn = success
+                }
+            }
+        case [0,5]:
+            cell.switchButton.isHidden = false
+            cell.switchButton.addTarget(self, action: #selector(didTapChangeAccessToFaceID), for: .touchUpInside)
+            checkAuthForFaceID { success in
+                DispatchQueue.main.async {
+                    cell.switchButton.isOn = success
+                }
+            }
+        default:
+            
+            break
+        }
+        
+        cell.configureFontSize(font: fontNameValue, size: fontSizeValue)
+        cell.layer.cornerRadius = 12
         return cell
     }
     

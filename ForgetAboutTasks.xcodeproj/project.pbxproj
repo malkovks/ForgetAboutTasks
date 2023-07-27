@@ -94,6 +94,8 @@
 		0ACE797829DECF3300599C19 /* NewContactVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE797729DECF3300599C19 /* NewContactVC.swift */; };
 		0ACE797A29DED2D400599C19 /* NewContactCustomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE797929DED2D400599C19 /* NewContactCustomView.swift */; };
 		0AD498512A701F3700B0599E /* UserProfileFontCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD498502A701F3700B0599E /* UserProfileFontCollectionViewCell.swift */; };
+		0AD498542A7276A800B0599E /* UserProfileTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD498532A7276A800B0599E /* UserProfileTableViewCell.swift */; };
+		0AD498572A72CF0100B0599E /* UserProfileHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD498562A72CF0100B0599E /* UserProfileHeaderView.swift */; };
 		0ADAB9FC2A310EEA00A5C2B2 /* AlertPhoneNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ADAB9FB2A310EEA00A5C2B2 /* AlertPhoneNumber.swift */; };
 		0AEAA9F32A264BBF00BE85A4 /* ResetPasswordController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEAA9F22A264BBF00BE85A4 /* ResetPasswordController.swift */; };
 		0AEAA9F62A26884A00BE85A4 /* KeyChainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEAA9F52A26884A00BE85A4 /* KeyChainManager.swift */; };
@@ -217,6 +219,8 @@
 		0ACE797729DECF3300599C19 /* NewContactVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewContactVC.swift; sourceTree = "<group>"; };
 		0ACE797929DED2D400599C19 /* NewContactCustomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewContactCustomView.swift; sourceTree = "<group>"; };
 		0AD498502A701F3700B0599E /* UserProfileFontCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileFontCollectionViewCell.swift; sourceTree = "<group>"; };
+		0AD498532A7276A800B0599E /* UserProfileTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileTableViewCell.swift; sourceTree = "<group>"; };
+		0AD498562A72CF0100B0599E /* UserProfileHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileHeaderView.swift; sourceTree = "<group>"; };
 		0ADAB9FB2A310EEA00A5C2B2 /* AlertPhoneNumber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertPhoneNumber.swift; sourceTree = "<group>"; };
 		0AEAA9F22A264BBF00BE85A4 /* ResetPasswordController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPasswordController.swift; sourceTree = "<group>"; };
 		0AEAA9F52A26884A00BE85A4 /* KeyChainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyChainManager.swift; sourceTree = "<group>"; };
@@ -458,6 +462,8 @@
 		0A99A90329CD98E600CC5A42 /* UserProfile */ = {
 			isa = PBXGroup;
 			children = (
+				0AD498552A72CEE200B0599E /* UserProfileHeaderView */,
+				0AD498522A72767800B0599E /* UserProfileTableViewCell */,
 				0A8AC1A729B9DBD300EA052B /* UserProfileVC.swift */,
 				0A9918D32A52BCA0001004FA /* UserProfileAppIconVC.swift */,
 				0A9918F62A57F524001004FA /* UserProfileSwitchPasswordVC.swift */,
@@ -607,6 +613,22 @@
 				0AD498502A701F3700B0599E /* UserProfileFontCollectionViewCell.swift */,
 			);
 			path = Cells;
+			sourceTree = "<group>";
+		};
+		0AD498522A72767800B0599E /* UserProfileTableViewCell */ = {
+			isa = PBXGroup;
+			children = (
+				0AD498532A7276A800B0599E /* UserProfileTableViewCell.swift */,
+			);
+			path = UserProfileTableViewCell;
+			sourceTree = "<group>";
+		};
+		0AD498552A72CEE200B0599E /* UserProfileHeaderView */ = {
+			isa = PBXGroup;
+			children = (
+				0AD498562A72CF0100B0599E /* UserProfileHeaderView.swift */,
+			);
+			path = UserProfileHeaderView;
 			sourceTree = "<group>";
 		};
 		0AF2D6F22A166A720093A824 /* UIView+Extensions */ = {
@@ -873,12 +895,14 @@
 				0A86ED1029B5D97F001C9BAF /* AppDelegate.swift in Sources */,
 				0A9E1C3A29CEEDCE000CC9A9 /* LoginController.swift in Sources */,
 				0A8AC1A429B9D4EB00EA052B /* CreateTaskForDayVC.swift in Sources */,
+				0AD498542A7276A800B0599E /* UserProfileTableViewCell.swift in Sources */,
 				0A9918C42A50158A001004FA /* CalendarCenterAccess.swift in Sources */,
 				0A7FFFBA29EFDC0B00CAC9DA /* ContactRealmManager.swift in Sources */,
 				0A9E1C3C29D0778F000CC9A9 /* RegisterAccountController.swift in Sources */,
 				0A9918F52A5651EF001004FA /* DataProvider.swift in Sources */,
 				0A86ED1229B5D97F001C9BAF /* SceneDelegate.swift in Sources */,
 				0AB0A96F2A1C61D30084AE07 /* EditTaskTableVC.swift in Sources */,
+				0AD498572A72CF0100B0599E /* UserProfileHeaderView.swift in Sources */,
 				0AA604DC29E03CB1007ACE58 /* AlertContacts.swift in Sources */,
 				0A8D250A2A29CED300022622 /* CheckSuccessSaveProtocol.swift in Sources */,
 				0A9918C22A4EC78B001004FA /* UserNotificationAccess.swift in Sources */,
