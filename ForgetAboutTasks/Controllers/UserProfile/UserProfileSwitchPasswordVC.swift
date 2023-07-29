@@ -189,7 +189,7 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
         tabBarController?.tabBar.isHidden = true
         setupTextField()
         addConstrains()
-        view.backgroundColor = UIColor(named: "navigationControllerColor")
+        view.backgroundColor = UIColor(named: "calendarHeaderColor")
         confirmPasswordButton.addTarget(self, action: #selector(didTapConfirmPassword(sender: )), for: .touchUpInside)
     }
     
@@ -205,7 +205,6 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
         addConstrains()
         setupTextField()
         confirmPasswordButton.isHidden = true
-        view.backgroundColor = UIColor(named: "navigationControllerColor")
         safetyEnterApplicationWithFaceID(textField: firstTextField)
     }
     

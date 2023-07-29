@@ -14,6 +14,21 @@ class TabBarViewController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTabBar()
+        settingsTabBar()
+    }
+    
+    override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
+        animateImageItem(item: item)
+    }
+    
+    private func settingsTabBar(){
+        self.tabBar.layer.masksToBounds = true
+        self.tabBar.isTranslucent = true
+        self.tabBar.layer.cornerRadius = 30
+        self.tabBar.layer.maskedCorners = [.layerMinXMinYCorner,.layerMaxXMinYCorner]
+//        self.tabBar.backgroundColor = UIColor(named: "calendarHeaderColor")
+        self.tabBar.selectedImageTintColor = UIColor(named: "calendarHeaderColor")
+        self.tabBar.unselectedItemTintColor = .red
     }
     
     private func setupTabBar() {
@@ -21,8 +36,25 @@ class TabBarViewController: UITabBarController {
         let allTasks = setupNavigationController(vc: AllTasksToDoViewController(), itemName: "All Tasks", image: "list.clipboard.fill")
         let contactsVC = setupNavigationController(vc: ContactsViewController(), itemName: "Contacts", image: "rectangle.stack.person.crop")
         let userVC = setupNavWithoutNavBarEdgeAppearance(vc: UserProfileViewController(), itemName: "Settings", image: "gear")
-//        viewControllers = [scheduleVC, allTasks, contactsVC, userVC]
+     
         setViewControllers([scheduleVC,allTasks,contactsVC,userVC], animated: true)
+    }
+    
+    
+    
+    
+    
+    private func animateImageItem(item: UITabBarItem) {
+        guard let item = item.value(forKey: "view") as? UIView else { return }
+        
+        let timeInterval: TimeInterval = 0.5
+        let animator = UIViewPropertyAnimator(duration: timeInterval, dampingRatio: 0.5) {
+            item.transform = CGAffineTransform.identity.scaledBy(x: 1.5, y: 1.5)
+        }
+        animator.addAnimations({
+            item.transform = .identity
+        }, delayFactor: CGFloat(timeInterval))
+        animator.startAnimation()
     }
     
     //настройка таб бара

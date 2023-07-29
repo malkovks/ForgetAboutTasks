@@ -32,8 +32,6 @@ class CreateTaskTableViewController: UIViewController {
                      [""]]
     private var cellBackgroundColor =  #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
     private var tasksModel = AllTaskModel()
-    private let fontSizeValue : CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
-    private let fontNameValue: String = UserDefaults.standard.string(forKey: "fontNameChanging") ?? "Charter"
     
     private var cancellable: AnyCancellable?//for parallels displaying color in cell and Combine Kit for it
     private let picker = UIColorPickerViewController()
@@ -97,11 +95,11 @@ class CreateTaskTableViewController: UIViewController {
     }
     
     private func setupColorPicker(){
-        picker.selectedColor = UIColor(named: "navigationControllerColor") ?? #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
+        picker.selectedColor = UIColor(named: "calendarHeaderColor") ?? #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
     }
     
     private func setupNavigationController(){
-        navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
+        navigationController?.navigationBar.tintColor = UIColor(named: "calendarHeaderColor")
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(didTapDismiss))
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(didTapSave))
     }
@@ -129,7 +127,7 @@ extension CreateTaskTableViewController: UITableViewDelegate, UITableViewDataSou
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "tasksCell", for: indexPath)
         cell.textLabel?.numberOfLines = 0
-        cell.textLabel?.font = UIFont(name: fontNameValue, size: fontSizeValue)
+        cell.textLabel?.font = .setMainLabelFont()
         cell.contentView.layer.cornerRadius = 10
         cell.backgroundColor = UIColor(named: "cellColor")
         let data = cellsName[indexPath.section][indexPath.row]
@@ -145,7 +143,6 @@ extension CreateTaskTableViewController: UITableViewDelegate, UITableViewDataSou
         tableView.deselectRow(at: indexPath, animated: true)
         let cellName = cellsName[indexPath.section][indexPath.row]
         let cell = tableView.cellForRow(at: indexPath)
-        cell?.textLabel?.font = UIFont(name: fontNameValue, size: fontSizeValue)
         switch indexPath {
         case [0,0]:
             alertTextField(cell: cellName, placeholder: "Enter title of task".localized(), keyboard: .default) { [self] text in

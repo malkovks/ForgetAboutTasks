@@ -21,8 +21,6 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
     private var scheduleModel: Results<ScheduleModel>!
     private var filteredModel: Results<ScheduleModel>!
     private var birthdayModel: [Date] = []
-    private let fontSizeValue : CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
-    private let fontNameValue: String = UserDefaults.standard.string(forKey: "fontNameChanging") ?? "Charter"
     
     //MARK: - UI elements setups
     private lazy var searchNavigationButton: UIBarButtonItem = {
@@ -58,7 +56,6 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
         calendar.appearance.weekdayTextColor = UIColor(named: "calendarHeaderColor")
         calendar.appearance.headerTitleColor = UIColor(named: "calendarHeaderColor")
         calendar.appearance.titleWeekendColor = UIColor(named: "textColor")
-        calendar.tintColor = UIColor(named: "navigationControllerColor")
         calendar.translatesAutoresizingMaskIntoConstraints = false
         return calendar
     }()
@@ -156,9 +153,9 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
         UserDefaultsManager.shared.checkDarkModeUserDefaults()
         loadingDataByDate(date: Date(), at: .current, is: true)
         view.backgroundColor = UIColor(named: "backgroundColor")
-        calendar.appearance.titleFont = UIFont(name: fontNameValue, size: fontSizeValue)
-        calendar.appearance.weekdayFont = UIFont(name: fontNameValue, size: fontSizeValue)
-        calendar.appearance.headerTitleFont = UIFont(name: fontNameValue, size: fontSizeValue)
+        calendar.appearance.titleFont = UIFont.setMainLabelFont()
+        calendar.appearance.weekdayFont = UIFont.setMainLabelFont()
+        calendar.appearance.headerTitleFont = UIFont.setMainLabelFont()
     }
     
     private func setupNavigationController(){
@@ -167,7 +164,7 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
         navigationItem.rightBarButtonItems = [createNewEventNavigationButton,displayAllEvent]
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = true
-        navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
+        navigationController?.navigationBar.tintColor = UIColor(named: "calendarHeaderColor")
         navigationController?.tabBarController?.tabBar.scrollEdgeAppearance = navigationController?.tabBarController?.tabBar.standardAppearance
         navigationController?.navigationItem.largeTitleDisplayMode = .never
         navigationController?.navigationBar.prefersLargeTitles = false

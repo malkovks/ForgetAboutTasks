@@ -23,6 +23,7 @@ class UserProfileTableViewCell: UITableViewCell {
        let label = UILabel()
         label.textAlignment = .left
         label.numberOfLines = 1
+        label.font = .setMainLabelFont()
         return label
     }()
     
@@ -54,33 +55,15 @@ class UserProfileTableViewCell: UITableViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
     
-    override class func awakeFromNib() {
-        super.awakeFromNib()
-    }
-    
-    override func layoutSubviews() {
-        
-    }
     
     func configureCell(text: String,imageCell: UIImage,image tintColor: UIColor){
         mainTitleLabel.text = text
         cellImageView.image = imageCell
         cellImageView.tintColor = tintColor
     }
-    
-    func configureFontSize(font name: String,size: CGFloat){
-        mainTitleLabel.font = UIFont(name: name, size: size)
-    }
-    
-    func configureSwitchStatus(cell: UserProfileTableViewCell, status: Bool,indexPath: IndexPath){
-        switch indexPath {
-        case [0,0]:
-            
-            print("[0,0")
-        default: break
-        }
-    }
+
     func configureSwitch(indexPath: IndexPath){
         switch indexPath {
         case [0,0],[0,1],[0,2],[0,3],[0,4],[0,5]:

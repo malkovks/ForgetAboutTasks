@@ -20,7 +20,6 @@ class AllTasksToDoViewController: UIViewController, CheckSuccessSaveProtocol {
     var allTasksDataSections = [Date]()
     var taskDate = Set<Date>()
     private let fontSizeValue : CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
-    private let fontNameValue: String = UserDefaults.standard.string(forKey: "fontNameChanging") ?? "Charter"
     
     private var viewIsFiltered: Bool {
         return searchController.isActive && !searchBarIsEmpty
@@ -38,8 +37,8 @@ class AllTasksToDoViewController: UIViewController, CheckSuccessSaveProtocol {
         let controller = UISegmentedControl(items: ["Date".localized()
                                                     ,"A-Z".localized()])
         controller.titleTextAttributes(for: .highlighted)
-        controller.tintColor = UIColor(named: "navigationControllerColor")
-        controller.backgroundColor = UIColor(named: "navigationControllerColor")
+        controller.tintColor = UIColor(named: "calendarHeaderColor")
+        controller.backgroundColor = UIColor(named: "calendarHeaderColor")
         controller.selectedSegmentIndex = 0
         controller.translatesAutoresizingMaskIntoConstraints = false
         return controller
@@ -47,7 +46,7 @@ class AllTasksToDoViewController: UIViewController, CheckSuccessSaveProtocol {
     
     private let refreshController: UIRefreshControl = {
        let controller = UIRefreshControl()
-        controller.tintColor = UIColor(named: "navigationControllerColor")
+        controller.tintColor = UIColor(named: "calendarHeaderColor")
         controller.attributedTitle = NSAttributedString(string: "Pull to refresh".localized())
         return controller
     }()
@@ -131,7 +130,7 @@ class AllTasksToDoViewController: UIViewController, CheckSuccessSaveProtocol {
         title = "All Tasks".localized()
         navigationController?.navigationItem.largeTitleDisplayMode = .always
         navigationController?.navigationBar.prefersLargeTitles = true
-        navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
+        navigationController?.navigationBar.tintColor = UIColor(named: "calendarHeaderColor")
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "folder.fill.badge.plus"), landscapeImagePhone: nil, style: .done, target: self, action: #selector(didTapCreateNewTask))
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "magnifyingglass.circle.fill"), style: .done, target: self, action: #selector(didTapSearch))
@@ -193,20 +192,19 @@ extension AllTasksToDoViewController: UITableViewDelegate, UITableViewDataSource
         let data = viewIsFiltered ?  allTasksDataFiltered[indexPath.row] : allTasksData[indexPath.row]
         let color = UIColor.color(withData: data.allTaskColor!)
         cell.backgroundColor = UIColor(named: "backgroundColor")
-        cell.textLabel?.font = UIFont(name: fontNameValue, size: fontSizeValue)
-        cell.textLabel?.font = .systemFont(ofSize: fontSizeValue,weight: .semibold)
-        cell.detailTextLabel?.font = UIFont(name: fontNameValue, size: fontSizeValue*0.7)
+        cell.textLabel?.font = .setMainLabelFont()
+        cell.detailTextLabel?.font = .setDetailLabelFont()
         
 
         let button = UIButton(type: .custom)
         button.frame = CGRect(x: 0, y: 0, width: 30, height: 30)
-        button.tintColor = UIColor(named: "navigationControllerColor")
+        button.tintColor = UIColor(named: "calendarHeaderColor")
         button.addTarget(self, action: #selector(didTapChangeCell), for: .touchUpInside)
         button.sizeToFit()
         button.tag = indexPath.row
 
         cell.accessoryView = button as UIView
-        cell.accessoryView?.tintColor = UIColor(named: "navigationControllerColor")
+        cell.accessoryView?.tintColor = UIColor(named: "calendarHeaderColor")
         
         let timeFF = Formatters.instance.timeStringFromDate(date: data.allTaskTime ?? Date())
         let dateF = DateFormatter.localizedString(from: data.allTaskDate ?? Date(), dateStyle: .medium, timeStyle: .none)

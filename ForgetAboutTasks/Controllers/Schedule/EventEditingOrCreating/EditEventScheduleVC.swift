@@ -34,8 +34,6 @@ class EditEventScheduleViewController: UIViewController {
     private let realm = try! Realm()
     private let notificationCenter = UNUserNotificationCenter.current()
     private let eventStore = EKEventStore()
-    private let fontSizeValue : CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
-    private let fontNameValue: String = UserDefaults.standard.string(forKey: "fontNameChanging") ?? "Charter"
     
     private var reminderStatus: Bool = false
     private var isStartEditing: Bool = false
@@ -172,7 +170,7 @@ class EditEventScheduleViewController: UIViewController {
     }
     
     private func setupNavigationController(){
-        navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
+        navigationController?.navigationBar.tintColor = UIColor(named: "calendarHeaderColor")
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(didTapDismiss))
         navigationItem.rightBarButtonItem = navigationItemButton
         if isStartEditing {
@@ -377,7 +375,7 @@ extension EditEventScheduleViewController: UITableViewDelegate, UITableViewDataS
         let data = cellsName[indexPath.section][indexPath.row]
         
         cell?.textLabel?.numberOfLines = 0
-        cell?.textLabel?.font = UIFont(name: fontNameValue, size: fontSizeValue)
+        cell?.textLabel?.font = .setMainLabelFont()
         cell?.contentView.layer.cornerRadius = 10
         cell?.backgroundColor = UIColor(named: "cellColor")
         

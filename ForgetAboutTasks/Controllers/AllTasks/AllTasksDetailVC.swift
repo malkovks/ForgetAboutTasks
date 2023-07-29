@@ -28,9 +28,6 @@ class AllTasksDetailViewController: UIViewController {
         [""]]
     private var cellBackgroundColor =  #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
     private var tasksModel = AllTaskModel()
-    private let fontSizeValue : CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
-    private let fontNameValue: String = UserDefaults.standard.string(forKey: "fontNameChanging") ?? "Charter"
-    
     
     init(color: UIColor, model: AllTaskModel){
         self.tasksModel = model
@@ -120,11 +117,11 @@ class AllTasksDetailViewController: UIViewController {
     }
     
     private func setupColorPicker(){
-        picker.selectedColor = UIColor(named: "navigationControllerColor") ?? #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
+        picker.selectedColor = UIColor(named: "calendarHeaderColor") ?? #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
     }
     
     private func setupNavigationController(){
-        navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
+        navigationController?.navigationBar.tintColor = UIColor(named: "calendarHeaderColor")
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(didTapDismiss))
         let editButton = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(didTapEdit))
         navigationItem.rightBarButtonItems = [editButton,shareTableInfo]
@@ -193,7 +190,7 @@ extension AllTasksDetailViewController: UITableViewDelegate, UITableViewDataSour
         cell.textLabel?.numberOfLines = 0
         cell.contentView.layer.cornerRadius = 10
         cell.backgroundColor = UIColor(named: "cellColor")
-        cell.textLabel?.font = UIFont(name: fontNameValue, size: fontSizeValue)
+        cell.textLabel?.font = .setMainLabelFont()
         switch indexPath {
         case [0,0]:
             cell.textLabel?.text = tasksModel.allTaskNameEvent

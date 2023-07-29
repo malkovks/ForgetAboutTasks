@@ -22,8 +22,6 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
     private var indexOfCell = Int()
     private var isCellEdited = Bool()
     private let fontSizeValue : CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
-    private let fontNameValue: String = UserDefaults.standard.string(forKey: "fontNameChanging") ?? "Charter"
-    private let fontWeightValue: CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontWeightChanging"))
     
     init(model: Results<ScheduleModel>,choosenDate: Date){
         self.cellDataScheduleModel = model
@@ -72,8 +70,8 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
     
     private var segmentalController: UISegmentedControl = {
         let controller = UISegmentedControl(items: ["Time".localized(),"Date".lowercased(),"A-Z".localized()])
-        controller.tintColor = UIColor(named: "navigationControllerColor")
-        controller.backgroundColor = UIColor(named: "navigationControllerColor")
+        controller.tintColor = UIColor(named: "calendarHeaderColor")
+        controller.backgroundColor = UIColor(named: "calendarHeaderColor")
         controller.selectedSegmentIndex = 0
         controller.translatesAutoresizingMaskIntoConstraints = false
         return controller
@@ -229,7 +227,7 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
         navigationItem.leftBarButtonItems = [dismissViewButton, displayUserProfileView]
         
         navigationItem.rightBarButtonItems = [createEventButton,editNavigationButton]
-        navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
+        navigationController?.navigationBar.tintColor = UIColor(named: "calendarHeaderColor")
     }
     
     private func setupDeletingCell(indexPath: IndexPath) -> UISwipeActionsConfiguration {
@@ -315,9 +313,8 @@ extension CreateTaskForDayController: UITableViewDelegate, UITableViewDataSource
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cell")
         cell.accessoryType = .disclosureIndicator
         cell.backgroundColor = UIColor(named: "backgroundColor")
-        cell.textLabel?.font = UIFont(name: fontNameValue, size: fontSizeValue)
-//        cell.textLabel?.font = .boldSystemFont(ofSize: fontWeightValue)
-        cell.detailTextLabel?.font = UIFont(name: fontNameValue, size: fontSizeValue * 0.7)
+        cell.textLabel?.font = .setMainLabelFont()
+        cell.detailTextLabel?.font = .setDetailLabelFont()
         let data = cellDataScheduleModel[indexPath.row]
         
         let color = UIColor.color(withData: data.scheduleColor!) ?? #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)

@@ -20,7 +20,6 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
     private var localRealmData = try! Realm()
     private let contactStore = CNContactStore()
     private let fontSizeValue: CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
-    private let fontNameValue: String = UserDefaults.standard.string(forKey: "fontNameChanging") ?? "Charter"
 
     private var searchBarIsEmpty: Bool {
         guard let text = searchController.searchBar.text else { return true }
@@ -144,7 +143,7 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
         navigationController?.navigationBar.tintColor = UIColor(named: "navigationController")
         navigationController?.navigationItem.largeTitleDisplayMode = .always
         navigationController?.navigationBar.prefersLargeTitles = true
-        navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
+        navigationController?.navigationBar.tintColor = UIColor(named: "calendarHeaderColor")
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .done, target: nil, action: nil)
         title = "Contacts".localized()
     }
@@ -343,13 +342,12 @@ extension ContactsViewController: UITableViewDelegate, UITableViewDataSource {
         cell.imageView?.clipsToBounds = true
         cell.imageView?.frame = .zero
         cell.imageView?.contentMode = .scaleToFill
-        cell.imageView?.tintColor = UIColor(named: "navigationControllerColor")
+        cell.imageView?.tintColor = UIColor(named: "calendarHeaderColor")
         let number = data.contactPhoneNumber ?? "No phone number"
 
         cell.textLabel?.text = (data.contactName ?? "") + " " + (data.contactSurname ?? "")
-        cell.textLabel?.font = UIFont(name: fontNameValue, size: fontSizeValue)
-        cell.textLabel?.font = .systemFont(ofSize: fontSizeValue, weight: .bold)
-        cell.detailTextLabel?.font = UIFont(name: fontNameValue, size: fontSizeValue*0.8)
+        cell.textLabel?.font = .setMainLabelFont()
+        cell.detailTextLabel?.font = .setDetailLabelFont()
         cell.detailTextLabel?.text = "Phone number: " + (number)
         cell.imageView?.image = UIImage(systemName: "person.crop.circle.fill")
         cell.imageView?.frame(forAlignmentRect: CGRect(x: 0, y: 0, width: 50, height: 50))

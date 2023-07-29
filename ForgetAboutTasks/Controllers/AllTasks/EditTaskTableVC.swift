@@ -32,9 +32,7 @@ class EditTaskTableViewController: UIViewController {
     private var isStartEditing: Bool = false
     private var tasksModel: AllTaskModel
     private var editedTaskModel = AllTaskModel()
-    private let fontSizeValue : CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
-    private let fontNameValue: String = UserDefaults.standard.string(forKey: "fontNameChanging") ?? "Charter"
-    
+
     init?(color: UIColor,model: AllTaskModel){
         self.cellBackgroundColor = color
         self.tasksModel = model
@@ -108,12 +106,12 @@ class EditTaskTableViewController: UIViewController {
     }
     
     private func setupColorPicker(){
-        picker.selectedColor = UIColor(named: "navigationControllerColor") ?? #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
+        picker.selectedColor = UIColor(named: "calendarHeaderColor") ?? #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
     }
     
     private func setupNavigationController(){
         title = "Editing Task".localized()
-        navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
+        navigationController?.navigationBar.tintColor = UIColor(named: "calendarHeaderColor")
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(didTapDismiss))
         navigationItem.rightBarButtonItem = navigationButton
         navigationButton.isEnabled = false
@@ -161,7 +159,7 @@ extension EditTaskTableViewController: UITableViewDelegate, UITableViewDataSourc
             setupCellTitle(model: tasksModel, indexPath: indexPath)
         }
         let data = cellsName[indexPath.section][indexPath.row]
-        cell.textLabel?.font = UIFont(name: fontNameValue, size: fontSizeValue)
+        cell.textLabel?.font = .setMainLabelFont()
         cell.textLabel?.numberOfLines = 0
         cell.contentView.layer.cornerRadius = 10
         cell.backgroundColor = UIColor(named: "cellColor")

@@ -49,12 +49,12 @@ extension UIViewController{
         })
         alert.addAction(saveAction)
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        alert.editButtonItem.tintColor = UIColor(named: "navigationControllerColor")
+        alert.editButtonItem.tintColor = UIColor(named: "calendarHeaderColor")
         let toolbar = UIToolbar()
         toolbar.sizeToFit()
         //НЕ РАБОТАЕТ кнопка скрытия клавиатуры
         let doneB = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(toolBarDoneButtonTapped))
-        doneB.tintColor = UIColor(named: "navigationControllerColor")
+        doneB.tintColor = UIColor(named: "calendarHeaderColor")
         let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         toolbar.setItems([flexibleSpace,doneB], animated: true)
         

@@ -51,8 +51,7 @@ class CreateEventScheduleViewController: UIViewController {
     private var addingEventStatus: Bool = false
     private var choosenDate: Date
     private lazy var startChoosenDate: Date = choosenDate
-    private let fontSizeValue : CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
-    private let fontNameValue: String = UserDefaults.standard.string(forKey: "fontNameChanging") ?? "Charter"
+
 
     init(choosenDate: Date){
         self.choosenDate = choosenDate
@@ -181,7 +180,7 @@ class CreateEventScheduleViewController: UIViewController {
 
     
     private func setupNavigationController(){
-        navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
+        navigationController?.navigationBar.tintColor = UIColor(named: "calendarHeaderColor")
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(didTapDismiss))
         let saveButton = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(didTapSave))
         navigationItem.rightBarButtonItems = [saveButton]
@@ -356,7 +355,7 @@ extension CreateEventScheduleViewController: UITableViewDelegate, UITableViewDat
         let data = cellsName[indexPath.section][indexPath.row]
         
         cell?.textLabel?.numberOfLines = 0
-        cell?.textLabel?.font = UIFont(name: fontNameValue, size: fontSizeValue)
+        cell?.textLabel?.font = .setMainLabelFont()
         cell?.contentView.layer.cornerRadius = 10
         cell?.backgroundColor = UIColor(named: "cellColor")
         cell?.textLabel?.text = data

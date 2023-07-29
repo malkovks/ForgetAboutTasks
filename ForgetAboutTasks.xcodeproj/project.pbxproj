@@ -96,6 +96,8 @@
 		0AD498512A701F3700B0599E /* UserProfileFontCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD498502A701F3700B0599E /* UserProfileFontCollectionViewCell.swift */; };
 		0AD498542A7276A800B0599E /* UserProfileTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD498532A7276A800B0599E /* UserProfileTableViewCell.swift */; };
 		0AD498572A72CF0100B0599E /* UserProfileHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD498562A72CF0100B0599E /* UserProfileHeaderView.swift */; };
+		0AD4985A2A750E5900B0599E /* UserProfileFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD498592A750E5900B0599E /* UserProfileFooterView.swift */; };
+		0AD4985E2A75517300B0599E /* DarkModeAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD4985D2A75517300B0599E /* DarkModeAccess.swift */; };
 		0ADAB9FC2A310EEA00A5C2B2 /* AlertPhoneNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ADAB9FB2A310EEA00A5C2B2 /* AlertPhoneNumber.swift */; };
 		0AEAA9F32A264BBF00BE85A4 /* ResetPasswordController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEAA9F22A264BBF00BE85A4 /* ResetPasswordController.swift */; };
 		0AEAA9F62A26884A00BE85A4 /* KeyChainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEAA9F52A26884A00BE85A4 /* KeyChainManager.swift */; };
@@ -221,6 +223,8 @@
 		0AD498502A701F3700B0599E /* UserProfileFontCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileFontCollectionViewCell.swift; sourceTree = "<group>"; };
 		0AD498532A7276A800B0599E /* UserProfileTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileTableViewCell.swift; sourceTree = "<group>"; };
 		0AD498562A72CF0100B0599E /* UserProfileHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileHeaderView.swift; sourceTree = "<group>"; };
+		0AD498592A750E5900B0599E /* UserProfileFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileFooterView.swift; sourceTree = "<group>"; };
+		0AD4985D2A75517300B0599E /* DarkModeAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DarkModeAccess.swift; sourceTree = "<group>"; };
 		0ADAB9FB2A310EEA00A5C2B2 /* AlertPhoneNumber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertPhoneNumber.swift; sourceTree = "<group>"; };
 		0AEAA9F22A264BBF00BE85A4 /* ResetPasswordController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPasswordController.swift; sourceTree = "<group>"; };
 		0AEAA9F52A26884A00BE85A4 /* KeyChainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyChainManager.swift; sourceTree = "<group>"; };
@@ -379,8 +383,6 @@
 		0A8D250B2A2C105800022622 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				0AA604DD29E04042007ACE58 /* NewContactView */,
-				0A8D250C2A2C108D00022622 /* ScheduleTableViewCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -401,6 +403,7 @@
 				0AA0E9372A60C68B00911C0D /* FaceIDAccess.swift */,
 				0AA0E9392A60C69B00911C0D /* MediaAccess.swift */,
 				0AA0E93B2A60D24B00911C0D /* ContactsAccess.swift */,
+				0AD4985D2A75517300B0599E /* DarkModeAccess.swift */,
 			);
 			path = "AccessSettings+Extensions";
 			sourceTree = "<group>";
@@ -453,7 +456,7 @@
 			isa = PBXGroup;
 			children = (
 				0A8AC1A529B9D4FA00EA052B /* ContactsVC.swift */,
-				0ACE797729DECF3300599C19 /* NewContactVC.swift */,
+				0AD4985B2A7518B000B0599E /* NewContact */,
 				0AEAA9F72A272BB600BE85A4 /* EditContactVC.swift */,
 			);
 			path = Contacts;
@@ -462,9 +465,7 @@
 		0A99A90329CD98E600CC5A42 /* UserProfile */ = {
 			isa = PBXGroup;
 			children = (
-				0AD498552A72CEE200B0599E /* UserProfileHeaderView */,
-				0AD498522A72767800B0599E /* UserProfileTableViewCell */,
-				0A8AC1A729B9DBD300EA052B /* UserProfileVC.swift */,
+				0AD4985C2A752E8100B0599E /* UserProfile */,
 				0A9918D32A52BCA0001004FA /* UserProfileAppIconVC.swift */,
 				0A9918F62A57F524001004FA /* UserProfileSwitchPasswordVC.swift */,
 				0AA0E93D2A63A46700911C0D /* UserProfileChangeAppFontVC.swift */,
@@ -503,14 +504,6 @@
 				0AA1E9072A406A4E0052B849 /* Info.plist */,
 			);
 			path = LockscreenWidget;
-			sourceTree = "<group>";
-		};
-		0AA604DD29E04042007ACE58 /* NewContactView */ = {
-			isa = PBXGroup;
-			children = (
-				0ACE797929DED2D400599C19 /* NewContactCustomView.swift */,
-			);
-			path = NewContactView;
 			sourceTree = "<group>";
 		};
 		0AA604E029E1460E007ACE58 /* Model */ = {
@@ -610,17 +603,11 @@
 		0AD4984F2A701E6D00B0599E /* Cells */ = {
 			isa = PBXGroup;
 			children = (
+				0A8D250C2A2C108D00022622 /* ScheduleTableViewCell.swift */,
 				0AD498502A701F3700B0599E /* UserProfileFontCollectionViewCell.swift */,
-			);
-			path = Cells;
-			sourceTree = "<group>";
-		};
-		0AD498522A72767800B0599E /* UserProfileTableViewCell */ = {
-			isa = PBXGroup;
-			children = (
 				0AD498532A7276A800B0599E /* UserProfileTableViewCell.swift */,
 			);
-			path = UserProfileTableViewCell;
+			path = Cells;
 			sourceTree = "<group>";
 		};
 		0AD498552A72CEE200B0599E /* UserProfileHeaderView */ = {
@@ -629,6 +616,33 @@
 				0AD498562A72CF0100B0599E /* UserProfileHeaderView.swift */,
 			);
 			path = UserProfileHeaderView;
+			sourceTree = "<group>";
+		};
+		0AD498582A750E4000B0599E /* UserProfileFooterView */ = {
+			isa = PBXGroup;
+			children = (
+				0AD498592A750E5900B0599E /* UserProfileFooterView.swift */,
+			);
+			path = UserProfileFooterView;
+			sourceTree = "<group>";
+		};
+		0AD4985B2A7518B000B0599E /* NewContact */ = {
+			isa = PBXGroup;
+			children = (
+				0ACE797729DECF3300599C19 /* NewContactVC.swift */,
+				0ACE797929DED2D400599C19 /* NewContactCustomView.swift */,
+			);
+			path = NewContact;
+			sourceTree = "<group>";
+		};
+		0AD4985C2A752E8100B0599E /* UserProfile */ = {
+			isa = PBXGroup;
+			children = (
+				0AD498582A750E4000B0599E /* UserProfileFooterView */,
+				0AD498552A72CEE200B0599E /* UserProfileHeaderView */,
+				0A8AC1A729B9DBD300EA052B /* UserProfileVC.swift */,
+			);
+			path = UserProfile;
 			sourceTree = "<group>";
 		};
 		0AF2D6F22A166A720093A824 /* UIView+Extensions */ = {
@@ -887,6 +901,7 @@
 				0A9918B22A41B655001004FA /* LockscreenWidget.swift in Sources */,
 				0ACE796B29D9EEAA00599C19 /* AlertSpinner.swift in Sources */,
 				0AEAA9F82A272BB600BE85A4 /* EditContactVC.swift in Sources */,
+				0AD4985A2A750E5900B0599E /* UserProfileFooterView.swift in Sources */,
 				0A99A90729CD99CA00CC5A42 /* UserAuthController.swift in Sources */,
 				0A2717BA2A01F7FE00EFBC11 /* AllTasksDetailVC.swift in Sources */,
 				0ACE797229DD95C600599C19 /* CreateTaskTableVC.swift in Sources */,
@@ -895,6 +910,7 @@
 				0A86ED1029B5D97F001C9BAF /* AppDelegate.swift in Sources */,
 				0A9E1C3A29CEEDCE000CC9A9 /* LoginController.swift in Sources */,
 				0A8AC1A429B9D4EB00EA052B /* CreateTaskForDayVC.swift in Sources */,
+				0AD4985E2A75517300B0599E /* DarkModeAccess.swift in Sources */,
 				0AD498542A7276A800B0599E /* UserProfileTableViewCell.swift in Sources */,
 				0A9918C42A50158A001004FA /* CalendarCenterAccess.swift in Sources */,
 				0A7FFFBA29EFDC0B00CAC9DA /* ContactRealmManager.swift in Sources */,

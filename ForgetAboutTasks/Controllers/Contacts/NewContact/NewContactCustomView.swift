@@ -20,7 +20,7 @@ class NewContactCustomView: UIView {
         image.contentMode = .scaleAspectFit
         image.clipsToBounds = true
         image.image = UIImage(systemName: "person.crop.circle.badge.plus")?.withRenderingMode(.alwaysTemplate)
-        image.tintColor = UIColor(named: "navigationControllerColor")
+        image.tintColor = UIColor(named: "calendarHeaderColor")
         return image
     }()
     

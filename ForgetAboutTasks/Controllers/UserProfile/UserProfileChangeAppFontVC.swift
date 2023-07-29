@@ -68,7 +68,7 @@ class ChangeFontViewController: UIViewController {
         label.text = "Set Weight for header title of Tables"
         label.numberOfLines = 1
         label.textAlignment = .center
-        label.font.setupFont(size: 14, weight: .thin)
+        label.font = .setMainLabelFont()
         return label
     }()
     
@@ -101,16 +101,6 @@ class ChangeFontViewController: UIViewController {
         return picker
     }()
     
-    private let fontStyleSegmentControl: UISegmentedControl = {
-        let controller = UISegmentedControl(items: ["","",""])
-        controller.setImage(UIImage(systemName: "bold"), forSegmentAt: 0)
-        controller.setImage(UIImage(systemName: "italic"), forSegmentAt: 1)
-        controller.setImage(UIImage(systemName: "underline"), forSegmentAt: 2)
-        controller.tintColor = UIColor(named: "calendarHeaderColor")
-        controller.selectedSegmentTintColor = UIColor(named: "textColor")
-        return controller
-    }()
-    
     private let pageControl: UIPageControl = {
         let page = UIPageControl()
         page.pageIndicatorTintColor = UIColor(named: "calendarHeaderColor")
@@ -131,6 +121,18 @@ class ChangeFontViewController: UIViewController {
         return button
     }()
     
+    private let returnDefaultFontSettingsButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.configuration = .tinted()
+        button.configuration?.title = "Default Settings"
+        button.configuration?.image = UIImage(systemName: "gearshape.fill")
+        button.configuration?.imagePadding = 2
+        button.configuration?.imagePlacement = .trailing
+        button.configuration?.baseBackgroundColor =  #colorLiteral(red: 1, green: 0.2012550235, blue: 0.1706680357, alpha: 1)
+        button.configuration?.baseForegroundColor = UIColor(named: "textColor")
+        return button
+    }()
+    
     
     
     override func viewDidLoad() {
@@ -145,7 +147,7 @@ class ChangeFontViewController: UIViewController {
         savedFontSize = round(fontSize / step) * step
         
         testFontLabel.font = .systemFont(ofSize: savedFontSize,weight: UIFont.Weight(rawValue: savedFontWeight))
-        testFontLabel.text = "Test font size: \(savedFontSize)"
+        testFontLabel.text = "Test font size and style: \(savedFontSize)"
     }
     
     @objc private func didTapDismiss(){
@@ -159,6 +161,20 @@ class ChangeFontViewController: UIViewController {
         DispatchQueue.main.async {
             self.dismiss(animated: true)
         }
+    }
+    
+    @objc private func didTapReturnDefaultSettings(){
+        let alert = UIAlertController(title: "Alert", message: "Do you want to set font settings to default?", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Apply", style: .destructive,handler: { _ in
+            UserDefaults.standard.setValue(16, forKey: "fontSizeChanging")
+            UserDefaults.standard.setValue("Didot", forKey: "fontNameChanging")
+            UserDefaults.standard.setValue(0.0, forKey: "fontWeightChanging")
+            DispatchQueue.main.asyncAfter(deadline: .now()+1) {
+                self.dismiss(animated: true)
+            }
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        self.present(alert, animated: true)
     }
     
     //MARK: - Setup methods
@@ -212,18 +228,19 @@ class ChangeFontViewController: UIViewController {
         headerForCollectionLabel.font = UIFont(name: savedFontName, size: savedFontSize)
         headerForCollectionLabel.font = .systemFont(ofSize: savedFontSize, weight: UIFont.Weight(rawValue: savedFontWeight))
         saveFontSettingsButton.addTarget(self, action: #selector(didTapSave), for: .touchUpInside)
+        returnDefaultFontSettingsButton.addTarget(self, action: #selector(didTapReturnDefaultSettings), for: .touchUpInside)
         
         if let index = fontNames.firstIndex(where: { $0 == savedFontName }) {
             fontNamePicker.selectRow(index, inComponent: 0, animated: true)
-            testFontLabel.font.setupFont(size: savedFontSize, name: savedFontName, weight: UIFont.Weight(rawValue: savedFontWeight) )
+            testFontLabel.font = .setMainLabelFont()
         }
     }
     
     private func setupNavigation(){
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", style: .done, target: self, action: #selector(didTapSave))
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back", image: UIImage(systemName: "chevron.down"), target: self, action: #selector(didTapDismiss))
-        navigationItem.leftBarButtonItem?.tintColor = UIColor(named: "navigationControllerColor")
-        navigationItem.rightBarButtonItem?.tintColor = UIColor(named: "navigationControllerColor")
+        navigationItem.leftBarButtonItem?.tintColor = UIColor(named: "calendarHeaderColor")
+        navigationItem.rightBarButtonItem?.tintColor = UIColor(named: "calendarHeaderColor")
     }
 }
 extension ChangeFontViewController: UICollectionViewDelegate, UICollectionViewDataSource {
@@ -245,6 +262,7 @@ extension ChangeFontViewController: UICollectionViewDelegate, UICollectionViewDa
         let fontWeight = fontWeight[indexPath.row]
         testFontLabel.font = UIFont(name: savedFontName, size: savedFontSize)
         testFontLabel.font = .systemFont(ofSize: savedFontSize, weight: fontWeight)
+        savedFontWeight = fontWeight.rawValue
         
     }
     
@@ -328,17 +346,10 @@ extension ChangeFontViewController {
             make.centerX.equalToSuperview()
             make.height.equalTo(20)
         }
-        
-        view.addSubview(fontStyleSegmentControl)
-        fontStyleSegmentControl.snp.makeConstraints { make in
-            make.top.equalTo(pageControl.snp.bottom).offset(10)
-            make.leading.trailing.equalToSuperview().inset(40)
-            make.height.equalTo(35)
-        }
-        
+    
         view.addSubview(fontNamePicker)
         fontNamePicker.snp.makeConstraints { make in
-            make.top.equalTo(fontStyleSegmentControl.snp.bottom)
+            make.top.equalTo(pageControl.snp.bottom)
             make.leading.trailing.equalToSuperview().inset(10)
             make.height.equalTo(view.frame.size.height/4)
         }
@@ -346,6 +357,13 @@ extension ChangeFontViewController {
         view.addSubview(saveFontSettingsButton)
         saveFontSettingsButton.snp.makeConstraints { make in
             make.top.equalTo(fontNamePicker.snp.bottom).offset(20)
+            make.leading.trailing.equalToSuperview().inset(30)
+            make.height.equalTo(40)
+        }
+        
+        view.addSubview(returnDefaultFontSettingsButton)
+        returnDefaultFontSettingsButton.snp.makeConstraints { make in
+            make.top.equalTo(saveFontSettingsButton.snp.bottom).offset(20)
             make.leading.trailing.equalToSuperview().inset(30)
             make.height.equalTo(40)
         }

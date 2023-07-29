@@ -35,8 +35,6 @@ class EditContactViewController: UIViewController {
     private var editedContactModel = ContactModel()
     private var isViewEdited: Bool
     private var isStartEditing: Bool = false
-    private let fontSizeValue : CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
-    private let fontNameValue: String = UserDefaults.standard.string(forKey: "fontNameChanging") ?? "Charter"
     
     init(contactModel: ContactModel,editing: Bool){
         self.contactModel = contactModel
@@ -130,7 +128,7 @@ class EditContactViewController: UIViewController {
         setupSelection(boolean: isViewEdited)
         view.backgroundColor = UIColor(named: "backgroundColor")
         title = "Edit Contact".localized()
-        labelForImageView.font = UIFont(name: fontNameValue, size: fontSizeValue)
+        labelForImageView.font = .setMainLabelFont()
     }
     
     private func setupTableView(){
@@ -156,7 +154,7 @@ class EditContactViewController: UIViewController {
     private func setupNavigationController(){
         navigationItem.rightBarButtonItems = [editModelButton, shareModelButton]
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel".localized(), style: .done, target: self, action: #selector(didTapDismiss))
-        navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
+        navigationController?.navigationBar.tintColor = UIColor(named: "calendarHeaderColor")
         navigationController?.navigationItem.largeTitleDisplayMode = .never
         navigationController?.navigationBar.prefersLargeTitles = false
     }
@@ -253,7 +251,7 @@ extension EditContactViewController: UITableViewDelegate, UITableViewDataSource 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "tasksCell", for: indexPath)
         cell.backgroundColor = UIColor(named: "cellColor")
-        cell.textLabel?.font = UIFont(name: fontNameValue, size: fontSizeValue)
+        cell.textLabel?.font = .setMainLabelFont()
         let basicValue = cellsName[indexPath.section][indexPath.row]
         
         let segueButton = UIButton()
@@ -280,17 +278,17 @@ extension EditContactViewController: UITableViewDelegate, UITableViewDataSource 
                 let phoneNumber = String.format(with: "+X (XXX) XXX-XXXX", phone: contactModel.contactPhoneNumber ?? "")
                 cell.textLabel?.text = phoneNumber
                 segueButton.setImage(UIImage(systemName: "phone.fill"), for: .normal)
-                segueButton.tintColor = UIColor(named: "navigationControllerColor")
+                segueButton.tintColor = UIColor(named: "calendarHeaderColor")
                 cell.accessoryView = segueButton
             case [1,1]:
                 cell.textLabel?.text = contactModel.contactMail
                 segueButton.setImage(UIImage(systemName: "envelope.fill"), for: .normal)
-                segueButton.tintColor = UIColor(named: "navigationControllerColor")
+                segueButton.tintColor = UIColor(named: "calendarHeaderColor")
                 cell.accessoryView = segueButton
             case [2,0]:
                 cell.textLabel?.text = "Contry: ".localized() +  (contactModel.contactCountry ?? basicValue)
                 segueButton.setImage(UIImage(systemName: "mappin.circle.fill"), for: .normal)
-                segueButton.tintColor = UIColor(named: "navigationControllerColor")
+                segueButton.tintColor = UIColor(named: "calendarHeaderColor")
                 cell.accessoryView = segueButton
             case [2,1]:
                 cell.textLabel?.text = "City: ".localized() + (contactModel.contactCity ?? basicValue)
@@ -305,7 +303,7 @@ extension EditContactViewController: UITableViewDelegate, UITableViewDataSource 
                     cell.textLabel?.text = ""
                 }
                 segueButton.setImage(UIImage(systemName: "calendar"), for: .normal)
-                segueButton.tintColor = UIColor(named: "navigationControllerColor")
+                segueButton.tintColor = UIColor(named: "calendarHeaderColor")
                 cell.accessoryView = segueButton
             case [4,0]:
                 cell.textLabel?.text = contactModel.contactType ?? "Not indicated"

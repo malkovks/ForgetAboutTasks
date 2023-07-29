@@ -31,10 +31,6 @@ class UserProfileFontCollectionViewCell: UICollectionViewCell {
         layer.masksToBounds = true
     }
     
-    override func prepareForReuse() {
-        
-    }
-    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -49,7 +45,7 @@ class UserProfileFontCollectionViewCell: UICollectionViewCell {
     
     func configureCell(withFont weight: UIFont.Weight, size: CGFloat, style: String,weightName: String) {
         fontStyleLabel.textColor = UIColor(named: "textColor")
-        fontStyleLabel.font.setupFont(size: size, name: style, weight: weight)
+        fontStyleLabel.font = .systemFont(ofSize: size, weight: weight)
         fontStyleLabel.text = weightName
     }
 }

@@ -58,7 +58,7 @@ extension UIViewController {
         })
         alert.addAction(saveAction)
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        alert.editButtonItem.tintColor = UIColor(named: "navigationControllerColor")
+        alert.editButtonItem.tintColor = UIColor(named: "calendarHeaderColor")
         
         present(alert, animated: true)
     }

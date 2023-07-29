@@ -76,8 +76,8 @@ class UserProfileViewController: UIViewController {
                      ]]
 
     private var passwordBoolean = UserDefaults.standard.bool(forKey: "isPasswordCodeEnabled")
-    private let fontNameValue: String = UserDefaults.standard.string(forKey: "fontNameChanging") ?? "Charter"
     private let fontSizeValue : CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
+//    private let fontNameValue : CGFlo
     private let notificationCenter = UNUserNotificationCenter.current()
     private let provider = DataProvider()
     private let eventStore: EKEventStore = EKEventStore()
@@ -355,7 +355,7 @@ class UserProfileViewController: UIViewController {
     private func setupView(){
         setupNavigationController()
         configureConstraints()
-        setupFontSize(size: fontSizeValue, name: fontNameValue)
+        setupFontSize()
         setupDelegates()
         setupTapGestureForImage()
         setupTargets()
@@ -436,23 +436,13 @@ class UserProfileViewController: UIViewController {
         changeUserImageView.addTarget(self, action: #selector(didTapImagePicker), for: .touchUpInside)
     }
     
-    private func setupFontSize(size: CGFloat,name: String){
-        ageLabel.font = UIFont(name: name, size: size)
-        userNameLabel.font = UIFont(name: name, size: size)
-        mailLabel.font = UIFont(name: name, size: size)
-        changeUserImageView.titleLabel?.font = UIFont(name: name, size: size)
+    private func setupFontSize(){
+        ageLabel.font = .setMainLabelFont()
+        userNameLabel.font = .setMainLabelFont()
+        mailLabel.font = .setMainLabelFont()
+        changeUserImageView.titleLabel?.font = .setMainLabelFont()
         userImageView.layer.cornerRadius = userImageView.frame.size.width/2
         tableView.reloadData()
-    }
-    
-    private func setupSwitchDarkMode() -> Bool {
-        if windows.first?.overrideUserInterfaceStyle == .dark {
-            UserDefaults.standard.setValue(true, forKey: "setUserInterfaceStyle")
-            return true
-        } else {
-            UserDefaults.standard.setValue(false, forKey: "setUserInterfaceStyle")
-            return false
-        }
     }
 
     private func openSelectionChangeIcon(){
@@ -508,50 +498,6 @@ class UserProfileViewController: UIViewController {
         UIView.transition(with: window, duration: 1,options: .transitionCrossDissolve, animations: nil)
     }
     
-    private func customHeaderView(tableView: UITableView, section: Int) -> UIView {
-        let header = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: fontSizeValue*3))
-        header.backgroundColor = .clear
-        
-        let label = UILabel(frame: CGRect(x: 15, y: 5, width: tableView.frame.width-30, height: 40))
-        label.font = .systemFont(ofSize: fontSizeValue,weight: .semibold)
-        label.textColor = UIColor(named: "textColor")
-        switch section {
-        case 0: label.text = "Main setups".localized()
-        case 1: label.text = "Secondary setups".localized()
-        case 2: label.text = "Info".localized()
-        default: break
-        }
-        header.addSubview(label)
-        return header
-    }
-    
-    private func customFooterView(tableView: UITableView, section: Int) -> UIView? {
-        let footer = UIView()
-        footer.backgroundColor = .clear
-        
-        let label = UILabel(frame: CGRect(x: 5, y: 5, width: tableView.frame.width-50, height: fontSizeValue*3))
-        label.font = .systemFont(ofSize: fontSizeValue*0.8,weight: .thin)
-        label.textAlignment = .justified
-        label.numberOfLines = 3
-        if windows.first?.overrideUserInterfaceStyle == .light {
-            label.textColor = .darkGray
-        } else {
-            label.textColor = .darkText
-        }
-        
-        footer.addSubview(label)
-        switch section {
-        case 0: label.text = "This settings need for switching on/off. It will segue to Main Settings for changing value."
-        case 1: label.text = "This include changing font size and style. Either you can change App Icon"
-        case 2: label.text = "You could change localization of application, read information about developer and read some features, which planned on near future"
-        case 3: return nil
-        default: break
-        }
-        let heightLabel = label.frame.height
-        footer.frame = CGRect(x: 0, y: 0, width: tableView.frame.width, height: heightLabel)
-        return footer
-    }
-    
     private func imageWith(image: UIImage) -> UIImage {
         let newSize = CGSize(width: image.size.width/2, height: image.size.height/2)
         UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
@@ -594,11 +540,15 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        customHeaderView(tableView: tableView, section: section)
+        let view = UserProfileHeaderView()
+        view.setupText(indexPath: section)
+        return view 
     }
     
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        customFooterView(tableView: tableView, section: section)
+        let view = UserProfileFooterView()
+        view.setupTextLabel(section: section)
+        return view
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -678,8 +628,7 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
             
             break
         }
-        
-        cell.configureFontSize(font: fontNameValue, size: fontSizeValue)
+    
         cell.layer.cornerRadius = 12
         return cell
     }

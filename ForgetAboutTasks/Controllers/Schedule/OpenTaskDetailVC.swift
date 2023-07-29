@@ -34,8 +34,6 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
     
     private var cellBackgroundColor =  #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
     private var selectedScheduleModel: ScheduleModel
-    private let fontSizeValue : CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
-    private let fontNameValue: String = UserDefaults.standard.string(forKey: "fontNameChanging") ?? "Charter"
     
     init(model: ScheduleModel) {
         self.selectedScheduleModel = model
@@ -144,7 +142,7 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
     private func setupNavigationController(){
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(didTapDismiss))
         navigationItem.rightBarButtonItems = [startEditButton,shareModelButton]
-        navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
+        navigationController?.navigationBar.tintColor = UIColor(named: "calendarHeaderColor")
         title = "Details".localized()
     }
     
@@ -275,12 +273,12 @@ extension OpenTaskDetailViewController: UITableViewDelegate, UITableViewDataSour
         
         cell?.backgroundColor = UIColor(named: "cellColor")
         cell?.textLabel?.numberOfLines = 0
-        cell?.textLabel?.font = UIFont(name: fontNameValue, size: fontSizeValue)
+        cell?.textLabel?.font = .setMainLabelFont()
         
         let switchButton = UISwitch(frame: .zero)
         switchButton.isOn = false
         switchButton.isHidden = true
-        switchButton.onTintColor = UIColor(named: "navigationControllerColor")
+        switchButton.onTintColor = UIColor(named: "calendarHeaderColor")
         cell?.accessoryView = switchButton
         
         switch indexPath {

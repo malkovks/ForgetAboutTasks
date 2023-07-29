@@ -13,7 +13,6 @@ class ScheduleSearchResultViewController: UIViewController {
     
     var scheduleModel: Results<ScheduleModel>?//non private because we take method in ScheduleVC
     private let fontSizeValue : CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
-    private let fontNameValue: String = UserDefaults.standard.string(forKey: "fontNameChanging") ?? "Charter"
     
     let tableView = UITableView(frame: .null, style: .grouped)
     //MARK: - Setup viewDidLoad
@@ -38,7 +37,7 @@ class ScheduleSearchResultViewController: UIViewController {
 
     
     private func setupNavigationController(){
-        navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
+        navigationController?.navigationBar.tintColor = UIColor(named: "calendarHeaderColor")
     }
 }
 
@@ -49,8 +48,8 @@ extension ScheduleSearchResultViewController: UITableViewDelegate, UITableViewDa
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cellSearchResult")
         let model = scheduleModel?[indexPath.row]
         cell.backgroundView?.tintColor = UIColor(named: "cellColor")
-        cell.textLabel?.font = UIFont(name: fontNameValue, size: fontSizeValue)
-        cell.detailTextLabel?.font = UIFont(name: fontNameValue, size: fontSizeValue * 0.7)
+        cell.textLabel?.font = UIFont.setMainLabelFont()
+        cell.detailTextLabel?.font = UIFont.setDetailLabelFont()
 
         let timeFF = Formatters.instance.timeStringFromDate(date: model?.scheduleStartDate ?? Date())
         let dateF = DateFormatter.localizedString(from: model?.scheduleTime ?? Date(), dateStyle: .medium, timeStyle: .none)

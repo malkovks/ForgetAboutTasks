@@ -32,8 +32,6 @@ class NewContactViewController: UIViewController{
     private var contactModel = ContactModel()
     
     private var isStartEditing: Bool = false
-    private let fontSizeValue: CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
-    private let fontNameValue: String = UserDefaults.standard.string(forKey: "fontNameChanging") ?? "Charter"
     //MARK: - UI elements
     private let tableView = UITableView(frame: .zero, style: .insetGrouped)
     private let viewForTable = NewContactCustomView()
@@ -103,7 +101,7 @@ class NewContactViewController: UIViewController{
     private func setupNavigationController(){
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(didTapSave))
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel".localized(), style: .done, target: self, action: #selector(didTapDismiss))
-        navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
+        navigationController?.navigationBar.tintColor = UIColor(named: "calendarHeaderColor")
         navigationController?.navigationItem.largeTitleDisplayMode = .never
         navigationController?.navigationBar.prefersLargeTitles = false
     }
@@ -182,7 +180,7 @@ extension NewContactViewController: UITableViewDelegate, UITableViewDataSource {
         let data = cellsName[indexPath.section][indexPath.row]
         cell.backgroundColor = UIColor(named: "cellColor")
         cell.textLabel?.text = data
-        cell.textLabel?.font = UIFont(name: fontNameValue, size: fontSizeValue)
+        cell.textLabel?.font = .setMainLabelFont()
         
         
         return cell
