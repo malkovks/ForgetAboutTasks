@@ -186,7 +186,7 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
     
     //MARK: - Setups for view
     private func setupView(){
-        tabBarController?.tabBar.isHidden = true
+//        UINavigationController.setNavigationBarHidden(self) = 
         setupTextField()
         addConstrains()
         view.backgroundColor = UIColor(named: "calendarHeaderColor")

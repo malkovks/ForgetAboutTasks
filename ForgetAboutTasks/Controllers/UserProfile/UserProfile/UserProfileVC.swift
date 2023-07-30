@@ -649,9 +649,9 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
         case [1,1]:
             openChangeFontController()
         case [2,0]:
-            showSettingsForChangingAccess(title: "Changing App Language".localized(),
-                                          message: "Would you like to change the language of your application?".localized()) { _ in }
-            
+//            showSettingsForChangingAccess(title: "Changing App Language".localized(),
+//                                          message: "Would you like to change the language of your application?".localized()) { _ in }
+            showVariationsWithLanguage(title: "Change language", message: "nil") {  _ in}
         case [3,0]:
             print("Delete")
         case [3,1]:

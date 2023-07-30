@@ -73,6 +73,7 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
     override func viewDidLoad() {
         super.viewDidLoad()
         setupAuthentification()
+        print(Locale.current.language.languageCode?.identifier)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -165,7 +166,7 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = true
         navigationController?.navigationBar.tintColor = UIColor(named: "calendarHeaderColor")
-        navigationController?.tabBarController?.tabBar.scrollEdgeAppearance = navigationController?.tabBarController?.tabBar.standardAppearance
+//        navigationController?.tabBarController?.tabBar.scrollEdgeAppearance = navigationController?.tabBarController?.tabBar.standardAppearance
         navigationController?.navigationItem.largeTitleDisplayMode = .never
         navigationController?.navigationBar.prefersLargeTitles = false
     }

@@ -48,6 +48,41 @@ extension UIViewController {
         semaphore.wait()
     }
     
+    func restartApplication(){
+//        guard let window = UIApplication.shared.keyWindow else { return }
+//        let vc = TabBarViewController()
+//        window.rootViewController = vc
+        guard let keyWindow = UIApplication.shared.keyWindow else { return }
+        let vc = ScheduleViewController()
+        keyWindow.rootViewController = vc
+//        exit(0)
+        UIApplication.shared.applicationDidFinishLaunching()
+//        UIView.transition(with: window, duration: 1,options: .transitionCrossDissolve, animations: nil)
+    }
+    
+    func setupAppLanguage(languageCode: String) {
+        UserDefaults.standard.set([languageCode], forKey: "AppleLanguages")
+        UserDefaults.standard.synchronize()
+    }
+    
+    func showVariationsWithLanguage(title: String, message: String, handler: @escaping (Bool) -> ()){
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction(title: "Russia", style: .default,handler: { _ in
+            self.setupAppLanguage(languageCode: "ru")
+            self.restartApplication()
+        }))
+        alert.addAction(UIAlertAction(title: "France", style: .default,handler: { _ in
+            self.setupAppLanguage(languageCode: "fr")
+            self.restartApplication()
+        }))
+        alert.addAction(UIAlertAction(title: "English", style: .default,handler: { _ in
+            self.setupAppLanguage(languageCode: "en")
+            self.restartApplication()
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        present(alert, animated: true)
+    }
+    
     func showSettingsForChangingAccess(title: String, message: String,handler: @escaping (Bool)-> ()){
         let alert = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
         alert.addAction(UIAlertAction(title: "Settings", style: .default) { _ in
