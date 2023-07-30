@@ -55,8 +55,8 @@ extension UIViewController {
         guard let keyWindow = UIApplication.shared.keyWindow else { return }
         let vc = ScheduleViewController()
         keyWindow.rootViewController = vc
-//        exit(0)
-        UIApplication.shared.applicationDidFinishLaunching()
+        exit(0)
+//        UIApplication.shared.applicationDidFinishLaunching()
 //        UIView.transition(with: window, duration: 1,options: .transitionCrossDissolve, animations: nil)
     }
     
