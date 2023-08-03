@@ -204,9 +204,19 @@ class EditContactViewController: UIViewController {
     
     private func setupOpenCalendar(){
         guard let date = contactModel.contactDateBirthday else { alertError(text: "Cant get date".localized(), mainTitle: "Error".localized()); return}
-        let vc = CreateTaskForDayController(choosenDate: date)
-        show(vc, sender: nil)
+        let convertedDate = date.getDateWithoutYear(date: date)
+        let vc = CreateTaskForDayController(choosenDate: convertedDate)
+        self.dismiss(animated: true)
+        if let tabBarController = self.tabBarController {
+            tabBarController.selectedIndex = 0
+        }
+        let nav = UINavigationController(rootViewController: vc)
+        nav.modalPresentationStyle = .fullScreen
+        nav.isNavigationBarHidden = false
+        present(nav, animated: true)
     }
+    
+
     
     private func setupOpenAddressInMap(){
         guard let country = contactModel.contactCountry,

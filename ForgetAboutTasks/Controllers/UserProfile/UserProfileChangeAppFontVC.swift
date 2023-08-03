@@ -263,6 +263,7 @@ extension ChangeFontViewController: UICollectionViewDelegate, UICollectionViewDa
         testFontLabel.font = UIFont(name: savedFontName, size: savedFontSize)
         testFontLabel.font = .systemFont(ofSize: savedFontSize, weight: fontWeight)
         savedFontWeight = fontWeight.rawValue
+        savedFontName = "Times New Roman"
         
     }
     
@@ -290,9 +291,8 @@ extension ChangeFontViewController : UIPickerViewDelegate, UIPickerViewDataSourc
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         let fontName = fontNames[row]
         testFontLabel.font = UIFont(name: fontName, size: savedFontSize)
-//        testFontLabel.font = .systemFont(ofSize: savedFontSize, weight: UIFont.Weight(rawValue: savedFontWeight))
-
         savedFontName = fontNames[row]
+        savedFontWeight = 0.0
     }
     
     func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {

@@ -15,6 +15,7 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
     
     
     private var cellDataScheduleModel: Results<ScheduleModel>!
+    private var birthdayContactModel: Results<ContactModel>!
     private var localRealmData = try! Realm()
     private var choosenDate = Date()
     private var isValueWasChanged = Bool()
@@ -24,14 +25,51 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
     private let fontSizeValue : CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
     
     init(model: Results<ScheduleModel>,choosenDate: Date){
+        super.init(nibName: nil, bundle: nil)
         self.cellDataScheduleModel = model
         self.choosenDate = choosenDate
-        super.init(nibName: nil, bundle: nil)
+        self.birthdayContactModel = localRealmData.objects(ContactModel.self)
+        birthdayInfoLabel.text = "Have some birthdays"
+        
+        var birthdayCounts = [String: Int]()
+        
+        for birthday in self.birthdayContactModel {
+            if let model = birthday.contactDateBirthday {
+                let convertedModel = model.getDateWithoutYear(date: model,currentYearDate: choosenDate)
+                let dateString = DateFormatter.localizedString(from: convertedModel, dateStyle: .medium, timeStyle: .none)
+                if birthdayCounts[dateString] != nil {
+                    birthdayCounts[dateString]! += 1
+                } else {
+                   birthdayCounts[dateString] = 1
+                }
+            }
+        }
+        
+        let convertChoosenDate = DateFormatter.localizedString(from: choosenDate, dateStyle: .medium, timeStyle: .none)
+        if birthdayCounts[convertChoosenDate] != nil {
+            birthdayInfoLabel.text = "Have some birthday of contacts"
+        } else {
+            birthdayInfoLabel.text = "No birthdays"
+        }
+        
+        
     }
     init(choosenDate: Date){
+        super.init(nibName: nil, bundle: nil)
         self.choosenDate = choosenDate
         self.cellDataScheduleModel = nil
+        
+    }
+    
+    init(choosenDate: Date, model: Results<ScheduleModel>,birthdayModel: Results<ContactModel>){
         super.init(nibName: nil, bundle: nil)
+        self.choosenDate = choosenDate
+        self.cellDataScheduleModel = model
+        self.birthdayContactModel = birthdayModel
+        if !birthdayContactModel.isEmpty {
+            birthdayInfoLabel.text = "Today have some birthdays"
+        }
+        
     }
     
     required init?(coder: NSCoder) {
@@ -83,6 +121,17 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
         return table
     }()
     
+    private let birthdayInfoLabel: UILabel = {
+       let label = UILabel()
+        label.textAlignment = .left
+        label.contentMode = .left
+        label.textColor = UIColor(named: "textColor")
+        label.layer.borderColor = UIColor(named: "calendarHeaderColor")?.cgColor
+        label.layer.borderWidth = 3
+        label.layer.cornerRadius = 8
+        return label
+    }()
+    
     private var actionMenu: UIMenu = UIMenu()
     
     private lazy var createEventButton: UIBarButtonItem = {
@@ -95,10 +144,6 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
     
     private lazy var actionWithTableButton: UIBarButtonItem = {
         return UIBarButtonItem(image: UIImage(systemName: "trash"), menu: actionMenu)
-    }()
-    
-    private lazy var displayUserProfileView: UIBarButtonItem = {
-        return UIBarButtonItem(image: UIImage(systemName: "person.circle.fill"), style: .done, target: self, action: #selector(didTapDisplayUserView))
     }()
     
     private lazy var dismissViewButton: UIBarButtonItem = {
@@ -131,13 +176,6 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
  //MARK: -  actions targets methods
     @objc private func didTapDismiss(){
         dismiss(animated: true)
-    }
-    
-    @objc private func didTapDisplayUserView(){
-        dismiss(animated: true)
-        UIView.transition(with: view, duration: 0.5,options: .transitionCrossDissolve) {
-            self.tabBarController?.selectedIndex = 3
-        }
     }
     
     @objc private func didTapCreate(){
@@ -224,7 +262,7 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
     private func setupNavigationController(){
         navigationController?.navigationItem.largeTitleDisplayMode = .never
         navigationController?.navigationBar.prefersLargeTitles = false
-        navigationItem.leftBarButtonItems = [dismissViewButton, displayUserProfileView]
+        navigationItem.leftBarButtonItems = [dismissViewButton]
         
         navigationItem.rightBarButtonItems = [createEventButton,editNavigationButton]
         navigationController?.navigationBar.tintColor = UIColor(named: "calendarHeaderColor")
@@ -419,10 +457,26 @@ extension CreateTaskForDayController {
             make.height.equalTo(40)
         }
         
-        view.addSubview(tableView)
-        tableView.snp.makeConstraints { make in
-            make.top.equalTo(segmentalController.snp.bottom).offset(5)
-            make.horizontalEdges.bottom.equalToSuperview()
+        if !(birthdayInfoLabel.text?.isEmpty)! {
+            view.addSubview(birthdayInfoLabel)
+            birthdayInfoLabel.snp.makeConstraints { make in
+                make.top.equalTo(segmentalController.snp.bottom).offset(5)
+                make.leading.trailing.equalToSuperview().inset(5)
+                make.height.equalTo(40)
+            }
+            view.addSubview(tableView)
+            tableView.snp.makeConstraints { make in
+                make.top.equalTo(birthdayInfoLabel.snp.bottom).offset(5)
+                make.horizontalEdges.bottom.equalToSuperview()
+            }
+        } else {
+            view.addSubview(tableView)
+            tableView.snp.makeConstraints { make in
+                make.top.equalTo(segmentalController.snp.bottom).offset(5)
+                make.horizontalEdges.bottom.equalToSuperview()
+            }
         }
+        
+        
     }
 }

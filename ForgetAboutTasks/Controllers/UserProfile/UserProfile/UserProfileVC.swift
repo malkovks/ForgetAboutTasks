@@ -54,7 +54,10 @@ class UserProfileViewController: UIViewController {
                                         cellImageColor: .systemIndigo),
                         UserProfileData(title: "Change Font".localized(),
                                         cellImage: UIImage(systemName: "character.cursor.ibeam")!,
-                                        cellImageColor: .systemIndigo)
+                                        cellImageColor: .systemIndigo),
+                        UserProfileData(title: "Enable Animation",
+                                        cellImage: UIImage(systemName: "figure.walk.motion")!,
+                                        cellImageColor: .systemGreen)
                      ],
                      [
                         UserProfileData(title: "Language".localized(),
@@ -350,6 +353,11 @@ class UserProfileViewController: UIViewController {
         }
     }
  
+    @objc private func didTapDisableAnimation(sender: UISwitch){
+        DispatchQueue.main.async {
+            UserDefaults.standard.setValue(sender.isOn, forKey: "enabledAnimation")
+        }
+    }
     //MARK: - Setup methods
     
     private func setupView(){
@@ -491,13 +499,6 @@ class UserProfileViewController: UIViewController {
         self.present(nav, animated: true)
     }
     
-    private func restartApp(){
-        guard let window = UIApplication.shared.keyWindow else { return }
-        let vc = TabBarViewController()
-        window.rootViewController = vc
-        UIView.transition(with: window, duration: 1,options: .transitionCrossDissolve, animations: nil)
-    }
-    
     private func imageWith(image: UIImage) -> UIImage {
         let newSize = CGSize(width: image.size.width/2, height: image.size.height/2)
         UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
@@ -585,7 +586,6 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
             cell.switchButton.isOn = userInterface.checkDarkModeUserDefaults() ?? setupSwitchDarkMode()
             cell.switchButton.addTarget(self, action: #selector(didTapSwitch(sender: )), for: .valueChanged)
         case [0,1]:
-            cell.switchButton.isHidden = false
             cell.switchButton.addTarget(self, action: #selector(didTapChangeAccessNotifications), for: .touchUpInside)
             showNotificationAccessStatus { access in
                 DispatchQueue.main.async {
@@ -593,7 +593,6 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
                 }
             }
         case [0,2]:
-            cell.switchButton.isHidden = false
             cell.switchButton.addTarget(self, action: #selector(didTapChangeAccessCalendar), for: .touchUpInside)
             request(forAllowing: eventStore) { access in
                 DispatchQueue.main.async {
@@ -601,7 +600,6 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
                 }
             }
         case [0,3]:
-            cell.switchButton.isHidden = false
             cell.switchButton.addTarget(self, action: #selector(didTapChangeAccessToContacts), for: .touchUpInside)
             checkAuthForContacts { success in
                 DispatchQueue.main.async {
@@ -609,7 +607,6 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
                 }
             }
         case [0,4]:
-            cell.switchButton.isHidden = false
             cell.switchButton.addTarget(self, action: #selector(didTapChangeAccessToMedia), for: .touchUpInside)
             checkAccessForMedia { success in
                 DispatchQueue.main.async {
@@ -617,15 +614,16 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
                 }
             }
         case [0,5]:
-            cell.switchButton.isHidden = false
             cell.switchButton.addTarget(self, action: #selector(didTapChangeAccessToFaceID), for: .touchUpInside)
             checkAuthForFaceID { success in
                 DispatchQueue.main.async {
                     cell.switchButton.isOn = success
                 }
             }
+        case [1,2]:
+            cell.switchButton.addTarget(self, action: #selector(didTapDisableAnimation), for: .valueChanged)
+            cell.switchButton.isOn = UserDefaults.standard.bool(forKey: "enabledAnimation")
         default:
-            
             break
         }
     

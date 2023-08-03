@@ -50,8 +50,6 @@ class AllTasksToDoViewController: UIViewController, CheckSuccessSaveProtocol {
         controller.attributedTitle = NSAttributedString(string: "Pull to refresh".localized())
         return controller
     }()
-  
-    
 
     //MARK: - Views loading
     
@@ -132,7 +130,6 @@ class AllTasksToDoViewController: UIViewController, CheckSuccessSaveProtocol {
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationBar.tintColor = UIColor(named: "calendarHeaderColor")
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "folder.fill.badge.plus"), landscapeImagePhone: nil, style: .done, target: self, action: #selector(didTapCreateNewTask))
-        
         navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "magnifyingglass.circle.fill"), style: .done, target: self, action: #selector(didTapSearch))
     }
     
@@ -296,61 +293,3 @@ extension AllTasksToDoViewController {
         }
     }
 }
-
-
-//func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-//        let cell = tableView.cellForRow(at: indexPath)
-//        let data = allTasksData[indexPath.row]
-//        let color = UIColor.color(withData: data.allTaskColor!)
-//        let actionInstance = UIContextualAction(style: .normal, title: "") { _, _, success in
-//            if cell?.textLabel?.textColor == .lightGray {
-//                cell?.textLabel?.textColor = .black
-//                cell?.detailTextLabel?.textColor = .black
-//                cell?.imageView?.image = UIImage(systemName: "circle.fill")
-//                cell?.imageView?.tintColor = color
-//                success(true)
-//            } else {
-//                cell?.textLabel?.textColor = .lightGray
-//                cell?.imageView?.image = UIImage(systemName: "circle")
-//                cell?.imageView?.tintColor = .lightGray
-//                cell?.detailTextLabel?.textColor = .lightGray
-//                success(true)
-//            }
-//
-//        }
-//        actionInstance.backgroundColor = .systemYellow
-//        actionInstance.image = UIImage(systemName: "pencil.line")
-//        actionInstance.image?.withTintColor(.systemBackground)
-//        let action = UISwipeActionsConfiguration(actions: [actionInstance])
-//        return action
-//    }
-//MARK: - Setup for sections
-//private func setupObjects() -> Results<AllTaskModel> {
-//    let objects = localRealmData.objects(AllTaskModel.self).sorted(byKeyPath: "allTaskDate")
-//    return objects
-//}
-//
-//private func setupTitles(objects: Results<AllTaskModel>) -> ([String],[Date]) {
-//    let dates = objects.map({ $0.allTaskDate! })
-//    let uniqueDates = Array(Set(dates))
-//    let sortedDates = uniqueDates.sorted(by: >)
-//    let formatter = DateFormatter()
-//    formatter.dateFormat = "dd MMMM yyyy"
-//    let titles = sortedDates.map { formatter.string(from: $0) }
-//    return (titles,sortedDates)
-//}
-//
-//private func setupSectionsCategories(objects: Results<AllTaskModel>) -> [Date: [AllTaskModel]]  {
-//    let objects = objects
-//    var groupedObjects = [Date: [AllTaskModel]]()
-//    for n in objects {
-//        let date = n.allTaskDate ?? Date()
-//        if groupedObjects[date] == nil {
-//            groupedObjects[date] = [n]
-//        } else {
-//            groupedObjects[date]?.append(n)
-//        }
-//    }
-//    return groupedObjects
-//}
-//

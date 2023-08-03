@@ -17,6 +17,7 @@
 		0A0A49DC2A04E64F00517E6F /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 0A0A49DB2A04E64F00517E6F /* FirebaseDatabase */; };
 		0A0A49DE2A04E64F00517E6F /* FirebaseDatabaseSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 0A0A49DD2A04E64F00517E6F /* FirebaseDatabaseSwift */; };
 		0A0CE6F729C461F600A14648 /* CreateEventScheduleVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A0CE6F629C461F600A14648 /* CreateEventScheduleVC.swift */; };
+		0A1FD0C02A7A5400003A7158 /* Date+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A1FD0BF2A7A5400003A7158 /* Date+Extensions.swift */; };
 		0A2717B829FE518000EFBC11 /* OpenTaskDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2717B729FE518000EFBC11 /* OpenTaskDetailVC.swift */; };
 		0A2717BA2A01F7FE00EFBC11 /* AllTasksDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2717B92A01F7FE00EFBC11 /* AllTasksDetailVC.swift */; };
 		0A525DAF29FC3C3B009D116F /* AlertNewName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A525DAE29FC3C3B009D116F /* AlertNewName.swift */; };
@@ -140,6 +141,7 @@
 
 /* Begin PBXFileReference section */
 		0A0CE6F629C461F600A14648 /* CreateEventScheduleVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateEventScheduleVC.swift; sourceTree = "<group>"; };
+		0A1FD0BF2A7A5400003A7158 /* Date+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extensions.swift"; sourceTree = "<group>"; };
 		0A2717B729FE518000EFBC11 /* OpenTaskDetailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenTaskDetailVC.swift; sourceTree = "<group>"; };
 		0A2717B92A01F7FE00EFBC11 /* AllTasksDetailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllTasksDetailVC.swift; sourceTree = "<group>"; };
 		0A525DAE29FC3C3B009D116F /* AlertNewName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertNewName.swift; sourceTree = "<group>"; };
@@ -426,6 +428,7 @@
 				0A9918F42A5651EF001004FA /* DataProvider.swift */,
 				0A99A90A29CD9CB300CC5A42 /* UserDefaultsManager.swift */,
 				0AEAA9F52A26884A00BE85A4 /* KeyChainManager.swift */,
+				0A8DD8D929BC8BD900B2DDAB /* DateFormatters */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -510,7 +513,6 @@
 			isa = PBXGroup;
 			children = (
 				0AA604E129E1465F007ACE58 /* Realm */,
-				0A8DD8D929BC8BD900B2DDAB /* DateFormatters */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -564,6 +566,7 @@
 			isa = PBXGroup;
 			children = (
 				0AA74A2329E715ED00F01532 /* DateFormatters.swift */,
+				0A1FD0BF2A7A5400003A7158 /* Date+Extensions.swift */,
 			);
 			path = Date;
 			sourceTree = "<group>";
@@ -880,6 +883,7 @@
 				0AA604E629E14814007ACE58 /* ScheduleRealmManager.swift in Sources */,
 				0A8AC1A629B9D4FA00EA052B /* ContactsVC.swift in Sources */,
 				0AA604E929E16C05007ACE58 /* ColorExtensions.swift in Sources */,
+				0A1FD0C02A7A5400003A7158 /* Date+Extensions.swift in Sources */,
 				0AA604DF29E04541007ACE58 /* AlertImagePicker.swift in Sources */,
 				0AA0E93C2A60D24B00911C0D /* ContactsAccess.swift in Sources */,
 				0ADAB9FC2A310EEA00A5C2B2 /* AlertPhoneNumber.swift in Sources */,

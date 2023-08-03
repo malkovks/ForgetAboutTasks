@@ -22,6 +22,9 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
     private var filteredModel: Results<ScheduleModel>!
     private var birthdayModel: [Date] = []
     
+    private var filteredContactData: Results<ContactModel>!
+    private var filteredScheduleModel: Results<ScheduleModel>!
+    
     //MARK: - UI elements setups
     private lazy var searchNavigationButton: UIBarButtonItem = {
         return UIBarButtonItem(image: UIImage(systemName: "magnifyingglass.circle.fill"), landscapeImagePhone: nil, style: .plain, target: self, action: #selector(didTapSearch))
@@ -47,7 +50,7 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
         calendar.headerHeight = 50
         calendar.firstWeekday = 2
         calendar.placeholderType = .none //remove past and future dates of months
-        calendar.appearance.eventDefaultColor = #colorLiteral(red: 0.8374214172, green: 0.8374213576, blue: 0.8374213576, alpha: 1)
+        calendar.appearance.eventDefaultColor = .systemBlue
         calendar.appearance.titleFont = UIFont.systemFont(ofSize: 18)
         calendar.appearance.headerTitleFont = .systemFont(ofSize: 20)
         calendar.appearance.borderDefaultColor = .clear
@@ -73,7 +76,6 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
     override func viewDidLoad() {
         super.viewDidLoad()
         setupAuthentification()
-        print(Locale.current.language.languageCode?.identifier)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -166,7 +168,6 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = true
         navigationController?.navigationBar.tintColor = UIColor(named: "calendarHeaderColor")
-//        navigationController?.tabBarController?.tabBar.scrollEdgeAppearance = navigationController?.tabBarController?.tabBar.standardAppearance
         navigationController?.navigationItem.largeTitleDisplayMode = .never
         navigationController?.navigationBar.prefersLargeTitles = false
     }
@@ -195,6 +196,19 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
         birthdayModel = dates
     }
     
+    private func dateInterval(startDate: Date,text: String) -> NSPredicate {
+        let dateEnd: Date = {
+           let components = DateComponents(day: 1,second: -1)
+            return Calendar.current.date(byAdding: components, to: startDate)!
+        }()
+        let predicate = NSPredicate(format: "\(text) BETWEEN %@", [startDate,dateEnd])
+        return predicate
+        
+        
+    }
+    
+    
+    
     private func loadingDataByDate(date: Date,at monthPosition: FSCalendarMonthPosition,is firstLoad: Bool) {
         let dateStart = date
         let dateEnd: Date = {
@@ -220,6 +234,10 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
         WidgetCenter.shared.reloadAllTimelines()
         openCreateTaskController(firstLoad: firstLoad, monthPosition: .current, weekday: weekday, dateStart: dateStart, dateEnd: dateEnd)
         
+        let valueContact = localRealm.objects(ContactModel.self)
+        
+        filteredContactData = valueContact
+        
     }
     
     private func openCreateTaskController(firstLoad: Bool,monthPosition: FSCalendarMonthPosition,weekday: Int,dateStart: Date,dateEnd: Date){
@@ -229,13 +247,36 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
                 let predicateUnrepeat = NSPredicate(format: "scheduleStartDate BETWEEN %@", [dateStart,dateEnd])
                 let compound = NSCompoundPredicate(type: .or, subpredicates: [predicate,predicateUnrepeat])
                 let value = localRealm.objects(ScheduleModel.self).filter(compound)
+                let birthdayValue = localRealm.objects(ContactModel.self)
                 let vc = CreateTaskForDayController(model: value, choosenDate: dateStart)
+                print(dateStart)
+                print(birthdayValue)
                 let nav = UINavigationController(rootViewController: vc)
                 nav.modalPresentationStyle = .fullScreen
                 nav.isNavigationBarHidden = false
                 present(nav, animated: true)
             }
         }
+    }
+    
+    private func loadingBirthdayDates(){
+        
+    }
+    
+    private func setupDateByYear(_ date: Date) -> Date{
+        let calendar = Calendar.current
+        let currentYear = calendar.component(.year, from: Date())
+        let customMonth = calendar.component(.month, from: date)
+        let customDay = calendar.component(.day, from: date)
+        
+        var components = DateComponents()
+        components.year = currentYear
+        components.month = customMonth
+        components.day = customDay
+        
+        let valueDate = calendar.date(from: components) ?? Date()
+        
+        return valueDate
     }
     
     func isSavedCompletely(boolean: Bool) {
@@ -260,7 +301,20 @@ extension ScheduleViewController: FSCalendarDelegate, FSCalendarDataSource {
     
     func calendar(_ calendar: FSCalendar, numberOfEventsFor date: Date) -> Int {
         var eventCounts = [String: Int]()
+        var birthdayCounts = [String: Int]()
         
+        for birthday in filteredContactData {
+            if let model = birthday.contactDateBirthday {
+                let convertedModel = model.getDateWithoutYear(date: model,currentYearDate: date)
+                let dateString = DateFormatter.localizedString(from: convertedModel, dateStyle: .medium, timeStyle: .none)
+                if birthdayCounts[dateString] != nil {
+                    birthdayCounts[dateString]! += 1
+                } else {
+                   birthdayCounts[dateString] = 1
+                }
+            }
+        }
+
         for event in scheduleModel {
             let dateModel = event.scheduleStartDate ?? Date()
             let date = DateFormatter.localizedString(from: dateModel, dateStyle: .medium, timeStyle: .none)
@@ -270,21 +324,44 @@ extension ScheduleViewController: FSCalendarDelegate, FSCalendarDataSource {
                 eventCounts[date] = 1
             }
         }
+        
+        
 
         let convertDate = DateFormatter.localizedString(from: date, dateStyle: .medium, timeStyle: .none)
-        calendar.appearance.eventDefaultColor = .systemBlue
-        if eventCounts[convertDate] != nil {
-//            if birthdayModel.contains(date){
-//                return 2
-//            }
+//        calendar.appearance.eventDefaultColor = .systemBlue
+        if eventCounts[convertDate] != nil && birthdayCounts[convertDate] != nil{
+            return 2
+        } else if eventCounts[convertDate] != nil {
+            return 1
+        } else if birthdayCounts[convertDate] != nil {
             return 1
         } else {
             return 0
         }
     }
-    
-    
-    
+}
+
+extension ScheduleViewController: FSCalendarDelegateAppearance {
+    func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, eventDefaultColorsFor date: Date) -> [UIColor]? {
+        var colors: [UIColor] = []
+        
+        
+        let predicate = dateInterval(startDate: date,text: "contactDateBirthday")
+        let secondPredicate = dateInterval(startDate: date, text: "scheduleStartDate")
+        let birthdayModel = localRealm.objects(ContactModel.self).filter(predicate)
+        let model = localRealm.objects(ScheduleModel.self).filter(secondPredicate)
+
+        
+        if !filteredContactData.isEmpty {
+            colors.append(.systemRed)
+        }
+        
+        if !scheduleModel.isEmpty{
+            colors.append(.systemBlue)
+        }
+        
+        return colors
+    }
 }
 //MARK: - Search delegates
 extension ScheduleViewController: UISearchResultsUpdating,UISearchBarDelegate {

@@ -48,16 +48,11 @@ extension UIViewController {
         semaphore.wait()
     }
     
-    func restartApplication(){
-//        guard let window = UIApplication.shared.keyWindow else { return }
-//        let vc = TabBarViewController()
-//        window.rootViewController = vc
-        guard let keyWindow = UIApplication.shared.keyWindow else { return }
-        let vc = ScheduleViewController()
-        keyWindow.rootViewController = vc
-        exit(0)
-//        UIApplication.shared.applicationDidFinishLaunching()
-//        UIView.transition(with: window, duration: 1,options: .transitionCrossDissolve, animations: nil)
+    func restartApp(){
+        guard let window = UIApplication.shared.keyWindow else { return }
+        let vc = TabBarViewController()
+        window.rootViewController = vc
+        UIView.transition(with: window, duration: 1,options: .transitionCrossDissolve, animations: nil)
     }
     
     func setupAppLanguage(languageCode: String) {
@@ -69,15 +64,11 @@ extension UIViewController {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
         alert.addAction(UIAlertAction(title: "Russia", style: .default,handler: { _ in
             self.setupAppLanguage(languageCode: "ru")
-            self.restartApplication()
-        }))
-        alert.addAction(UIAlertAction(title: "France", style: .default,handler: { _ in
-            self.setupAppLanguage(languageCode: "fr")
-            self.restartApplication()
+            self.restartApp()
         }))
         alert.addAction(UIAlertAction(title: "English", style: .default,handler: { _ in
             self.setupAppLanguage(languageCode: "en")
-            self.restartApplication()
+            self.restartApp()
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         present(alert, animated: true)
