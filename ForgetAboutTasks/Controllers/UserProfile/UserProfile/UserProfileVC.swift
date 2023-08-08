@@ -57,7 +57,10 @@ class UserProfileViewController: UIViewController {
                                         cellImageColor: .systemIndigo),
                         UserProfileData(title: "Enable Animation",
                                         cellImage: UIImage(systemName: "figure.walk.motion")!,
-                                        cellImageColor: .systemGreen)
+                                        cellImageColor: .systemGreen),
+                        UserProfileData(title: "Vibro type",
+                                        cellImage: UIImage(systemName: "iphone.gen2.radiowaves.left.and.right")!,
+                                        cellImageColor: .black)
                      ],
                      [
                         UserProfileData(title: "Language".localized(),
@@ -79,6 +82,7 @@ class UserProfileViewController: UIViewController {
                      ]]
 
     private var passwordBoolean = UserDefaults.standard.bool(forKey: "isPasswordCodeEnabled")
+    private var isAnimated = UserDefaultsManager.isAppAnimated
     private let fontSizeValue : CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
 //    private let fontNameValue : CGFlo
     private let notificationCenter = UNUserNotificationCenter.current()
@@ -173,7 +177,7 @@ class UserProfileViewController: UIViewController {
     //MARK: - Targets methods
     @objc private func didTapLogout(){
         let alert = UIAlertController(title: "Warning", message: "Do you want to Exit from your account?", preferredStyle: .actionSheet)
-        alert.addAction(UIAlertAction(title: "Confirm", style: .destructive,handler: { _ in
+        alert.addAction(UIAlertAction(title: "Confirm", style: .destructive,handler: {  [weak self] _ in
             if UserDefaults.standard.bool(forKey: "isAuthorised"){
                 UserDefaults.standard.set(false, forKey: "isAuthorised")
                 do {
@@ -182,18 +186,18 @@ class UserProfileViewController: UIViewController {
                 } catch let error {
                     print("Error signing out from Firebase \(error)")
                 }
-                self.view.window?.rootViewController?.dismiss(animated: true)
+                self?.view.window?.rootViewController?.dismiss(animated: self?.isAnimated ?? true)
                 let vc = UserAuthViewController()
                 let navVC = UINavigationController(rootViewController: vc)
                 navVC.modalPresentationStyle = .fullScreen
                 navVC.isNavigationBarHidden = false
-                self.present(navVC, animated: true)
+                self?.present(navVC, animated: self?.isAnimated ?? true)
             } else {
                 print("Error exiting from account")
             }
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        present(alert, animated: true)
+        present(alert, animated: isAnimated)
     }
     
     @objc private func didTapImagePicker(){
@@ -205,7 +209,7 @@ class UserProfileViewController: UIViewController {
                 imagePicker.sourceType = .photoLibrary
                 imagePicker.allowsEditing = true
                 activityIndicator.startAnimating()
-                present(self.imagePicker, animated: true)
+                present(self.imagePicker, animated: isAnimated)
             }
         }))
         alert.addAction(UIAlertAction(title: "Make new image".localized(), style: .default,handler: { [self] _ in
@@ -214,7 +218,7 @@ class UserProfileViewController: UIViewController {
                 imagePicker.sourceType = .camera
                 imagePicker.allowsEditing = true
                 activityIndicator.startAnimating()
-                present(self.imagePicker, animated: true)
+                present(self.imagePicker, animated: isAnimated)
             }
         }))
         alert.addAction(UIAlertAction(title: "Delete image".localized(), style: .destructive,handler: { _ in
@@ -227,7 +231,7 @@ class UserProfileViewController: UIViewController {
             self.view.alpha = 1
             self.activityIndicator.stopAnimating()
         }))
-        present(alert, animated: true)
+        present(alert, animated: isAnimated)
     }
     
     @objc private func didTapOnName(sender: UITapGestureRecognizer){
@@ -354,9 +358,23 @@ class UserProfileViewController: UIViewController {
     }
  
     @objc private func didTapDisableAnimation(sender: UISwitch){
+        
         DispatchQueue.main.async {
             UserDefaults.standard.setValue(sender.isOn, forKey: "enabledAnimation")
         }
+        print("Animation changed")
+    }
+    
+    @objc private func didTapChangeNapticStyle(sender: UIButton){
+        print("Choosed naptic style")
+        let contentVC = UserProfileHeaderView()
+        view.superview?.addSubview(contentVC)
+        contentVC.center = view.superview?.center ?? CGPoint.zero
+        let picker = CustomPickerView()
+        view.superview?.addSubview(picker)
+        
+        
+        
     }
     //MARK: - Setup methods
     
@@ -460,7 +478,7 @@ class UserProfileViewController: UIViewController {
         nav.sheetPresentationController?.detents = [.custom(resolver: { _ in return self.view.frame.size.height/5 })]
         nav.sheetPresentationController?.prefersGrabberVisible = true
         nav.isNavigationBarHidden = false
-        present(nav, animated: true)
+        present(nav, animated: isAnimated)
     }
     
     private func openPasswordController(title: String = "Code-password",message: String = "This function allow you to switch on password if it neccesary. Any time you could change it",alertTitle: String = "Switch on code-password"){
@@ -479,7 +497,7 @@ class UserProfileViewController: UIViewController {
             }))
         }
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        present(alert, animated: true)
+        present(alert, animated: isAnimated)
     }
     
     private func openChangeFontController(){
@@ -496,7 +514,7 @@ class UserProfileViewController: UIViewController {
         nav.sheetPresentationController?.prefersGrabberVisible = true
         nav.modalTransitionStyle = .coverVertical
         nav.isNavigationBarHidden = false
-        self.present(nav, animated: true)
+        self.present(nav, animated: isAnimated)
     }
     
     private func imageWith(image: UIImage) -> UIImage {
@@ -621,8 +639,12 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
                 }
             }
         case [1,2]:
+            cell.switchButton.removeTarget(self, action: #selector(didTapSwitch), for: .valueChanged)
             cell.switchButton.addTarget(self, action: #selector(didTapDisableAnimation), for: .valueChanged)
             cell.switchButton.isOn = UserDefaults.standard.bool(forKey: "enabledAnimation")
+        case [1,3]:
+            cell.openNapticView.addTarget(self, action: #selector(didTapChangeNapticStyle), for: .touchUpInside)
+
         default:
             break
         }
@@ -632,7 +654,7 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
+        tableView.deselectRow(at: indexPath, animated: isAnimated)
         
         switch indexPath {
         case [0,6]:
@@ -677,13 +699,13 @@ extension UserProfileViewController: UIImagePickerControllerDelegate,UINavigatio
         } else {
             print("Error")
         }
-        picker.dismiss(animated: true)
+        picker.dismiss(animated: isAnimated)
         activityIndicator.stopAnimating()
         view.alpha = 1
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        picker.dismiss(animated: true)
+        picker.dismiss(animated: isAnimated)
         view.alpha = 1
         
     }
@@ -737,3 +759,4 @@ extension UserProfileViewController  {
         
     }
 }
+

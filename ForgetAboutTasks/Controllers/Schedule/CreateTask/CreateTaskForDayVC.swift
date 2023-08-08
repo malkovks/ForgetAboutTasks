@@ -23,37 +23,16 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
     private var indexOfCell = Int()
     private var isCellEdited = Bool()
     private let fontSizeValue : CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
+    private var birthdayCounts = [String: Int]()
     
     init(model: Results<ScheduleModel>,choosenDate: Date){
         super.init(nibName: nil, bundle: nil)
         self.cellDataScheduleModel = model
         self.choosenDate = choosenDate
         self.birthdayContactModel = localRealmData.objects(ContactModel.self)
-        birthdayInfoLabel.text = "Have some birthdays"
-        
-        var birthdayCounts = [String: Int]()
-        
-        for birthday in self.birthdayContactModel {
-            if let model = birthday.contactDateBirthday {
-                let convertedModel = model.getDateWithoutYear(date: model,currentYearDate: choosenDate)
-                let dateString = DateFormatter.localizedString(from: convertedModel, dateStyle: .medium, timeStyle: .none)
-                if birthdayCounts[dateString] != nil {
-                    birthdayCounts[dateString]! += 1
-                } else {
-                   birthdayCounts[dateString] = 1
-                }
-            }
-        }
-        
-        let convertChoosenDate = DateFormatter.localizedString(from: choosenDate, dateStyle: .medium, timeStyle: .none)
-        if birthdayCounts[convertChoosenDate] != nil {
-            birthdayInfoLabel.text = "Have some birthday of contacts"
-        } else {
-            birthdayInfoLabel.text = "No birthdays"
-        }
-        
         
     }
+
     init(choosenDate: Date){
         super.init(nibName: nil, bundle: nil)
         self.choosenDate = choosenDate
@@ -66,10 +45,6 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
         self.choosenDate = choosenDate
         self.cellDataScheduleModel = model
         self.birthdayContactModel = birthdayModel
-        if !birthdayContactModel.isEmpty {
-            birthdayInfoLabel.text = "Today have some birthdays"
-        }
-        
     }
     
     required init?(coder: NSCoder) {
@@ -121,15 +96,17 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
         return table
     }()
     
-    private let birthdayInfoLabel: UILabel = {
-       let label = UILabel()
-        label.textAlignment = .left
-        label.contentMode = .left
-        label.textColor = UIColor(named: "textColor")
-        label.layer.borderColor = UIColor(named: "calendarHeaderColor")?.cgColor
-        label.layer.borderWidth = 3
-        label.layer.cornerRadius = 8
-        return label
+    private let birthdayDetailButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.configuration = .tinted()
+        button.configuration?.title = "Today have some birthdays!"
+        button.configuration?.image = UIImage(systemName: "gift.fill")
+        button.configuration?.imagePadding = 2
+        button.configuration?.titleAlignment = .leading
+        button.configuration?.imagePlacement = .leading
+        button.configuration?.baseBackgroundColor = .systemRed
+        button.configuration?.baseForegroundColor = .systemRed
+        return button
     }()
     
     private var actionMenu: UIMenu = UIMenu()
@@ -164,7 +141,7 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
         setupView()
         setupNavigationController()
         setupTableViewAndDelegates()
-        setupConstraintsForCalendar()
+        setupBirthdayButton()
         let predicate = setupRealmData(date: choosenDate)
         loadingRealmData(predicate: predicate)
         
@@ -226,7 +203,21 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
         }))
         alert.addAction(UIAlertAction(title: "Cancel".localized(), style: .cancel))
         present(alert, animated: true)
-        
+    }
+    
+    @objc private func didTapOpenBirthdays(sender: UIButton){
+        let vc = TaskBirthdayDetailViewController(choosenDate: choosenDate, birthdayModel: birthdayContactModel)
+        let convertChoosenDate = DateFormatter.localizedString(from: choosenDate, dateStyle: .medium, timeStyle: .none)
+        let countValue = birthdayCounts[convertChoosenDate] ?? 0
+        let height = Int(navigationController?.navigationBar.frame.height ?? 70) + (40*countValue)
+        let nav = UINavigationController(rootViewController: vc)
+        nav.modalPresentationStyle = .pageSheet
+        nav.sheetPresentationController?.detents = [.custom(resolver: { context in
+            return CGFloat(integerLiteral: height)
+        })]
+        nav.sheetPresentationController?.prefersGrabberVisible = true
+        nav.isNavigationBarHidden = false
+        present(nav, animated: true)
     }
 //MARK: - Setups for view controller
     private func setupGestureForDismiss(){
@@ -236,12 +227,14 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
     }
     
     private func setupView(){
+        setupConstraintsForCalendar()
         setupActionWithTableMenu()
         isSavedCompletely(boolean: false)
         view.backgroundColor = UIColor(named: "backgroundColor")
         calendar.today =  choosenDate
         calendar.currentPage = choosenDate
         segmentalController.addTarget(self, action: #selector(didTapSegmentChanged(segment:)), for: .valueChanged)
+        birthdayDetailButton.addTarget(self, action: #selector(didTapOpenBirthdays), for: .touchUpInside)
         calendar.reloadData()
         setupGestureForDismiss()
         
@@ -251,8 +244,7 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.allowsSelection = true
-        tableView.register(UITableViewCell.self
-                           , forCellReuseIdentifier: "cell")
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         calendar.delegate = self
         calendar.dataSource = self
         tableView.allowsMultipleSelectionDuringEditing = true
@@ -268,6 +260,30 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
         navigationController?.navigationBar.tintColor = UIColor(named: "calendarHeaderColor")
     }
     
+    private func setupBirthdayButton(){
+        guard let contactModel = self.birthdayContactModel else {
+            return }
+
+        for birthday in contactModel {
+            if let model = birthday.contactDateBirthday {
+                let convertedModel = model.getDateWithoutYear(date: model,currentYearDate: choosenDate)
+                let dateString = DateFormatter.localizedString(from: convertedModel, dateStyle: .medium, timeStyle: .none)
+                if birthdayCounts[dateString] != nil {
+                    birthdayCounts[dateString]! += 1
+                } else {
+                    birthdayCounts[dateString] = 1
+                }
+            }
+        }
+        
+        let convertChoosenDate = DateFormatter.localizedString(from: choosenDate, dateStyle: .medium, timeStyle: .none)
+        if birthdayCounts[convertChoosenDate] != nil {
+            birthdayDetailButton.isHidden = false
+        } else {
+            birthdayDetailButton.isHidden = true
+        }
+    }
+    
     private func setupDeletingCell(indexPath: IndexPath) -> UISwipeActionsConfiguration {
         let editingData = cellDataScheduleModel[indexPath.row]
         let deleteInstance = UIContextualAction(style: .destructive, title: "") { _, _, _ in
@@ -281,6 +297,8 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
         
         return action
     }
+    
+    
     
     private func setupActionWithTableMenu(){
         let deleteModels = UIAction(title: "Delete choosen".localized(), image: UIImage(systemName: "trash"),attributes: .destructive) { _ in
@@ -316,6 +334,8 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
             .filter(compound)
             .sorted(byKeyPath: sort)
         cellDataScheduleModel = value
+        let secondValue = localRealmData.objects(ContactModel.self).sorted(byKeyPath: "contactName")
+        birthdayContactModel = secondValue
         self.tableView.reloadData()
         self.calendar.reloadData()
     }
@@ -432,6 +452,7 @@ extension CreateTaskForDayController: FSCalendarDelegate, FSCalendarDataSource {
         choosenDate = date
         let predicate = setupRealmData(date: date)
         loadingRealmData(predicate: predicate)
+        setupBirthdayButton()
     }
     func calendar(_ calendar: FSCalendar, boundingRectWillChange bounds: CGRect, animated: Bool) {
         calendar.snp.updateConstraints { make in
@@ -440,7 +461,7 @@ extension CreateTaskForDayController: FSCalendarDelegate, FSCalendarDataSource {
         self.view.layoutIfNeeded()
     }
 }
-//MARK: - constrain extension for dymanic height changing.NOT USING
+//MARK: - constrain extension for dymanic height changing
 extension CreateTaskForDayController {
     private func setupConstraintsForCalendar(){
         view.addSubview(calendar)
@@ -457,24 +478,16 @@ extension CreateTaskForDayController {
             make.height.equalTo(40)
         }
         
-        if !(birthdayInfoLabel.text?.isEmpty)! {
-            view.addSubview(birthdayInfoLabel)
-            birthdayInfoLabel.snp.makeConstraints { make in
-                make.top.equalTo(segmentalController.snp.bottom).offset(5)
-                make.leading.trailing.equalToSuperview().inset(5)
-                make.height.equalTo(40)
-            }
-            view.addSubview(tableView)
-            tableView.snp.makeConstraints { make in
-                make.top.equalTo(birthdayInfoLabel.snp.bottom).offset(5)
-                make.horizontalEdges.bottom.equalToSuperview()
-            }
-        } else {
-            view.addSubview(tableView)
-            tableView.snp.makeConstraints { make in
-                make.top.equalTo(segmentalController.snp.bottom).offset(5)
-                make.horizontalEdges.bottom.equalToSuperview()
-            }
+        view.addSubview(birthdayDetailButton)
+        birthdayDetailButton.snp.makeConstraints { make in
+            make.top.equalTo(segmentalController.snp.bottom).offset(5)
+            make.leading.trailing.equalToSuperview().inset(5)
+            make.height.equalTo(20)
+        }
+        view.addSubview(tableView)
+        tableView.snp.makeConstraints { make in
+            make.top.equalTo(birthdayDetailButton.snp.bottom).offset(5)
+            make.horizontalEdges.bottom.equalToSuperview()
         }
         
         

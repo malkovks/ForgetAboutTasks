@@ -13,6 +13,8 @@ import GoogleSignIn
 class UserDefaultsManager: UIViewController {
     static let shared = UserDefaultsManager()
     
+    static let isAppAnimated = UserDefaults.standard.bool(forKey: "enabledAnimation")
+    
     func isNotAuth() -> Bool {
         return !UserDefaults.standard.bool(forKey: "isAuthorised")  
     }

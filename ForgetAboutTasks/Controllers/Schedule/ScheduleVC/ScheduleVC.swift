@@ -249,18 +249,12 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
                 let value = localRealm.objects(ScheduleModel.self).filter(compound)
                 let birthdayValue = localRealm.objects(ContactModel.self)
                 let vc = CreateTaskForDayController(model: value, choosenDate: dateStart)
-                print(dateStart)
-                print(birthdayValue)
                 let nav = UINavigationController(rootViewController: vc)
                 nav.modalPresentationStyle = .fullScreen
                 nav.isNavigationBarHidden = false
                 present(nav, animated: true)
             }
         }
-    }
-    
-    private func loadingBirthdayDates(){
-        
     }
     
     private func setupDateByYear(_ date: Date) -> Date{
