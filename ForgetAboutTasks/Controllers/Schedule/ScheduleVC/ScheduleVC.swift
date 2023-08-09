@@ -152,7 +152,7 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
         setupDelegates()
         setupConstraints()
         setupSearchController()
-        
+        calendarDidBeginScrolling(calendar)
         UserDefaultsManager.shared.checkDarkModeUserDefaults()
         loadingDataByDate(date: Date(), at: .current, is: true)
         view.backgroundColor = UIColor(named: "backgroundColor")
@@ -194,6 +194,11 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
         let dates: [Date] = birthdayDates.compactMap({ $0.contactDateBirthday })
         
         birthdayModel = dates
+    }
+    
+    private func calendarDidBeginScrolling(_ calendar: FSCalendar){
+        guard let date = calendar.selectedDate else { return }
+        calendar.deselect(date)
     }
     
     private func dateInterval(startDate: Date,text: String) -> NSPredicate {
@@ -293,6 +298,12 @@ extension ScheduleViewController: FSCalendarDelegate, FSCalendarDataSource {
         loadingDataByDate(date: date, at: monthPosition, is: false)
     }
     
+    func calendarCurrentPageDidChange(_ calendar: FSCalendar) {
+        calendar.deselect(calendar.selectedDate ?? Date())
+    }
+    
+    
+    
     func calendar(_ calendar: FSCalendar, numberOfEventsFor date: Date) -> Int {
         var eventCounts = [String: Int]()
         var birthdayCounts = [String: Int]()
@@ -338,19 +349,30 @@ extension ScheduleViewController: FSCalendarDelegate, FSCalendarDataSource {
 extension ScheduleViewController: FSCalendarDelegateAppearance {
     func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, eventDefaultColorsFor date: Date) -> [UIColor]? {
         var colors: [UIColor] = []
-        
-        
-        let predicate = dateInterval(startDate: date,text: "contactDateBirthday")
-        let secondPredicate = dateInterval(startDate: date, text: "scheduleStartDate")
-        let birthdayModel = localRealm.objects(ContactModel.self).filter(predicate)
-        let model = localRealm.objects(ScheduleModel.self).filter(secondPredicate)
-
-        
-        if !filteredContactData.isEmpty {
-            colors.append(.systemRed)
+        let birthdayModel = localRealm.objects(ContactModel.self)
+        for contact in birthdayModel {
+            if let dateB = contact.contactDateBirthday {
+                let dayB = Calendar.current.component(.day, from: dateB)
+                let monthB = Calendar.current.component(.month, from: dateB)
+                
+                let day = Calendar.current.component(.day, from: date)
+                let month = Calendar.current.component(.month, from: date)
+                
+                if dayB == day && monthB == month {
+                    colors.append(.systemRed)
+                }
+            }
         }
         
-        if !scheduleModel.isEmpty{
+        let startDate = date
+        let endDate: Date = {
+           let comp = DateComponents(day: 1,second: -1)
+            return Calendar.current.date(byAdding: comp, to: startDate)!
+        }()
+        
+        let scheduleModel = localRealm.objects(ScheduleModel.self).filter("scheduleStartDate BETWEEN %@", [startDate,endDate])
+        
+        if !scheduleModel.isEmpty {
             colors.append(.systemBlue)
         }
         

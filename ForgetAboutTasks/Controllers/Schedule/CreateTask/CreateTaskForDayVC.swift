@@ -325,7 +325,7 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
         let weekday = components.weekday ?? 1
         let predicate = NSPredicate(format: "scheduleWeekday = \(weekday)")
         let predicateUnrepeat = NSPredicate(format: "scheduleStartDate BETWEEN %@", [dateStart,dateEnd])
-        let compound = NSCompoundPredicate(type: .or, subpredicates: [predicate,predicateUnrepeat])
+        let compound = NSCompoundPredicate(type: .or, subpredicates: [predicateUnrepeat,predicate])
         return compound
     }
     

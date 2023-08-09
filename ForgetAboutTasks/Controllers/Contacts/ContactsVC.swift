@@ -404,7 +404,7 @@ extension ContactsViewController {
         tableView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).inset(0)
             make.leading.trailing.equalToSuperview()
-            make.bottom.equalToSuperview().inset(0)
+            make.bottom.equalToSuperview()
         }
     }
 }

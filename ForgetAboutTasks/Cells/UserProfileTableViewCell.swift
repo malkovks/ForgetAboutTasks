@@ -45,18 +45,6 @@ class UserProfileTableViewCell: UITableViewCell {
         return image
     }()
     
-    let openNapticView: UIButton = {
-        let button = UIButton()
-        button.configuration = .bordered()
-        button.configuration?.title = "Naptic"
-        button.configuration?.baseBackgroundColor = .systemBackground
-        button.configuration?.baseForegroundColor = UIColor(named: "textColor")
-        button.clipsToBounds = true
-        button.isUserInteractionEnabled = true
-        button.isHidden = true
-        return button
-    }()
-    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupContraints()
@@ -78,18 +66,12 @@ class UserProfileTableViewCell: UITableViewCell {
 
     func configureSwitch(indexPath: IndexPath){
         switch indexPath {
-        case [0,0],[0,1],[0,2],[0,3],[0,4],[0,5],[1,2]:
+        case [0,0],[0,1],[0,2],[0,3],[0,4],[0,5],[1,2],[1,3]:
             switchButton.isHidden = false
-            inclosureIndicator.isHidden = true
-            openNapticView.isHidden = true
-        case [1,3]:
-            openNapticView.isHidden = false
-            switchButton.isHidden = true
             inclosureIndicator.isHidden = true
         case [0,6],[1,0],[1,1],[2,0],[2,1],[2,2],[3,0],[3,1]:
             inclosureIndicator.isHidden = false
             switchButton.isHidden = true
-            openNapticView.isHidden = true
         default: break
         }
         
@@ -117,12 +99,6 @@ class UserProfileTableViewCell: UITableViewCell {
         
         contentView.addSubview(inclosureIndicator)
         inclosureIndicator.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
-            make.trailing.equalToSuperview().offset(-20)
-        }
-        
-        contentView.addSubview(openNapticView)
-        openNapticView.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
             make.trailing.equalToSuperview().offset(-20)
         }

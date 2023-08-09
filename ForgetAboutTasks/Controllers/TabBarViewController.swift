@@ -63,7 +63,11 @@ class TabBarViewController: UITabBarController {
         
         
         roundedLayer.fillColor = UIColor(named: "tabBarBackgroundColor")?.cgColor
+        tabBar.shadowImage = UIImage()
         tabBar.tintColor = UIColor(named: "calendarHeaderColor")
+        tabBar.isTranslucent = true
+        tabBar.barTintColor = .clear
+        tabBar.backgroundImage = UIImage()
         tabBar.unselectedItemTintColor = .black
         
         
@@ -90,6 +94,7 @@ class TabBarViewController: UITabBarController {
         item.titlePositionAdjustment = .init(horizontal: 0, vertical: 10)//указание расположение тайтла
         let navController = UINavigationController(rootViewController: vc)
         navController.tabBarItem = item
+        navController.hidesBottomBarWhenPushed = true
 //        navController.navigationBar.scrollEdgeAppearance = navController.navigationBar.standardAppearance
         return navController
     }

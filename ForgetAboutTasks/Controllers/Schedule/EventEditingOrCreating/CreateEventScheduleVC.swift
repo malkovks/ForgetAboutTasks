@@ -404,7 +404,7 @@ extension CreateEventScheduleViewController: UITableViewDelegate, UITableViewDat
             alertTimeInline(table: tableView, choosenDate: choosenDate) { [self] date, timeString, weekday in
                 scheduleModel.scheduleTime = date
                 scheduleModel.scheduleStartDate = date
-                scheduleModel.scheduleWeekday = weekday
+//                scheduleModel.scheduleWeekday = weekday
                 scheduleModel.scheduleEndDate = date.addingTimeInterval(3600)
                 startChoosenDate = date.addingTimeInterval(3600)
                 cell?.textLabel?.text = timeString

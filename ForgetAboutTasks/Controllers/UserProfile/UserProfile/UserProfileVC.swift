@@ -58,7 +58,7 @@ class UserProfileViewController: UIViewController {
                         UserProfileData(title: "Enable Animation",
                                         cellImage: UIImage(systemName: "figure.walk.motion")!,
                                         cellImageColor: .systemGreen),
-                        UserProfileData(title: "Vibro type",
+                        UserProfileData(title: "Enable vibration",
                                         cellImage: UIImage(systemName: "iphone.gen2.radiowaves.left.and.right")!,
                                         cellImageColor: .black)
                      ],
@@ -251,7 +251,7 @@ class UserProfileViewController: UIViewController {
         }
     }
     
-    @objc private func didTapSwitch(sender: UISwitch){
+    @objc private func didTapSwitchDisplayMode(sender: UISwitch){
         let interfaceStyle: UIUserInterfaceStyle = sender.isOn ? .dark : .light
         UIView.animate(withDuration: 0.5) {
             UIApplication.shared.windows.forEach { window in
@@ -358,24 +358,20 @@ class UserProfileViewController: UIViewController {
     }
  
     @objc private func didTapDisableAnimation(sender: UISwitch){
-        
         DispatchQueue.main.async {
             UserDefaults.standard.setValue(sender.isOn, forKey: "enabledAnimation")
         }
-        print("Animation changed")
     }
     
-    @objc private func didTapChangeNapticStyle(sender: UIButton){
-        print("Choosed naptic style")
-        let contentVC = UserProfileHeaderView()
-        view.superview?.addSubview(contentVC)
-        contentVC.center = view.superview?.center ?? CGPoint.zero
-        let picker = CustomPickerView()
-        view.superview?.addSubview(picker)
-        
-        
-        
+    @objc private func didTapChangeNapticStyle(sender: UISwitch){
+        DispatchQueue.main.async {
+            UserDefaults.standard.setValue(sender.isOn, forKey: "enableVibration")
+        }
+        print(sender.isOn," :vibro status")
     }
+    
+    
+    
     //MARK: - Setup methods
     
     private func setupView(){
@@ -602,7 +598,7 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
         switch indexPath {
         case [0,0]:
             cell.switchButton.isOn = userInterface.checkDarkModeUserDefaults() ?? setupSwitchDarkMode()
-            cell.switchButton.addTarget(self, action: #selector(didTapSwitch(sender: )), for: .valueChanged)
+            cell.switchButton.addTarget(self, action: #selector(didTapSwitchDisplayMode), for: .valueChanged)
         case [0,1]:
             cell.switchButton.addTarget(self, action: #selector(didTapChangeAccessNotifications), for: .touchUpInside)
             showNotificationAccessStatus { access in
@@ -639,11 +635,13 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
                 }
             }
         case [1,2]:
-            cell.switchButton.removeTarget(self, action: #selector(didTapSwitch), for: .valueChanged)
+            cell.switchButton.removeTarget(self, action: #selector(didTapSwitchDisplayMode), for: .valueChanged)
             cell.switchButton.addTarget(self, action: #selector(didTapDisableAnimation), for: .valueChanged)
             cell.switchButton.isOn = UserDefaults.standard.bool(forKey: "enabledAnimation")
         case [1,3]:
-            cell.openNapticView.addTarget(self, action: #selector(didTapChangeNapticStyle), for: .touchUpInside)
+            cell.switchButton.removeTarget(self, action: #selector(didTapSwitchDisplayMode), for: .valueChanged)
+            cell.switchButton.addTarget(self, action: #selector(didTapChangeNapticStyle), for: .valueChanged)
+            cell.switchButton.isOn = UserDefaults.standard.bool(forKey: "enableVibration")
 
         default:
             break

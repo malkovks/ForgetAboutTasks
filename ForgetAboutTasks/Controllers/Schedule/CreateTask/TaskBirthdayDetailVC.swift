@@ -105,7 +105,6 @@ final class TaskBirthdayDetailViewController: UIViewController {
 //        let predicate = NSPredicate(format: "MONTH(contactDateBirthday) == %d AND DAY(contactDateBirthday) == %d", month,day)
         let predicate = NSPredicate(format: "dateComponents([.month, .day], from: contactDateBirthday).month == %d AND dateComponents([.month, .day], from contactDateBirthday).day == %d", month,day)
         let models = realm.objects(ContactModel.self).filter(predicate)
-        print(models)
         
     }
     
