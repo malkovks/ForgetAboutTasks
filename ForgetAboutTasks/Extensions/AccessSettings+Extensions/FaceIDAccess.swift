@@ -11,6 +11,7 @@ import LocalAuthentication
 extension UIViewController {
     
     func safetyEnterApplicationWithFaceID(textField: UITextField){
+        setupHapticMotion(style: .light)
         let context = LAContext()
         context.localizedCancelTitle = "Enter Password"
         var error: NSError?
@@ -35,6 +36,7 @@ extension UIViewController {
     
     
     func checkAuthForFaceID(handler: @escaping (Bool) -> Void){
+        setupHapticMotion(style: .light)
         let result = UserDefaults.standard.bool(forKey: "isUserConfirmPassword")
         let context = LAContext()
         var error: NSError?

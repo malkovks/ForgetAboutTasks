@@ -10,6 +10,7 @@ import SnapKit
 
 extension UIViewController {
     func alertTime(choosenDate: Date, completiongHandler: @escaping (Date,String) -> Void) {
+        setupHapticMotion(style: .soft)
         let alert = UIAlertController(title: "", message: nil, preferredStyle: .actionSheet)
         let datePicker = UIDatePicker()
         datePicker.locale = .current
@@ -45,6 +46,7 @@ extension UIViewController {
     
     
     func alertTimeInline(table: UITableView, choosenDate: Date, completionHandler: @escaping (Date,String,Int) -> Void) {
+        setupHapticMotion(style: .soft)
         let alert = UIAlertController(title: "", message: nil, preferredStyle: .actionSheet)
         let datePicker = UIDatePicker()
         datePicker.locale = .current

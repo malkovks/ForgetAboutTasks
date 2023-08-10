@@ -11,7 +11,7 @@ extension UIViewController{
     
     
     func alertTextField(cell title: String,placeholder: String,keyboard type: UIKeyboardType, completion: @escaping (String) -> Void) {
-        
+        setupHapticMotion(style: .soft)
         let alert = UIAlertController(title: "", message: title, preferredStyle: .alert)
         alert.addTextField(configurationHandler: { [self] textField in
             textField.placeholder = placeholder

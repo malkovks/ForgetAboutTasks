@@ -9,6 +9,7 @@ import UIKit
 
 extension UIViewController {
     func alertNewName(title: String,placeholder: String,type: UIKeyboardType = .default, completion: @escaping (String) -> Void) {
+        setupHapticMotion(style: .soft)
         let alert = UIAlertController(title: "", message: title, preferredStyle: .alert)
         alert.addTextField(configurationHandler: { text in
             text.placeholder = placeholder

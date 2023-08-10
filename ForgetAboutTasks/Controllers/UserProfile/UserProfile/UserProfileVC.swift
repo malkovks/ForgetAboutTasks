@@ -164,18 +164,16 @@ class UserProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        UserDefaults.standard.setValue("bold", forKey: "FontWeight")
-        
         setupView()
     }
     
-//    override func viewWillAppear(_ animated: Bool) {
-//        super.viewWillAppear(animated)
-//        setupView()
-//        tableView.reloadData()
-//    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tabBarController?.tabBar.isHidden = false
+    }
     //MARK: - Targets methods
     @objc private func didTapLogout(){
+        setupHapticMotion(style: .soft)
         let alert = UIAlertController(title: "Warning", message: "Do you want to Exit from your account?", preferredStyle: .actionSheet)
         alert.addAction(UIAlertAction(title: "Confirm", style: .destructive,handler: {  [weak self] _ in
             if UserDefaults.standard.bool(forKey: "isAuthorised"){
@@ -201,6 +199,7 @@ class UserProfileViewController: UIViewController {
     }
     
     @objc private func didTapImagePicker(){
+        setupHapticMotion(style: .soft)
         view.alpha = 0.7
         let alert = UIAlertController(title: nil, message: "What exactly do you want to do?".localized(), preferredStyle: .actionSheet)
         alert.addAction(UIAlertAction(title: "Set new image".localized(), style: .default,handler: { [self] _ in
@@ -235,6 +234,7 @@ class UserProfileViewController: UIViewController {
     }
     
     @objc private func didTapOnName(sender: UITapGestureRecognizer){
+        setupHapticMotion(style: .soft)
         alertNewName(title: "Enter new name and second name".localized(),
                      placeholder: "Enter the text".localized()) { [weak self] text in
             self?.userNameLabel.text = text
@@ -243,6 +243,7 @@ class UserProfileViewController: UIViewController {
     }
     
     @objc private func didTapOnAge(sender: UITapGestureRecognizer){
+        setupHapticMotion(style: .soft)
         alertNewName(title: "Enter your age".localized(),
                      placeholder: "Enter age number".localized(),
                      type: .numberPad) { [weak self] text in
@@ -367,7 +368,11 @@ class UserProfileViewController: UIViewController {
         DispatchQueue.main.async {
             UserDefaults.standard.setValue(sender.isOn, forKey: "enableVibration")
         }
-        print(sender.isOn," :vibro status")
+    }
+
+    @objc private func didTapDismissView(){
+        tabBarController?.tabBar.isHidden = false
+        print("Work fine")
     }
     
     
@@ -409,27 +414,11 @@ class UserProfileViewController: UIViewController {
         changeUserImageView.titleLabel?.attributedText = attributedText
     }
     
-    private func loadingData(){
-        let (name,mail,age) = UserDefaultsManager.shared.loadData()
-        if let url = UserDefaults.standard.url(forKey: "userImageURL"){
-            provider.dataProvider(url: url) { image in
-                self.userImageView.image = image
-            }
-        } else {
-            userImageView.image = UserDefaultsManager.shared.loadSettedImage()
-        }
-        
-        
-        mailLabel.text = mail
-        ageLabel.text = "Age: ".localized() + age
-        userNameLabel.text = name
-    }
-    
     private func setupNavigationController(){
         title = "My Profile".localized()
         navigationController?.navigationBar.tintColor = UIColor(named: "textColor")
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "arrow.uturn.right.square"), style: .done, target: self, action: #selector(didTapLogout))
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .done, target: nil, action: nil)
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .done, target: self, action: #selector(didTapDismissView))
     }
     
     private func setupDelegates(){
@@ -466,8 +455,40 @@ class UserProfileViewController: UIViewController {
         userImageView.layer.cornerRadius = userImageView.frame.size.width/2
         tableView.reloadData()
     }
-
+    //setup size of image 
+    private func imageWith(image: UIImage) -> UIImage {
+        let newSize = CGSize(width: image.size.width/2, height: image.size.height/2)
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
+        image.draw(in: CGRect(origin: CGPoint.zero, size: newSize))
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return newImage ?? UIImage(systemName: "square.fill")!
+    }
+    
+    //loading data
+    private func loadingData(){
+        let (name,mail,age) = UserDefaultsManager.shared.loadData()
+        if let url = UserDefaults.standard.url(forKey: "userImageURL"){
+            provider.dataProvider(url: url) { [weak self] image in
+                let convertedImage = self?.imageWith(image: image ?? UIImage())
+                self?.userImageView.image = convertedImage
+            }
+        } else {
+            let image = UserDefaultsManager.shared.loadSettedImage()
+            let convertedImage = imageWith(image: image)
+            userImageView.image = convertedImage
+        }
+        
+        
+        mailLabel.text = mail
+        ageLabel.text = "Age: ".localized() + age
+        userNameLabel.text = name
+    }
+    
+    
+    //Setup segue to another ViewController
     private func openSelectionChangeIcon(){
+        setupHapticMotion(style: .soft)
         let vc = UserProfileAppIconViewController()
         let nav = UINavigationController(rootViewController: vc)
         nav.modalPresentationStyle = .formSheet
@@ -478,12 +499,13 @@ class UserProfileViewController: UIViewController {
     }
     
     private func openPasswordController(title: String = "Code-password",message: String = "This function allow you to switch on password if it neccesary. Any time you could change it",alertTitle: String = "Switch on code-password"){
+        setupHapticMotion(style: .soft)
         let alert = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
-        alert.addAction(UIAlertAction(title: alertTitle, style: .default,handler: { [weak self] _ in
-            self?.passwordBoolean = UserDefaults.standard.bool(forKey: "isPasswordCodeEnabled")
+        alert.addAction(UIAlertAction(title: alertTitle, style: .default,handler: { [unowned self] _ in
+            self.passwordBoolean = UserDefaults.standard.bool(forKey: "isPasswordCodeEnabled")
             let vc = UserProfileSwitchPasswordViewController(isCheckPassword: false)
             vc.delegate = self
-            self?.show(vc, sender: nil)
+            navigationController?.show(vc, sender: nil)
         }))
         if passwordBoolean {
             alert.addAction(UIAlertAction(title: "Switch off", style: .default,handler: { [weak self]_ in
@@ -513,14 +535,7 @@ class UserProfileViewController: UIViewController {
         self.present(nav, animated: isAnimated)
     }
     
-    private func imageWith(image: UIImage) -> UIImage {
-        let newSize = CGSize(width: image.size.width/2, height: image.size.height/2)
-        UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
-        image.draw(in: CGRect(origin: CGPoint.zero, size: newSize))
-        let newImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        return newImage ?? UIImage(systemName: "square.fill")!
-    }
+    
     
 }
 //MARK: - Check Success Delegate
@@ -652,6 +667,7 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        setupHapticMotion(style: .soft)
         tableView.deselectRow(at: indexPath, animated: isAnimated)
         
         switch indexPath {
@@ -669,7 +685,7 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
         case [2,0]:
 //            showSettingsForChangingAccess(title: "Changing App Language".localized(),
 //                                          message: "Would you like to change the language of your application?".localized()) { _ in }
-            showVariationsWithLanguage(title: "Change language", message: "nil") {  _ in}
+            showVariationsWithLanguage(title: "Change language", message: "") {  _ in}
         case [3,0]:
             print("Delete")
         case [3,1]:

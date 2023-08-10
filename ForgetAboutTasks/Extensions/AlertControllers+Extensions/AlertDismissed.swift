@@ -9,6 +9,7 @@ import UIKit
 
 extension UIViewController {
     func alertDismissed(view: UIView,title: String = "Text was copied"){
+        setupHapticMotion(style: .light)
         let alert = UIAlertController(title: title, message: nil, preferredStyle: .alert)
         alert.preferredContentSize = CGSize(width: 400, height: 200)
         alert.popoverPresentationController?.sourceView = view

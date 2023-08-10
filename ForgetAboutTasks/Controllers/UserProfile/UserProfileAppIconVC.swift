@@ -60,6 +60,7 @@ class UserProfileAppIconViewController: UIViewController {
     }
     //MARK: - Target methods
     @objc private func didTapDismiss(){
+        setupHapticMotion(style: .soft)
         dismiss(animated: true)
     }
     
@@ -119,31 +120,5 @@ extension UserProfileAppIconViewController {
             make.leading.trailing.equalToSuperview().inset(10)
             make.height.equalTo(80)
         }
-        
-//        view.addSubview(firstIconButton)
-//        firstIconButton.snp.makeConstraints { make in
-//            make.top.equalToSuperview().offset(60)
-//            make.leading.equalToSuperview().offset(15)
-//            make.height.width.equalTo(80)
-//        }
-//        view.addSubview(secondIconButton)
-//        secondIconButton.snp.makeConstraints { make in
-//            make.top.equalToSuperview().offset(60)
-//            make.leading.equalTo(firstIconButton.snp.trailing).offset(15)
-//            make.height.width.equalTo(80)
-//        }
-//        view.addSubview(thirdIconButton)
-//        thirdIconButton.snp.makeConstraints { make in
-//            make.top.equalToSuperview().offset(60)
-//            make.leading.equalTo(secondIconButton.snp.trailing).offset(15)
-//            make.height.width.equalTo(80)
-//        }
-//        view.addSubview(forthIconButton)
-//        forthIconButton.snp.makeConstraints { make in
-//            make.top.equalToSuperview().offset(60)
-//            make.leading.equalTo(thirdIconButton.snp.trailing).offset(15)
-//            make.trailing.equalToSuperview().inset(15)
-//            make.height.width.equalTo(80)
-//        }
     }
 }

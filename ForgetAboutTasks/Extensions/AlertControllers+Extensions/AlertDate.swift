@@ -10,6 +10,7 @@ import SnapKit
 
 extension UIViewController {
     func alertDate(choosenDate: Date?,calendar style: UIDatePicker.Mode = .date, completiongHandler: @escaping (Int,Date,String) -> Void) {
+        setupHapticMotion(style: .soft)
         let alert = UIAlertController(title: "", message: nil, preferredStyle: .actionSheet)
         let datePicker = UIDatePicker()
         datePicker.timeZone = .current

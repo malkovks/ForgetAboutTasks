@@ -32,6 +32,8 @@ class UserDefaultsManager: UIViewController {
         UserDefaults.standard.setValue("Didot", forKey: "fontNameChanging")
         UserDefaults.standard.setValue(16, forKey: "fontSizeChanging")
         UserDefaults.standard.setValue(0.0, forKey: "fontWeightChanging")
+        UserDefaults.standard.setValue(true, forKey: "enableAnimation")
+        UserDefaults.standard.setValue(true, forKey: "enableAnimation")
     }
     
     func loadSettedImage() -> UIImage {
@@ -60,16 +62,20 @@ class UserDefaultsManager: UIViewController {
         UserDefaults.standard.setValue(result.user.email, forKey: "userMail")
         UserDefaults.standard.set(profile, forKey: "userImageURL")
         UserDefaults.standard.setValue(16, forKey: "fontSizeChanging")
-        UserDefaults.standard.setValue("Times New Roman", forKey: "fontNameChanging")
+        UserDefaults.standard.setValue("Didot", forKey: "fontNameChanging")
         UserDefaults.standard.setValue(0.0, forKey: "fontWeightChanging")
+        UserDefaults.standard.setValue(true, forKey: "enableAnimation")
+        UserDefaults.standard.setValue(true, forKey: "enableAnimation")
     }
     
     func saveDataWithLogin(result: AuthDataResult){
         UserDefaults.standard.setValue(result.user.displayName, forKey: "userName")
         UserDefaults.standard.setValue(result.user.email, forKey: "userMail")
         UserDefaults.standard.setValue(16, forKey: "fontSizeChanging")
-        UserDefaults.standard.setValue("Times New Roman", forKey: "fontNameChanging")
+        UserDefaults.standard.setValue("Didot", forKey: "fontNameChanging")
         UserDefaults.standard.setValue(0.0, forKey: "fontWeightChanging")
+        UserDefaults.standard.setValue(true, forKey: "enableAnimation")
+        UserDefaults.standard.setValue(true, forKey: "enableAnimation")
     }
     
     func checkDarkModeUserDefaults() -> Bool? {

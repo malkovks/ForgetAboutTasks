@@ -10,6 +10,7 @@ import UIKit
 extension UIViewController {
     
     func alertFriends(completion: @escaping (String) -> Void) {
+        setupHapticMotion(style: .soft)
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         alert.addAction(UIAlertAction(title: "Friend", style: .default,handler: { _ in
             completion("Friend")

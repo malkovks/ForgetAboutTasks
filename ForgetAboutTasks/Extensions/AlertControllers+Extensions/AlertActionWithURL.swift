@@ -10,6 +10,7 @@ import SafariServices
 
 extension UIViewController {
     func futureUserActions(link: String) {
+        setupHapticMotion(style: .soft)
         let alert = UIAlertController(title: nil, message: "What do you want to do with this link", preferredStyle: .actionSheet)
         alert.addAction(UIAlertAction(title: "Open in browser", style: .default,handler: { [weak self] _ in
             if link.contains("http://") || link.contains("https://") {

@@ -50,17 +50,20 @@ extension UIViewController {
     
     func restartApp(){
         guard let window = UIApplication.shared.keyWindow else { return }
+        setupHapticMotion(style: .soft)
         let vc = TabBarViewController()
         window.rootViewController = vc
         UIView.transition(with: window, duration: 1,options: .transitionCrossDissolve, animations: nil)
     }
     
     func setupAppLanguage(languageCode: String) {
+        setupHapticMotion(style: .soft)
         UserDefaults.standard.set([languageCode], forKey: "AppleLanguages")
         UserDefaults.standard.synchronize()
     }
     
     func showVariationsWithLanguage(title: String, message: String, handler: @escaping (Bool) -> ()){
+        setupHapticMotion(style: .soft)
         let alert = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
         alert.addAction(UIAlertAction(title: "Russia", style: .default,handler: { _ in
             self.setupAppLanguage(languageCode: "ru")

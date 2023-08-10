@@ -12,6 +12,7 @@ import SnapKit
 class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDelegate{
     
     private var passwordDigits: String = ""
+    private var confirmPasswordDigits: String = ""
     private var isCheckPassword: Bool
     
     weak var delegate: CheckSuccessSaveProtocol?
@@ -124,7 +125,6 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
         if isCheckPassword {
             setupEntryView()
         } else {
-            setupRegistrationView()
             setupView()
         }
         
@@ -134,35 +134,63 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
     @objc private func textDidChangeValue(textField: UITextField){
         guard let text = textField.text?.first, text.isNumber else { return }
         if text.utf16.count == 1 {
-            switch textField {
-            case firstTextField:
-                passwordDigits += firstTextField.text!
-                secondTextField.becomeFirstResponder()
-                break
-            case secondTextField:
-                passwordDigits += secondTextField.text!
-                thirdTextField.becomeFirstResponder()
-                break
-            case thirdTextField:
-                passwordDigits += thirdTextField.text!
-                forthTextField.becomeFirstResponder()
-                break
-            case forthTextField:
-                passwordDigits += forthTextField.text!
-                forthTextField.resignFirstResponder()
-                confirmPasswordButton.isEnabled = true
-                break
-            default:
-                break
+            if passwordDigits.count != 4 && !isCheckPassword {
+                switch textField {
+                case firstTextField:
+                    passwordDigits += firstTextField.text!
+                    secondTextField.becomeFirstResponder()
+                    break
+                case secondTextField:
+                    passwordDigits += secondTextField.text!
+                    thirdTextField.becomeFirstResponder()
+                    break
+                case thirdTextField:
+                    passwordDigits += thirdTextField.text!
+                    forthTextField.becomeFirstResponder()
+                    break
+                case forthTextField:
+                    passwordDigits += forthTextField.text!
+
+                    break
+                default:
+                    break
+                }
+            } else {
+                clearTextFields()
+                switch textField {
+                
+                case firstTextField:
+                    confirmPasswordDigits += firstTextField.text!
+                    secondTextField.becomeFirstResponder()
+                    break
+                case secondTextField:
+                    confirmPasswordDigits += secondTextField.text!
+                    thirdTextField.becomeFirstResponder()
+                    break
+                case thirdTextField:
+                    confirmPasswordDigits += thirdTextField.text!
+                    forthTextField.becomeFirstResponder()
+                    break
+                case forthTextField:
+                    confirmPasswordDigits += forthTextField.text!
+                    forthTextField.resignFirstResponder()
+                    confirmPasswordButton.isEnabled = true
+                    break
+                default:
+                    break
+                }
             }
         }
+        print(passwordDigits, "First digit")
+        print(confirmPasswordDigits,"Second digit")
     }
     
     @objc private func didTapConfirmPassword(sender: UIButton) {
+        setupHapticMotion(style: .light)
         let emailUser = UserDefaults.standard.string(forKey: "userMail") ?? "No email"
         let passwordData = passwordDigits.data(using: .utf8) ?? Data()
         let data = KeychainManager.get(service: "Local Password", account: emailUser)
-        if passwordDigits.count == 4 {
+        if passwordDigits.count == 4 && passwordDigits == confirmPasswordDigits {
             confirmPasswordButton.setImage(UIImage(systemName: "lock.fill"), for: .normal)
             confirmPasswordButton.setTitle("Confirmed", for: .normal)
             checkAuthForFaceID { [weak self] success in
@@ -177,7 +205,9 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
                 self?.navigationController?.popToRootViewController(animated: true)
             }
         } else {
-            alertError(text: "Fill all 4 text fields", mainTitle: "Error!".localized())
+            alertError(text: "You entered different passwords. Try again", mainTitle: "Error!".localized())
+            clearRequest()
+            
         }
     }
     @objc private func didTapActiveFaceID(){
@@ -185,8 +215,9 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
     }
     
     //MARK: - Setups for view
+    //setup view if user try to change of turn on password
     private func setupView(){
-//        UINavigationController.setNavigationBarHidden(self) = 
+        setupRegistrationView()
         setupTextField()
         addConstrains()
         view.backgroundColor = UIColor(named: "calendarHeaderColor")
@@ -194,11 +225,14 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
     }
     
     private func setupRegistrationView(){
+        setupHapticMotion(style: .light)
         firstTextField.becomeFirstResponder()
         confirmPasswordButton.isHidden = false
+        tabBarController?.tabBar.isHidden = true
     }
-    
+    //setup for view if user entered in app when password is turn on
     private func setupEntryView(){
+        view.backgroundColor = UIColor(named: "calendarHeaderColor")
         confirmPasswordButton.isHidden = true
         faceIdButton.isHidden = false
         faceIdButton.addTarget(self, action: #selector(didTapActiveFaceID), for: .touchUpInside)
@@ -209,7 +243,6 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
     }
     
     private func setupTextField(){
-        
         firstTextField.delegate = self
         secondTextField.delegate = self
         thirdTextField.delegate = self
@@ -221,6 +254,7 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
         
     }
     //MARK: - Keychain safety func for password
+    //check for correct input password with comparsion entered password and saved password in keychain
     private func safetyEnterApplication(password: String){
         let emailUser = UserDefaults.standard.string(forKey: "userMail") ?? "No email"
         guard let data = KeychainManager.get(service: "Local Password", account: emailUser) else { return }
@@ -239,7 +273,7 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
         let emailUser = UserDefaults.standard.string(forKey: "userMail") ?? "No email"
         let value = KeychainManager.get(service: "Local Password", account: emailUser)
         let textValue = String(decoding: value ?? Data(), as: UTF8.self)
-        if textField.tag == 4 && !UserDefaults.standard.bool(forKey: "isUserConfirmPassword"){
+        if textField.tag == 4 /*&& !UserDefaults.standard.bool(forKey: "isUserConfirmPassword")*/{
             if textValue.contains(passwordDigits){
                 UserDefaults.standard.setValue(true, forKey: "isUserConfirmPassword")
                 showAlertForUser(text: "Success", duration: .now()+1, controllerView: view)
@@ -247,7 +281,7 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
                     self.dismiss(animated: true)
                 }
             } else {
-                alertError(text: "Incorrect password.Please try again!",mainTitle: "Error")
+                alertError(text: "Incorrect password.\nPlease try again!",mainTitle: "Error")
                 clearRequest()
             }
         }
@@ -259,6 +293,19 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
         thirdTextField.text = ""
         forthTextField.text = ""
         passwordDigits = ""
+        confirmPasswordDigits = ""
+        firstTextField.becomeFirstResponder()
+        confirmPasswordButton.isEnabled = false
+        passwordLabel.text = "Enter code-password"
+    }
+    
+    private func clearTextFields(){
+        firstTextField.text = ""
+        secondTextField.text = ""
+        thirdTextField.text = ""
+        forthTextField.text = ""
+        firstTextField.becomeFirstResponder()
+        passwordLabel.text = "Confirm password"
     }
     
     //MARK: - UITextField Delegate

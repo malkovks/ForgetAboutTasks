@@ -10,6 +10,7 @@ import UIKit
 extension UIViewController {
     
     func alertImagePicker(completion: @escaping (UIImagePickerController.SourceType) -> Void) {
+        setupHapticMotion(style: .soft)
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         alert.addAction(UIAlertAction(title: "Camera", style: .default,handler: { _ in
             completion(.camera)

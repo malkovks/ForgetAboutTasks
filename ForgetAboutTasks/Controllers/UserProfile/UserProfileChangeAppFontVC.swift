@@ -15,6 +15,7 @@ protocol ChangeFontDelegate: AnyObject {
 class ChangeFontViewController: UIViewController {
     
     var dataReceive: ((CGFloat) -> Void)!
+    private let feedbackGenerator = UISelectionFeedbackGenerator()
     private var savedFontSize: CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
     private var savedFontName: String = UserDefaults.standard.string(forKey: "fontNameChanging") ?? "Times New Roman"
     private var savedFontWeight: CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontWeightChanging"))
@@ -133,8 +134,6 @@ class ChangeFontViewController: UIViewController {
         return button
     }()
     
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
@@ -142,6 +141,7 @@ class ChangeFontViewController: UIViewController {
     }
     //MARK: - Target methods
     @objc private func didTapChangeFont(sender: UISlider){
+        feedbackGenerator.selectionChanged()
         let fontSize = CGFloat(sender.value)
         let step = CGFloat(2)
         savedFontSize = round(fontSize / step) * step
@@ -151,9 +151,11 @@ class ChangeFontViewController: UIViewController {
     }
     
     @objc private func didTapDismiss(){
+        setupHapticMotion(style: .soft)
         self.dismiss(animated: true)
     }
     @objc private func didTapSave(){
+        setupHapticMotion(style: .soft)
         delegate?.changeFont(font: savedFontSize, style: savedFontName)
         UserDefaults.standard.setValue(savedFontSize, forKey: "fontSizeChanging")
         UserDefaults.standard.setValue(savedFontName, forKey: "fontNameChanging")
@@ -164,6 +166,7 @@ class ChangeFontViewController: UIViewController {
     }
     
     @objc private func didTapReturnDefaultSettings(){
+        setupHapticMotion(style: .heavy)
         let alert = UIAlertController(title: "Alert", message: "Do you want to set font settings to default?", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Apply", style: .destructive,handler: { _ in
             UserDefaults.standard.setValue(16, forKey: "fontSizeChanging")
@@ -259,6 +262,7 @@ extension ChangeFontViewController: UICollectionViewDelegate, UICollectionViewDa
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        setupHapticMotion(style: .soft)
         let fontWeight = fontWeight[indexPath.row]
         testFontLabel.font = UIFont(name: savedFontName, size: savedFontSize)
         testFontLabel.font = .systemFont(ofSize: savedFontSize, weight: fontWeight)
