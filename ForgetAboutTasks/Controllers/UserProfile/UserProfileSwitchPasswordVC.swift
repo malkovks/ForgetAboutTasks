@@ -27,7 +27,7 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
     }
     
     private let passwordLabel: UILabel = {
-       let label = UILabel()
+        let label = UILabel()
         label.textAlignment = .center
         label.text = "Enter code-password"
         label.backgroundColor = .clear
@@ -37,7 +37,7 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
     }()
     
     private let firstTextField :UITextField = {
-       let field = UITextField()
+        let field = UITextField()
         field.isSecureTextEntry = true
         field.textColor = UIColor(named: "textColor")
         field.backgroundColor = UIColor(named: "backgroundColor")
@@ -51,7 +51,7 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
     }()
     
     private let secondTextField :UITextField = {
-       let field = UITextField()
+        let field = UITextField()
         field.isSecureTextEntry = true
         field.textColor = UIColor(named: "textColor")
         field.backgroundColor = UIColor(named: "backgroundColor")
@@ -65,7 +65,7 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
     }()
     
     private let thirdTextField :UITextField = {
-       let field = UITextField()
+        let field = UITextField()
         field.isSecureTextEntry = true
         field.textColor = UIColor(named: "textColor")
         field.backgroundColor = UIColor(named: "backgroundColor")
@@ -79,7 +79,7 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
     }()
     
     private let forthTextField :UITextField = {
-       let field = UITextField()
+        let field = UITextField()
         field.isSecureTextEntry = true
         field.textColor = UIColor(named: "textColor")
         field.backgroundColor = UIColor(named: "backgroundColor")
@@ -129,7 +129,7 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
         }
         
     }
-
+    
     //MARK: - Target Methods
     @objc private func textDidChangeValue(textField: UITextField){
         guard let text = textField.text?.first, text.isNumber else { return }
@@ -150,15 +150,38 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
                     break
                 case forthTextField:
                     passwordDigits += forthTextField.text!
-
+                    forthTextField.resignFirstResponder()
+                    secondPasswordConfirm()
                     break
                 default:
                     break
                 }
-            } else {
-                clearTextFields()
+            } else if isCheckPassword && passwordDigits.count != 4 {
                 switch textField {
-                
+                    
+                case firstTextField:
+                    passwordDigits += firstTextField.text!
+                    secondTextField.becomeFirstResponder()
+                    break
+                case secondTextField:
+                    passwordDigits += secondTextField.text!
+                    thirdTextField.becomeFirstResponder()
+                    break
+                case thirdTextField:
+                    passwordDigits += thirdTextField.text!
+                    forthTextField.becomeFirstResponder()
+                    break
+                case forthTextField:
+                    passwordDigits += forthTextField.text!
+                    forthTextField.resignFirstResponder()
+                    checkCorrectPassword(textField: textField)
+                    break
+                default:
+                    break
+                }
+            } else if passwordDigits.count == 4 {
+                switch textField {
+                    
                 case firstTextField:
                     confirmPasswordDigits += firstTextField.text!
                     secondTextField.becomeFirstResponder()
@@ -211,6 +234,7 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
         }
     }
     @objc private func didTapActiveFaceID(){
+        setupHapticMotion(style: .medium)
         safetyEnterApplicationWithFaceID(textField: firstTextField)
     }
     
@@ -234,19 +258,19 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
     private func setupEntryView(){
         view.backgroundColor = UIColor(named: "calendarHeaderColor")
         confirmPasswordButton.isHidden = true
-        faceIdButton.isHidden = false
-        faceIdButton.addTarget(self, action: #selector(didTapActiveFaceID), for: .touchUpInside)
+        let accessFaceID = UserDefaults.standard.bool(forKey: "accessToFaceID")
+        if accessFaceID {
+            faceIdButton.isHidden = false
+            faceIdButton.addTarget(self, action: #selector(didTapActiveFaceID), for: .touchUpInside)
+        } else {
+            faceIdButton.isHidden = true
+        }
         addConstrains()
         setupTextField()
-        confirmPasswordButton.isHidden = true
         safetyEnterApplicationWithFaceID(textField: firstTextField)
     }
     
     private func setupTextField(){
-        firstTextField.delegate = self
-        secondTextField.delegate = self
-        thirdTextField.delegate = self
-        forthTextField.delegate = self
         firstTextField.addTarget(self, action: #selector(textDidChangeValue(textField: )), for: UIControl.Event.editingChanged)
         secondTextField.addTarget(self, action: #selector(textDidChangeValue(textField: )), for: UIControl.Event.editingChanged)
         thirdTextField.addTarget(self, action: #selector(textDidChangeValue(textField: )), for: UIControl.Event.editingChanged)
@@ -255,20 +279,7 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
     }
     //MARK: - Keychain safety func for password
     //check for correct input password with comparsion entered password and saved password in keychain
-    private func safetyEnterApplication(password: String){
-        let emailUser = UserDefaults.standard.string(forKey: "userMail") ?? "No email"
-        guard let data = KeychainManager.get(service: "Local Password", account: emailUser) else { return }
-        let passwordKeyChain = String(decoding: data, as: UTF8.self)
-        if passwordKeyChain == password {
-            self.dismiss(animated: true)
-            UserDefaults.standard.setValue(true, forKey: "isUserConfirmPassword")
-        } else {
-            alertError(text: "Incorrect password.\nTry again later", mainTitle: "Error!".localized())
-        }
-    }
-    
-    
-    
+
     private func checkCorrectPassword(textField: UITextField){
         let emailUser = UserDefaults.standard.string(forKey: "userMail") ?? "No email"
         let value = KeychainManager.get(service: "Local Password", account: emailUser)
@@ -299,28 +310,13 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
         passwordLabel.text = "Enter code-password"
     }
     
-    private func clearTextFields(){
+    private func secondPasswordConfirm(){
         firstTextField.text = ""
         secondTextField.text = ""
         thirdTextField.text = ""
         forthTextField.text = ""
         firstTextField.becomeFirstResponder()
         passwordLabel.text = "Confirm password"
-    }
-    
-    //MARK: - UITextField Delegate
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        if let digit = textField.text,
-           
-           !digit.isEmpty {
-            passwordDigits += digit
-        }
-    }
-    
-    func textFieldDidEndEditing(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
-        if isCheckPassword {
-            checkCorrectPassword(textField: textField)
-        }
     }
 }
 //MARK: - snapkit constraints

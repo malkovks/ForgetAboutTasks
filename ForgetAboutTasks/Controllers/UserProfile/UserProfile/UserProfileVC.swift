@@ -317,7 +317,7 @@ class UserProfileViewController: UIViewController {
                     if !success {
                         sender.isOn = true
                     } else {
-                        UserDefaults.standard.setValue(false, forKey: "isUserConfirmPassword")
+                        UserDefaults.standard.setValue(false, forKey: "accessToFaceID")
                     }
                 }
             } else {
@@ -524,7 +524,6 @@ class UserProfileViewController: UIViewController {
         vc.dataReceive = { [weak self] _ in
             self?.setupView()
             self?.tableView.reloadData()
-            print("closure work fine")
         }
         let nav = UINavigationController(rootViewController: vc)
         nav.modalPresentationStyle = .pageSheet

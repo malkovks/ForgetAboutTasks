@@ -37,25 +37,16 @@ extension UIViewController {
     
     func checkAuthForFaceID(handler: @escaping (Bool) -> Void){
         setupHapticMotion(style: .light)
-        let result = UserDefaults.standard.bool(forKey: "isUserConfirmPassword")
         let context = LAContext()
         var error: NSError?
-        
-        
-        
-        if result == true {
-            handler(result)
-        } else {
             if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics,error: &error) {
                 context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: "Access to Face ID") { success , error in
                     DispatchQueue.main.async {
-                        
-                        UserDefaults.standard.setValue(success, forKey: "isUserConfirmPassword")
+                        UserDefaults.standard.setValue(success, forKey: "accessToFaceID")
                         handler(success)
                     }
                 }
             }
-        }
     }
 }
 

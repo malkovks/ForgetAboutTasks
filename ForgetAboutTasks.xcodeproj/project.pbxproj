@@ -330,6 +330,7 @@
 			isa = PBXGroup;
 			children = (
 				0A9E1C4329D46851000CC9A9 /* ForgetAboutTasks.entitlements */,
+				0A8AC19929B9C87300EA052B /* System Delegates */,
 				0AA604E029E1460E007ACE58 /* Model */,
 				0A8AC1A229B9D4D700EA052B /* Controllers */,
 				0AD4984F2A701E6D00B0599E /* Cells */,
@@ -338,7 +339,6 @@
 				0AA604EA29E16DA1007ACE58 /* Protocols */,
 				0AA8EC7029CAF52E004DC6DD /* Extensions */,
 				0A8AC19C29B9C8A400EA052B /* Resources */,
-				0A8AC19929B9C87300EA052B /* System Delegates */,
 				0A86ED1829B5D97F001C9BAF /* ForgetAboutTasks.xcdatamodeld */,
 			);
 			path = ForgetAboutTasks;

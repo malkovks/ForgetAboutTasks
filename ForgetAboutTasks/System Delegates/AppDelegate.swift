@@ -20,6 +20,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
         return GIDSignIn.sharedInstance.handle(url)
     }
+    
+    func applicationDidEnterBackground(_ application: UIApplication) {
+        print("View was closed")
+        UserDefaults.standard.setValue(false, forKey: "isUserConfirmPassword")
+    }
+    
+    func applicationWillEnterForeground(_ application: UIApplication) {
+        print("View was opened")
+        let boolean = UserDefaults.standard.bool(forKey: "isUserConfirmPassword")
+        if !boolean {
+            let vc = UserProfileSwitchPasswordViewController(isCheckPassword: true)
+//            let nav = UINavigationController(rootViewController: vc)
+            UINavigationController(rootViewController: vc)
+        }
+    }
     // MARK: UISceneSession Lifecycle
 
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
