@@ -72,6 +72,7 @@ class EditEventScheduleViewController: UIViewController {
 
     //MARK: - Targets methods
     @objc private func didTapDismiss(){
+        setupHapticMotion(style: .medium)
         if isStartEditing {
             setupAlertSheet(title: "Attention".localized()
                             ,subtitle: "You have some changes.\nWhat do you want to do".localized())
@@ -81,6 +82,7 @@ class EditEventScheduleViewController: UIViewController {
     }
     
     @objc private func didTapEdit(){
+        setupHapticMotion(style: .soft)
         let color = cellBackgroundColor.encode()
         editedScheduleModel.scheduleColor = color
         let id = scheduleModel.scheduleModelId
@@ -275,6 +277,7 @@ class EditEventScheduleViewController: UIViewController {
     //MARK: - Logics methods
     
     private func setupAlertIfDataEmpty() -> Bool{
+        setupHapticMotion(style: .medium)
         if scheduleModel.scheduleName == "Unknown" {
             alertError(text: "Enter value in Name cell")
             return false
@@ -292,6 +295,7 @@ class EditEventScheduleViewController: UIViewController {
     //MARK: - Segue methods
     //methods with dispatch of displaying color in cell while choosing color in picker view
     @objc private func openColorPicker(){
+        setupHapticMotion(style: .soft)
         self.cancellable = picker.publisher(for: \.selectedColor) .sink(receiveValue: { color in
             DispatchQueue.main.async {
                 self.cellBackgroundColor = color
@@ -302,6 +306,7 @@ class EditEventScheduleViewController: UIViewController {
     }
     
     @objc private func chooseTypeOfImagePicker() {
+        setupHapticMotion(style: .soft)
         let alert = UIAlertController(title: "", message: "What exactly do you want to do?".localized(), preferredStyle: .actionSheet)
         alert.addAction(UIAlertAction(title: "Set new image".localized(), style: .default,handler: { [self] _ in
             if UIImagePickerController.isSourceTypeAvailable(.photoLibrary){

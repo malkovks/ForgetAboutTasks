@@ -40,6 +40,7 @@ class ScheduleAllEventViewController: UIViewController {
     }
     //MARK: - Target methods
     @objc private func didTapOpenCalendar(){
+        setupHapticMotion(style: .soft)
         alertDate(choosenDate: Date()) { _, date, text in
             let model = self.realm.objects(ScheduleModel.self).filter("scheduleStartDate == %@", date)
             self.scheduleModel = model
@@ -88,15 +89,12 @@ extension ScheduleAllEventViewController: UITableViewDelegate, UITableViewDataSo
     }
     
     private func setupSelectionCell(indexPath: IndexPath){
+        setupHapticMotion(style: .soft)
         let key = sectionHeaderModel[indexPath.section]
         if let data = dictionaryScheduleModel[key] {
             let value = data[indexPath.row]
             let vc = OpenTaskDetailViewController(model: value)
             show(vc, sender: nil)
-//            let nav = UINavigationController(rootViewController: vc)
-//            nav.modalPresentationStyle = .fullScreen
-//            nav.isNavigationBarHidden = false
-//            present(nav, animated: true)
         }
     }
     

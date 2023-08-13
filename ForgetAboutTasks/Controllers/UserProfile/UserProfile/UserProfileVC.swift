@@ -643,11 +643,17 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
             }
         case [0,5]:
             cell.switchButton.addTarget(self, action: #selector(didTapChangeAccessToFaceID), for: .touchUpInside)
-            checkAuthForFaceID { success in
-                DispatchQueue.main.async {
-                    cell.switchButton.isOn = success
+            let value = UserDefaults.standard.bool(forKey: "accessToFaceID")
+            if !value {
+                checkAuthForFaceID { success in
+                    DispatchQueue.main.async {
+                        cell.switchButton.isOn = success
+                    }
                 }
+            } else {
+                cell.switchButton.isOn = value
             }
+            
         case [1,2]:
             cell.switchButton.removeTarget(self, action: #selector(didTapSwitchDisplayMode), for: .valueChanged)
             cell.switchButton.addTarget(self, action: #selector(didTapDisableAnimation), for: .valueChanged)

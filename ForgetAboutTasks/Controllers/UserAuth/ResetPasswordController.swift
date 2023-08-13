@@ -44,6 +44,7 @@ class ResetPasswordViewController: UIViewController {
     }
     //MARK: - Targets
     @objc private func didTapResetPassword(){
+        setupHapticMotion(style: .medium)
         let auth = Auth.auth()
         guard let text = emailTextField.text, !text.isEmpty else { alertError(text: "Enter email"); return }
         

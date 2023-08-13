@@ -39,8 +39,8 @@ class AllTasksDetailViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     //MARK: - UI elements
-    var cancellable: AnyCancellable?//for parallels displaying color in cell and Combine Kit for it
-    let picker = UIColorPickerViewController()
+    private var cancellable: AnyCancellable?//for parallels displaying color in cell and Combine Kit for it
+    private let picker = UIColorPickerViewController()
     private let tableView = UITableView(frame: .zero, style: .insetGrouped)
     private var topMenu = UIMenu()
     
@@ -57,10 +57,12 @@ class AllTasksDetailViewController: UIViewController {
 
     //MARK: - Targets methods
     @objc private func didTapDismiss(){
+        setupHapticMotion(style: .medium)
         dismiss(animated: true)
     }
     
     @objc private func didTapEdit(){
+        setupHapticMotion(style: .rigid)
         let color = UIColor.color(withData: tasksModel.allTaskColor!) ?? #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
         guard let vc = EditTaskTableViewController(color: color, model: tasksModel) else { return }
         let navVC = UINavigationController(rootViewController: vc)
@@ -76,15 +78,14 @@ class AllTasksDetailViewController: UIViewController {
             let point = gesture.location(in: tableView)
             guard let indexPath = tableView.indexPathForRow(at: point) else { return }
             var model: String?
-            switch indexPath.section {
-            case 0: model = tasksModel.allTaskNameEvent
-            case 1: model = DateFormatter.localizedString(from: tasksModel.allTaskDate ?? Date(), dateStyle: .medium, timeStyle: .none)
-            case 2: model = DateFormatter.localizedString(from: tasksModel.allTaskDate ?? Date(), dateStyle: .none, timeStyle: .short)
-            case 3: model = tasksModel.allTaskNotes
-            case 4: model = tasksModel.allTaskURL
-            default:
-                alertError()
-            }
+                switch indexPath.section {
+                case 0: model = tasksModel.allTaskNameEvent
+                case 1: model = DateFormatter.localizedString(from: tasksModel.allTaskDate ?? Date(), dateStyle: .medium, timeStyle: .none)
+                case 2: model = DateFormatter.localizedString(from: tasksModel.allTaskDate ?? Date(), dateStyle: .none, timeStyle: .short)
+                case 3: model = tasksModel.allTaskNotes
+                case 4: model = tasksModel.allTaskURL
+                default: break }
+            
             UIPasteboard.general.string = model
             alertDismissed(view: self.view)
             tableView.deselectRow(at: indexPath, animated: true)
@@ -138,6 +139,7 @@ class AllTasksDetailViewController: UIViewController {
     }
     
     func shareTableView(_ typeSharing: String) {
+        setupHapticMotion(style: .rigid)
         //pdf render
         let pdfRenderer = UIGraphicsPDFRenderer(bounds: tableView.bounds)
         let pdfData = pdfRenderer.pdfData { context in
@@ -166,6 +168,7 @@ class AllTasksDetailViewController: UIViewController {
     //MARK: - Segue methods
     //methods with dispatch of displaying color in cell while choosing color in picker view
     @objc private func openColorPicker(){
+        setupHapticMotion(style: .medium)
         self.cancellable = picker.publisher(for: \.selectedColor) .sink(receiveValue: { color in
             DispatchQueue.main.async {
                 self.cellBackgroundColor = color

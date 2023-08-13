@@ -67,11 +67,13 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
 
     //MARK: - Targets methods
     @objc private func didTapDismiss(){
+        setupHapticMotion(style: .soft)
         navigationController?.popViewController(animated: true)
         dismiss(animated: true)
     }
     
     @objc private func didTapEdit(){
+        setupHapticMotion(style: .medium)
         let colorCell = UIColor.color(withData: selectedScheduleModel.scheduleColor!) ?? #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
         let choosenDate = selectedScheduleModel.scheduleStartDate ?? Date()
         let vc = EditEventScheduleViewController(cellBackgroundColor: colorCell, choosenDate: choosenDate, scheduleModel: selectedScheduleModel)
@@ -104,6 +106,7 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
     }
     
     @objc private func didTapLongPressOnImage(){
+        setupHapticMotion(style: .soft)
         guard let data = selectedScheduleModel.scheduleImage,
               let image = UIImage(data: data) else { return }
         let activity = UIActivityViewController(activityItems: [image], applicationActivities: nil)
@@ -161,6 +164,7 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
     }
     
     private func shareTableView(_ typeSharing: String) {
+        setupHapticMotion(style: .soft)
         //pdf render
         let pdfRenderer = UIGraphicsPDFRenderer(bounds: tableView.bounds)
         let pdfData = pdfRenderer.pdfData { context in

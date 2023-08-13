@@ -75,13 +75,12 @@ class EditContactViewController: UIViewController {
     
     //MARK: - Targets methods
     @objc private func didTapSave(){
+        setupHapticMotion(style: .rigid)
         if isStartEditing {
             let id = contactModel.contactID
             ContactRealmManager.shared.editAllTasksModel(user: id, newModel: editedContactModel)
             delegate?.isSavedCompletely(boolean: true)
             navigationController?.popViewController(animated: true)
-        } else {
-            
         }
     }
     
@@ -92,12 +91,14 @@ class EditContactViewController: UIViewController {
     }
     
     @objc private func didTapEdit(){
+        setupHapticMotion(style: .rigid)
         isViewEdited = !isViewEdited
         setupSelection(boolean: isViewEdited)
         customiseView()
     }
     //НЕ РАБОТАЕТ. НЕ ОТОБРАЖАЕТ КОНТРОЛЛЕР
     @objc private func didTapShareTable(){
+        setupHapticMotion(style: .rigid)
         let shareContact = CNMutableContact()
         let model = contactModel
 
@@ -112,10 +113,13 @@ class EditContactViewController: UIViewController {
     }
     
     @objc private func didTapDismiss(){
+        
         if isStartEditing {
             setupAlertSheet()
+            setupHapticMotion(style: .medium)
         } else {
             self.navigationController?.popViewController(animated: true)
+            setupHapticMotion(style: .soft)
         }
         
     }
@@ -142,6 +146,7 @@ class EditContactViewController: UIViewController {
     }
     
     private func setupSelection(boolean: Bool){
+        setupHapticMotion(style: .soft)
         if !boolean {
             editModelButton = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(didTapEdit))
         } else {
@@ -172,6 +177,7 @@ class EditContactViewController: UIViewController {
     }
     
     private func setupComposeView(model: ContactModel){
+        setupHapticMotion(style: .soft)
         if MFMailComposeViewController.canSendMail() {
             let vc = MFMailComposeViewController()
             vc.mailComposeDelegate = self
@@ -189,6 +195,7 @@ class EditContactViewController: UIViewController {
     }
     
     private func setupPhoneCalling(){
+        setupHapticMotion(style: .soft)
         guard let phone = contactModel.contactPhoneNumber?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
               let url = URL(string: "tel://\(phone)") else {
                 self.alertError(text: "Incorrect number")
@@ -203,6 +210,7 @@ class EditContactViewController: UIViewController {
     
     
     private func setupOpenCalendar(){
+        setupHapticMotion(style: .soft)
         guard let date = contactModel.contactDateBirthday else { alertError(text: "Cant get date".localized(), mainTitle: "Error".localized()); return}
         let convertedDate = date.getDateWithoutYear(date: date)
         let vc = CreateTaskForDayController(choosenDate: convertedDate)
@@ -219,6 +227,7 @@ class EditContactViewController: UIViewController {
 
     
     private func setupOpenAddressInMap(){
+        setupHapticMotion(style: .soft)
         guard let country = contactModel.contactCountry,
               let city = contactModel.contactCity,
               let address = contactModel.contactAddress else {

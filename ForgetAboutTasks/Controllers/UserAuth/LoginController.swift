@@ -82,6 +82,7 @@ class LogInViewController: UIViewController {
     //MARK: - Targets
     
     @objc private func didTapChangeVisible(){
+        setupHapticMotion(style: .rigid)
         if isPasswordHidden {
             passwordField.isSecureTextEntry = false
             isPasswordHiddenButton.setImage(UIImage(systemName: "eye.slash.fill"), for: .normal)
@@ -93,6 +94,7 @@ class LogInViewController: UIViewController {
     }
     //при входе в аккаунт выгружать также имя фамилию и прочее
     @objc private func didTapContinue(){
+        setupHapticMotion(style: .soft)
         indicatorView.startAnimating()
         guard let password = passwordField.text, !password.isEmpty else {
             alertError(text: "Enter email and password.\nIf You forget your personal data, try again later.", mainTitle: "Error login")
@@ -114,9 +116,7 @@ class LogInViewController: UIViewController {
             self?.view.window?.rootViewController?.dismiss(animated: true)
             self?.setupLoadingSpinner()
             UserDefaultsManager.shared.saveDataWithLogin(result: result)
-//            UserDefaults.standard.setValue(email, forKey: "userMail")
             UserDefaultsManager.shared.setupForAuth()
-            self?.getPassword(email)
             self?.indicatorView.stopAnimating()
         }
     }
@@ -132,12 +132,6 @@ class LogInViewController: UIViewController {
         setupTargets()
         view.backgroundColor = UIColor(named: "launchBackgroundColor")
         emailField.becomeFirstResponder()
-        
-    }
-    
-    private func getPassword(_ email: String){
-        guard let data = KeychainManager.get(service: "Firebase Auth", account: email) else { alertError(text: "Failed to read password", mainTitle: "Error");return }
-        let password = String(decoding: data, as: UTF8.self)
         
     }
     
@@ -164,13 +158,7 @@ class LogInViewController: UIViewController {
     }
     
 }
-//extension LogInViewController: UITextFieldDelegate {
-//    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-//        if let text = textField.text, !text.isEmpty {
-//
-//        }
-//    }
-//}
+
 
 //MARK: - Extensions
 extension LogInViewController {

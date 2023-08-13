@@ -45,6 +45,7 @@ final class TaskBirthdayDetailViewController: UIViewController {
     }
     //MARK: - Targets
     @objc private func didTapDismiss(){
+        setupHapticMotion(style: .soft)
         self.dismiss(animated: true)
     }
     

@@ -152,10 +152,12 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
 
  //MARK: -  actions targets methods
     @objc private func didTapDismiss(){
+        setupHapticMotion(style: .soft)
         dismiss(animated: true)
     }
     
     @objc private func didTapCreate(){
+        setupHapticMotion(style: .rigid)
         let vc = CreateEventScheduleViewController(choosenDate: Date())
         vc.delegate = self
         let navVC = UINavigationController(rootViewController: vc)
@@ -166,6 +168,7 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
     }
     
     @objc private func didTapSegmentChanged(segment: UISegmentedControl) {
+        setupHapticMotion(style: .soft)
         let predicate = setupRealmData(date: choosenDate)
         if segment.selectedSegmentIndex == 0 {
             loadingRealmData(predicate: predicate, typeOf: "scheduleTime")
@@ -177,6 +180,7 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
     }
     
     @objc private func didTapStartEditing(){
+        setupHapticMotion(style: .soft)
         if !tableView.isEditing {
             tableView.setEditing(!tableView.isEditing, animated: true)
             navigationItem.setRightBarButtonItems([createEventButton,actionWithTableButton], animated: true)
@@ -187,6 +191,7 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
     }
     
     @objc private func didTapDeleteChoosenCell(){
+        setupHapticMotion(style: .medium)
         let alert = UIAlertController(title: "Do you want to delete choosen cells?".localized(), message: "Warning!".localized(), preferredStyle: .actionSheet)
         alert.addAction(UIAlertAction(title: "Delete".localized(), style: .destructive,handler: { [self] _ in
             guard let indexPath = tableView.indexPathsForSelectedRows else {
@@ -206,6 +211,7 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
     }
     
     @objc private func didTapOpenBirthdays(sender: UIButton){
+        setupHapticMotion(style: .soft)
         let vc = TaskBirthdayDetailViewController(choosenDate: choosenDate, birthdayModel: birthdayContactModel)
         let convertChoosenDate = DateFormatter.localizedString(from: choosenDate, dateStyle: .medium, timeStyle: .none)
         let countValue = birthdayCounts[convertChoosenDate] ?? 0
@@ -391,7 +397,7 @@ extension CreateTaskForDayController: UITableViewDelegate, UITableViewDataSource
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
+        setupHapticMotion(style: .soft)
         if !tableView.isEditing {
             tableView.deselectRow(at: indexPath, animated: true)
             let data = cellDataScheduleModel[indexPath.row]
@@ -449,6 +455,7 @@ extension CreateTaskForDayController: UITableViewDelegate, UITableViewDataSource
 //MARK: - calendar delegates
 extension CreateTaskForDayController: FSCalendarDelegate, FSCalendarDataSource {
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
+        setupHapticMotion(style: .soft)
         choosenDate = date
         let predicate = setupRealmData(date: date)
         loadingRealmData(predicate: predicate)

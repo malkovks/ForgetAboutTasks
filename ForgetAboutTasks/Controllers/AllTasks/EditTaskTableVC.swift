@@ -61,6 +61,7 @@ class EditTaskTableViewController: UIViewController {
 
     //MARK: - Targets methods
     @objc private func didTapDismiss(){
+        setupHapticMotion(style: .soft)
         if isStartEditing {
             setupAlertSheet()
         } else {
@@ -69,7 +70,7 @@ class EditTaskTableViewController: UIViewController {
     }
     
     @objc private func didTapEdit(){
-        
+        setupHapticMotion(style: .soft)
         if isStartEditing {
             if editedTaskModel.allTaskNameEvent.isEmpty {
                 editedTaskModel.allTaskNameEvent = tasksModel.allTaskNameEvent
@@ -119,6 +120,7 @@ class EditTaskTableViewController: UIViewController {
     //MARK: - Segue methods
     //methods with dispatch of displaying color in cell while choosing color in picker view
     @objc private func openColorPicker(){
+        setupHapticMotion(style: .soft)
         self.cancellable = picker.publisher(for: \.selectedColor) .sink(receiveValue: { color in
             DispatchQueue.main.async {
                 self.cellBackgroundColor = color

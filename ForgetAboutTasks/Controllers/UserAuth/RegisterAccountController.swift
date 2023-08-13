@@ -102,6 +102,7 @@ class RegisterAccountViewController: UIViewController {
     }
     //MARK: - Targets
     @objc private func didTapChangeVisible(){
+        setupHapticMotion(style: .rigid)
         if isPasswordHidden {
             passwordField.isSecureTextEntry = false
             secondPasswordField.isSecureTextEntry = false
@@ -115,6 +116,7 @@ class RegisterAccountViewController: UIViewController {
     }
     //Добавить функцию создания имени фамилии и базовых данных и привязки данных к аккаунту
     @objc private func didTapCreateNewAccount(){
+        setupHapticMotion(style: .soft)
         indicator.startAnimating()
         guard let mailField = emailField.text, !mailField.isEmpty,
               let firstPassword = passwordField.text, !firstPassword.isEmpty,

@@ -21,7 +21,7 @@ extension UIViewController {
         }
         context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: "Log in to your Account") { [weak self] success, error in
             if success {
-                UserDefaults.standard.setValue(true, forKey: "isUserConfirmPassword")
+                UserDefaults.standard.setValue(success, forKey: "isUserConfirmPassword")
                 DispatchQueue.main.asyncAfter(deadline: .now()+1) {
                     self?.dismiss(animated: true)
                 }

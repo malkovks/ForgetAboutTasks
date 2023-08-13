@@ -46,10 +46,12 @@ class CreateTaskTableViewController: UIViewController {
 
     //MARK: - Targets methods
     @objc private func didTapDismiss(){
+        setupHapticMotion(style: .soft)
         dismiss(animated: true)
     }
     
     @objc private func didTapSave(){
+        setupHapticMotion(style: .rigid)
         if !tasksModel.allTaskNameEvent.isEmpty {
             tasksModel.allTaskColor = cellBackgroundColor.encode()
             if tasksModel.allTaskDate == nil {
@@ -106,6 +108,7 @@ class CreateTaskTableViewController: UIViewController {
     //MARK: - Segue methods
     //methods with dispatch of displaying color in cell while choosing color in picker view
     @objc private func openColorPicker(){
+        setupHapticMotion(style: .soft)
         self.cancellable = picker.publisher(for: \.selectedColor) .sink(receiveValue: { color in
             DispatchQueue.main.async {
                 self.cellBackgroundColor = color

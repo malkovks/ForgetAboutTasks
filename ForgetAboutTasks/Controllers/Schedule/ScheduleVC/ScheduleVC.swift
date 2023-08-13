@@ -87,11 +87,13 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
    //MARK: - target methods
     
     @objc private func didTapSearch(){
+        setupHapticMotion(style: .rigid)
             navigationItem.searchController = searchController
             searchController.isActive = true
     }
     
     @objc private func didTapCreate(){
+        setupHapticMotion(style: .rigid)
         let vc = CreateEventScheduleViewController(choosenDate: Date())
         vc.delegate = self
         let nav = UINavigationController(rootViewController: vc)
@@ -102,6 +104,7 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
     }
     
     @objc private func didTapOpenAllEvent(){
+        setupHapticMotion(style: .soft)
         let vc = ScheduleAllEventViewController(model: scheduleModel)
         show(vc, sender: nil)
     }
@@ -141,6 +144,7 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
             let vc = UserProfileSwitchPasswordViewController(isCheckPassword: true)
             let nav = UINavigationController(rootViewController: vc)
             nav.modalPresentationStyle = .fullScreen
+            nav.modalTransitionStyle = .crossDissolve
             present(nav, animated: true)
         }
     }
@@ -252,7 +256,6 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
                 let predicateUnrepeat = NSPredicate(format: "scheduleStartDate BETWEEN %@", [dateStart,dateEnd])
                 let compound = NSCompoundPredicate(type: .or, subpredicates: [predicate,predicateUnrepeat])
                 let value = localRealm.objects(ScheduleModel.self).filter(compound)
-                let birthdayValue = localRealm.objects(ContactModel.self)
                 let vc = CreateTaskForDayController(model: value, choosenDate: dateStart)
                 let nav = UINavigationController(rootViewController: vc)
                 nav.modalPresentationStyle = .fullScreen
@@ -295,6 +298,7 @@ extension ScheduleViewController: FSCalendarDelegate, FSCalendarDataSource {
     }
     
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
+        setupHapticMotion(style: .soft)
         loadingDataByDate(date: date, at: monthPosition, is: false)
     }
     

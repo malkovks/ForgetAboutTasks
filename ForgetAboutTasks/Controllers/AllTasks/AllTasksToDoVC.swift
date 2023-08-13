@@ -13,12 +13,10 @@ import RealmSwift
 class AllTasksToDoViewController: UIViewController, CheckSuccessSaveProtocol {
 
     
-    
-    var allTasksData: Results<AllTaskModel>!
+    private var allTasksData: Results<AllTaskModel>!
     private var allTasksDataFiltered: Results<AllTaskModel>!
     private var localRealmData = try! Realm()
-    var allTasksDataSections = [Date]()
-    var taskDate = Set<Date>()
+    private var allTasksDataSections = [Date]()
     private let fontSizeValue : CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
     
     private var viewIsFiltered: Bool {
@@ -68,6 +66,7 @@ class AllTasksToDoViewController: UIViewController, CheckSuccessSaveProtocol {
     
     //MARK: - Targets methods
     @objc private func didTapCreateNewTask(){
+        setupHapticMotion(style: .medium)
         let vc = CreateTaskTableViewController()
         vc.delegate = self
         let navVC = UINavigationController(rootViewController: vc)
@@ -79,6 +78,7 @@ class AllTasksToDoViewController: UIViewController, CheckSuccessSaveProtocol {
     }
     
     @objc private func didTapRefresh(sender: AnyObject){
+        setupHapticMotion(style: .medium)
         UIView.transition(with: tableView, duration: 0.3,options: .transitionCrossDissolve) {
             self.tableView.reloadData()
         }
@@ -88,6 +88,7 @@ class AllTasksToDoViewController: UIViewController, CheckSuccessSaveProtocol {
     }
     
     @objc private func didTapSegmentChanged(segment: UISegmentedControl) {
+        setupHapticMotion(style: .medium)
         if segment.selectedSegmentIndex == 0 {
             loadingRealmData(typeOf: "allTaskDate")
         } else if segment.selectedSegmentIndex == 1 {
@@ -96,11 +97,13 @@ class AllTasksToDoViewController: UIViewController, CheckSuccessSaveProtocol {
     }
     
     @objc private func didTapSearch(){
+        setupHapticMotion(style: .medium)
         navigationItem.searchController = searchController
         searchController.isActive = true
     }
     
     @objc private func didTapChangeCell(sender tag: AnyObject) {
+        setupHapticMotion(style: .soft)
         let button = tag as! UIButton
         let indexPath = IndexPath(row: button.tag, section: 0)
         let model = allTasksData[indexPath.row]
@@ -164,6 +167,7 @@ class AllTasksToDoViewController: UIViewController, CheckSuccessSaveProtocol {
     }
     
     private func setupCategories(model: AllTaskModel) {
+        
         allTasksDataSections.append(model.allTaskDate ?? Date())
         UIView.transition(with: tableView, duration: 0.3,options: .transitionCrossDissolve) {
             self.tableView.reloadData()

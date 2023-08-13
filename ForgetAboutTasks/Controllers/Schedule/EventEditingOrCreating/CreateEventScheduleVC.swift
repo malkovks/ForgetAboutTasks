@@ -75,6 +75,7 @@ class CreateEventScheduleViewController: UIViewController {
 
     //MARK: - Targets methods
     @objc private func didTapDismiss(){
+        setupHapticMotion(style: .medium)
         if isStartEditing {
             setupAlertSheet(title:"Attention", subtitle: "You inputed the data that was not saved.\nWhat do you want to do?" )
         } else {
@@ -83,7 +84,7 @@ class CreateEventScheduleViewController: UIViewController {
     }
     
     @objc private func didTapSave(){
-        
+        setupHapticMotion(style: .soft)
         let isClear = setupAlertIfDataEmpty()
         if isClear {
             scheduleModel.scheduleColor = cellBackgroundColor.encode()
@@ -262,7 +263,7 @@ class CreateEventScheduleViewController: UIViewController {
     }
     
     @objc private func chooseTypeOfImagePicker() {
-        
+        setupHapticMotion(style: .soft)
         let alert = UIAlertController(title: "", message: "What exactly do you want to do?".localized(), preferredStyle: .actionSheet)
         alert.addAction(UIAlertAction(title: "Set new image".localized(), style: .default,handler: { [self] _ in
             if UIImagePickerController.isSourceTypeAvailable(.photoLibrary){
@@ -291,6 +292,7 @@ class CreateEventScheduleViewController: UIViewController {
     //MARK: - Segue methods
     //methods with dispatch of displaying color in cell while choosing color in picker view
     @objc private func openColorPicker(){
+        setupHapticMotion(style: .soft)
         self.cancellable = picker.publisher(for: \.selectedColor) .sink(receiveValue: { color in
             DispatchQueue.main.async {
                 self.cellBackgroundColor = color

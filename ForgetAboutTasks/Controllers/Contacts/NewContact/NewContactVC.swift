@@ -54,6 +54,7 @@ class NewContactViewController: UIViewController{
     
     //MARK: - Targets methods
     @objc private func didTapSave(){
+        setupHapticMotion(style: .medium)
         if  let name = contactModel.contactName, let phone = contactModel.contactPhoneNumber,
             !name.isEmpty && !phone.isEmpty {
             ContactRealmManager.shared.saveContactModel(model: contactModel)
@@ -68,11 +69,13 @@ class NewContactViewController: UIViewController{
     }
     
     @objc private func didTapOpenPhoto(){
+        setupHapticMotion(style: .rigid)
         alertImagePicker { [weak self] sourceType in
             self?.chooseImagePicker(source: sourceType)
         }
     }
     @objc private func didTapDismiss(){
+        setupHapticMotion(style: .rigid)
         if isStartEditing {
             setupAlertSheet()
         } else {

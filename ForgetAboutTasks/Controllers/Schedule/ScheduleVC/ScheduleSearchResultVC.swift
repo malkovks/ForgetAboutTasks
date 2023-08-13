@@ -69,6 +69,7 @@ extension ScheduleSearchResultViewController: UITableViewDelegate, UITableViewDa
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        setupHapticMotion(style: .soft)
         guard let model = scheduleModel?[indexPath.row] else { return }
         let vc = OpenTaskDetailViewController(model: model)
         let nav = UINavigationController(rootViewController: vc)

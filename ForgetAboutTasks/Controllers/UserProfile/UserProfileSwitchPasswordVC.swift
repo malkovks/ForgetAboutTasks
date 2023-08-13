@@ -204,8 +204,6 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
                 }
             }
         }
-        print(passwordDigits, "First digit")
-        print(confirmPasswordDigits,"Second digit")
     }
     
     @objc private func didTapConfirmPassword(sender: UIButton) {
@@ -219,6 +217,7 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
             checkAuthForFaceID { [weak self] success in
                 UserDefaults.standard.setValue(success, forKey: "accessToFaceID")
                 UserDefaults.standard.setValue(true, forKey: "isPasswordCodeEnabled")
+                UserDefaults.standard.setValue(false, forKey: "isUserConfirmPassword")
                 if data != nil {
                     KeychainManager.delete()
                 }
@@ -284,7 +283,7 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
         let emailUser = UserDefaults.standard.string(forKey: "userMail") ?? "No email"
         let value = KeychainManager.get(service: "Local Password", account: emailUser)
         let textValue = String(decoding: value ?? Data(), as: UTF8.self)
-        if textField.tag == 4 /*&& !UserDefaults.standard.bool(forKey: "isUserConfirmPassword")*/{
+        if textField.tag == 4 {
             if textValue.contains(passwordDigits){
                 UserDefaults.standard.setValue(true, forKey: "isUserConfirmPassword")
                 showAlertForUser(text: "Success", duration: .now()+1, controllerView: view)

@@ -77,12 +77,14 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
 
     //MARK: - Targets methods
     @objc private func didTapCreateNewContact(){
+        setupHapticMotion(style: .soft)
         let vc = NewContactViewController()
         vc.delegate = self
         show(vc, sender: nil)
     }
     
     @objc private func didTapOpenContacts(){
+        setupHapticMotion(style: .soft)
         requestAccessForInheritContacts { [weak self] success in
             if let _ = success {
                 let vc = self?.contactPicker
@@ -93,6 +95,7 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
     }
     
     @objc private func didTapEditTable(){
+        setupHapticMotion(style: .rigid)
         if tableView.isEditing {
             tableView.setEditing(false, animated: true)
             navigationItem.setRightBarButtonItems([createContactButton,importContactsButton], animated: true)
@@ -109,6 +112,7 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
     }
     
     @objc private func didTapClearTable(){
+        setupHapticMotion(style: .heavy)
         alertForDeleting()
     }
     //MARK: - Setup methods
@@ -157,6 +161,7 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
     }
     
     private func alertForDeleting(){
+        setupHapticMotion(style: .medium)
         let alert = UIAlertController(title: "Warning!".localized(),
                                       message: "Are you sure you want to delete all contacts permanently?".localized(), preferredStyle: .actionSheet)
         alert.addAction(UIAlertAction(title: "Delete".localized(), style: .destructive,handler: { [self] _ in
@@ -314,6 +319,7 @@ extension ContactsViewController: UITableViewDelegate, UITableViewDataSource {
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { actions in
             let shareAction = UIAction(title: NSLocalizedString("Share Contact Card".localized(), comment: ""), image: UIImage(systemName: "square.and.arrow.up.circle.fill")) { [ weak self] _ in
                 self?.shareChoosenContact(indexPath: indexPath)
+                
             }
             let openAction = UIAction(title: NSLocalizedString("Open Contact".localized(), comment: ""),image: UIImage(systemName: "info.circle.fill")) { [unowned self] action in
                 self.openChoosenContact(indexPath: indexPath)

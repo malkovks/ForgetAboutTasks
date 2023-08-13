@@ -15,15 +15,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
-        let passwordEnabled = UserDefaults.standard.bool(forKey: "isPasswordCodeEnabled")
         let window = UIWindow(windowScene: windowScene)
-        if passwordEnabled {
-            UserDefaults.standard.setValue(false, forKey: "isUserConfirmPassword")
-        }
-        
         let mainVC = TabBarViewController()
         window.rootViewController = mainVC
-        
         window.makeKeyAndVisible()
         self.window = window
         

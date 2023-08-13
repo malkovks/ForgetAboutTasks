@@ -63,16 +63,19 @@ class UserAuthViewController: UIViewController {
     
     //MARK: - Targets methods
     @objc private func didTapLogin(){
+        setupHapticMotion(style: .soft)
         let vc = LogInViewController()
         show(vc, sender: nil)
     }
     
     @objc private func didTapRegister(){
+        setupHapticMotion(style: .soft)
         let vc = RegisterAccountViewController()
         show(vc, sender: nil)
     }
     
     @objc private func didTapLoginWithGoogle(){
+        setupHapticMotion(style: .soft)
         spinner.startAnimating()
         view.alpha = 0.8
         guard let client = FirebaseApp.app()?.options.clientID else {
