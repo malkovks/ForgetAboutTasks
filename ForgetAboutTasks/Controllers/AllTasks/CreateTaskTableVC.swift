@@ -47,7 +47,7 @@ class CreateTaskTableViewController: UIViewController {
     //MARK: - Targets methods
     @objc private func didTapDismiss(){
         setupHapticMotion(style: .soft)
-        dismiss(animated: true)
+        dismiss(animated: isViewAnimated)
     }
     
     @objc private func didTapSave(){
@@ -68,7 +68,7 @@ class CreateTaskTableViewController: UIViewController {
                 AllTasksRealmManager.shared.saveAllTasksModel(model: tasksModel)
             }
             delegate?.isSavedCompletely(boolean: true)
-            dismiss(animated: true)
+            dismiss(animated: isViewAnimated)
         } else {
             alertError(text: "Enter value in Name cell".localized(), mainTitle: "Error saving!".localized())
         }
@@ -114,7 +114,7 @@ class CreateTaskTableViewController: UIViewController {
                 self.cellBackgroundColor = color
             }
         })
-        self.present(picker, animated: true)
+        self.present(picker, animated: isViewAnimated)
     }
 }
 //MARK: - Table view delegates
@@ -143,7 +143,7 @@ extension CreateTaskTableViewController: UITableViewDelegate, UITableViewDataSou
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
+        tableView.deselectRow(at: indexPath, animated: isViewAnimated)
         let cellName = cellsName[indexPath.section][indexPath.row]
         let cell = tableView.cellForRow(at: indexPath)
         switch indexPath {
@@ -234,12 +234,12 @@ extension CreateTaskTableViewController {
     private func setupAlertSheet(title: String,subtitle: String) {
         let sheet = UIAlertController(title: title, message: subtitle, preferredStyle: .actionSheet)
         sheet.addAction(UIAlertAction(title: "Discard changes".localized(), style: .destructive,handler: { _ in
-            self.dismiss(animated: true)
+            self.dismiss(animated: isViewAnimated)
         }))
         sheet.addAction(UIAlertAction(title: "Save".localized(), style: .default,handler: { [self] _ in
             didTapSave()
         }))
         sheet.addAction(UIAlertAction(title: "Cancel".localized(), style: .cancel))
-        present(sheet, animated: true)
+        present(sheet, animated: isViewAnimated)
     }
 }

@@ -33,17 +33,11 @@ class TabBarViewController: UITabBarController {
     }
     
     private func setupTabBar() {
-//        let scheduleVC = setupNavigationController(vc: ScheduleViewController(), itemName: "Schedule", image: "calendar.badge.clock")
-//        let allTasks = setupNavigationController(vc: AllTasksToDoViewController(), itemName: "All Tasks", image: "list.clipboard.fill")
-//        let contactsVC = setupNavigationController(vc: ContactsViewController(), itemName: "Contacts", image: "rectangle.stack.person.crop")
-//        let userVC = setupNavWithoutNavBarEdgeAppearance(vc: UserProfileViewController(), itemName: "Settings", image: "gear")
         let schedule = tabbarsetup(vc: ScheduleViewController(), title: "Schedule", image: "calendar.badge.clock")
         let tasks = tabbarsetup(vc: AllTasksToDoViewController(), title: "All Tasks", image: "list.clipboard.fill")
         let contact = tabbarsetup(vc: ContactsViewController(), title: "Contacts", image: "rectangle.stack.person.crop")
         let user = tabbarsetup(vc: UserProfileViewController(), title: "Profile", image: "gear")
-//        viewControllers = [scheduleVC,allTasks,contactsVC,userVC]
-//        setViewControllers([scheduleVC,allTasks,contactsVC,userVC], animated: true)
-        setViewControllers([schedule,tasks,contact,user], animated: true)
+        setViewControllers([schedule,tasks,contact,user], animated: isViewAnimated)
     }
     
     
@@ -58,7 +52,6 @@ class TabBarViewController: UITabBarController {
         let bezierPath = UIBezierPath(roundedRect: CGRect(x: positionX, y: tabBar.bounds.minY-positionY, width: width, height: height), cornerRadius: height/2)
         roundedLayer.path = bezierPath.cgPath
         tabBar.layer.insertSublayer(roundedLayer, at: 0)
-//        tabBar.layer.backgroundColor = UIColor.systemBlue.cgColor
         tabBar.itemWidth = width / 5
         
         
@@ -95,7 +88,6 @@ class TabBarViewController: UITabBarController {
         let navController = UINavigationController(rootViewController: vc)
         navController.tabBarItem = item
         navController.hidesBottomBarWhenPushed = true
-//        navController.navigationBar.scrollEdgeAppearance = navController.navigationBar.standardAppearance
         return navController
     }
     

@@ -19,7 +19,6 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
     private var filteredContactData: Results<ContactModel>!
     private var localRealmData = try! Realm()
     private let contactStore = CNContactStore()
-    private let fontSizeValue: CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
 
     private var searchBarIsEmpty: Bool {
         guard let text = searchController.searchBar.text else { return true }
@@ -80,7 +79,7 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
         setupHapticMotion(style: .soft)
         let vc = NewContactViewController()
         vc.delegate = self
-        show(vc, sender: nil)
+        navigationController?.pushViewController(vc, animated: isViewAnimated)
     }
     
     @objc private func didTapOpenContacts(){
@@ -89,7 +88,7 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
             if let _ = success {
                 let vc = self?.contactPicker
                 let nav = UINavigationController(rootViewController: vc!)
-                self?.present(nav, animated: true)
+                self?.present(nav, animated: isViewAnimated)
             }
         }
     }
@@ -97,13 +96,13 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
     @objc private func didTapEditTable(){
         setupHapticMotion(style: .rigid)
         if tableView.isEditing {
-            tableView.setEditing(false, animated: true)
-            navigationItem.setRightBarButtonItems([createContactButton,importContactsButton], animated: true)
+            tableView.setEditing(false, animated: isViewAnimated)
+            navigationItem.setRightBarButtonItems([createContactButton,importContactsButton], animated: isViewAnimated)
             navigationItem.rightBarButtonItem?.isEnabled = true
         } else {
             if !contactData.isEmpty {
-                tableView.setEditing(true, animated: true)
-                navigationItem.setRightBarButtonItems([deleteAllEventsButton], animated: true)
+                tableView.setEditing(true, animated: isViewAnimated)
+                navigationItem.setRightBarButtonItems([deleteAllEventsButton], animated: isViewAnimated)
                 navigationItem.rightBarButtonItem?.isEnabled = true
             } else {
                 navigationItem.rightBarButtonItem?.isEnabled = true
@@ -168,13 +167,13 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
             ContactRealmManager.shared.deleteAllContactModel()
             let indexPaths = (0..<tableView.numberOfRows(inSection: 0)).map { IndexPath(row: $0, section: 0) }
             tableView.deleteRows(at: indexPaths, with: .top)
-            tableView.setEditing(false, animated: true)
-            navigationItem.setRightBarButtonItems([createContactButton,importContactsButton], animated: true)
+            tableView.setEditing(false, animated: isViewAnimated)
+            navigationItem.setRightBarButtonItems([createContactButton,importContactsButton], animated: isViewAnimated)
             navigationItem.rightBarButtonItem?.isEnabled = true
             
         }))
         alert.addAction(UIAlertAction(title: "Cancel".localized(), style: .cancel))
-        present(alert, animated: true)
+        present(alert, animated: isViewAnimated)
     }
 
     
@@ -229,7 +228,7 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
         do {
             try data = CNContactVCardSerialization.data(with: [contact]) as NSData
             let activity = UIActivityViewController(activityItems: [data as Any], applicationActivities: nil)
-            present(activity, animated: true)
+            present(activity, animated: isViewAnimated)
         } catch {
             alertError(text: "Cant share contact", mainTitle: "warning!")
         }
@@ -239,7 +238,7 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
     private func openChoosenContact(indexPath: IndexPath){
         let model = viewIsFiltered ? filteredContactData[indexPath.row] : contactData[indexPath.row]
         let vc = EditContactViewController(contactModel: model, editing: false)
-        show(vc, sender: nil)
+        navigationController?.pushViewController(vc, animated: isViewAnimated)
     }
     
     private func deleteChoosenContact(indexPath: IndexPath){
@@ -269,7 +268,7 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
             vc.body = "Hello!"
             vc.recipients = ["\(phone)"]
             vc.messageComposeDelegate = self
-            show(vc, sender: nil)
+            navigationController?.pushViewController(vc, animated: isViewAnimated)
         } else {
             alertError(text: "This function is not avaliable.\nTry again later".localized(), mainTitle: "Error!".localized())
         }
@@ -385,7 +384,7 @@ extension ContactsViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
+        tableView.deselectRow(at: indexPath, animated: isViewAnimated)
         openChoosenContact(indexPath: indexPath)
     }
 
@@ -397,7 +396,7 @@ extension ContactsViewController: UITableViewDelegate, UITableViewDataSource {
 extension ContactsViewController: MFMessageComposeViewControllerDelegate {
     func messageComposeViewController(_ controller: MFMessageComposeViewController, didFinishWith result: MessageComposeResult) {
         if result == .cancelled {
-            self.dismiss(animated: true)
+            self.dismiss(animated: isViewAnimated)
         }
     }
     

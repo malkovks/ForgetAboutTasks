@@ -92,6 +92,7 @@
 		0AB0A96F2A1C61D30084AE07 /* EditTaskTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB0A96E2A1C61D30084AE07 /* EditTaskTableVC.swift */; };
 		0AB578E32A828C4B00227581 /* UserProfileNapticView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB578E22A828C4B00227581 /* UserProfileNapticView.swift */; };
 		0AB578E62A84CEC700227581 /* HapticManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB578E52A84CEC700227581 /* HapticManager.swift */; };
+		0AB578E92A8A0B6200227581 /* Properties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB578E82A8A0B6200227581 /* Properties.swift */; };
 		0AB763BA29E3FAC900BFDB0D /* AlertError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB763B929E3FAC900BFDB0D /* AlertError.swift */; };
 		0ACE796B29D9EEAA00599C19 /* AlertSpinner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE796A29D9EEAA00599C19 /* AlertSpinner.swift */; };
 		0ACE797229DD95C600599C19 /* CreateTaskTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE797129DD95C600599C19 /* CreateTaskTableVC.swift */; };
@@ -223,6 +224,7 @@
 		0AB0A96E2A1C61D30084AE07 /* EditTaskTableVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTaskTableVC.swift; sourceTree = "<group>"; };
 		0AB578E22A828C4B00227581 /* UserProfileNapticView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileNapticView.swift; sourceTree = "<group>"; };
 		0AB578E52A84CEC700227581 /* HapticManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticManager.swift; sourceTree = "<group>"; };
+		0AB578E82A8A0B6200227581 /* Properties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Properties.swift; sourceTree = "<group>"; };
 		0AB763B929E3FAC900BFDB0D /* AlertError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertError.swift; sourceTree = "<group>"; };
 		0ACE796A29D9EEAA00599C19 /* AlertSpinner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertSpinner.swift; sourceTree = "<group>"; };
 		0ACE797129DD95C600599C19 /* CreateTaskTableVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTaskTableVC.swift; sourceTree = "<group>"; };
@@ -329,6 +331,7 @@
 		0A86ED0E29B5D97F001C9BAF /* ForgetAboutTasks */ = {
 			isa = PBXGroup;
 			children = (
+				0AB578E72A8A0B4C00227581 /* Public Properties */,
 				0A9E1C4329D46851000CC9A9 /* ForgetAboutTasks.entitlements */,
 				0A8AC19929B9C87300EA052B /* System Delegates */,
 				0AA604E029E1460E007ACE58 /* Model */,
@@ -625,6 +628,14 @@
 				0AB578E52A84CEC700227581 /* HapticManager.swift */,
 			);
 			path = "HapticSetup+Extensions";
+			sourceTree = "<group>";
+		};
+		0AB578E72A8A0B4C00227581 /* Public Properties */ = {
+			isa = PBXGroup;
+			children = (
+				0AB578E82A8A0B6200227581 /* Properties.swift */,
+			);
+			path = "Public Properties";
 			sourceTree = "<group>";
 		};
 		0AD4984F2A701E6D00B0599E /* Cells */ = {
@@ -949,6 +960,7 @@
 				0A86ED1229B5D97F001C9BAF /* SceneDelegate.swift in Sources */,
 				0AB0A96F2A1C61D30084AE07 /* EditTaskTableVC.swift in Sources */,
 				0AD498572A72CF0100B0599E /* UserProfileHeaderView.swift in Sources */,
+				0AB578E92A8A0B6200227581 /* Properties.swift in Sources */,
 				0AB578E62A84CEC700227581 /* HapticManager.swift in Sources */,
 				0AB578E32A828C4B00227581 /* UserProfileNapticView.swift in Sources */,
 				0AA604DC29E03CB1007ACE58 /* AlertContacts.swift in Sources */,

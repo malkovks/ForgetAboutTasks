@@ -15,9 +15,9 @@ extension UIViewController {
         alert.popoverPresentationController?.sourceView = view
         alert.popoverPresentationController?.sourceRect = CGRect(x: view.bounds.midX, y: 0, width: 0, height: 0)
         alert.popoverPresentationController?.permittedArrowDirections = [.up]
-        present(alert, animated: true)
+        present(alert, animated: isViewAnimated)
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5){
-            alert.dismiss(animated: true)
+            alert.dismiss(animated: isViewAnimated)
         }
     }
 }

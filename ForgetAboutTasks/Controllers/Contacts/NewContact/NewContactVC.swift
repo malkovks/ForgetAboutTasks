@@ -62,7 +62,7 @@ class NewContactViewController: UIViewController{
             contactModel = ContactModel()
             delegate?.isSavedCompletely(boolean: true)
             
-            navigationController?.popViewController(animated: true)
+            navigationController?.popViewController(animated: isViewAnimated)
         } else {
             alertError(text: "Enter value in Name and Phone sections".localized(), mainTitle: "Error saving!".localized())
         }
@@ -79,7 +79,7 @@ class NewContactViewController: UIViewController{
         if isStartEditing {
             setupAlertSheet()
         } else {
-            navigationController?.popViewController(animated: true)
+            navigationController?.popViewController(animated: isViewAnimated)
         }
     }
     //MARK: - Setup methods
@@ -158,7 +158,7 @@ class NewContactViewController: UIViewController{
     //MARK: - Segue methods
 extension NewContactViewController: MFMailComposeViewControllerDelegate{
     func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
-        controller.dismiss(animated: true)
+        controller.dismiss(animated: isViewAnimated)
     }
 }
 
@@ -190,7 +190,7 @@ extension NewContactViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
+        tableView.deselectRow(at: indexPath, animated: isViewAnimated)
         let cell = tableView.cellForRow(at: indexPath)
         let cellName = cellsName[indexPath.section][indexPath.row]
         switch indexPath{
@@ -281,7 +281,7 @@ extension NewContactViewController: UIImagePickerControllerDelegate,UINavigation
             imagePicker.delegate = self
             imagePicker.allowsEditing = true
             imagePicker.sourceType = source
-            present(imagePicker, animated: true)
+            present(imagePicker, animated: isViewAnimated)
         }
     }
     
@@ -294,7 +294,7 @@ extension NewContactViewController: UIImagePickerControllerDelegate,UINavigation
         let finalEditImage = viewForTable.contactImageView.image
         guard let data = finalEditImage?.jpegData(compressionQuality: 1.0) else { return }
         contactModel.contactImage = data
-        dismiss(animated: true)
+        dismiss(animated: isViewAnimated)
     }
 }
 
@@ -328,13 +328,13 @@ extension NewContactViewController {
     private func setupAlertSheet(title: String = "Attention".localized() ,subtitle: String = "You inputed the data that was not saved.\nWhat do you want to do?".localized()) {
         let sheet = UIAlertController(title: title, message: subtitle, preferredStyle: .actionSheet)
         sheet.addAction(UIAlertAction(title: "Discard changes".localized(), style: .destructive,handler: { _ in
-            self.navigationController?.popViewController(animated: true)
+            self.navigationController?.popViewController(animated: isViewAnimated)
         }))
         sheet.addAction(UIAlertAction(title: "Save".localized(), style: .default,handler: { [self] _ in
             didTapSave()
         }))
         sheet.addAction(UIAlertAction(title: "Cancel".localized(), style: .cancel))
-        present(sheet, animated: true)
+        present(sheet, animated: isViewAnimated)
     }
 
 }

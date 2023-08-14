@@ -14,8 +14,10 @@ class UserProfileTableViewCell: UITableViewCell {
     
    let cellImageView: UIImageView = {
        let image = UIImageView()
-       image.contentMode = .center
+       image.contentMode = .scaleAspectFit
         image.clipsToBounds = true
+       image.sizeToFit()
+       image.contentMode = .center
         return image
     }()
     
@@ -48,6 +50,7 @@ class UserProfileTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupContraints()
+        self.selectionStyle = .blue
         contentView.backgroundColor = .secondarySystemBackground
         contentView.clipsToBounds = true
     }
@@ -82,7 +85,7 @@ class UserProfileTableViewCell: UITableViewCell {
         cellImageView.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
             make.leading.equalToSuperview().offset(5)
-            make.width.height.equalTo(contentView.snp.height).inset(5)
+            make.width.height.equalTo(contentView.snp.height).inset(contentView.frame.size.height/2)
         }
     
         contentView.addSubview(mainTitleLabel)

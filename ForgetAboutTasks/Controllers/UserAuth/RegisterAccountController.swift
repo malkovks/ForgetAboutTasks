@@ -137,7 +137,7 @@ class RegisterAccountViewController: UIViewController {
                     UserDefaultsManager.shared.setupForAuth()
                     DispatchQueue.main.async {
                         self?.indicator.stopAnimating()
-                        self?.view.window?.rootViewController?.dismiss(animated: true)
+                        self?.view.window?.rootViewController?.dismiss(animated: isViewAnimated)
                     }
                 }
             } else {

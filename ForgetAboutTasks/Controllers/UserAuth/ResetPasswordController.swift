@@ -10,6 +10,7 @@ import SnapKit
 import FirebaseAuth
 
 
+
 class ResetPasswordViewController: UIViewController {
     
     private var isPasswordHidden: Bool = true
@@ -83,7 +84,7 @@ class ResetPasswordViewController: UIViewController {
         nav.modalPresentationStyle = .fullScreen
         nav.modalTransitionStyle = .flipHorizontal
         nav.isNavigationBarHidden = false
-        present(nav, animated: true)
+        present(nav, animated: isViewAnimated)
     }
     
 }

@@ -80,6 +80,7 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        _ = UserDefaultsManager.shared.checkDarkModeUserDefaults()
         checkPasswordEntryEnable()
         calendar.reloadData()
     }
@@ -100,13 +101,13 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
         nav.modalPresentationStyle = .fullScreen
         nav.modalTransitionStyle = .flipHorizontal
         nav.isNavigationBarHidden = false
-        present(nav, animated: true)
+        present(nav, animated: isViewAnimated)
     }
     
     @objc private func didTapOpenAllEvent(){
         setupHapticMotion(style: .soft)
         let vc = ScheduleAllEventViewController(model: scheduleModel)
-        show(vc, sender: nil)
+        navigationController?.pushViewController(vc, animated: isViewAnimated)
     }
     
     //MARK: - Setup Methods
@@ -128,7 +129,7 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
             let navVC = UINavigationController(rootViewController: vc)
             navVC.modalPresentationStyle = .fullScreen
             navVC.isNavigationBarHidden = false
-            present(navVC, animated: true)
+            present(navVC, animated: isViewAnimated)
             setupView()
             setupNavigationController()
         } else {
@@ -145,7 +146,7 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
             let nav = UINavigationController(rootViewController: vc)
             nav.modalPresentationStyle = .fullScreen
             nav.modalTransitionStyle = .crossDissolve
-            present(nav, animated: true)
+            present(nav, animated: isViewAnimated)
         }
     }
     
@@ -157,7 +158,7 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
         setupConstraints()
         setupSearchController()
         calendarDidBeginScrolling(calendar)
-        UserDefaultsManager.shared.checkDarkModeUserDefaults()
+        
         loadingDataByDate(date: Date(), at: .current, is: true)
         view.backgroundColor = UIColor(named: "backgroundColor")
         calendar.appearance.titleFont = UIFont.setMainLabelFont()
@@ -260,7 +261,7 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
                 let nav = UINavigationController(rootViewController: vc)
                 nav.modalPresentationStyle = .fullScreen
                 nav.isNavigationBarHidden = false
-                present(nav, animated: true)
+                present(nav, animated: isViewAnimated)
             }
         }
     }

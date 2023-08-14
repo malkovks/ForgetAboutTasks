@@ -58,7 +58,7 @@ class AllTasksDetailViewController: UIViewController {
     //MARK: - Targets methods
     @objc private func didTapDismiss(){
         setupHapticMotion(style: .medium)
-        dismiss(animated: true)
+        dismiss(animated: isViewAnimated)
     }
     
     @objc private func didTapEdit(){
@@ -70,7 +70,7 @@ class AllTasksDetailViewController: UIViewController {
         navVC.sheetPresentationController?.detents = [.large()]
         navVC.sheetPresentationController?.prefersGrabberVisible = true
         navVC.isNavigationBarHidden = false
-        present(navVC, animated: true)
+        present(navVC, animated: isViewAnimated)
     }
     
     @objc private func didGesturePress(_ gesture: UILongPressGestureRecognizer) {
@@ -88,7 +88,7 @@ class AllTasksDetailViewController: UIViewController {
             
             UIPasteboard.general.string = model
             alertDismissed(view: self.view)
-            tableView.deselectRow(at: indexPath, animated: true)
+            tableView.deselectRow(at: indexPath, animated: isViewAnimated)
         }
     }
     //MARK: - Setup methods
@@ -162,7 +162,7 @@ class AllTasksDetailViewController: UIViewController {
             activityItems.append(pdfData)
         }
         let activityViewController = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
-        self.present(activityViewController, animated: true, completion: nil)
+        self.present(activityViewController, animated: isViewAnimated, completion: nil)
     }
     
     //MARK: - Segue methods
@@ -174,7 +174,7 @@ class AllTasksDetailViewController: UIViewController {
                 self.cellBackgroundColor = color
             }
         })
-        self.present(picker, animated: true)
+        self.present(picker, animated: isViewAnimated)
     }
 }
 //MARK: - Table view delegates
@@ -215,7 +215,7 @@ extension AllTasksDetailViewController: UITableViewDelegate, UITableViewDataSour
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
+        tableView.deselectRow(at: indexPath, animated: isViewAnimated)
         if indexPath.section == 4 {
             let url = tasksModel.allTaskURL ?? "Empty URL"
             if url.isURLValid(text: url) {

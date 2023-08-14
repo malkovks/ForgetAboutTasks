@@ -41,7 +41,7 @@ extension UIViewController {
             make.height.equalTo(260)
             make.top.equalTo(alert.view.snp.top).offset(20)
         }
-        present(alert, animated: true)
+        present(alert, animated: isViewAnimated)
     }
     
     
@@ -82,6 +82,6 @@ extension UIViewController {
             make.height.equalTo(400)
             make.top.equalTo(alert.view.snp.top).offset(20)
         }
-        present(alert, animated: true)
+        present(alert, animated: isViewAnimated)
     }
 }

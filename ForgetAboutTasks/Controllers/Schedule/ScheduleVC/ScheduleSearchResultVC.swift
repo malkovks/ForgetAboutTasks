@@ -12,7 +12,6 @@ import RealmSwift
 class ScheduleSearchResultViewController: UIViewController {
     
     var scheduleModel: Results<ScheduleModel>?//non private because we take method in ScheduleVC
-    private let fontSizeValue : CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
     
     let tableView = UITableView(frame: .null, style: .grouped)
     //MARK: - Setup viewDidLoad
@@ -68,14 +67,14 @@ extension ScheduleSearchResultViewController: UITableViewDelegate, UITableViewDa
         return scheduleModel?.count ?? 10
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
+        tableView.deselectRow(at: indexPath, animated: isViewAnimated)
         setupHapticMotion(style: .soft)
         guard let model = scheduleModel?[indexPath.row] else { return }
         let vc = OpenTaskDetailViewController(model: model)
         let nav = UINavigationController(rootViewController: vc)
         nav.modalPresentationStyle = .fullScreen
         nav.isNavigationBarHidden = false
-        present(nav, animated: true)
+        present(nav, animated: isViewAnimated)
     }
 
     func numberOfSections(in tableView: UITableView) -> Int {

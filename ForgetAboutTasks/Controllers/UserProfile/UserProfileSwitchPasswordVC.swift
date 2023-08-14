@@ -224,7 +224,7 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
                 
                 try! KeychainManager.save(service: "Local Password", account: emailUser, password: passwordData)
                 self?.delegate?.isSavedCompletely(boolean: true)
-                self?.navigationController?.popToRootViewController(animated: true)
+                self?.navigationController?.popToRootViewController(animated: isViewAnimated)
             }
         } else {
             alertError(text: "You entered different passwords. Try again", mainTitle: "Error!".localized())
@@ -288,7 +288,7 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
                 UserDefaults.standard.setValue(true, forKey: "isUserConfirmPassword")
                 showAlertForUser(text: "Success", duration: .now()+1, controllerView: view)
                 DispatchQueue.main.asyncAfter(deadline: .now()+1) {
-                    self.dismiss(animated: true)
+                    self.dismiss(animated: isViewAnimated)
                 }
             } else {
                 alertError(text: "Incorrect password.\nPlease try again!",mainTitle: "Error")

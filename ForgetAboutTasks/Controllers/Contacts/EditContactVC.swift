@@ -80,7 +80,7 @@ class EditContactViewController: UIViewController {
             let id = contactModel.contactID
             ContactRealmManager.shared.editAllTasksModel(user: id, newModel: editedContactModel)
             delegate?.isSavedCompletely(boolean: true)
-            navigationController?.popViewController(animated: true)
+            navigationController?.popViewController(animated: isViewAnimated)
         }
     }
     
@@ -109,7 +109,7 @@ class EditContactViewController: UIViewController {
         
         let contact = try! CNContactVCardSerialization.data(with: [shareContact])
         let activityVC = UIActivityViewController(activityItems: [contact], applicationActivities: nil)
-        self.present(activityVC, animated: true)
+        self.present(activityVC, animated: isViewAnimated)
     }
     
     @objc private func didTapDismiss(){
@@ -118,7 +118,7 @@ class EditContactViewController: UIViewController {
             setupAlertSheet()
             setupHapticMotion(style: .medium)
         } else {
-            self.navigationController?.popViewController(animated: true)
+            self.navigationController?.popViewController(animated: isViewAnimated)
             setupHapticMotion(style: .soft)
         }
         
@@ -151,7 +151,7 @@ class EditContactViewController: UIViewController {
             editModelButton = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(didTapEdit))
         } else {
             editModelButton = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(didTapSave))
-            navigationItem.setRightBarButton(editModelButton, animated: true)
+            navigationItem.setRightBarButton(editModelButton, animated: isViewAnimated)
             shareModelButton.isHidden = true
         }
     }
@@ -188,7 +188,7 @@ class EditContactViewController: UIViewController {
             vc.setSubject("Hello, \(name)")
             vc.setMessageBody("", isHTML: false)
             
-            show(vc, sender: nil)
+            navigationController?.pushViewController(vc, animated: isViewAnimated)
         } else {
             alertError(text: "You can't send email. Maybe you don't Have Apple Mail App on your device?".localized())
         }
@@ -214,14 +214,14 @@ class EditContactViewController: UIViewController {
         guard let date = contactModel.contactDateBirthday else { alertError(text: "Cant get date".localized(), mainTitle: "Error".localized()); return}
         let convertedDate = date.getDateWithoutYear(date: date)
         let vc = CreateTaskForDayController(choosenDate: convertedDate)
-        self.dismiss(animated: true)
+        self.dismiss(animated: isViewAnimated)
         if let tabBarController = self.tabBarController {
             tabBarController.selectedIndex = 0
         }
         let nav = UINavigationController(rootViewController: vc)
         nav.modalPresentationStyle = .fullScreen
         nav.isNavigationBarHidden = false
-        present(nav, animated: true)
+        present(nav, animated: isViewAnimated)
     }
     
 
@@ -247,7 +247,7 @@ class EditContactViewController: UIViewController {
     //MARK: - Segue methods
 extension EditContactViewController: MFMailComposeViewControllerDelegate{
     func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
-        controller.dismiss(animated: true)
+        controller.dismiss(animated: isViewAnimated)
     }
 }
     //MARK: - Table view delegates and data sources
@@ -361,7 +361,7 @@ extension EditContactViewController: UITableViewDelegate, UITableViewDataSource 
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
+        tableView.deselectRow(at: indexPath, animated: isViewAnimated)
         let cellName = cellsName[indexPath.section][indexPath.row]
         let cell = tableView.cellForRow(at: indexPath)
         if isViewEdited {
@@ -467,7 +467,7 @@ extension EditContactViewController: UIImagePickerControllerDelegate,UINavigatio
             imagePicker.delegate = self
             imagePicker.allowsEditing = true
             imagePicker.sourceType = source
-            present(imagePicker, animated: true)
+            present(imagePicker, animated: isViewAnimated)
         }
     }
     
@@ -480,7 +480,7 @@ extension EditContactViewController: UIImagePickerControllerDelegate,UINavigatio
         let finalEditImage = viewForTable.contactImageView.image
         guard let data = finalEditImage?.pngData() else { return }
         editedContactModel.contactImage = data
-        dismiss(animated: true)
+        dismiss(animated: isViewAnimated)
     }
 }
 
@@ -513,13 +513,13 @@ extension EditContactViewController {
     private func setupAlertSheet(title: String = "Attention".localized() ,subtitle: String = "You have some changes.\nWhat do you want to do?".localized()) {
         let sheet = UIAlertController(title: title, message: subtitle, preferredStyle: .actionSheet)
         sheet.addAction(UIAlertAction(title: "Discard changes".localized(), style: .destructive,handler: { _ in
-            self.navigationController?.popViewController(animated: true)
+            self.navigationController?.popViewController(animated: isViewAnimated)
         }))
         sheet.addAction(UIAlertAction(title: "Save".localized(), style: .default,handler: { [self] _ in
             didTapSave()
         }))
         sheet.addAction(UIAlertAction(title: "Cancel".localized(), style: .cancel))
-        present(sheet, animated: true)
+        present(sheet, animated: isViewAnimated)
     }
 
     

@@ -14,7 +14,6 @@ class ScheduleAllEventViewController: UIViewController {
     private let realm = try! Realm()
     private var scheduleModel: Results<ScheduleModel>
     private var scheduleDates: [Date]
-    private let fontSizeValue : CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
     
     private var dictionaryScheduleModel = [String: [ScheduleModel]]()
     private var sectionHeaderModel = [String]()
@@ -94,7 +93,7 @@ extension ScheduleAllEventViewController: UITableViewDelegate, UITableViewDataSo
         if let data = dictionaryScheduleModel[key] {
             let value = data[indexPath.row]
             let vc = OpenTaskDetailViewController(model: value)
-            show(vc, sender: nil)
+            navigationController?.pushViewController(vc, animated: isViewAnimated)
         }
     }
     
@@ -133,7 +132,7 @@ extension ScheduleAllEventViewController: UITableViewDelegate, UITableViewDataSo
 
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
+        tableView.deselectRow(at: indexPath, animated: isViewAnimated)
         setupSelectionCell(indexPath: indexPath)
     }
     

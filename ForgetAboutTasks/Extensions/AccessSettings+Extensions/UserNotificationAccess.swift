@@ -62,7 +62,7 @@ extension UIViewController {
         UserDefaults.standard.synchronize()
     }
     
-    func showVariationsWithLanguage(title: String, message: String, handler: @escaping (Bool) -> ()){
+    func showVariationsWithLanguage(title: String, message: String, handler: @escaping (String) -> ()){
         setupHapticMotion(style: .soft)
         let alert = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
         alert.addAction(UIAlertAction(title: "Russia", style: .default,handler: { _ in
@@ -74,7 +74,7 @@ extension UIViewController {
             self.restartApp()
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        present(alert, animated: true)
+        present(alert, animated: isViewAnimated)
     }
     
     func showSettingsForChangingAccess(title: String, message: String,handler: @escaping (Bool)-> ()){
@@ -89,6 +89,6 @@ extension UIViewController {
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel,handler: { _ in
             handler(false)
         }))
-        present(alert, animated: true)
+        present(alert, animated: isViewAnimated)
     }
 }

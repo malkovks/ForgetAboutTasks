@@ -113,9 +113,9 @@ class LogInViewController: UIViewController {
                 self?.alertError(text: "Incorrect email or password.\nTry again!", mainTitle: "Error!")
                 return
             }
-            self?.view.window?.rootViewController?.dismiss(animated: true)
+            self?.view.window?.rootViewController?.dismiss(animated: isViewAnimated)
             self?.setupLoadingSpinner()
-            UserDefaultsManager.shared.saveDataWithLogin(result: result)
+            UserDefaultsManager.shared.userAuthInApp(result: result)
             UserDefaultsManager.shared.setupForAuth()
             self?.indicatorView.stopAnimating()
         }
@@ -123,7 +123,7 @@ class LogInViewController: UIViewController {
     
     @objc private func didTapResetPassword(){
         let vc = ResetPasswordViewController()
-        show(vc, sender: nil)
+        navigationController?.pushViewController(vc, animated: isViewAnimated)
     }
     //MARK: - Set up methods
     private func setupView(){
@@ -154,7 +154,7 @@ class LogInViewController: UIViewController {
         nav.modalPresentationStyle = .fullScreen
         nav.modalTransitionStyle = .flipHorizontal
         nav.isNavigationBarHidden = false
-        present(nav, animated: true)
+        present(nav, animated: isViewAnimated)
     }
     
 }

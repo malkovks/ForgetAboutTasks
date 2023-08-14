@@ -46,6 +46,6 @@ extension UIViewController {
         datePicker.heightAnchor.constraint(equalToConstant: 160).isActive = true
         datePicker.topAnchor.constraint(equalTo: alert.view.topAnchor, constant: 20).isActive = true
         
-        present(alert, animated: true)
+        present(alert, animated: isViewAnimated)
     }
 }

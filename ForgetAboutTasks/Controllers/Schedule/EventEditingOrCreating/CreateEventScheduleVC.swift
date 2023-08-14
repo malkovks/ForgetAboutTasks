@@ -79,7 +79,7 @@ class CreateEventScheduleViewController: UIViewController {
         if isStartEditing {
             setupAlertSheet(title:"Attention", subtitle: "You inputed the data that was not saved.\nWhat do you want to do?" )
         } else {
-            dismiss(animated: true)
+            dismiss(animated: isViewAnimated)
         }
     }
     
@@ -93,7 +93,7 @@ class CreateEventScheduleViewController: UIViewController {
             delegate?.isSavedCompletely(boolean: true)
             ScheduleRealmManager.shared.saveScheduleModel(model: self.scheduleModel)
             DispatchQueue.main.asyncAfter(deadline: .now()) {
-                self.dismiss(animated: true)
+                self.dismiss(animated: isViewAnimated)
             }
         }
     }
@@ -139,13 +139,13 @@ class CreateEventScheduleViewController: UIViewController {
     private func setupAlertSheet(title: String,subtitle: String) {
         let sheet = UIAlertController(title: title, message: subtitle, preferredStyle: .actionSheet)
         sheet.addAction(UIAlertAction(title: "Discard changes".localized(), style: .destructive,handler: { _ in
-            self.dismiss(animated: true)
+            self.dismiss(animated: isViewAnimated)
         }))
         sheet.addAction(UIAlertAction(title: "Save".localized(), style: .default,handler: { [self] _ in
             didTapSave()
         }))
         sheet.addAction(UIAlertAction(title: "Cancel".localized(), style: .cancel))
-        present(sheet, animated: true)
+        present(sheet, animated: isViewAnimated)
     }
 
     
@@ -270,7 +270,7 @@ class CreateEventScheduleViewController: UIViewController {
                 imagePicker.delegate = self
                 imagePicker.sourceType = .photoLibrary
                 imagePicker.allowsEditing = true
-                present(self.imagePicker, animated: true)
+                present(self.imagePicker, animated: isViewAnimated)
             }
         }))
         alert.addAction(UIAlertAction(title: "Make new image".localized(), style: .default,handler: { [self] _ in
@@ -278,7 +278,7 @@ class CreateEventScheduleViewController: UIViewController {
                 imagePicker.delegate = self
                 imagePicker.sourceType = .camera
                 imagePicker.allowsEditing = true
-                present(self.imagePicker, animated: true)
+                present(self.imagePicker, animated: isViewAnimated)
             }
         }))
         alert.addAction(UIAlertAction(title: "Delete image".localized(), style: .destructive,handler: { _ in
@@ -286,7 +286,7 @@ class CreateEventScheduleViewController: UIViewController {
             cell?.imageView?.image = UIImage(named: "camera.fill")
         }))
         alert.addAction(UIAlertAction(title: "Cancel".localized(), style: .cancel))
-        present(alert, animated: true)
+        present(alert, animated: isViewAnimated)
     }
 
     //MARK: - Segue methods
@@ -299,19 +299,8 @@ class CreateEventScheduleViewController: UIViewController {
                 self.isStartEditing = true
             }
         })
-        self.present(picker, animated: true)
+        self.present(picker, animated: isViewAnimated)
     }
-    
-//    @objc private func openImagePicker(){
-//        self.cancellable = imagePicker.publisher(for: \.sourceType)
-//            .sink(receiveValue: { image in
-//                DispatchQueue.main.async {
-//                    self.cellImage = image
-//                    self.isStartEditing = true
-//                }
-//            })
-//        self.present(imagePicker, animated: true)
-//    }
 }
 //MARK: - ImagePicker delegate
 extension CreateEventScheduleViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
@@ -321,8 +310,8 @@ extension CreateEventScheduleViewController: UIImagePickerControllerDelegate, UI
             guard let data = image.jpegData(compressionQuality: 1.0) else { return}
             scheduleModel.scheduleImage = data
             tableView.reloadSections(NSIndexSet(index: 4) as IndexSet, with: .automatic)
-            picker.dismiss(animated: true)
-            tableView.deselectRow(at: [4,0], animated: true)
+            picker.dismiss(animated: isViewAnimated)
+            tableView.deselectRow(at: [4,0], animated: isViewAnimated)
             
         } else {
             alertError(text: "Error!".localized(), mainTitle: "Can't get image and save it to event.\nTry again later!".localized())
@@ -333,8 +322,8 @@ extension CreateEventScheduleViewController: UIImagePickerControllerDelegate, UI
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        tableView.deselectRow(at: [4,0], animated: true)
-        picker.dismiss(animated: true)
+        tableView.deselectRow(at: [4,0], animated: isViewAnimated)
+        picker.dismiss(animated: isViewAnimated)
     }
     
 }
@@ -391,7 +380,7 @@ extension CreateEventScheduleViewController: UITableViewDelegate, UITableViewDat
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
+        tableView.deselectRow(at: indexPath, animated: isViewAnimated)
         let cell = tableView.cellForRow(at: indexPath)
         let cellName = cellsName[indexPath.section][indexPath.row]
         
@@ -458,7 +447,7 @@ extension CreateEventScheduleViewController: UITableViewDelegate, UITableViewDat
         case [3,0]:
             openColorPicker()
         case [4,0]:
-            tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+            tableView.selectRow(at: indexPath, animated: isViewAnimated, scrollPosition: .none)
             requestForUserLibrary { status in }
             requestUserForCamera()
             chooseTypeOfImagePicker()

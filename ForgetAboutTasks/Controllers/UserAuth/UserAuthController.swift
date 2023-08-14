@@ -65,13 +65,13 @@ class UserAuthViewController: UIViewController {
     @objc private func didTapLogin(){
         setupHapticMotion(style: .soft)
         let vc = LogInViewController()
-        show(vc, sender: nil)
+        navigationController?.pushViewController(vc, animated: isViewAnimated)
     }
     
     @objc private func didTapRegister(){
         setupHapticMotion(style: .soft)
         let vc = RegisterAccountViewController()
-        show(vc, sender: nil)
+        navigationController?.pushViewController(vc, animated: isViewAnimated)
     }
     
     @objc private func didTapLoginWithGoogle(){
@@ -106,8 +106,8 @@ class UserAuthViewController: UIViewController {
                     return
                 }
                 UserDefaultsManager.shared.setupForAuth()
-                UserDefaultsManager.shared.saveData(result: result, user: user)
-                self.dismiss(animated: true)
+                UserDefaultsManager.shared.userAuthInApp(result: result, user: user)
+                self.dismiss(animated: isViewAnimated)
                 self.spinner.stopAnimating()
                 self.view.alpha = 1.0
             }

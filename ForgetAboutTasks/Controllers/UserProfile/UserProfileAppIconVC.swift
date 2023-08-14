@@ -10,6 +10,8 @@ import SnapKit
 
 class UserProfileAppIconViewController: UIViewController {
     
+    var checkSelectedIcon: ((Bool)->Void)?
+    
     private let images = ["AppIcon", "AppIcon2","AppIcon3","AppIcon4"]
     
     private let firstIconButton: UIButton = {
@@ -61,7 +63,7 @@ class UserProfileAppIconViewController: UIViewController {
     //MARK: - Target methods
     @objc private func didTapDismiss(){
         setupHapticMotion(style: .soft)
-        dismiss(animated: true)
+        dismiss(animated: isViewAnimated)
     }
     
     @objc private func didTapChangeImage(sender: UIButton){
@@ -95,8 +97,9 @@ class UserProfileAppIconViewController: UIViewController {
             if let error = error {
                 self.alertError(text: error.localizedDescription)
             } else {
-                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now()+0.5){
-                    self.dismiss(animated: true)
+                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now()+0.5) {
+                    self.checkSelectedIcon?(true)
+                    self.dismiss(animated: isViewAnimated)
                 }
             }
         }

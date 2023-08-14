@@ -17,7 +17,7 @@ class AllTasksToDoViewController: UIViewController, CheckSuccessSaveProtocol {
     private var allTasksDataFiltered: Results<AllTaskModel>!
     private var localRealmData = try! Realm()
     private var allTasksDataSections = [Date]()
-    private let fontSizeValue : CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
+    
     
     private var viewIsFiltered: Bool {
         return searchController.isActive && !searchBarIsEmpty
@@ -74,7 +74,7 @@ class AllTasksToDoViewController: UIViewController, CheckSuccessSaveProtocol {
         navVC.sheetPresentationController?.detents = [.large()]
         navVC.sheetPresentationController?.prefersGrabberVisible = true
         navVC.isNavigationBarHidden = false
-        present(navVC, animated: true)
+        present(navVC, animated: isViewAnimated)
     }
     
     @objc private func didTapRefresh(sender: AnyObject){
@@ -228,7 +228,7 @@ extension AllTasksToDoViewController: UITableViewDelegate, UITableViewDataSource
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
+        tableView.deselectRow(at: indexPath, animated: isViewAnimated)
         let model = allTasksData[indexPath.row]
         let color = UIColor.color(withData: model.allTaskColor!) ?? #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
         let vc = AllTasksDetailViewController(color: color, model: model)
@@ -239,7 +239,7 @@ extension AllTasksToDoViewController: UITableViewDelegate, UITableViewDataSource
         nav.isNavigationBarHidden = false
         nav.title = model.allTaskNameEvent
         nav.sheetPresentationController?.prefersGrabberVisible = true
-        present(nav, animated: true)
+        present(nav, animated: isViewAnimated)
     }
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {

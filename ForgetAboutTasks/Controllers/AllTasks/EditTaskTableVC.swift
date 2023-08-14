@@ -65,7 +65,7 @@ class EditTaskTableViewController: UIViewController {
         if isStartEditing {
             setupAlertSheet()
         } else {
-            dismiss(animated: true)
+            dismiss(animated: isViewAnimated)
         }
     }
     
@@ -79,7 +79,7 @@ class EditTaskTableViewController: UIViewController {
             let date = tasksModel.allTaskDate ?? Date()
             AllTasksRealmManager.shared.editAllTasksModel(oldModelDate: date, newModel: editedTaskModel)
             delegate?.isSavedCompletely(boolean: true)
-            dismiss(animated: true)
+            dismiss(animated: isViewAnimated)
         }
     }
     //MARK: - Setup methods
@@ -128,7 +128,7 @@ class EditTaskTableViewController: UIViewController {
                 self.isStartEditing = true
             }
         })
-        self.present(picker, animated: true)
+        self.present(picker, animated: isViewAnimated)
     }
     
     @objc private func setupCellTitle(model: AllTaskModel,indexPath: IndexPath){
@@ -174,7 +174,7 @@ extension EditTaskTableViewController: UITableViewDelegate, UITableViewDataSourc
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
+        tableView.deselectRow(at: indexPath, animated: isViewAnimated)
         let cellName = cellsName[indexPath.section][indexPath.row]
         let cell = tableView.cellForRow(at: indexPath)
     
@@ -271,12 +271,12 @@ extension EditTaskTableViewController {
     private func setupAlertSheet(title: String = "Attention".localized() ,subtitle: String = "You have some changes.\nWhat do you want to do?".localized()) {
         let sheet = UIAlertController(title: title, message: subtitle, preferredStyle: .actionSheet)
         sheet.addAction(UIAlertAction(title: "Discard changes".localized(), style: .destructive,handler: { _ in
-            self.dismiss(animated: true)
+            self.dismiss(animated: isViewAnimated)
         }))
         sheet.addAction(UIAlertAction(title: "Save".localized(), style: .default,handler: { [self] _ in
             didTapEdit()
         }))
         sheet.addAction(UIAlertAction(title: "Cancel".localized(), style: .cancel))
-        present(sheet, animated: true)
+        present(sheet, animated: isViewAnimated)
     }
 }

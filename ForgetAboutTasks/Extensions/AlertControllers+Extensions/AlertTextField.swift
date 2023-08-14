@@ -56,12 +56,12 @@ extension UIViewController{
         let doneB = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(toolBarDoneButtonTapped))
         doneB.tintColor = UIColor(named: "calendarHeaderColor")
         let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-        toolbar.setItems([flexibleSpace,doneB], animated: true)
+        toolbar.setItems([flexibleSpace,doneB], animated: isViewAnimated)
         
         alert.textFields?.first?.inputAccessoryView = toolbar
 
         
-        present(alert, animated: true)
+        present(alert, animated: isViewAnimated)
     }
     
     @objc func toolBarDoneButtonTapped(){

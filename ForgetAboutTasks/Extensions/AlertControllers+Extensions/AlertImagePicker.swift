@@ -22,6 +22,6 @@ extension UIViewController {
             completion(.savedPhotosAlbum)
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        present(alert, animated: true)
+        present(alert, animated: isViewAnimated)
     }
 }

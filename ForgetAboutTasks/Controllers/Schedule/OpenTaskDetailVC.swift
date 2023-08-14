@@ -68,8 +68,8 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
     //MARK: - Targets methods
     @objc private func didTapDismiss(){
         setupHapticMotion(style: .soft)
-        navigationController?.popViewController(animated: true)
-        dismiss(animated: true)
+        navigationController?.popViewController(animated: isViewAnimated)
+        dismiss(animated: isViewAnimated)
     }
     
     @objc private func didTapEdit(){
@@ -82,7 +82,7 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
         nav.modalPresentationStyle = .fullScreen
         nav.modalTransitionStyle = .crossDissolve
         nav.isNavigationBarHidden = false
-        present(nav, animated: true)
+        present(nav, animated: isViewAnimated)
     }
     
     @objc private func didGesturePress(_ gesture: UILongPressGestureRecognizer){
@@ -101,7 +101,7 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
             }
             UIPasteboard.general.string = model
             showAlertForUser(text: "Text was copied".localized(), duration: DispatchTime.now()+0.5, controllerView: view)
-            tableView.deselectRow(at: indexPath, animated: true)
+            tableView.deselectRow(at: indexPath, animated: isViewAnimated)
         }
     }
     
@@ -110,7 +110,7 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
         guard let data = selectedScheduleModel.scheduleImage,
               let image = UIImage(data: data) else { return }
         let activity = UIActivityViewController(activityItems: [image], applicationActivities: nil)
-        present(activity, animated: true)
+        present(activity, animated: isViewAnimated)
     }
     
     //MARK: - Setup Views and secondary methods
@@ -186,7 +186,7 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
             activityItems.append(pdfData)
         }
         let activityViewController = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
-        self.present(activityViewController, animated: true, completion: nil)
+        self.present(activityViewController, animated: isViewAnimated, completion: nil)
     }
     
     private func deleteModel(){
@@ -195,10 +195,10 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
         alert.addAction(UIAlertAction(title: "Delete".localized(),
                                       style: .destructive,handler: { _ in
             ScheduleRealmManager.shared.deleteScheduleModel(model: self.selectedScheduleModel)
-            self.navigationController?.popToRootViewController(animated: true)
+            self.navigationController?.popToRootViewController(animated: isViewAnimated)
         }))
         alert.addAction(UIAlertAction(title: "Cancel".localized(),style: .cancel))
-        present(alert, animated: true)
+        present(alert, animated: isViewAnimated)
     }
     
     
@@ -331,7 +331,7 @@ extension OpenTaskDetailViewController: UITableViewDelegate, UITableViewDataSour
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
+        tableView.deselectRow(at: indexPath, animated: isViewAnimated)
         if indexPath == [2,2] {
             guard let url = selectedScheduleModel.scheduleCategoryURL else { return }
             futureUserActions(link: url)

@@ -17,12 +17,12 @@ extension UIViewController {
                 guard let link = URL(string:  link) else { return }
                 
                 let safariVC = SFSafariViewController(url: link)
-                self?.present(safariVC, animated: true)
+                self?.present(safariVC, animated: isViewAnimated)
             } else {
                 let finalLink = "https://" + link
                 guard let link = URL(string: finalLink) else { return }
                 let safariVC = SFSafariViewController(url: link)
-                self?.present(safariVC, animated: true)
+                self?.present(safariVC, animated: isViewAnimated)
             }
             
         }))
@@ -31,6 +31,6 @@ extension UIViewController {
             self?.alertDismissed(view: (self?.view)!)
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        present(alert, animated: true)
+        present(alert, animated: isViewAnimated)
     }
 }

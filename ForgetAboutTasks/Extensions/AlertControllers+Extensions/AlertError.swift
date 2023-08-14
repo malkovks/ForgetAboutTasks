@@ -12,6 +12,6 @@ extension UIViewController {
         setupHapticMotion(style: .medium)
         let alert = UIAlertController(title: mainTitle, message: text, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))
-        present(alert, animated: true)
+        present(alert, animated: isViewAnimated)
     }
 }

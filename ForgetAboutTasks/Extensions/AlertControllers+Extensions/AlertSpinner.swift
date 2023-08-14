@@ -16,16 +16,16 @@ extension UIViewController {
         loadingAlert.startAnimating()
         alert.view.addSubview(loadingAlert)
         view.alpha = 0.8
-        present(alert, animated: true)
+        present(alert, animated: isViewAnimated)
         
         DispatchQueue.main.asyncAfter(deadline: .now()+2) {
-            alert.dismiss(animated: true) {
+            alert.dismiss(animated: isViewAnimated) {
                 let successAlert = UIAlertController(title: "Success", message: nil, preferredStyle: .alert)
                 successAlert.addAction(UIAlertAction(title: "Ok", style: .default,handler: { _ in
                     self.view.alpha = 1.0
-                    self.dismiss(animated: true)
+                    self.dismiss(animated: isViewAnimated)
                 }))
-                self.present(successAlert, animated: true)
+                self.present(successAlert, animated: isViewAnimated)
                 
             }
         }

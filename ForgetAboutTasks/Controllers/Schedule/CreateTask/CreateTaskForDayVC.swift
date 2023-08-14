@@ -22,7 +22,6 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
     private var isTrailingSwipeActionActive = Bool()
     private var indexOfCell = Int()
     private var isCellEdited = Bool()
-    private let fontSizeValue : CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
     private var birthdayCounts = [String: Int]()
     
     init(model: Results<ScheduleModel>,choosenDate: Date){
@@ -153,7 +152,7 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
  //MARK: -  actions targets methods
     @objc private func didTapDismiss(){
         setupHapticMotion(style: .soft)
-        dismiss(animated: true)
+        dismiss(animated: isViewAnimated)
     }
     
     @objc private func didTapCreate(){
@@ -164,7 +163,7 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
         navVC.modalTransitionStyle = .flipHorizontal
         navVC.modalPresentationStyle = .fullScreen
         navVC.isNavigationBarHidden = false
-        present(navVC, animated: true)
+        present(navVC, animated: isViewAnimated)
     }
     
     @objc private func didTapSegmentChanged(segment: UISegmentedControl) {
@@ -182,11 +181,11 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
     @objc private func didTapStartEditing(){
         setupHapticMotion(style: .soft)
         if !tableView.isEditing {
-            tableView.setEditing(!tableView.isEditing, animated: true)
-            navigationItem.setRightBarButtonItems([createEventButton,actionWithTableButton], animated: true)
+            tableView.setEditing(!tableView.isEditing, animated: isViewAnimated)
+            navigationItem.setRightBarButtonItems([createEventButton,actionWithTableButton], animated: isViewAnimated)
         } else {
-            tableView.setEditing(!tableView.isEditing, animated: true)
-            navigationItem.setRightBarButtonItems([createEventButton,editNavigationButton], animated: true)
+            tableView.setEditing(!tableView.isEditing, animated: isViewAnimated)
+            navigationItem.setRightBarButtonItems([createEventButton,editNavigationButton], animated: isViewAnimated)
         }
     }
     
@@ -203,11 +202,11 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
                 ScheduleRealmManager.shared.deleteScheduleModel(model: model)
             }
             tableView.deleteRows(at: indexPath, with: .fade)
-            tableView.setEditing(false, animated:  true)
-            navigationController?.navigationItem.setRightBarButtonItems([createEventButton,editNavigationButton], animated: true)
+            tableView.setEditing(false, animated:  isViewAnimated)
+            navigationController?.navigationItem.setRightBarButtonItems([createEventButton,editNavigationButton], animated: isViewAnimated)
         }))
         alert.addAction(UIAlertAction(title: "Cancel".localized(), style: .cancel))
-        present(alert, animated: true)
+        present(alert, animated: isViewAnimated)
     }
     
     @objc private func didTapOpenBirthdays(sender: UIButton){
@@ -223,7 +222,7 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
         })]
         nav.sheetPresentationController?.prefersGrabberVisible = true
         nav.isNavigationBarHidden = false
-        present(nav, animated: true)
+        present(nav, animated: isViewAnimated)
     }
 //MARK: - Setups for view controller
     private func setupGestureForDismiss(){
@@ -399,15 +398,15 @@ extension CreateTaskForDayController: UITableViewDelegate, UITableViewDataSource
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         setupHapticMotion(style: .soft)
         if !tableView.isEditing {
-            tableView.deselectRow(at: indexPath, animated: true)
+            tableView.deselectRow(at: indexPath, animated: isViewAnimated)
             let data = cellDataScheduleModel[indexPath.row]
             let vc = OpenTaskDetailViewController(model: data)
             let nav = UINavigationController(rootViewController: vc)
             nav.modalPresentationStyle = .fullScreen
             nav.isNavigationBarHidden = false
-            present(nav, animated: true)
+            present(nav, animated: isViewAnimated)
         } else {
-            tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+            tableView.selectRow(at: indexPath, animated: isViewAnimated, scrollPosition: .none)
         }
         
     }
@@ -428,7 +427,7 @@ extension CreateTaskForDayController: UITableViewDelegate, UITableViewDataSource
             let nav = UINavigationController(rootViewController: vc)
             nav.modalPresentationStyle = .fullScreen
             nav.isNavigationBarHidden = false
-            self?.present(nav, animated: true)
+            self?.present(nav, animated: isViewAnimated)
             self?.isTrailingSwipeActionActive = false
         }
         actionInstance.backgroundColor = .systemYellow

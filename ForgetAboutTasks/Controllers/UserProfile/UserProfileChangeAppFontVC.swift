@@ -152,7 +152,7 @@ class ChangeFontViewController: UIViewController {
     
     @objc private func didTapDismiss(){
         setupHapticMotion(style: .soft)
-        self.dismiss(animated: true)
+        self.dismiss(animated: isViewAnimated)
     }
     @objc private func didTapSave(){
         setupHapticMotion(style: .soft)
@@ -161,7 +161,7 @@ class ChangeFontViewController: UIViewController {
         UserDefaults.standard.setValue(savedFontName, forKey: "fontNameChanging")
         UserDefaults.standard.setValue(savedFontWeight, forKey: "fontWeightChanging")
         DispatchQueue.main.async {
-            self.dismiss(animated: true)
+            self.dismiss(animated: isViewAnimated)
         }
     }
     
@@ -173,11 +173,11 @@ class ChangeFontViewController: UIViewController {
             UserDefaults.standard.setValue("Didot", forKey: "fontNameChanging")
             UserDefaults.standard.setValue(0.0, forKey: "fontWeightChanging")
             DispatchQueue.main.asyncAfter(deadline: .now()+1) {
-                self.dismiss(animated: true)
+                self.dismiss(animated: isViewAnimated)
             }
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        self.present(alert, animated: true)
+        self.present(alert, animated: isViewAnimated)
     }
     
     //MARK: - Setup methods
@@ -208,7 +208,7 @@ class ChangeFontViewController: UIViewController {
         layout.itemSize = CGSize(width: view.frame.size.width/2-20, height: 30)
     
 
-        collectionView.setCollectionViewLayout(layout, animated: true)
+        collectionView.setCollectionViewLayout(layout, animated: isViewAnimated)
         collectionView.register(UserProfileFontCollectionViewCell.self, forCellWithReuseIdentifier: UserProfileFontCollectionViewCell.identifier)
         collectionView.isPagingEnabled = true
         collectionView.delegate = self
@@ -234,7 +234,7 @@ class ChangeFontViewController: UIViewController {
         returnDefaultFontSettingsButton.addTarget(self, action: #selector(didTapReturnDefaultSettings), for: .touchUpInside)
         
         if let index = fontNames.firstIndex(where: { $0 == savedFontName }) {
-            fontNamePicker.selectRow(index, inComponent: 0, animated: true)
+            fontNamePicker.selectRow(index, inComponent: 0, animated: isViewAnimated)
             testFontLabel.font = .setMainLabelFont()
         }
     }
