@@ -113,7 +113,7 @@ class LogInViewController: UIViewController {
                 self?.alertError(text: "Incorrect email or password.\nTry again!", mainTitle: "Error!")
                 return
             }
-            self?.view.window?.rootViewController?.dismiss(animated: isViewAnimated)
+            self?.navigationController?.popToRootViewController(animated: isViewAnimated)
             self?.setupLoadingSpinner()
             UserDefaultsManager.shared.userAuthInApp(result: result)
             UserDefaultsManager.shared.setupForAuth()

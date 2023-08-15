@@ -45,7 +45,7 @@ class UserProfileViewController: UIViewController {
                                         cellImage: UIImage(systemName: "faceid")!,
                                         cellImageColor: .systemBlue),
                         UserProfileData(title: "Code-password and Face ID".localized(),
-                                        cellImage: UIImage(systemName: "lock.fill")!,
+                                        cellImage: UIImage(systemName: "lock.open.fill")!,
                                         cellImageColor: .systemBlue)
                      ],
                      [
@@ -65,9 +65,6 @@ class UserProfileViewController: UIViewController {
                      [
                         UserProfileData(title: "Language".localized(),
                                         cellImage: UIImage(systemName: "keyboard.fill")!,
-                                        cellImageColor: .systemGreen),
-                        UserProfileData(title: "Futures".localized(),
-                                        cellImage: UIImage(systemName: "clock.fill")!,
                                         cellImageColor: .systemGreen),
                         UserProfileData(title: "Information".localized(),
                                         cellImage: UIImage(systemName: "info.circle.fill")!,
@@ -167,7 +164,10 @@ class UserProfileViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         tabBarController?.tabBar.isHidden = false
+        tableView.reloadData()
+        setupView()
     }
+    
     //MARK: - Targets methods
     @objc private func didTapLogout(){
         setupHapticMotion(style: .soft)
@@ -181,12 +181,8 @@ class UserProfileViewController: UIViewController {
                 } catch let error {
                     print("Error signing out from Firebase \(error)")
                 }
-                self?.view.window?.rootViewController?.dismiss(animated: isViewAnimated)
                 let vc = UserAuthViewController()
-                let navVC = UINavigationController(rootViewController: vc)
-                navVC.modalPresentationStyle = .fullScreen
-                navVC.isNavigationBarHidden = false
-                self?.present(navVC, animated: isViewAnimated)
+                self?.navigationController?.pushViewController(vc, animated: isViewAnimated)
             } else {
                 print("Error exiting from account")
             }
@@ -417,6 +413,7 @@ class UserProfileViewController: UIViewController {
     
     private func setupNavigationController(){
         title = "My Profile".localized()
+        navigationController?.navigationItem.largeTitleDisplayMode = .never
         navigationController?.navigationBar.tintColor = UIColor(named: "textColor")
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "arrow.uturn.right.square"), style: .done, target: self, action: #selector(didTapLogout))
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .done, target: self, action: #selector(didTapDismissView))
@@ -517,10 +514,13 @@ class UserProfileViewController: UIViewController {
                 UserDefaults.standard.setValue(false, forKey: "isPasswordCodeEnabled")
                 KeychainManager.delete()
                 self?.passwordBoolean = UserDefaults.standard.bool(forKey: "isPasswordCodeEnabled")
+                self?.tableView.reloadData()
+                
             }))
         }
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         present(alert, animated: isViewAnimated)
+        
     }
     
     private func openChangeFontController(){
@@ -606,6 +606,7 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
         cell.configureCell(text: data.title, imageCell: data.cellImage, image: data.cellImageColor)
         cell.separatorInset = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15)
         cell.configureSwitch(indexPath: indexPath)
+        cell.switchButton.removeTarget(nil, action: nil, for: .allEvents)
         if indexPath == [1,0] {
             let appIcon = UIApplication.shared.alternateIconName ?? "AppIcon.png"
             let iconImage = UIImage(named: appIcon)?.withRenderingMode(.alwaysOriginal)
@@ -658,13 +659,17 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
             } else {
                 cell.switchButton.isOn = value
             }
-            
+        case [0,6]:
+            let passwordEnabled = UserDefaults.standard.bool(forKey: "isPasswordCodeEnabled")
+            if passwordEnabled {
+                cell.cellImageView.image = UIImage(systemName: "lock.fill")!
+            } else {
+                cell.cellImageView.image = UIImage(systemName: "lock.open.fill")
+            }
         case [1,2]:
-            cell.switchButton.removeTarget(self, action: #selector(didTapSwitchDisplayMode), for: .valueChanged)
             cell.switchButton.addTarget(self, action: #selector(didTapDisableAnimation), for: .valueChanged)
             cell.switchButton.isOn = UserDefaults.standard.bool(forKey: "enabledAnimation")
         case [1,3]:
-            cell.switchButton.removeTarget(self, action: #selector(didTapSwitchDisplayMode), for: .valueChanged)
             cell.switchButton.addTarget(self, action: #selector(didTapChangeNapticStyle), for: .valueChanged)
             cell.switchButton.isOn = UserDefaults.standard.bool(forKey: "enableVibration")
 
@@ -750,20 +755,20 @@ extension UserProfileViewController  {
         }
         
         profileView.addSubview(userImageView)
-        
+        let fixedSize = view.frame.size.width/4
         userImageView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(20)
             make.leading.equalToSuperview().offset(30)
-            make.width.equalTo(110)
-            make.height.equalTo(110)
-            self.userImageView.layer.cornerRadius = 55
+            make.width.height.equalTo(fixedSize)
+            self.userImageView.layer.cornerRadius = fixedSize/2
         }
         
         profileView.addSubview(changeUserImageView)
         changeUserImageView.snp.makeConstraints { make in
-            make.bottom.equalTo(profileView.snp.bottom).offset(-30)
+            make.top.equalTo(userImageView.snp.bottom).offset(10)
             make.leading.equalToSuperview().offset(30)
-            make.width.equalTo(110)
+            make.width.equalTo(fixedSize)
+            make.height.equalTo(fixedSize/3)
         }
         
         profileView.addSubview(infoStack)

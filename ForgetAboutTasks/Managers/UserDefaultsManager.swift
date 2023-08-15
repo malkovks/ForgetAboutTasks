@@ -32,6 +32,7 @@ class UserDefaultsManager: UIViewController {
         UserDefaults.standard.setValue(0.0, forKey: "fontWeightChanging")
         UserDefaults.standard.setValue(true, forKey: "enableAnimation")
         UserDefaults.standard.setValue(true, forKey: "enableAnimation")
+        UserDefaults.standard.setValue(false, forKey: "isPasswordCodeEnabled")
     }
     
     func loadSettedImage() -> UIImage {
@@ -64,6 +65,7 @@ class UserDefaultsManager: UIViewController {
         UserDefaults.standard.setValue(0.0, forKey: "fontWeightChanging")//
         UserDefaults.standard.setValue(true, forKey: "enableAnimation")//
         UserDefaults.standard.setValue(true, forKey: "enableVibration")//
+
     }
     
     func checkDarkModeUserDefaults() -> Bool? {

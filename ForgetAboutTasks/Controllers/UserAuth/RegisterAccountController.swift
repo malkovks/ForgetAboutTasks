@@ -134,14 +134,16 @@ class RegisterAccountViewController: UIViewController {
                     UserDefaults.standard.setValue(mailField, forKey: "userMail")
                     UserDefaultsManager.shared.setupForAuth()
                     
-                    UserDefaultsManager.shared.setupForAuth()
                     DispatchQueue.main.async {
                         self?.indicator.stopAnimating()
-                        self?.view.window?.rootViewController?.dismiss(animated: isViewAnimated)
+                        self?.navigationController?.popToRootViewController(animated: isViewAnimated)
+                        
                     }
                 }
             } else {
                 alertError(text: "Password must contains at least 8 symbols", mainTitle: "Warning")
+                passwordField.text = ""
+                secondPasswordField.text = ""
                 self.indicator.stopAnimating()
             }
             

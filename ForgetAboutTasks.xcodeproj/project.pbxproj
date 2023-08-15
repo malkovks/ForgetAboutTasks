@@ -389,7 +389,7 @@
 		0A8AC1A229B9D4D700EA052B /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				0A8AC19E29B9D00A00EA052B /* TabBarViewController.swift */,
+				0AB578ED2A8B77DF00227581 /* TabBarController */,
 				0A99A90529CD99B400CC5A42 /* UserAuth */,
 				0A99A90329CD98E600CC5A42 /* UserProfile */,
 				0A99A90029CD98C600CC5A42 /* Schedule */,
@@ -636,6 +636,14 @@
 				0AB578E82A8A0B6200227581 /* Properties.swift */,
 			);
 			path = "Public Properties";
+			sourceTree = "<group>";
+		};
+		0AB578ED2A8B77DF00227581 /* TabBarController */ = {
+			isa = PBXGroup;
+			children = (
+				0A8AC19E29B9D00A00EA052B /* TabBarViewController.swift */,
+			);
+			path = TabBarController;
 			sourceTree = "<group>";
 		};
 		0AD4984F2A701E6D00B0599E /* Cells */ = {

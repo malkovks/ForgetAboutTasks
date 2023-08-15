@@ -22,6 +22,7 @@ class TabBarViewController: UITabBarController {
     
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
         animateImageItem(item: item)
+        setupHapticMotion(style: .heavy)
     }
     
     private func settingsTabBar(){
