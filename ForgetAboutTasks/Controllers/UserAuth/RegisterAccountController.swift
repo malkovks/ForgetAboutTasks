@@ -25,24 +25,33 @@ class RegisterAccountViewController: UIViewController {
         field.textContentType = .emailAddress
         field.textColor = UIColor(named: "textColor")
         field.layer.cornerRadius = 12
-        field.keyboardType = .emailAddress
+        field.textContentType = .emailAddress
+        field.autocorrectionType = .no
         field.layer.borderColor = UIColor(named: "navigationControllerColor")?.cgColor
         field.clearButtonMode = .whileEditing
         field.autocapitalizationType = .none
+        field.returnKeyType = .continue
+        field.tag = 0
         return field
     }()
     
     private let passwordField: UITextField = {
+        
        let field = UITextField()
+//        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: field.frame.size.height))
+//        field.leftView = paddingView
         field.placeholder = " Enter the password.."
         field.isSecureTextEntry = true
         field.textColor = UIColor(named: "textColor")
         field.layer.borderWidth = 1
-        field.textContentType = .newPassword
+        field.textContentType = .oneTimeCode
+        field.autocorrectionType = .no
         field.autocapitalizationType = .none
-        field.passwordRules = UITextInputPasswordRules(descriptor: "No matter how and what")
+//        field.passwordRules = UITextInputPasswordRules(descriptor: "No matter how and what")
         field.layer.cornerRadius = 12
         field.layer.borderColor = UIColor(named: "navigationControllerColor")?.cgColor
+        field.returnKeyType = .continue
+        field.tag = 1
         return field
     }()
     
@@ -52,11 +61,14 @@ class RegisterAccountViewController: UIViewController {
         field.textColor = UIColor(named: "textColor")
         field.isSecureTextEntry = true
         field.layer.borderWidth = 1
-        field.textContentType = .newPassword
+        field.textContentType = .oneTimeCode
+        field.autocorrectionType = .no
         field.autocapitalizationType = .none
-        field.passwordRules = UITextInputPasswordRules(descriptor: "No matter how and what")
+        field.returnKeyType = .continue
+//        field.passwordRules = UITextInputPasswordRules(descriptor: "No matter how and what")
         field.layer.cornerRadius = 12
         field.layer.borderColor = UIColor(named: "navigationControllerColor")?.cgColor
+        field.tag = 2
         return field
     }()
     
@@ -68,8 +80,11 @@ class RegisterAccountViewController: UIViewController {
         field.layer.borderWidth = 1
         field.textContentType = .name
         field.autocapitalizationType = .words
+        field.autocorrectionType = .no
         field.layer.cornerRadius = 12
         field.layer.borderColor = UIColor(named: "navigationControllerColor")?.cgColor
+        field.returnKeyType = .continue
+        field.tag = 3
         return field
     }()
     
@@ -129,16 +144,7 @@ class RegisterAccountViewController: UIViewController {
             if secondPassword.count >= 8 {
                 FirebaseAuth.Auth.auth().createUser(withEmail: mailField, password: secondPassword) { [weak self] _, error in
                     guard error == nil else { self?.alertError(text: "This account has already been created", mainTitle: "Error!"); return }
-                    try! KeychainManager.save(service: "Firebase Auth", account: mailField, password: firstPassword.data(using: .utf8) ?? Data())
-                    UserDefaults.standard.setValue(userName, forKey: "userName")
-                    UserDefaults.standard.setValue(mailField, forKey: "userMail")
-                    UserDefaultsManager.shared.setupForAuth()
-                    
-                    DispatchQueue.main.async {
-                        self?.indicator.stopAnimating()
-                        self?.navigationController?.popToRootViewController(animated: isViewAnimated)
-                        
-                    }
+                    self?.askForSavingPassword(email: mailField, password: firstPassword,userName: userName)
                 }
             } else {
                 alertError(text: "Password must contains at least 8 symbols", mainTitle: "Warning")
@@ -159,6 +165,7 @@ class RegisterAccountViewController: UIViewController {
         setupTargets()
         view.backgroundColor = UIColor(named: "launchBackgroundColor")
         emailField.becomeFirstResponder()
+        setupTextFieldDelegate()
     }
     
     private func setupNavigationController(){
@@ -168,11 +175,58 @@ class RegisterAccountViewController: UIViewController {
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .done, target: nil, action: nil)
     }
     
+    private func setupTextFieldDelegate(){
+        emailField.delegate = self
+        passwordField.delegate = self
+        secondPasswordField.delegate = self
+        userNameField.delegate = self
+    }
+    
     private func setupTargets(){
         isPasswordHiddenButton.addTarget(self, action: #selector(didTapChangeVisible), for: .touchUpInside)
         configureUserButton.addTarget(self, action: #selector(didTapCreateNewAccount), for: .touchUpInside)
     }
     
+    private func askForSavingPassword(email: String, password: String,userName: String){
+        let alert = UIAlertController(title: "Save Data?", message: "Do you want to save email and password for future quick authentication?", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Cancel", style: .default))
+        alert.addAction(UIAlertAction(title: "Save", style: .destructive,handler: { [weak self] _ in
+            guard let password = password.data(using: .utf8) else { return }
+            try! KeychainManager.saveToPassword(email: email, password: password)
+            try! KeychainManager.save(service: "Firebase Auth", account: email, password: password)
+            UserDefaults.standard.setValue(userName, forKey: "userName")
+            UserDefaults.standard.setValue(email, forKey: "userMail")
+            UserDefaultsManager.shared.setupForAuth()
+            DispatchQueue.main.async {
+                self?.indicator.stopAnimating()
+                self?.navigationController?.popToRootViewController(animated: isViewAnimated)
+                
+            }
+
+        }))
+        present(alert, animated: isViewAnimated)
+    }
+    
+}
+
+extension RegisterAccountViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        guard  let field = textField.text, !field.isEmpty else { return false}
+        switch textField.tag {
+        case 0:
+            emailField.resignFirstResponder()
+            passwordField.becomeFirstResponder()
+        case 1:
+            passwordField.resignFirstResponder()
+            secondPasswordField.becomeFirstResponder()
+        case 2:
+            secondPasswordField.resignFirstResponder()
+            userNameField.becomeFirstResponder()
+        default:
+            break
+        }
+        return true
+    }
 }
 //MARK: - Extensions
 extension RegisterAccountViewController {

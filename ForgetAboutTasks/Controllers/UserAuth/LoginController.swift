@@ -73,6 +73,7 @@ class LogInViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -107,17 +108,25 @@ class LogInViewController: UIViewController {
         
         //get auth
         FirebaseAuth.Auth.auth().signIn(withEmail: email, password: password) { [weak self] result, error in
-            
-            guard error == nil,
-                  let result = result else {
-                self?.alertError(text: "Incorrect email or password.\nTry again!", mainTitle: "Error!")
-                return
+            let passwordData = password.data(using: .utf8) ?? Data()
+            if let data = KeychainManager.getKeychainData(email: email, password: passwordData) {
+                self?.alertError(text: "Enter with keychain", mainTitle: "Success")
+                self?.navigationController?.popToRootViewController(animated: isViewAnimated)
+            } else {
+                guard error == nil,
+                      let result = result else {
+                    self?.alertError(text: "Incorrect email or password.\nTry again!", mainTitle: "Error!")
+                    return
+                }
+                //сделать проверку с интернетом, если интернета нету подключаться через keychain
+                self?.navigationController?.popToRootViewController(animated: isViewAnimated)
+                self?.setupLoadingSpinner()
+                UserDefaultsManager.shared.userAuthInApp(result: result)
+                UserDefaultsManager.shared.setupForAuth()
+                self?.indicatorView.stopAnimating()
             }
-            self?.navigationController?.popToRootViewController(animated: isViewAnimated)
-            self?.setupLoadingSpinner()
-            UserDefaultsManager.shared.userAuthInApp(result: result)
-            UserDefaultsManager.shared.setupForAuth()
-            self?.indicatorView.stopAnimating()
+            
+            
         }
     }
     
