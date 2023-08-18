@@ -54,6 +54,10 @@ class UserAuthViewController: UIViewController {
         return button
     }()
     
+    private lazy var infoNavigationItem: UIBarButtonItem = {
+        return UIBarButtonItem(image: UIImage(systemName: "info.circle.fill"), style: .done, target: self, action: #selector(didTapOpenInfo))
+    }()
+    
     private let spinner = UIActivityIndicatorView()
     
     override func viewDidLoad() {
@@ -62,6 +66,10 @@ class UserAuthViewController: UIViewController {
     }
     
     //MARK: - Targets methods
+    @objc private func didTapOpenInfo(){
+        print("Custom view with info")
+    }
+    
     @objc private func didTapLogin(){
         setupHapticMotion(style: .soft)
         let vc = LogInViewController()
@@ -108,6 +116,7 @@ class UserAuthViewController: UIViewController {
                 UserDefaultsManager.shared.setupForAuth()
                 UserDefaultsManager.shared.userAuthInApp(result: result, user: user)
                 self.dismiss(animated: isViewAnimated)
+                self.navigationController?.popToRootViewController(animated: isViewAnimated)
                 self.spinner.stopAnimating()
                 self.view.alpha = 1.0
             }
@@ -123,10 +132,12 @@ class UserAuthViewController: UIViewController {
     }
     
     private func setupNavigation(){
+        tabBarController?.tabBar.isHidden = true
         title = "Authorization"
         navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
         navigationController?.navigationItem.largeTitleDisplayMode = .always
         navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.rightBarButtonItem = infoNavigationItem
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: .done, target: nil, action: nil)
     }
     

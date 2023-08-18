@@ -200,9 +200,7 @@ class RegisterAccountViewController: UIViewController {
             DispatchQueue.main.async {
                 self?.indicator.stopAnimating()
                 self?.navigationController?.popToRootViewController(animated: isViewAnimated)
-                
             }
-
         }))
         present(alert, animated: isViewAnimated)
     }
@@ -222,6 +220,9 @@ extension RegisterAccountViewController: UITextFieldDelegate {
         case 2:
             secondPasswordField.resignFirstResponder()
             userNameField.becomeFirstResponder()
+        case 3:
+            userNameField.resignFirstResponder()
+            didTapCreateNewAccount()
         default:
             break
         }

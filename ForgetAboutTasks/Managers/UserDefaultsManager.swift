@@ -48,9 +48,9 @@ class UserDefaultsManager: UIViewController {
 
     
     func loadData() -> (String,String,String) {
-        let name = UserDefaults.standard.string(forKey: "userName") ?? "Error loading name".localized()
+        let name = UserDefaults.standard.string(forKey: "userName") ?? "Set your name".localized()
         let mail = UserDefaults.standard.string(forKey: "userMail") ?? "Error loading email".localized()
-        let age = UserDefaults.standard.string(forKey: "userAge") ?? "Not indicated".localized()//
+        let age = UserDefaults.standard.string(forKey: "userAge") ?? "Set your age".localized()//
         return (name,mail,age)
     }
     

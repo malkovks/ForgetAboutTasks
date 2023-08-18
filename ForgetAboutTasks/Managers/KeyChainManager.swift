@@ -8,6 +8,7 @@
 import Foundation
 
 
+
 class KeychainManager {
     
     enum KeychainError: Error {
@@ -16,7 +17,9 @@ class KeychainManager {
     }
     
     static func saveToPassword(email: String, password: Data) throws {
-        let query: [String:Any] = [kSecClass as String: kSecClassInternetPassword, kSecAttrServer as String: "firebase.google.com",kSecAttrAccount as String: email]
+        let query: [String:Any] = [kSecClass as String: kSecClassInternetPassword,
+                                   kSecAttrServer as String: "firebase.google.com",
+                                   kSecAttrAccount as String: email]
         SecItemDelete(query as CFDictionary)
         
         let attributes: [String: Any] = [kSecClass as String: kSecClassInternetPassword,
@@ -67,8 +70,6 @@ class KeychainManager {
         } else {
             
         }
-        
-        
     }
     
     static func save(service: String, account: String, password: Data) throws {

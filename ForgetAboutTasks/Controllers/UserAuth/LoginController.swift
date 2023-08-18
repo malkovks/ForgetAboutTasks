@@ -9,6 +9,12 @@ import SnapKit
 import FirebaseAuth
 import Security
 
+enum LoginConnectionStatus {
+    case successConnectionAuthorization
+    case successAuthorizationWithoutInternet
+    case unsuccessfullyAuthorization
+}
+
 
 class LogInViewController: UIViewController {
     
@@ -17,23 +23,31 @@ class LogInViewController: UIViewController {
     //MARK: - UI views
     private let emailField: UITextField = {
        let field = UITextField()
+        field.tag = 0
         field.placeholder = " example@email.com"
         field.layer.borderWidth = 1
         field.textContentType = .emailAddress
+        field.keyboardType = .emailAddress
+        field.returnKeyType = .continue
         field.layer.cornerRadius = 12
         field.layer.borderColor = UIColor(named: "navigationControllerColor")?.cgColor
         field.clearButtonMode = .whileEditing
         field.autocapitalizationType = .none
+        field.autocorrectionType = .no
         return field
     }()
     
     private let passwordField: UITextField = {
        let field = UITextField()
+        field.tag = 1
         field.placeholder = " Enter the password.."
         field.isSecureTextEntry = true
         field.textContentType = .password
         field.layer.borderWidth = 1
         field.autocapitalizationType = .none
+        field.autocorrectionType = .no
+        field.returnKeyType = .continue
+        field.textContentType = .password
         field.passwordRules = UITextInputPasswordRules(descriptor: "No matter how and what")
         field.layer.cornerRadius = 12
         field.layer.borderColor = UIColor(named: "navigationControllerColor")?.cgColor
@@ -62,7 +76,7 @@ class LogInViewController: UIViewController {
     private let resetPasswordButton: UIButton = {
         let button = UIButton(type: .system)
         button.configuration = .tinted()
-        button.configuration?.title = "Forget password"
+        button.configuration?.title = "Login problems"
         button.configuration?.baseBackgroundColor = .clear
         button.configuration?.baseForegroundColor = UIColor(named: "textColor")
         return button
@@ -98,35 +112,48 @@ class LogInViewController: UIViewController {
         setupHapticMotion(style: .soft)
         indicatorView.startAnimating()
         guard let password = passwordField.text, !password.isEmpty else {
-            alertError(text: "Enter email and password.\nIf You forget your personal data, try again later.", mainTitle: "Error login")
+            alertError(text: "Enter email and password.\nIf You forget password, push Forget Password", mainTitle: "Error login")
             return
         }
         guard let email = emailField.text, !email.isEmpty else {
             alertError(text: "Enter email and password.\nIf You forget your personal data, try again later.", mainTitle: "Error login")
             return
         }
-        
-        //get auth
-        FirebaseAuth.Auth.auth().signIn(withEmail: email, password: password) { [weak self] result, error in
-            let passwordData = password.data(using: .utf8) ?? Data()
-            if let data = KeychainManager.getKeychainData(email: email, password: passwordData) {
-                self?.alertError(text: "Enter with keychain", mainTitle: "Success")
-                self?.navigationController?.popToRootViewController(animated: isViewAnimated)
-            } else {
-                guard error == nil,
-                      let result = result else {
-                    self?.alertError(text: "Incorrect email or password.\nTry again!", mainTitle: "Error!")
-                    return
+        let internetIsAvailable = InternetConnectionManager.isConnectedToInternet()
+        if internetIsAvailable {
+            print("Auth with firebase")
+            FirebaseAuth.Auth.auth().signIn(withEmail: email, password: password) { [weak self] result, error in
+//                let passwordData = password.data(using: .utf8) ?? Data()
+                if let result = result {
+                    UserDefaultsManager.shared.userAuthInApp(result: result)
+                    UserDefaultsManager.shared.setupForAuth()
+                    self?.setupLoadingSpinner()
+                    self?.indicatorView.stopAnimating()
+                    self?.navigationController?.popToRootViewController(animated: isViewAnimated)
+                    print("Internet connection work fine. \nUser successfully authtorized to Firebase")
+                } else {
+                    self?.alertError(text: error?.localizedDescription ?? "", mainTitle: "Error")
+                    self?.clearTextFields()
                 }
-                //сделать проверку с интернетом, если интернета нету подключаться через keychain
-                self?.navigationController?.popToRootViewController(animated: isViewAnimated)
-                self?.setupLoadingSpinner()
-                UserDefaultsManager.shared.userAuthInApp(result: result)
-                UserDefaultsManager.shared.setupForAuth()
-                self?.indicatorView.stopAnimating()
             }
-            
-            
+        } else {
+            print("Auth with keychain")
+            if let data = KeychainManager.get(service: "Firebase Auth", account: email){
+                let pswrd = String(decoding: data, as: UTF8.self)
+                if !pswrd.contains(password) {
+                    self.alertError(text: "Incorrect password. Try again", mainTitle: "Error!")
+                    self.clearTextFields()
+                } else {
+                    UserDefaultsManager.shared.setupForAuth()
+                    UserDefaults.standard.setValue("Set name", forKey: "userName")
+                    UserDefaults.standard.setValue(email, forKey: "userMail")
+                    setupLoadingSpinner()
+                    indicatorView.stopAnimating()
+                    navigationController?.popToRootViewController(animated: isViewAnimated)
+                }
+            } else {
+                self.alertError(text: "Can't enter to application")
+            }
         }
     }
     
@@ -136,12 +163,17 @@ class LogInViewController: UIViewController {
     }
     //MARK: - Set up methods
     private func setupView(){
-        
+        setupDelegate()
         setupNavigationController()
         setupTargets()
         view.backgroundColor = UIColor(named: "launchBackgroundColor")
         emailField.becomeFirstResponder()
         
+    }
+    
+    private func setupDelegate(){
+        passwordField.delegate = self
+        emailField.delegate = self
     }
     
     private func setupNavigationController(){
@@ -166,6 +198,28 @@ class LogInViewController: UIViewController {
         present(nav, animated: isViewAnimated)
     }
     
+    private func clearTextFields(){
+        emailField.text = ""
+        passwordField.text = ""
+    }
+    
+}
+
+extension LogInViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        guard  let field = textField.text, !field.isEmpty else { return false}
+        switch textField.tag {
+        case 0:
+            emailField.resignFirstResponder()
+            passwordField.becomeFirstResponder()
+        case 1:
+            passwordField.resignFirstResponder()
+            didTapContinue()
+        default:
+            break
+        }
+        return true
+    }
 }
 
 

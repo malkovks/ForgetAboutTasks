@@ -164,7 +164,6 @@ class UserProfileViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         tabBarController?.tabBar.isHidden = false
-        tableView.reloadData()
         setupView()
     }
     
@@ -177,11 +176,12 @@ class UserProfileViewController: UIViewController {
                 UserDefaults.standard.set(false, forKey: "isAuthorised")
                 do {
                     try FirebaseAuth.Auth.auth().signOut()
-                    UserDefaultsManager.shared.signOut()
                 } catch let error {
                     print("Error signing out from Firebase \(error)")
                 }
+                UserDefaultsManager.shared.signOut()
                 let vc = UserAuthViewController()
+                vc.navigationItem.hidesBackButton = true
                 self?.navigationController?.pushViewController(vc, animated: isViewAnimated)
             } else {
                 print("Error exiting from account")
@@ -395,11 +395,7 @@ class UserProfileViewController: UIViewController {
         tableView.layer.cornerRadius = 8
         tableView.backgroundColor = UIColor(named: "backgroundColor")
         tableView.separatorStyle = .none
-        //debag
-        tableView.canCancelContentTouches = true
-        tableView.delaysContentTouches = false
-        tableView.panGestureRecognizer.isEnabled = false
-        
+        tableView.isUserInteractionEnabled = true
     }
     
     private func setupLabelUnderline(){
@@ -413,6 +409,7 @@ class UserProfileViewController: UIViewController {
     
     private func setupNavigationController(){
         title = "My Profile".localized()
+        navigationController?.navigationBar.prefersLargeTitles = false
         navigationController?.navigationItem.largeTitleDisplayMode = .never
         navigationController?.navigationBar.tintColor = UIColor(named: "textColor")
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "arrow.uturn.right.square"), style: .done, target: self, action: #selector(didTapLogout))
@@ -472,8 +469,7 @@ class UserProfileViewController: UIViewController {
             }
         } else {
             let image = UserDefaultsManager.shared.loadSettedImage()
-            let convertedImage = imageWith(image: image)
-            userImageView.image = convertedImage
+            userImageView.image = image
         }
         
         

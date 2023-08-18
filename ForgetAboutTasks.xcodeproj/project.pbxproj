@@ -93,6 +93,7 @@
 		0AB578E32A828C4B00227581 /* UserProfileNapticView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB578E22A828C4B00227581 /* UserProfileNapticView.swift */; };
 		0AB578E62A84CEC700227581 /* HapticManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB578E52A84CEC700227581 /* HapticManager.swift */; };
 		0AB578E92A8A0B6200227581 /* Properties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB578E82A8A0B6200227581 /* Properties.swift */; };
+		0AB578EF2A8FD62600227581 /* InternetConnectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB578EE2A8FD62600227581 /* InternetConnectionManager.swift */; };
 		0AB763BA29E3FAC900BFDB0D /* AlertError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB763B929E3FAC900BFDB0D /* AlertError.swift */; };
 		0ACE796B29D9EEAA00599C19 /* AlertSpinner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE796A29D9EEAA00599C19 /* AlertSpinner.swift */; };
 		0ACE797229DD95C600599C19 /* CreateTaskTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE797129DD95C600599C19 /* CreateTaskTableVC.swift */; };
@@ -225,6 +226,7 @@
 		0AB578E22A828C4B00227581 /* UserProfileNapticView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileNapticView.swift; sourceTree = "<group>"; };
 		0AB578E52A84CEC700227581 /* HapticManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticManager.swift; sourceTree = "<group>"; };
 		0AB578E82A8A0B6200227581 /* Properties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Properties.swift; sourceTree = "<group>"; };
+		0AB578EE2A8FD62600227581 /* InternetConnectionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternetConnectionManager.swift; sourceTree = "<group>"; };
 		0AB763B929E3FAC900BFDB0D /* AlertError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertError.swift; sourceTree = "<group>"; };
 		0ACE796A29D9EEAA00599C19 /* AlertSpinner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertSpinner.swift; sourceTree = "<group>"; };
 		0ACE797129DD95C600599C19 /* CreateTaskTableVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTaskTableVC.swift; sourceTree = "<group>"; };
@@ -434,6 +436,7 @@
 		0A9918D62A542458001004FA /* Managers */ = {
 			isa = PBXGroup;
 			children = (
+				0AB578EE2A8FD62600227581 /* InternetConnectionManager.swift */,
 				0A9918D72A542470001004FA /* LanguageManager.swift */,
 				0A9918F42A5651EF001004FA /* DataProvider.swift */,
 				0A99A90A29CD9CB300CC5A42 /* UserDefaultsManager.swift */,
@@ -928,6 +931,7 @@
 				0AA604E629E14814007ACE58 /* ScheduleRealmManager.swift in Sources */,
 				0A8AC1A629B9D4FA00EA052B /* ContactsVC.swift in Sources */,
 				0AA604E929E16C05007ACE58 /* ColorExtensions.swift in Sources */,
+				0AB578EF2A8FD62600227581 /* InternetConnectionManager.swift in Sources */,
 				0A1FD0C02A7A5400003A7158 /* Date+Extensions.swift in Sources */,
 				0AA604DF29E04541007ACE58 /* AlertImagePicker.swift in Sources */,
 				0AA0E93C2A60D24B00911C0D /* ContactsAccess.swift in Sources */,

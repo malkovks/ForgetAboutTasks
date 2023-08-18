@@ -19,15 +19,9 @@ extension UIViewController {
         present(alert, animated: isViewAnimated)
         
         DispatchQueue.main.asyncAfter(deadline: .now()+2) {
-            alert.dismiss(animated: isViewAnimated) {
-                let successAlert = UIAlertController(title: "Success", message: nil, preferredStyle: .alert)
-                successAlert.addAction(UIAlertAction(title: "Ok", style: .default,handler: { _ in
-                    self.view.alpha = 1.0
-                    self.dismiss(animated: isViewAnimated)
-                }))
-                self.present(successAlert, animated: isViewAnimated)
-                
-            }
+            self.navigationController?.popToRootViewController(animated: isViewAnimated)
+            self.view.alpha = 1.0
+            alert.dismiss(animated: isViewAnimated)
         }
     }
 }
