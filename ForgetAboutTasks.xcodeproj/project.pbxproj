@@ -94,6 +94,7 @@
 		0AB578E62A84CEC700227581 /* HapticManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB578E52A84CEC700227581 /* HapticManager.swift */; };
 		0AB578E92A8A0B6200227581 /* Properties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB578E82A8A0B6200227581 /* Properties.swift */; };
 		0AB578EF2A8FD62600227581 /* InternetConnectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB578EE2A8FD62600227581 /* InternetConnectionManager.swift */; };
+		0AB578F22A90315100227581 /* InformationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB578F12A90315100227581 /* InformationView.swift */; };
 		0AB763BA29E3FAC900BFDB0D /* AlertError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB763B929E3FAC900BFDB0D /* AlertError.swift */; };
 		0ACE796B29D9EEAA00599C19 /* AlertSpinner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE796A29D9EEAA00599C19 /* AlertSpinner.swift */; };
 		0ACE797229DD95C600599C19 /* CreateTaskTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE797129DD95C600599C19 /* CreateTaskTableVC.swift */; };
@@ -227,6 +228,7 @@
 		0AB578E52A84CEC700227581 /* HapticManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticManager.swift; sourceTree = "<group>"; };
 		0AB578E82A8A0B6200227581 /* Properties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Properties.swift; sourceTree = "<group>"; };
 		0AB578EE2A8FD62600227581 /* InternetConnectionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternetConnectionManager.swift; sourceTree = "<group>"; };
+		0AB578F12A90315100227581 /* InformationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InformationView.swift; sourceTree = "<group>"; };
 		0AB763B929E3FAC900BFDB0D /* AlertError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertError.swift; sourceTree = "<group>"; };
 		0ACE796A29D9EEAA00599C19 /* AlertSpinner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertSpinner.swift; sourceTree = "<group>"; };
 		0ACE797129DD95C600599C19 /* CreateTaskTableVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTaskTableVC.swift; sourceTree = "<group>"; };
@@ -337,6 +339,7 @@
 				0A9E1C4329D46851000CC9A9 /* ForgetAboutTasks.entitlements */,
 				0A8AC19929B9C87300EA052B /* System Delegates */,
 				0AA604E029E1460E007ACE58 /* Model */,
+				0AB578F02A90313A00227581 /* View */,
 				0A8AC1A229B9D4D700EA052B /* Controllers */,
 				0AD4984F2A701E6D00B0599E /* Cells */,
 				0A9918D62A542458001004FA /* Managers */,
@@ -649,6 +652,14 @@
 			path = TabBarController;
 			sourceTree = "<group>";
 		};
+		0AB578F02A90313A00227581 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				0AB578F12A90315100227581 /* InformationView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
 		0AD4984F2A701E6D00B0599E /* Cells */ = {
 			isa = PBXGroup;
 			children = (
@@ -924,6 +935,7 @@
 				0A6152122A09D57000A26792 /* AlertDismissed.swift in Sources */,
 				0A8DD8DB29BC8BEB00B2DDAB /* Formatters.swift in Sources */,
 				0A1FD0C32A7D7641003A7158 /* TaskBirthdayDetailVC.swift in Sources */,
+				0AB578F22A90315100227581 /* InformationView.swift in Sources */,
 				0AA0E93E2A63A46700911C0D /* UserProfileChangeAppFontVC.swift in Sources */,
 				0A2717B829FE518000EFBC11 /* OpenTaskDetailVC.swift in Sources */,
 				0A99A90B29CD9CB300CC5A42 /* UserDefaultsManager.swift in Sources */,

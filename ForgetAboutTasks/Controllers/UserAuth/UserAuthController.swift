@@ -58,6 +58,7 @@ class UserAuthViewController: UIViewController {
         return UIBarButtonItem(image: UIImage(systemName: "info.circle.fill"), style: .done, target: self, action: #selector(didTapOpenInfo))
     }()
     
+    
     private let spinner = UIActivityIndicatorView()
     
     override func viewDidLoad() {
@@ -67,7 +68,9 @@ class UserAuthViewController: UIViewController {
     
     //MARK: - Targets methods
     @objc private func didTapOpenInfo(){
-        print("Custom view with info")
+        
+        
+        
     }
     
     @objc private func didTapLogin(){

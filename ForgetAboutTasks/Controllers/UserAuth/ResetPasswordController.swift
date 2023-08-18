@@ -11,7 +11,7 @@ import FirebaseAuth
 
 
 
-class ResetPasswordViewController: UIViewController {
+class ResetPasswordViewController: UIViewController ,UITextFieldDelegate{
     
     private var isPasswordHidden: Bool = true
     
@@ -21,6 +21,10 @@ class ResetPasswordViewController: UIViewController {
         field.placeholder = " Enter your email"
         field.isSecureTextEntry = false
         field.layer.borderWidth = 1
+        field.returnKeyType = .continue
+        field.autocorrectionType = .no
+        field.keyboardType = .emailAddress
+        field.textContentType = .emailAddress
         field.autocapitalizationType = .none
         field.layer.cornerRadius = 12
         field.layer.borderColor = UIColor(named: "navigationControllerColor")?.cgColor
@@ -37,10 +41,11 @@ class ResetPasswordViewController: UIViewController {
         return button
     }()
     
-    private let indicatorView = UIActivityIndicatorView(style: .medium)
+    private let indicatorView = UIActivityIndicatorView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         setupView()
     }
     //MARK: - Targets
@@ -48,23 +53,58 @@ class ResetPasswordViewController: UIViewController {
         setupHapticMotion(style: .medium)
         let auth = Auth.auth()
         guard let text = emailTextField.text, !text.isEmpty else { alertError(text: "Enter email"); return }
-        
-        auth.sendPasswordReset(withEmail: text) { [weak self] errors in
+        view.alpha = 0.8
+        indicatorView.startAnimating()
+        auth.sendPasswordReset(withEmail: text) { [unowned self] errors in
             if let error = errors {
-                self?.alertError(text: error.localizedDescription, mainTitle: "Error")
+                self.alertError(text: error.localizedDescription, mainTitle: "Error")
+                self.indicatorView.stopAnimating()
             } else {
-                self?.showAlertForUser(text: "Hurray!\nCheck your email box", duration: DispatchTime.now()+2, controllerView: (self?.view)!)
+                
+                let alert = UIAlertController(title: "Important message", message: "We send you message with detail information. Check mailbox", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "Ok", style: .default,handler: { [weak self] _ in
+                    if let vc = self?.navigationController?.viewControllers[(self?.navigationController!.viewControllers.count)!-3] {
+                        
+                        DispatchQueue.main.async {
+                            self?.indicatorView.stopAnimating()
+                            self?.indicatorView.removeFromSuperview()
+                            self?.view.alpha = 1.0
+                            self?.navigationController?.popToViewController(vc, animated: isViewAnimated)
+                        }
+                        
+                    }
+                }))
+                present(alert, animated: isViewAnimated)
             }
         }
     }
     
     //MARK: - Set up methods
     private func setupView(){
+        setupTextField()
         setupConstraints()
         setupNavigationController()
         setupTargets()
+        setupActivityView()
         emailTextField.resignFirstResponder()
         view.backgroundColor = UIColor(named: "launchBackgroundColor")
+    }
+    
+    private func setupActivityView(){
+        view.addSubview(indicatorView)
+        indicatorView.center = view.center
+    }
+    
+    private func startActivityIndicator(){
+        let activity = UIActivityIndicatorView(style: .gray)
+        view.addSubview(activity)
+        activity.center = view.center
+        activity.startAnimating()
+    }
+    
+    private func setupTextField(){
+        emailTextField.delegate = self
+        emailTextField.becomeFirstResponder()
     }
     
     private func setupNavigationController(){
@@ -78,15 +118,16 @@ class ResetPasswordViewController: UIViewController {
         resetPasswordButton.addTarget(self, action: #selector(didTapResetPassword), for: .touchUpInside)
     }
     
-    private func showRegisterAccount(){
-        let vc = RegisterAccountViewController()
-        let nav = UINavigationController(rootViewController: vc)
-        nav.modalPresentationStyle = .fullScreen
-        nav.modalTransitionStyle = .flipHorizontal
-        nav.isNavigationBarHidden = false
-        present(nav, animated: isViewAnimated)
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        guard let field = textField.text, !field.isEmpty else { return false}
+        if textField.becomeFirstResponder() {
+            textField.resignFirstResponder()
+            didTapResetPassword()
+            return true
+        } else {
+            return false
+        }
     }
-    
 }
 //MARK: - Extensions
 extension ResetPasswordViewController {

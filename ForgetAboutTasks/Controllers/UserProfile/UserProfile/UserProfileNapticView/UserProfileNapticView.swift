@@ -9,33 +9,33 @@ import UIKit
 import SnapKit
 
 
-class UserProfileNapticViewController: UIViewController {
-    
-    let customView = UserProfileNapticView()
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.addSubview(customView)
-    }
-}
-
-class CustomPickerView: UIPickerView {
-    let pickerView = UIPickerView()
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        pickerView.backgroundColor = .systemRed
-        pickerView.tintColor = .systemBlue
-        addSubview(pickerView)
-        pickerView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
+//class UserProfileNapticViewController: UIViewController {
+//
+//    let customView = UserProfileNapticView()
+//
+//    override func viewDidLoad() {
+//        super.viewDidLoad()
+//        view.addSubview(customView)
+//    }
+//}
+//
+//class CustomPickerView: UIPickerView {
+//    let pickerView = UIPickerView()
+//
+//    override init(frame: CGRect) {
+//        super.init(frame: frame)
+//        pickerView.backgroundColor = .systemRed
+//        pickerView.tintColor = .systemBlue
+//        addSubview(pickerView)
+//        pickerView.snp.makeConstraints { make in
+//            make.edges.equalToSuperview()
+//        }
+//    }
+//
+//    required init?(coder: NSCoder) {
+//        fatalError("init(coder:) has not been implemented")
+//    }
+//}
 
 class UserProfileNapticView: UIView {
     

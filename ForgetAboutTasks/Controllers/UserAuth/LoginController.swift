@@ -76,13 +76,13 @@ class LogInViewController: UIViewController {
     private let resetPasswordButton: UIButton = {
         let button = UIButton(type: .system)
         button.configuration = .tinted()
-        button.configuration?.title = "Login problems"
+        button.configuration?.title = "Forget password?"
         button.configuration?.baseBackgroundColor = .clear
         button.configuration?.baseForegroundColor = UIColor(named: "textColor")
         return button
     }()
     
-    private let indicatorView = UIActivityIndicatorView(style: .medium)
+    private let indicator = UIActivityIndicatorView(style: .medium)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -110,7 +110,6 @@ class LogInViewController: UIViewController {
     //при входе в аккаунт выгружать также имя фамилию и прочее
     @objc private func didTapContinue(){
         setupHapticMotion(style: .soft)
-        indicatorView.startAnimating()
         guard let password = passwordField.text, !password.isEmpty else {
             alertError(text: "Enter email and password.\nIf You forget password, push Forget Password", mainTitle: "Error login")
             return
@@ -120,24 +119,24 @@ class LogInViewController: UIViewController {
             return
         }
         let internetIsAvailable = InternetConnectionManager.isConnectedToInternet()
+        
         if internetIsAvailable {
-            print("Auth with firebase")
+            indicator.isHidden = false
+            indicator.startAnimating()
             FirebaseAuth.Auth.auth().signIn(withEmail: email, password: password) { [weak self] result, error in
 //                let passwordData = password.data(using: .utf8) ?? Data()
                 if let result = result {
                     UserDefaultsManager.shared.userAuthInApp(result: result)
                     UserDefaultsManager.shared.setupForAuth()
                     self?.setupLoadingSpinner()
-                    self?.indicatorView.stopAnimating()
+                    self?.indicator.stopAnimating()
                     self?.navigationController?.popToRootViewController(animated: isViewAnimated)
-                    print("Internet connection work fine. \nUser successfully authtorized to Firebase")
                 } else {
                     self?.alertError(text: error?.localizedDescription ?? "", mainTitle: "Error")
                     self?.clearTextFields()
                 }
             }
         } else {
-            print("Auth with keychain")
             if let data = KeychainManager.get(service: "Firebase Auth", account: email){
                 let pswrd = String(decoding: data, as: UTF8.self)
                 if !pswrd.contains(password) {
@@ -148,7 +147,7 @@ class LogInViewController: UIViewController {
                     UserDefaults.standard.setValue("Set name", forKey: "userName")
                     UserDefaults.standard.setValue(email, forKey: "userMail")
                     setupLoadingSpinner()
-                    indicatorView.stopAnimating()
+                    indicator.stopAnimating()
                     navigationController?.popToRootViewController(animated: isViewAnimated)
                 }
             } else {
@@ -169,6 +168,11 @@ class LogInViewController: UIViewController {
         view.backgroundColor = UIColor(named: "launchBackgroundColor")
         emailField.becomeFirstResponder()
         
+    }
+    
+    private func setupIndicator(){
+        view.addSubview(indicator)
+        indicator.center = view.center
     }
     
     private func setupDelegate(){
@@ -201,6 +205,8 @@ class LogInViewController: UIViewController {
     private func clearTextFields(){
         emailField.text = ""
         passwordField.text = ""
+        indicator.stopAnimating()
+        indicator.isHidden = true
     }
     
 }

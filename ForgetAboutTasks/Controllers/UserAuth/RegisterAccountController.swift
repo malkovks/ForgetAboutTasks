@@ -15,7 +15,7 @@ class RegisterAccountViewController: UIViewController {
     
     private var isPasswordHidden: Bool = true
     
-    private let indicator = UIActivityIndicatorView()
+   
     
     //MARK: - UI views
     private let emailField: UITextField = {
@@ -36,10 +36,7 @@ class RegisterAccountViewController: UIViewController {
     }()
     
     private let passwordField: UITextField = {
-        
        let field = UITextField()
-//        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: field.frame.size.height))
-//        field.leftView = paddingView
         field.placeholder = " Enter the password.."
         field.isSecureTextEntry = true
         field.textColor = UIColor(named: "textColor")
@@ -111,6 +108,8 @@ class RegisterAccountViewController: UIViewController {
         return button
     }()
     
+    private let indicator = UIActivityIndicatorView()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
@@ -133,6 +132,7 @@ class RegisterAccountViewController: UIViewController {
     @objc private func didTapCreateNewAccount(){
         setupHapticMotion(style: .soft)
         indicator.startAnimating()
+        
         guard let mailField = emailField.text, !mailField.isEmpty,
               let firstPassword = passwordField.text, !firstPassword.isEmpty,
               let secondPassword = secondPasswordField.text, !secondPassword.isEmpty,
@@ -150,12 +150,10 @@ class RegisterAccountViewController: UIViewController {
                 alertError(text: "Password must contains at least 8 symbols", mainTitle: "Warning")
                 passwordField.text = ""
                 secondPasswordField.text = ""
-                self.indicator.stopAnimating()
             }
             
         } else {
             alertError(text: "Passwords in both field aren't equal", mainTitle: "Warning")
-            self.indicator.stopAnimating()
         }
     }
     //MARK: - Set up methods
@@ -163,9 +161,15 @@ class RegisterAccountViewController: UIViewController {
         setupConstraints()
         setupNavigationController()
         setupTargets()
+        setupIndicator()
         view.backgroundColor = UIColor(named: "launchBackgroundColor")
         emailField.becomeFirstResponder()
         setupTextFieldDelegate()
+    }
+    
+    private func setupIndicator(){
+        view.addSubview(indicator)
+        indicator.center = view.center
     }
     
     private func setupNavigationController(){
@@ -188,8 +192,11 @@ class RegisterAccountViewController: UIViewController {
     }
     
     private func askForSavingPassword(email: String, password: String,userName: String){
+        view.alpha = 0.8
         let alert = UIAlertController(title: "Save Data?", message: "Do you want to save email and password for future quick authentication?", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Cancel", style: .default))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .default,handler: { _ in
+            self.indicator.stopAnimating()
+        }))
         alert.addAction(UIAlertAction(title: "Save", style: .destructive,handler: { [weak self] _ in
             guard let password = password.data(using: .utf8) else { return }
             try! KeychainManager.saveToPassword(email: email, password: password)
@@ -198,8 +205,11 @@ class RegisterAccountViewController: UIViewController {
             UserDefaults.standard.setValue(email, forKey: "userMail")
             UserDefaultsManager.shared.setupForAuth()
             DispatchQueue.main.async {
+                self?.view.alpha = 1.0
                 self?.indicator.stopAnimating()
                 self?.navigationController?.popToRootViewController(animated: isViewAnimated)
+                self?.view.window?.rootViewController?.dismiss(animated: isViewAnimated)
+                
             }
         }))
         present(alert, animated: isViewAnimated)
