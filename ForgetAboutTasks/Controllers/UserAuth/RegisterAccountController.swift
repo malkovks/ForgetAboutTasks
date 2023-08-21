@@ -203,6 +203,7 @@ class RegisterAccountViewController: UIViewController {
             try! KeychainManager.save(service: "Firebase Auth", account: email, password: password)
             UserDefaults.standard.setValue(userName, forKey: "userName")
             UserDefaults.standard.setValue(email, forKey: "userMail")
+            UserDefaults.standard.setValue(false, forKey: "authWithGoogle")
             UserDefaultsManager.shared.setupForAuth()
             DispatchQueue.main.async {
                 self?.view.alpha = 1.0

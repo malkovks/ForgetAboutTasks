@@ -12,6 +12,8 @@ import GoogleSignIn
 
 
 class UserAuthViewController: UIViewController {
+    
+    private let textInfo: String = "Здесь и вступают в игру startZoom и zoomLimit.При сете камеры мы ставили startZoom на 2.0, если камера обладала ультрашириком и 1.0 во всех остальных случаях. Дело в том что камеры с ультрашириком ставят зум 0.5 (в коде 1.0) по умолчанию, а нам бы хотелось открывать камеру на зуме 1.0. Код выставления зума весьма прост: мы получаем скейл рекогнайзера, определяем в какую сторону был сделан жест (меньше 1.0 - жест на уменьшение) и в зависимости от характера жеста, производим рассчет нового фактора. Дальше мы ограничиваем новый фактор функцией minMaxZoom и вызываем более низкоурвневую функцию updateZoom, которая принимает в себя новый фактор и безопасно сетит его девайсу. Собственно, на этом все."
 
     //MARK: - UI views
     private let loginButton: UIButton = {
@@ -68,9 +70,7 @@ class UserAuthViewController: UIViewController {
     
     //MARK: - Targets methods
     @objc private func didTapOpenInfo(){
-        
-        
-        
+        showInfoAuthentication(text: textInfo, controller: self.view)
     }
     
     @objc private func didTapLogin(){
@@ -118,6 +118,7 @@ class UserAuthViewController: UIViewController {
                 }
                 UserDefaultsManager.shared.setupForAuth()
                 UserDefaultsManager.shared.userAuthInApp(result: result, user: user)
+                
                 self.dismiss(animated: isViewAnimated)
                 self.navigationController?.popToRootViewController(animated: isViewAnimated)
                 self.spinner.stopAnimating()

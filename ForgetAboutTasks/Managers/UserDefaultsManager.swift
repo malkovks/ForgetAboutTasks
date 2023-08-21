@@ -56,7 +56,11 @@ class UserDefaultsManager: UIViewController {
     
     func userAuthInApp(result: AuthDataResult, user:  GIDGoogleUser? = nil) {
         let profile = user?.profile?.imageURL(withDimension: 320)
-
+        if user == nil {
+            UserDefaults.standard.setValue(false, forKey: "authWithGoogle")
+        } else {
+            UserDefaults.standard.setValue(true, forKey: "authWithGoogle")
+        }
         UserDefaults.standard.setValue(result.user.displayName, forKey: "userName")//
         UserDefaults.standard.setValue(result.user.email, forKey: "userMail")//
         UserDefaults.standard.set(profile, forKey: "userImageURL")

@@ -13,6 +13,7 @@ import EventKit
 import LocalAuthentication
 import Contacts
 import Photos
+import GoogleSignIn
 
 
 struct UserProfileData {
@@ -23,9 +24,9 @@ struct UserProfileData {
 
 class UserProfileViewController: UIViewController {
     
-    
+    private let infoText = "Authorization goes through a special Firebase Authentication service. User data is not accessible to anyone, including the development team.\nThis application collects data to improve the performance of the application, as well as for better user experience. All data is encrypted and stored on a special server inaccessible to anyone.\nRealm Data Base is used as storage, user settings and other system parameters are stored in UserDefaults."
 
-    var cellArray = [[
+    private var cellArray = [[
                         UserProfileData(title: "Dark Mode".localized(),
                                         cellImage: UIImage(systemName: "moon.fill")!,
                                         cellImageColor: .purple),
@@ -442,6 +443,13 @@ class UserProfileViewController: UIViewController {
         changeUserImageView.addTarget(self, action: #selector(didTapImagePicker), for: .touchUpInside)
     }
     
+//    private func checkAuthType(){
+//        let boolean = UserDefaults.standard.bool(forKey: "authWithGoogle")
+//        if !boolean {
+//            cellArray.remove(at: <#T##Int#>)
+//        }
+//    }
+    
     private func setupFontSize(){
         ageLabel.font = .setMainLabelFont()
         userNameLabel.font = .setMainLabelFont()
@@ -533,6 +541,27 @@ class UserProfileViewController: UIViewController {
         nav.modalTransitionStyle = .coverVertical
         nav.isNavigationBarHidden = false
         self.present(nav, animated: isViewAnimated)
+    }
+    
+    private func deleteAccount(){
+        let boolean = UserDefaults.standard.bool(forKey: "authWithGoogle")
+        guard let user = Auth.auth().currentUser,
+              let userGoogle = GIDSignIn.sharedInstance.currentUser else {
+            alertError(text: "Can't delete this account", mainTitle: "Error!")
+            return
+        }
+        if boolean {
+            print("Error")
+        } else {
+            user.delete { [weak self] error in
+                if let error = error {
+                    self?.alertError(text: error.localizedDescription, mainTitle: "Error")
+                } else {
+                    self?.alertError(text: "Account was deleted")
+                }
+            }
+        }
+
     }
     
     
@@ -693,11 +722,11 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
         case [1,1]:
             openChangeFontController()
         case [2,0]:
-//            showSettingsForChangingAccess(title: "Changing App Language".localized(),
-//                                          message: "Would you like to change the language of your application?".localized()) { _ in }
             showVariationsWithLanguage(title: "Change language", message: "") {  result in  }
+        case [2,1]:
+            showInfoAuthentication(text: infoText, controller: self.view)
         case [3,0]:
-            print("Delete")
+            deleteAccount()
         case [3,1]:
             didTapLogout()
         default:
