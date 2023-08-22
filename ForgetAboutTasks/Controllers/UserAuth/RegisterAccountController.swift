@@ -163,7 +163,7 @@ class RegisterAccountViewController: UIViewController {
         setupTargets()
         setupIndicator()
         view.backgroundColor = UIColor(named: "launchBackgroundColor")
-        emailField.becomeFirstResponder()
+        
         setupTextFieldDelegate()
     }
     
@@ -180,6 +180,7 @@ class RegisterAccountViewController: UIViewController {
     }
     
     private func setupTextFieldDelegate(){
+        emailField.becomeFirstResponder()
         emailField.delegate = self
         passwordField.delegate = self
         secondPasswordField.delegate = self
@@ -204,7 +205,7 @@ class RegisterAccountViewController: UIViewController {
             UserDefaults.standard.setValue(userName, forKey: "userName")
             UserDefaults.standard.setValue(email, forKey: "userMail")
             UserDefaults.standard.setValue(false, forKey: "authWithGoogle")
-            UserDefaultsManager.shared.setupForAuth()
+            UserDefaultsManager.shared.saveAccountData()
             DispatchQueue.main.async {
                 self?.view.alpha = 1.0
                 self?.indicator.stopAnimating()

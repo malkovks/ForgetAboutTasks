@@ -116,8 +116,7 @@ class UserAuthViewController: UIViewController {
                     self.alertError(text: "Error getting data from account", mainTitle: "Attention")
                     return
                 }
-                UserDefaultsManager.shared.setupForAuth()
-                UserDefaultsManager.shared.userAuthInApp(result: result, user: user)
+                UserDefaultsManager.shared.saveAccountData(result: result, user: user)
                 
                 self.dismiss(animated: isViewAnimated)
                 self.navigationController?.popToRootViewController(animated: isViewAnimated)

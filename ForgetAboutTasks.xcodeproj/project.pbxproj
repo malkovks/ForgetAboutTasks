@@ -96,6 +96,7 @@
 		0AB578EF2A8FD62600227581 /* InternetConnectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB578EE2A8FD62600227581 /* InternetConnectionManager.swift */; };
 		0AB578F22A90315100227581 /* InformationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB578F12A90315100227581 /* InformationView.swift */; };
 		0AB763BA29E3FAC900BFDB0D /* AlertError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB763B929E3FAC900BFDB0D /* AlertError.swift */; };
+		0ABD347D2A9536A90071EE4F /* ChangePasswordController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ABD347C2A9536A90071EE4F /* ChangePasswordController.swift */; };
 		0ACE796B29D9EEAA00599C19 /* AlertSpinner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE796A29D9EEAA00599C19 /* AlertSpinner.swift */; };
 		0ACE797229DD95C600599C19 /* CreateTaskTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE797129DD95C600599C19 /* CreateTaskTableVC.swift */; };
 		0ACE797829DECF3300599C19 /* NewContactVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE797729DECF3300599C19 /* NewContactVC.swift */; };
@@ -230,6 +231,7 @@
 		0AB578EE2A8FD62600227581 /* InternetConnectionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternetConnectionManager.swift; sourceTree = "<group>"; };
 		0AB578F12A90315100227581 /* InformationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InformationView.swift; sourceTree = "<group>"; };
 		0AB763B929E3FAC900BFDB0D /* AlertError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertError.swift; sourceTree = "<group>"; };
+		0ABD347C2A9536A90071EE4F /* ChangePasswordController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordController.swift; sourceTree = "<group>"; };
 		0ACE796A29D9EEAA00599C19 /* AlertSpinner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertSpinner.swift; sourceTree = "<group>"; };
 		0ACE797129DD95C600599C19 /* CreateTaskTableVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTaskTableVC.swift; sourceTree = "<group>"; };
 		0ACE797729DECF3300599C19 /* NewContactVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewContactVC.swift; sourceTree = "<group>"; };
@@ -499,6 +501,7 @@
 				0A9E1C3929CEEDCE000CC9A9 /* LoginController.swift */,
 				0A9E1C3B29D0778F000CC9A9 /* RegisterAccountController.swift */,
 				0AEAA9F22A264BBF00BE85A4 /* ResetPasswordController.swift */,
+				0ABD347C2A9536A90071EE4F /* ChangePasswordController.swift */,
 			);
 			path = UserAuth;
 			sourceTree = "<group>";
@@ -929,6 +932,7 @@
 				0ACE797A29DED2D400599C19 /* NewContactCustomView.swift in Sources */,
 				0AA0E93A2A60C69B00911C0D /* MediaAccess.swift in Sources */,
 				0A9918D42A52BCA0001004FA /* UserProfileAppIconVC.swift in Sources */,
+				0ABD347D2A9536A90071EE4F /* ChangePasswordController.swift in Sources */,
 				0AA8EC5D29C76968004DC6DD /* AlertDate.swift in Sources */,
 				0A8AC19F29B9D00A00EA052B /* TabBarViewController.swift in Sources */,
 				0A6152142A09E57700A26792 /* AlertActionWithURL.swift in Sources */,

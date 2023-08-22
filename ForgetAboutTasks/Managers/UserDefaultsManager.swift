@@ -22,6 +22,7 @@ class UserDefaultsManager: UIViewController {
     }
     
     func signOut(){
+        UserDefaults.standard.setValue(false, forKey: "isAuthorised")
         UserDefaults.standard.setValue("Set your name".localized(), forKey: "userName")
         UserDefaults.standard.setValue("No email".localized(), forKey: "userMail")
         UserDefaults.standard.setValue(nil, forKey: "userImage")
@@ -54,15 +55,16 @@ class UserDefaultsManager: UIViewController {
         return (name,mail,age)
     }
     
-    func userAuthInApp(result: AuthDataResult, user:  GIDGoogleUser? = nil) {
+    func saveAccountData(result: AuthDataResult? = nil, user:  GIDGoogleUser? = nil) {
         let profile = user?.profile?.imageURL(withDimension: 320)
         if user == nil {
             UserDefaults.standard.setValue(false, forKey: "authWithGoogle")
         } else {
             UserDefaults.standard.setValue(true, forKey: "authWithGoogle")
         }
-        UserDefaults.standard.setValue(result.user.displayName, forKey: "userName")//
-        UserDefaults.standard.setValue(result.user.email, forKey: "userMail")//
+        UserDefaults.standard.setValue(true, forKey: "isAuthorised")
+        UserDefaults.standard.setValue(result?.user.displayName, forKey: "userName")//
+        UserDefaults.standard.setValue(result?.user.email, forKey: "userMail")//
         UserDefaults.standard.set(profile, forKey: "userImageURL")
         UserDefaults.standard.setValue(16, forKey: "fontSizeChanging")//
         UserDefaults.standard.setValue("Didot", forKey: "fontNameChanging")//

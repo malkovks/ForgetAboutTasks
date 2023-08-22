@@ -126,8 +126,7 @@ class LogInViewController: UIViewController {
             FirebaseAuth.Auth.auth().signIn(withEmail: email, password: password) { [weak self] result, error in
 //                let passwordData = password.data(using: .utf8) ?? Data()
                 if let result = result {
-                    UserDefaultsManager.shared.userAuthInApp(result: result)
-                    UserDefaultsManager.shared.setupForAuth()
+                    UserDefaultsManager.shared.saveAccountData(result: result)
                     self?.setupLoadingSpinner()
                     self?.indicator.stopAnimating()
                     self?.navigationController?.popToRootViewController(animated: isViewAnimated)
@@ -191,15 +190,6 @@ class LogInViewController: UIViewController {
         isPasswordHiddenButton.addTarget(self, action: #selector(didTapChangeVisible), for: .touchUpInside)
         configureUserButton.addTarget(self, action: #selector(didTapContinue), for: .touchUpInside)
         resetPasswordButton.addTarget(self, action: #selector(didTapResetPassword), for: .touchUpInside)
-    }
-    
-    private func showRegisterAccount(){
-        let vc = RegisterAccountViewController()
-        let nav = UINavigationController(rootViewController: vc)
-        nav.modalPresentationStyle = .fullScreen
-        nav.modalTransitionStyle = .flipHorizontal
-        nav.isNavigationBarHidden = false
-        present(nav, animated: isViewAnimated)
     }
     
     private func clearTextFields(){

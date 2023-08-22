@@ -14,6 +14,7 @@ import LocalAuthentication
 import Contacts
 import Photos
 import GoogleSignIn
+import SafariServices
 
 
 struct UserProfileData {
@@ -74,6 +75,9 @@ class UserProfileViewController: UIViewController {
                         UserProfileData(title: "Delete Account".localized(),
                                         cellImage: UIImage(systemName: "trash.fill")!,
                                         cellImageColor: .systemRed),
+                        UserProfileData(title: "Change Account Password",
+                                        cellImage: UIImage(systemName: "square.and.pencil")!,
+                                        cellImageColor: .systemBlue),
                         UserProfileData(title: "Log Out".localized(),
                                         cellImage: UIImage(systemName: "arrow.uturn.right.square.fill")!,
                                         cellImageColor: .systemRed)
@@ -166,26 +170,26 @@ class UserProfileViewController: UIViewController {
         super.viewWillAppear(animated)
         tabBarController?.tabBar.isHidden = false
         setupView()
+        tableView.reloadData()
     }
     
     //MARK: - Targets methods
     @objc private func didTapLogout(){
         setupHapticMotion(style: .soft)
         let alert = UIAlertController(title: "Warning", message: "Do you want to Exit from your account?", preferredStyle: .actionSheet)
-        alert.addAction(UIAlertAction(title: "Confirm", style: .destructive,handler: {  [weak self] _ in
+        alert.addAction(UIAlertAction(title: "Confirm", style: .destructive,handler: { [weak self] _ in
             if UserDefaults.standard.bool(forKey: "isAuthorised"){
-                UserDefaults.standard.set(false, forKey: "isAuthorised")
                 do {
                     try FirebaseAuth.Auth.auth().signOut()
+                    UserDefaultsManager.shared.signOut()
+                    let vc = UserAuthViewController()
+                    vc.navigationItem.hidesBackButton = true
+                    self?.navigationController?.pushViewController(vc, animated: isViewAnimated)
                 } catch let error {
                     print("Error signing out from Firebase \(error)")
                 }
-                UserDefaultsManager.shared.signOut()
-                let vc = UserAuthViewController()
-                vc.navigationItem.hidesBackButton = true
-                self?.navigationController?.pushViewController(vc, animated: isViewAnimated)
             } else {
-                print("Error exiting from account")
+                self?.alertError(text: "Cant exit from account.\nTry again later")
             }
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
@@ -442,14 +446,7 @@ class UserProfileViewController: UIViewController {
     private func setupTargets(){
         changeUserImageView.addTarget(self, action: #selector(didTapImagePicker), for: .touchUpInside)
     }
-    
-//    private func checkAuthType(){
-//        let boolean = UserDefaults.standard.bool(forKey: "authWithGoogle")
-//        if !boolean {
-//            cellArray.remove(at: <#T##Int#>)
-//        }
-//    }
-    
+
     private func setupFontSize(){
         ageLabel.font = .setMainLabelFont()
         userNameLabel.font = .setMainLabelFont()
@@ -544,24 +541,58 @@ class UserProfileViewController: UIViewController {
     }
     
     private func deleteAccount(){
-        let boolean = UserDefaults.standard.bool(forKey: "authWithGoogle")
-        guard let user = Auth.auth().currentUser,
-              let userGoogle = GIDSignIn.sharedInstance.currentUser else {
-            alertError(text: "Can't delete this account", mainTitle: "Error!")
-            return
-        }
-        if boolean {
-            print("Error")
-        } else {
-            user.delete { [weak self] error in
-                if let error = error {
-                    self?.alertError(text: error.localizedDescription, mainTitle: "Error")
-                } else {
-                    self?.alertError(text: "Account was deleted")
+        let alertController = UIAlertController(title: "Warning", message: "Do you want to delete your account?", preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "Delete", style: .destructive,handler: { [weak self] _ in
+            let boolean = UserDefaults.standard.bool(forKey: "authWithGoogle")
+            guard let user = Auth.auth().currentUser else {
+                self?.alertError(text: "Error access to account", mainTitle: "Error")
+                return }
+            if !boolean {
+                user.delete { [weak self] error in
+                    if let error = error {
+                        self?.alertError(text: error.localizedDescription, mainTitle: "Error")
+                    } else {
+                        self?.alertError(text: "Account was deleted",mainTitle: "Success")
+                        UserDefaultsManager.shared.signOut()
+                        let vc = UserAuthViewController()
+                        vc.navigationItem.hidesBackButton = true
+                        self?.navigationController?.pushViewController(vc, animated: isViewAnimated)
+                    }
                 }
+            } else {
+                guard let url = URL(string: "https://myaccount.google.com/deleteaccount") else {
+                    self?.alertError(text: "Link is unavaliable", mainTitle: "Error")
+                    return
+                }
+                let vc = SFSafariViewController(url: url)
+                self?.navigationController?.pushViewController(vc, animated: isViewAnimated)
             }
-        }
-
+            
+            }))
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        present(alertController, animated: isViewAnimated)
+    }
+    
+    private func changeAccountPassword(){
+        let alert = UIAlertController(title: "Warning", message: "Do you want to change account password?", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Change", style: .default,handler: { [weak self] _ in
+            let boolean = UserDefaults.standard.bool(forKey: "authWithGoogle")
+            guard let user = Auth.auth().currentUser else {
+                self?.alertError(text: "Error access to account", mainTitle: "Error")
+                return
+            }
+            if !boolean {
+                let vc = ChangePasswordController()
+                self?.navigationController?.pushViewController(vc, animated: isViewAnimated)
+            } else {
+                guard let url = URL(string: "https://myaccount.google.com/signinoptions/password") else {
+                    self?.alertError(text: "Can't access to link", mainTitle: "Error")
+                    return
+                }
+                let vc = SFSafariViewController(url: url)
+                self?.navigationController?.pushViewController(vc, animated: isViewAnimated)
+            }
+        }))
     }
     
     
@@ -728,6 +759,8 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
         case [3,0]:
             deleteAccount()
         case [3,1]:
+            changeAccountPassword()
+        case [3,2]:
             didTapLogout()
         default:
             print("Error")
@@ -749,8 +782,6 @@ extension UserProfileViewController: UIImagePickerControllerDelegate,UINavigatio
             UserDefaults.standard.setValue(encode, forKey: "userImage")
             UserDefaults.standard.set(nil, forKey: "userImageURL")
             userImageView.image = image
-        } else {
-            print("Error")
         }
         picker.dismiss(animated: isViewAnimated)
         activityIndicator.stopAnimating()
@@ -810,8 +841,6 @@ extension UserProfileViewController  {
             make.left.right.equalToSuperview()
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
         }
-
-        
     }
 }
 

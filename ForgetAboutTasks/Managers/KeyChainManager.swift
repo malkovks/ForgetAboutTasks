@@ -16,23 +16,6 @@ class KeychainManager {
         case unknonw(OSStatus)
     }
     
-    static func saveToPassword(email: String, password: Data) throws {
-        let query: [String:Any] = [kSecClass as String: kSecClassInternetPassword,
-                                   kSecAttrServer as String: "firebase.google.com",
-                                   kSecAttrAccount as String: email]
-        SecItemDelete(query as CFDictionary)
-        
-        let attributes: [String: Any] = [kSecClass as String: kSecClassInternetPassword,
-                                         kSecAttrServer as String: "firebase.google.com",
-                                         kSecAttrAccount as String: email,
-                                         kSecValueData as String: password]
-        
-        let status = SecItemAdd(attributes as CFDictionary, nil)
-        guard status == errSecSuccess else {
-            throw KeychainError.unknonw(status)
-        }
-    }
-    
     static func getKeychainData(email: String,password: Data) -> Data? {
         let query = [kSecClass as String: kSecClassInternetPassword,
                     kSecAttrAccount  as String: email,
@@ -69,6 +52,24 @@ class KeychainManager {
             
         } else {
             
+        }
+    }
+    
+    static func saveToPassword(email: String, password: Data, service: String = "") throws {
+        let query: [String:Any] = [kSecClass as String: kSecClassInternetPassword,
+                                   kSecAttrServer as String: "firebase.google.com",
+                                   kSecAttrAccount as String: email,
+                                   kSecAttrService as String: service]
+        SecItemDelete(query as CFDictionary)
+        
+        let attributes: [String: Any] = [kSecClass as String: kSecClassInternetPassword,
+                                         kSecAttrServer as String: "firebase.google.com",
+                                         kSecAttrAccount as String: email,
+                                         kSecValueData as String: password]
+        
+        let status = SecItemAdd(attributes as CFDictionary, nil)
+        guard status == errSecSuccess else {
+            throw KeychainError.unknonw(status)
         }
     }
     
