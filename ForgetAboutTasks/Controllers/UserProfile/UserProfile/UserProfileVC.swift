@@ -582,7 +582,7 @@ class UserProfileViewController: UIViewController {
                 return
             }
             if !boolean {
-                let vc = ChangePasswordController()
+                let vc = ChangePasswordController(account: user.email ?? "")
                 self?.navigationController?.pushViewController(vc, animated: isViewAnimated)
             } else {
                 guard let url = URL(string: "https://myaccount.google.com/signinoptions/password") else {
@@ -593,6 +593,8 @@ class UserProfileViewController: UIViewController {
                 self?.navigationController?.pushViewController(vc, animated: isViewAnimated)
             }
         }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        present(alert, animated: isViewAnimated)
     }
     
     

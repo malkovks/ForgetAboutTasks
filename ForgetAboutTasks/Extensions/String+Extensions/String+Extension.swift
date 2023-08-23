@@ -5,7 +5,7 @@
 //  Created by Константин Малков on 20.04.2023.
 //
 
-import Foundation
+import UIKit
 
 extension String {
     
@@ -21,6 +21,11 @@ extension String {
         guard let path = Bundle.main.path(forResource: text, ofType: "lproj") else { return "" }
         guard let bundle = Bundle(path: path) else { return ""}
         return NSLocalizedString(self, tableName: "Localizable", bundle: bundle, value: self, comment: self)
+    }
+    
+    func isPasswordValidation(_ password: String) -> Bool {
+        let regex = "^(?=.*[AZ])(?=.*\\d)[A-Za-z\\d]{8,}$"
+        return NSPredicate(format: "SELF MATCHES %@", regex).evaluate(with: password)
     }
     
     struct EmailValidation {
@@ -52,24 +57,7 @@ extension String {
             return false
         }
     }
-    
-//    func formatPhoneNumber(phoneNumber: String) -> String? {
-//        let cleanedPhoneNumber = phoneNumber.replacingOccurrences(of: "[^0-9]", with: "", options: .regularExpression)
-//        guard cleanedPhoneNumber.count == 10 else { return nil}
-//        let areaCode = cleanedPhoneNumber.prefix(3)
-//        let prefix = cleanedPhoneNumber.dropFirst(3).prefix(3)
-//        let suffix = cleanedPhoneNumber.dropFirst(6)
-//        
-//        return "\(areaCode) \(prefix) + \(suffix)"
-//    }
-//
-//    
-//    func isPhoneNumberValid(text: String) -> Bool {
-//        let phoneRegex = "^\\+7\\d{10}$"
-//        let phoneTest = NSPredicate(format: "SELF MATCHES %@", phoneRegex)
-//        return phoneTest.evaluate(with: text)
-//    }
-//    
+
     public static func format(with mask: String, phone: String) -> String {
         let numbers = phone.replacingOccurrences(of: "[^0-9]", with: "",options: .regularExpression)
         var result = ""
