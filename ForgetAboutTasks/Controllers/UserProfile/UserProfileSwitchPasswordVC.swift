@@ -222,7 +222,7 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
                     KeychainManager.delete()
                 }
                 
-                try! KeychainManager.save(service: "Local Password", account: emailUser, password: passwordData)
+                try! KeychainManager.saveToPassword(email: emailUser, password: passwordData, service: "Local Password")
                 self?.delegate?.isSavedCompletely(boolean: true)
                 self?.navigationController?.popToRootViewController(animated: isViewAnimated)
             }

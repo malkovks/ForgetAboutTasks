@@ -10,7 +10,13 @@ import UIKit
 extension UIViewController{
     
     
-    func alertTextField(cell title: String,placeholder: String,keyboard type: UIKeyboardType, completion: @escaping (String) -> Void) {
+    /// This function display alert with textField for getting some parameters and return string(text) value
+    /// - Parameters:
+    ///   - title: Customise title in AlertController
+    ///   - placeholder: Customise placeholder of textField in alertController
+    ///   - type: Type of textfields keyboard
+    ///   - completion: This closure return text from textField
+    func alertTextField(cell title: String, placeholder: String, keyboard type: UIKeyboardType, completion: @escaping (String) -> Void) {
         setupHapticMotion(style: .soft)
         let alert = UIAlertController(title: "", message: title, preferredStyle: .alert)
         alert.addTextField(configurationHandler: { [self] textField in
@@ -81,9 +87,4 @@ extension UIViewController{
             }
         }
     }
-    
-//    public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-//        textField.resignFirstResponder()
-//        return true
-//    }
 }

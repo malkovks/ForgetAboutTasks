@@ -20,7 +20,9 @@ class RegisterAccountViewController: UIViewController {
     //MARK: - UI views
     private let emailField: UITextField = {
        let field = UITextField()
-        field.placeholder = " example@email.com"
+        field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: field.frame.size.height))
+        field.leftViewMode = .always
+        field.placeholder = "example@email.com"
         field.layer.borderWidth = 1
         field.textContentType = .emailAddress
         field.textColor = UIColor(named: "textColor")
@@ -37,14 +39,15 @@ class RegisterAccountViewController: UIViewController {
     
     private let passwordField: UITextField = {
        let field = UITextField()
-        field.placeholder = " Enter the password.."
+        field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: field.frame.size.height))
+        field.leftViewMode = .always
+        field.placeholder = "Enter the password.."
         field.isSecureTextEntry = true
         field.textColor = UIColor(named: "textColor")
         field.layer.borderWidth = 1
-        field.textContentType = .oneTimeCode
+//        field.textContentType = .newPassword
         field.autocorrectionType = .no
         field.autocapitalizationType = .none
-//        field.passwordRules = UITextInputPasswordRules(descriptor: "No matter how and what")
         field.layer.cornerRadius = 12
         field.layer.borderColor = UIColor(named: "navigationControllerColor")?.cgColor
         field.returnKeyType = .continue
@@ -53,25 +56,29 @@ class RegisterAccountViewController: UIViewController {
     }()
     
     private let secondPasswordField: UITextField = {
-       let field = UITextField()
-        field.placeholder = " Repeat password.."
-        field.textColor = UIColor(named: "textColor")
-        field.isSecureTextEntry = true
-        field.layer.borderWidth = 1
-        field.textContentType = .oneTimeCode
-        field.autocorrectionType = .no
-        field.autocapitalizationType = .none
-        field.returnKeyType = .continue
-//        field.passwordRules = UITextInputPasswordRules(descriptor: "No matter how and what")
-        field.layer.cornerRadius = 12
-        field.layer.borderColor = UIColor(named: "navigationControllerColor")?.cgColor
-        field.tag = 2
-        return field
+        let field = UITextField()
+         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: field.frame.size.height))
+         field.leftViewMode = .always
+         field.placeholder = "Repeat the password.."
+         field.isSecureTextEntry = true
+         field.textColor = UIColor(named: "textColor")
+         field.layer.borderWidth = 1
+ //        field.textContentType = .newPassword
+         field.autocorrectionType = .no
+         field.autocapitalizationType = .none
+         field.layer.cornerRadius = 12
+         field.layer.borderColor = UIColor(named: "navigationControllerColor")?.cgColor
+         field.returnKeyType = .continue
+         field.tag = 1
+         return field
     }()
     
     private let userNameField: UITextField = {
        let field = UITextField()
-        field.placeholder = " Enter your name"
+        field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: field.frame.size.height))
+        field.leftViewMode = .always
+        field.textContentType = .givenName
+        field.placeholder = "Enter your name"
         field.textColor = UIColor(named: "textColor")
         field.isSecureTextEntry = false
         field.layer.borderWidth = 1
@@ -114,6 +121,11 @@ class RegisterAccountViewController: UIViewController {
         super.viewDidLoad()
         setupView()
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        emailField.becomeFirstResponder()
+    }
     //MARK: - Targets
     @objc private func didTapChangeVisible(){
         setupHapticMotion(style: .rigid)
@@ -153,8 +165,26 @@ class RegisterAccountViewController: UIViewController {
             }
             
         } else {
-            alertError(text: "Passwords in both field aren't equal", mainTitle: "Warning")
+            alertError(text: "Passwords must be equal", mainTitle: "Warning")
         }
+    }
+    
+    @objc private func didTapGenerateStrongPassword(sender: UIBarButtonItem){
+        let alertController = UIAlertController(title: "Warning!" , message: ""Do you want to use strong generated password for your account?"", preferredStyle: .actionSheet)
+        let confirmButton = UIAlertAction(title: "Generate and save", style: .default,handler: { [weak self] _ in
+            self?.didTapChangeVisible()
+            let password = self?.generateStrongPassword()
+            let passwordFields = [self?.passwordField, self?.secondPasswordField]
+            passwordFields.forEach { field in
+                field?.text = ""
+                field?.text = password
+                field?.resignFirstResponder()
+                
+            }
+        })
+        alertController.addAction(confirmButton)
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        present(alertController, animated: isViewAnimated)
     }
     //MARK: - Set up methods
     private func setupView(){
@@ -162,9 +192,8 @@ class RegisterAccountViewController: UIViewController {
         setupNavigationController()
         setupTargets()
         setupIndicator()
+        setupTextFields()
         view.backgroundColor = UIColor(named: "launchBackgroundColor")
-        
-        setupTextFieldDelegate()
     }
     
     private func setupIndicator(){
@@ -179,12 +208,26 @@ class RegisterAccountViewController: UIViewController {
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .done, target: nil, action: nil)
     }
     
-    private func setupTextFieldDelegate(){
-        emailField.becomeFirstResponder()
+    private func setupTextFields(){
+        let generatePasswordButton = UIBarButtonItem(title: "Generate strong password", image: nil, target: self, action: #selector(didTapGenerateStrongPassword))
+        generatePasswordButton.tintColor = UIColor(named: "textColor")
+        let toolBar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 50))
+        toolBar.barStyle = .default
+        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        toolBar.items = [flexibleSpace, generatePasswordButton, flexibleSpace]
+        toolBar.sizeToFit()
+        
+        let fields = [passwordField,secondPasswordField]
+        fields.forEach { field in
+            field.inputAccessoryView = toolBar as UIView
+            field.rightView = isPasswordHiddenButton
+            field.rightViewMode = .whileEditing
+            field.delegate = self
+        }
         emailField.delegate = self
-        passwordField.delegate = self
-        secondPasswordField.delegate = self
         userNameField.delegate = self
+        
+        
     }
     
     private func setupTargets(){
@@ -195,28 +238,47 @@ class RegisterAccountViewController: UIViewController {
     private func askForSavingPassword(email: String, password: String,userName: String){
         view.alpha = 0.8
         let alert = UIAlertController(title: "Save Data?", message: "Do you want to save email and password for future quick authentication?", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Cancel", style: .default,handler: { _ in
-            self.indicator.stopAnimating()
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .default,handler: { [weak self] _ in
+            self?.createNewAccount(email: email, userName: userName)
+            self?.indicator.stopAnimating()
         }))
+        alert.addAction(UIAlertAction(title: "", style: .default))
         alert.addAction(UIAlertAction(title: "Save", style: .destructive,handler: { [weak self] _ in
             guard let password = password.data(using: .utf8) else { return }
             try! KeychainManager.saveToPassword(email: email, password: password)
-            try! KeychainManager.save(service: "Firebase Auth", account: email, password: password)
-            UserDefaults.standard.setValue(userName, forKey: "userName")
-            UserDefaults.standard.setValue(email, forKey: "userMail")
-            UserDefaults.standard.setValue(false, forKey: "authWithGoogle")
-            UserDefaultsManager.shared.saveAccountData()
-            DispatchQueue.main.async {
-                self?.view.alpha = 1.0
-                self?.indicator.stopAnimating()
-                self?.navigationController?.popToRootViewController(animated: isViewAnimated)
-                self?.view.window?.rootViewController?.dismiss(animated: isViewAnimated)
-                
-            }
+            self?.createNewAccount(email: email, userName: userName)
         }))
         present(alert, animated: isViewAnimated)
     }
     
+    private func createNewAccount(email: String, userName: String) {
+        UserDefaults.standard.setValue(userName, forKey: "userName")
+        UserDefaults.standard.setValue(email, forKey: "userMail")
+        UserDefaults.standard.setValue(false, forKey: "authWithGoogle")
+        dump(userName)
+        dump(email)
+        DispatchQueue.main.async { [weak self] in
+            self?.view.alpha = 1.0
+            self?.indicator.stopAnimating()
+            self?.navigationController?.popToRootViewController(animated: isViewAnimated)
+            self?.view.window?.rootViewController?.dismiss(animated: isViewAnimated)
+            dump(UserDefaults.standard.string(forKey: "userName"))
+            dump(UserDefaults.standard.string(forKey: "userMail"))
+        }
+    }
+    
+    private func generateStrongPassword() -> String{
+        let chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+?"
+        var password = ""
+        
+        for _ in 0..<16 {
+            let randomIndex = Int.random(in: 0..<chars.count)
+            let randomChar = chars[chars.index(chars.startIndex, offsetBy: randomIndex)]
+            password.append(randomChar)
+        }
+        return password
+    }
 }
 
 extension RegisterAccountViewController: UITextFieldDelegate {
@@ -271,10 +333,7 @@ extension RegisterAccountViewController {
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(40)
         }
-        passwordField.rightView = isPasswordHiddenButton
-        passwordField.rightViewMode = .whileEditing
-        secondPasswordField.rightView = isPasswordHiddenButton
-        secondPasswordField.rightViewMode = .whileEditing
+        
         
         
         view.addSubview(configureUserButton)

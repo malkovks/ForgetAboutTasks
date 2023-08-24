@@ -135,6 +135,7 @@ class ChangePasswordController: UIViewController {
         indicator.center = view.center
     }
     
+    
     private func checkPasswordFields(){
         guard let oldPassword = oldPasswordField.text else { alertError(text: "Enter correct old password", mainTitle: "Error"); return }
         let authCredential = EmailAuthProvider.credential(withEmail: accountMail, password: oldPassword)

@@ -13,7 +13,7 @@ class KeychainManager {
     
     enum KeychainError: Error {
         case duplicateEntry
-        case unknonw(OSStatus)
+        case unknown(OSStatus)
     }
     
     static func getKeychainData(email: String,password: Data) -> Data? {
@@ -64,12 +64,13 @@ class KeychainManager {
         
         let attributes: [String: Any] = [kSecClass as String: kSecClassInternetPassword,
                                          kSecAttrServer as String: "firebase.google.com",
+                                         kSecAttrService as String: service,
                                          kSecAttrAccount as String: email,
                                          kSecValueData as String: password]
         
         let status = SecItemAdd(attributes as CFDictionary, nil)
         guard status == errSecSuccess else {
-            throw KeychainError.unknonw(status)
+            throw KeychainError.unknown(status)
         }
     }
     
@@ -87,7 +88,7 @@ class KeychainManager {
         }
         
         guard status == errSecSuccess else {
-            throw KeychainError.unknonw(status)
+            throw KeychainError.unknown(status)
         }
     }
     
