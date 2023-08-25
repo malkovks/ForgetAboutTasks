@@ -581,6 +581,7 @@ class UserProfileViewController: UIViewController {
                 self?.alertError(text: "Error access to account", mainTitle: "Error")
                 return
             }
+
             if !boolean {
                 let vc = ChangePasswordController(account: user.email ?? "")
                 self?.navigationController?.pushViewController(vc, animated: isViewAnimated)

@@ -24,7 +24,9 @@ class LogInViewController: UIViewController {
     private let emailField: UITextField = {
        let field = UITextField()
         field.tag = 0
-        field.placeholder = " example@email.com"
+        field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: field.frame.size.height))
+        field.leftViewMode = .always
+        field.placeholder = "example@email.com"
         field.layer.borderWidth = 1
         field.textContentType = .emailAddress
         field.keyboardType = .emailAddress
@@ -40,15 +42,15 @@ class LogInViewController: UIViewController {
     private let passwordField: UITextField = {
        let field = UITextField()
         field.tag = 1
-        field.placeholder = " Enter the password.."
+        field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: field.frame.size.height))
+        field.leftViewMode = .always
+        field.placeholder = "Enter the password.."
         field.isSecureTextEntry = true
         field.textContentType = .password
         field.layer.borderWidth = 1
         field.autocapitalizationType = .none
         field.autocorrectionType = .no
         field.returnKeyType = .continue
-        field.textContentType = .password
-        field.passwordRules = UITextInputPasswordRules(descriptor: "No matter how and what")
         field.layer.cornerRadius = 12
         field.layer.borderColor = UIColor(named: "navigationControllerColor")?.cgColor
         return field
@@ -68,8 +70,8 @@ class LogInViewController: UIViewController {
         button.configuration = .tinted()
         button.configuration?.title = "Continue"
         button.layer.cornerRadius = 8
-        button.configuration?.baseBackgroundColor = UIColor(named: "textColor")
-        button.tintColor = UIColor(named: "textColor")
+        button.configuration?.baseForegroundColor = UIColor(named: "textColor")
+        button.configuration?.baseBackgroundColor = UIColor(named: "loginColor")
         return button
     }()
     
@@ -93,6 +95,11 @@ class LogInViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setupConstraints()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        emailField.becomeFirstResponder()
     }
     //MARK: - Targets
     
@@ -161,12 +168,10 @@ class LogInViewController: UIViewController {
     }
     //MARK: - Set up methods
     private func setupView(){
-        setupDelegate()
+        setupTextFields()
         setupNavigationController()
         setupTargets()
         view.backgroundColor = UIColor(named: "launchBackgroundColor")
-        emailField.becomeFirstResponder()
-        
     }
     
     private func setupIndicator(){
@@ -174,9 +179,11 @@ class LogInViewController: UIViewController {
         indicator.center = view.center
     }
     
-    private func setupDelegate(){
+    private func setupTextFields(){
         passwordField.delegate = self
         emailField.delegate = self
+        passwordField.rightView = isPasswordHiddenButton
+        passwordField.rightViewMode = .whileEditing
     }
     
     private func setupNavigationController(){
@@ -237,8 +244,6 @@ extension LogInViewController {
             make.trailing.equalToSuperview().inset(20)
             make.height.equalTo(40)
         }
-        passwordField.rightView = isPasswordHiddenButton
-        passwordField.rightViewMode = .whileEditing
         
         view.addSubview(resetPasswordButton)
         resetPasswordButton.snp.makeConstraints { make in

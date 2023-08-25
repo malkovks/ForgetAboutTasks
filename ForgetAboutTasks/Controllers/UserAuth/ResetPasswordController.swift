@@ -18,7 +18,9 @@ class ResetPasswordViewController: UIViewController ,UITextFieldDelegate{
     //MARK: - UI views
     private let emailTextField: UITextField = {
        let field = UITextField()
-        field.placeholder = " Enter your email"
+        field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: field.frame.size.height))
+        field.leftViewMode = .always
+        field.placeholder = "Enter your email"
         field.isSecureTextEntry = false
         field.layer.borderWidth = 1
         field.returnKeyType = .continue
@@ -34,10 +36,10 @@ class ResetPasswordViewController: UIViewController ,UITextFieldDelegate{
     private let resetPasswordButton: UIButton = {
         let button = UIButton()
         button.configuration = .tinted()
-        button.configuration?.title = "Reset"
+        button.configuration?.title = "Reset password"
         button.layer.cornerRadius = 8
-        button.configuration?.baseBackgroundColor = UIColor(named: "textColor")
-        button.tintColor = UIColor(named: "textColor")
+        button.configuration?.baseForegroundColor = UIColor(named: "textColor")
+        button.configuration?.baseBackgroundColor = UIColor(named: "loginColor")
         return button
     }()
     
@@ -47,6 +49,11 @@ class ResetPasswordViewController: UIViewController ,UITextFieldDelegate{
         super.viewDidLoad()
         
         setupView()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        emailTextField.becomeFirstResponder()
     }
     //MARK: - Targets
     @objc private func didTapResetPassword(){
@@ -64,7 +71,6 @@ class ResetPasswordViewController: UIViewController ,UITextFieldDelegate{
                 let alert = UIAlertController(title: "Important message", message: "We send you message with detail information. Check mailbox", preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "Ok", style: .default,handler: { [weak self] _ in
                     if let vc = self?.navigationController?.viewControllers[(self?.navigationController!.viewControllers.count)!-3] {
-                        
                         DispatchQueue.main.async {
                             self?.indicatorView.stopAnimating()
                             self?.indicatorView.removeFromSuperview()
@@ -93,13 +99,6 @@ class ResetPasswordViewController: UIViewController ,UITextFieldDelegate{
     private func setupActivityView(){
         view.addSubview(indicatorView)
         indicatorView.center = view.center
-    }
-    
-    private func startActivityIndicator(){
-        let activity = UIActivityIndicatorView(style: .gray)
-        view.addSubview(activity)
-        activity.center = view.center
-        activity.startAnimating()
     }
     
     private func setupTextField(){

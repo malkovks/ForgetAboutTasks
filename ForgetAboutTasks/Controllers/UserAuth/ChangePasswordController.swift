@@ -13,6 +13,8 @@ class ChangePasswordController: UIViewController {
     
     private let accountMail: String
     
+    private var isPasswordHidden: Bool = true
+    
     init(account: String) {
         self.accountMail = account
         super.init(nibName: nil, bundle: nil)
@@ -33,14 +35,16 @@ class ChangePasswordController: UIViewController {
     }()
     
     private let oldPasswordField: UITextField = {
-       let field = UITextField()
-        field.placeholder = " Enter the password.."
-        field.isSecureTextEntry = true
+        let field = UITextField()
+        field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: field.frame.size.height))
+        field.leftViewMode = .always
+        field.placeholder = "Enter old password"
         field.textColor = UIColor(named: "textColor")
+        field.isSecureTextEntry = true
         field.layer.borderWidth = 1
-        field.textContentType = .oneTimeCode
-        field.autocorrectionType = .no
+        field.textContentType = .password
         field.autocapitalizationType = .none
+        field.autocorrectionType = .no
         field.layer.cornerRadius = 12
         field.layer.borderColor = UIColor(named: "navigationControllerColor")?.cgColor
         field.returnKeyType = .continue
@@ -49,15 +53,16 @@ class ChangePasswordController: UIViewController {
     }()
     
     private let firstNewPasswordTextField: UITextField = {
-       let field = UITextField()
-        field.placeholder = " Enter the password.."
-        field.passwordRules = UITextInputPasswordRules(descriptor: "required: upper; required: lower; minlength: 8;")
-        field.isSecureTextEntry = true
+        let field = UITextField()
+        field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: field.frame.size.height))
+        field.leftViewMode = .always
+        field.placeholder = "Enter new password"
         field.textColor = UIColor(named: "textColor")
+        field.isSecureTextEntry = true
         field.layer.borderWidth = 1
-        field.textContentType = .oneTimeCode
-        field.autocorrectionType = .no
+        field.textContentType = .password
         field.autocapitalizationType = .none
+        field.autocorrectionType = .no
         field.layer.cornerRadius = 12
         field.layer.borderColor = UIColor(named: "navigationControllerColor")?.cgColor
         field.returnKeyType = .continue
@@ -66,14 +71,16 @@ class ChangePasswordController: UIViewController {
     }()
     
     private let secondNewPasswordTextField: UITextField = {
-       let field = UITextField()
-        field.placeholder = " Enter the password.."
-        field.isSecureTextEntry = true
+        let field = UITextField()
+        field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: field.frame.size.height))
+        field.leftViewMode = .always
+        field.placeholder = "Repeat the password"
         field.textColor = UIColor(named: "textColor")
+        field.isSecureTextEntry = false
         field.layer.borderWidth = 1
-        field.textContentType = .oneTimeCode
+        field.textContentType = .name
+        field.autocapitalizationType = .words
         field.autocorrectionType = .no
-        field.autocapitalizationType = .none
         field.layer.cornerRadius = 12
         field.layer.borderColor = UIColor(named: "navigationControllerColor")?.cgColor
         field.returnKeyType = .continue
@@ -86,8 +93,17 @@ class ChangePasswordController: UIViewController {
         button.configuration = .tinted()
         button.configuration?.title = "Reset"
         button.layer.cornerRadius = 8
-        button.configuration?.baseBackgroundColor = UIColor(named: "textColor")
-        button.tintColor = UIColor(named: "textColor")
+        button.configuration?.baseForegroundColor = UIColor(named: "textColor")
+        button.configuration?.baseBackgroundColor = UIColor(named: "loginColor")
+        return button
+    }()
+    
+    private let isPasswordHiddenButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setImage(UIImage(systemName: "eye.fill"), for: .normal)
+        button.tintColor = UIColor(named: "navigationControllerColor")
+        button.backgroundColor = UIColor(named: "launchBackgroundColor")
+        button.layer.cornerRadius = 8
         return button
     }()
     
@@ -97,6 +113,11 @@ class ChangePasswordController: UIViewController {
         super.viewDidLoad()
         setupView()
     }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        oldPasswordField.becomeFirstResponder()
+    }
     
     //MARK: - Target methods
     @objc private func didTapConfirmChangePassword(sender: UIButton){
@@ -104,10 +125,43 @@ class ChangePasswordController: UIViewController {
         view.alpha = 0.8
         checkPasswordFields()
     }
+    
+    @objc private func didTapChangeVisible(){
+        setupHapticMotion(style: .rigid)
+        if isPasswordHidden {
+            oldPasswordField.isSecureTextEntry = false
+            firstNewPasswordTextField.isSecureTextEntry = false
+            secondNewPasswordTextField.isSecureTextEntry = false
+            isPasswordHiddenButton.setImage(UIImage(systemName: "eye.slash.fill"), for: .normal)
+        } else {
+            oldPasswordField.isSecureTextEntry = true
+            firstNewPasswordTextField.isSecureTextEntry = true
+            secondNewPasswordTextField.isSecureTextEntry = true
+            isPasswordHiddenButton.setImage(UIImage(systemName: "eye.fill"), for: .normal)
+        }
+        isPasswordHidden = !isPasswordHidden
+    }
+    
+    @objc private func didTapGenerateStrongPassword(sender: UIBarButtonItem){
+        let alertController = UIAlertController(title: "Warning!" , message: "Do you want to use strong generated password for your account?", preferredStyle: .actionSheet)
+        let confirmButton = UIAlertAction(title: "Generate and save", style: .default,handler: { [weak self] _ in
+            let password = self?.generateStrongPassword()
+            let passwordFields = [self?.firstNewPasswordTextField, self?.secondNewPasswordTextField]
+            passwordFields.forEach { field in
+                field?.text = ""
+                field?.text = password
+                field?.resignFirstResponder()
+                
+            }
+        })
+        alertController.addAction(confirmButton)
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        present(alertController, animated: isViewAnimated)
+    }
     //MARK: - Setup methods
     private func setupView(){
         setupNavigationController()
-        setupTextFields()
+//        setupTextFields()
         setupConstraints()
         setupIndicator()
         view.backgroundColor = UIColor(named: "launchBackgroundColor")
@@ -123,11 +177,27 @@ class ChangePasswordController: UIViewController {
     }
     
     private func setupTextFields(){
-        oldPasswordField.becomeFirstResponder()
+        let toolBar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 50 ))
+        toolBar.barStyle = .default
+        let space = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        let fixedSpace = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
+        fixedSpace.width = 1.0
+        let action = UIBarButtonItem(title: "Generate strong password", style: .done, target: self, action: #selector(didTapGenerateStrongPassword))
+        action.tintColor = UIColor(named: "textColor")
+        toolBar.setItems([space, fixedSpace, action , fixedSpace, space], animated: isViewAnimated)
+        toolBar.backgroundColor = .systemGray3
+        toolBar.sizeToFit()
+        
+        
         let fields = [oldPasswordField,firstNewPasswordTextField,secondNewPasswordTextField]
         fields.forEach { textField in
             textField.delegate = self
+            textField.rightView = isPasswordHiddenButton
+            textField.rightViewMode = .always
         }
+                 #error("Некорректная работа тулбара. Доделать" )
+//        firstNewPasswordTextField.inputAccessoryView = toolBar as UIView
+//        secondNewPasswordTextField.inputAccessoryView = toolBar as UIView
     }
     
     private func setupIndicator(){
@@ -171,6 +241,18 @@ class ChangePasswordController: UIViewController {
             indicator.stopAnimating()
         }
         view.alpha = 1
+    }
+    
+    private func generateStrongPassword() -> String{
+        let chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+?"
+        var password = ""
+        
+        for _ in 0..<16 {
+            let randomIndex = Int.random(in: 0..<chars.count)
+            let randomChar = chars[chars.index(chars.startIndex, offsetBy: randomIndex)]
+            password.append(randomChar)
+        }
+        return password
     }
     
     private func clearTextFields(){

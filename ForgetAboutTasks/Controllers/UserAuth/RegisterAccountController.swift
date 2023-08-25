@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 import FirebaseAuth
+import AuthenticationServices
 //import FirebaseDatabase
 
 
@@ -45,9 +46,10 @@ class RegisterAccountViewController: UIViewController {
         field.isSecureTextEntry = true
         field.textColor = UIColor(named: "textColor")
         field.layer.borderWidth = 1
-//        field.textContentType = .newPassword
+        field.textContentType = .password
         field.autocorrectionType = .no
         field.autocapitalizationType = .none
+        field.keyboardType = .default
         field.layer.cornerRadius = 12
         field.layer.borderColor = UIColor(named: "navigationControllerColor")?.cgColor
         field.returnKeyType = .continue
@@ -63,7 +65,8 @@ class RegisterAccountViewController: UIViewController {
          field.isSecureTextEntry = true
          field.textColor = UIColor(named: "textColor")
          field.layer.borderWidth = 1
- //        field.textContentType = .newPassword
+         field.textContentType = .password
+        field.keyboardType = .default
          field.autocorrectionType = .no
          field.autocapitalizationType = .none
          field.layer.cornerRadius = 12
@@ -104,10 +107,7 @@ class RegisterAccountViewController: UIViewController {
     private let configureUserButton: UIButton = {
         let button = UIButton()
         button.configuration = .tinted()
-        button.configuration?.title = "Create"
-        button.configuration?.image = UIImage(systemName: "plus.circle.fill")?.withTintColor(UIColor(named: "launchBackgroundColor")!,renderingMode: .alwaysOriginal)
-        button.configuration?.imagePadding = 8
-        button.configuration?.imagePlacement = .trailing
+        button.configuration?.title = "Create new account"
         button.layer.cornerRadius = 8
         button.configuration?.baseForegroundColor = UIColor(named: "textColor")
         button.configuration?.baseBackgroundColor = UIColor(named: "loginColor")
@@ -121,7 +121,7 @@ class RegisterAccountViewController: UIViewController {
         super.viewDidLoad()
         setupView()
     }
-    
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         emailField.becomeFirstResponder()
@@ -168,9 +168,9 @@ class RegisterAccountViewController: UIViewController {
             alertError(text: "Passwords must be equal", mainTitle: "Warning")
         }
     }
-    
+
     @objc private func didTapGenerateStrongPassword(sender: UIBarButtonItem){
-        let alertController = UIAlertController(title: "Warning!" , message: ""Do you want to use strong generated password for your account?"", preferredStyle: .actionSheet)
+        let alertController = UIAlertController(title: "Warning!" , message: "Do you want to use strong generated password for your account?", preferredStyle: .actionSheet)
         let confirmButton = UIAlertAction(title: "Generate and save", style: .default,handler: { [weak self] _ in
             self?.didTapChangeVisible()
             let password = self?.generateStrongPassword()
@@ -209,12 +209,15 @@ class RegisterAccountViewController: UIViewController {
     }
     
     private func setupTextFields(){
-        let generatePasswordButton = UIBarButtonItem(title: "Generate strong password", image: nil, target: self, action: #selector(didTapGenerateStrongPassword))
-        generatePasswordButton.tintColor = UIColor(named: "textColor")
-        let toolBar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 50))
+        let toolBar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 50 ))
         toolBar.barStyle = .default
-        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-        toolBar.items = [flexibleSpace, generatePasswordButton, flexibleSpace]
+        let space = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        let fixedSpace = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
+        fixedSpace.width = 1.0
+        let action = UIBarButtonItem(title: "Generate strong password", style: .done, target: self, action: #selector(didTapGenerateStrongPassword))
+        action.tintColor = UIColor(named: "textColor")
+        toolBar.setItems([space, fixedSpace, action , fixedSpace, space], animated: isViewAnimated)
+        toolBar.backgroundColor = .systemGray3
         toolBar.sizeToFit()
         
         let fields = [passwordField,secondPasswordField]
@@ -235,15 +238,21 @@ class RegisterAccountViewController: UIViewController {
         configureUserButton.addTarget(self, action: #selector(didTapCreateNewAccount), for: .touchUpInside)
     }
     
+    
     private func askForSavingPassword(email: String, password: String,userName: String){
         view.alpha = 0.8
+//        func saveDataAutofillPassword(email: String, password: String){
+//            let credentials = ASPasswordCredential(user: email, password: password)
+//            let provider = ASAuthorizationPasswordProvider()
+//
+//
+//        }
         let alert = UIAlertController(title: "Save Data?", message: "Do you want to save email and password for future quick authentication?", preferredStyle: .alert)
         
         alert.addAction(UIAlertAction(title: "Cancel", style: .default,handler: { [weak self] _ in
             self?.createNewAccount(email: email, userName: userName)
             self?.indicator.stopAnimating()
         }))
-        alert.addAction(UIAlertAction(title: "", style: .default))
         alert.addAction(UIAlertAction(title: "Save", style: .destructive,handler: { [weak self] _ in
             guard let password = password.data(using: .utf8) else { return }
             try! KeychainManager.saveToPassword(email: email, password: password)
