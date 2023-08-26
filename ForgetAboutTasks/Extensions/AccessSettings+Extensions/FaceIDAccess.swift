@@ -23,7 +23,7 @@ extension UIViewController {
             if success {
                 UserDefaults.standard.setValue(success, forKey: "isUserConfirmPassword")
                 DispatchQueue.main.asyncAfter(deadline: .now()+1) {
-                    self?.dismiss(animated: isViewAnimated)
+                    self?.navigationController?.popViewController(animated: isViewAnimated)
                 }
             } else {
                 DispatchQueue.main.async {

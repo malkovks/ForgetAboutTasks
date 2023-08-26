@@ -209,8 +209,8 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
     @objc private func didTapConfirmPassword(sender: UIButton) {
         setupHapticMotion(style: .light)
         let emailUser = UserDefaults.standard.string(forKey: "userMail") ?? "No email"
-        let passwordData = passwordDigits.data(using: .utf8) ?? Data()
-        let data = KeychainManager.get(service: "Local Password", account: emailUser)
+        let password = passwordDigits
+        let data = KeychainManager.getPassword(email: emailUser) ?? Data()
         if passwordDigits.count == 4 && passwordDigits == confirmPasswordDigits {
             confirmPasswordButton.setImage(UIImage(systemName: "lock.fill"), for: .normal)
             confirmPasswordButton.setTitle("Confirmed", for: .normal)
@@ -222,7 +222,7 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
                     KeychainManager.delete()
                 }
                 
-                try! KeychainManager.saveToPassword(email: emailUser, password: passwordData, service: "Local Password")
+                try! KeychainManager.savePassword(password: password, email: emailUser)
                 self?.delegate?.isSavedCompletely(boolean: true)
                 self?.navigationController?.popToRootViewController(animated: isViewAnimated)
             }
@@ -256,6 +256,7 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
     //setup for view if user entered in app when password is turn on
     private func setupEntryView(){
         view.backgroundColor = UIColor(named: "calendarHeaderColor")
+        tabBarController?.tabBar.isHidden = true
         confirmPasswordButton.isHidden = true
         let accessFaceID = UserDefaults.standard.bool(forKey: "accessToFaceID")
         if accessFaceID {
@@ -281,14 +282,14 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
 
     private func checkCorrectPassword(textField: UITextField){
         let emailUser = UserDefaults.standard.string(forKey: "userMail") ?? "No email"
-        let value = KeychainManager.get(service: "Local Password", account: emailUser)
+        let value = try! KeychainManager.getPassword(email: emailUser)
         let textValue = String(decoding: value ?? Data(), as: UTF8.self)
         if textField.tag == 4 {
             if textValue.contains(passwordDigits){
                 UserDefaults.standard.setValue(true, forKey: "isUserConfirmPassword")
                 showAlertForUser(text: "Success", duration: .now()+1, controllerView: view)
                 DispatchQueue.main.asyncAfter(deadline: .now()+1) {
-                    self.dismiss(animated: isViewAnimated)
+                    self.navigationController?.popViewController(animated: isViewAnimated)
                 }
             } else {
                 alertError(text: "Incorrect password.\nPlease try again!",mainTitle: "Error")

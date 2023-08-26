@@ -45,7 +45,7 @@ class ChangePasswordController: UIViewController {
         field.textContentType = .password
         field.autocapitalizationType = .none
         field.autocorrectionType = .no
-        field.layer.cornerRadius = 12
+        field.layer.cornerRadius = 8
         field.layer.borderColor = UIColor(named: "navigationControllerColor")?.cgColor
         field.returnKeyType = .continue
         field.tag = 0
@@ -76,12 +76,12 @@ class ChangePasswordController: UIViewController {
         field.leftViewMode = .always
         field.placeholder = "Repeat the password"
         field.textColor = UIColor(named: "textColor")
-        field.isSecureTextEntry = false
+        field.isSecureTextEntry = true
         field.layer.borderWidth = 1
-        field.textContentType = .name
-        field.autocapitalizationType = .words
+        field.textContentType = .password
+        field.autocapitalizationType = .none
         field.autocorrectionType = .no
-        field.layer.cornerRadius = 12
+        field.layer.cornerRadius = 16
         field.layer.borderColor = UIColor(named: "navigationControllerColor")?.cgColor
         field.returnKeyType = .continue
         field.tag = 2
@@ -161,7 +161,7 @@ class ChangePasswordController: UIViewController {
     //MARK: - Setup methods
     private func setupView(){
         setupNavigationController()
-//        setupTextFields()
+        setupTextFields()
         setupConstraints()
         setupIndicator()
         view.backgroundColor = UIColor(named: "launchBackgroundColor")
@@ -184,20 +184,26 @@ class ChangePasswordController: UIViewController {
         fixedSpace.width = 1.0
         let action = UIBarButtonItem(title: "Generate strong password", style: .done, target: self, action: #selector(didTapGenerateStrongPassword))
         action.tintColor = UIColor(named: "textColor")
-        toolBar.setItems([space, fixedSpace, action , fixedSpace, space], animated: isViewAnimated)
+        toolBar.items = [space, fixedSpace, action , fixedSpace, space]
         toolBar.backgroundColor = .systemGray3
         toolBar.sizeToFit()
         
-        
-        let fields = [oldPasswordField,firstNewPasswordTextField,secondNewPasswordTextField]
-        fields.forEach { textField in
-            textField.delegate = self
-            textField.rightView = isPasswordHiddenButton
-            textField.rightViewMode = .always
-        }
-                 #error("Некорректная работа тулбара. Доделать" )
-//        firstNewPasswordTextField.inputAccessoryView = toolBar as UIView
-//        secondNewPasswordTextField.inputAccessoryView = toolBar as UIView
+        oldPasswordField.delegate = self
+        oldPasswordField.rightView = isPasswordHiddenButton
+        oldPasswordField.rightViewMode = .always
+        firstNewPasswordTextField.delegate = self
+//        firstNewPasswordTextField.rightView = isPasswordHiddenButton
+        firstNewPasswordTextField.rightViewMode = .whileEditing
+        secondNewPasswordTextField.delegate = self
+//        secondNewPasswordTextField.rightView = isPasswordHiddenButton
+        secondNewPasswordTextField.rightViewMode = .whileEditing
+//        fields.forEach { [unowned self] textField in
+//            textField.delegate = self
+//            textField.rightView = self.isPasswordHiddenButton
+//            textField.rightViewMode = .always
+//        }
+        firstNewPasswordTextField.inputAccessoryView = toolBar as UIView
+        secondNewPasswordTextField.inputAccessoryView = toolBar as UIView
     }
     
     private func setupIndicator(){
@@ -285,6 +291,8 @@ extension ChangePasswordController: UITextFieldDelegate {
         }
         
     }
+    
+   
 }
 
 extension ChangePasswordController {

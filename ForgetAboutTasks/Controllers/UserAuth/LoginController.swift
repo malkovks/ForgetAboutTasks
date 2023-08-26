@@ -143,7 +143,7 @@ class LogInViewController: UIViewController {
                 }
             }
         } else {
-            if let data = KeychainManager.get(service: "Firebase Auth", account: email){
+            if let data = try! KeychainManager.getPassword(email: email){
                 let pswrd = String(decoding: data, as: UTF8.self)
                 if !pswrd.contains(password) {
                     self.alertError(text: "Incorrect password. Try again", mainTitle: "Error!")

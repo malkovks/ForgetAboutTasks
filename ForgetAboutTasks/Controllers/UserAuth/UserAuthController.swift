@@ -66,6 +66,15 @@ class UserAuthViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
+//        #error("Test this function")
+//        try! KeychainManager.savePassword(password: "12345678", email: "test@mail.ru")
+//        DispatchQueue.main.asyncAfter(deadline: .now()+5) {
+//
+//        }
+//        let password = try! KeychainManager.getPassword(email: "test@mail.ru") ?? Data()
+//        let passwordString = String(data: password,encoding: .utf8)
+//        dump(password)
+//        dump(passwordString)
     }
     
     //MARK: - Targets methods

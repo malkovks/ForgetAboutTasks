@@ -83,6 +83,7 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
         _ = UserDefaultsManager.shared.checkDarkModeUserDefaults()
         checkPasswordEntryEnable()
         calendar.reloadData()
+        tabBarController?.tabBar.isHidden = false
     }
     
    //MARK: - target methods
