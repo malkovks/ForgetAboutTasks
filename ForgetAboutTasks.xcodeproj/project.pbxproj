@@ -97,6 +97,7 @@
 		0AB578F22A90315100227581 /* InformationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB578F12A90315100227581 /* InformationView.swift */; };
 		0AB763BA29E3FAC900BFDB0D /* AlertError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB763B929E3FAC900BFDB0D /* AlertError.swift */; };
 		0ABD347D2A9536A90071EE4F /* ChangePasswordController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ABD347C2A9536A90071EE4F /* ChangePasswordController.swift */; };
+		0ABD347F2A9AE0170071EE4F /* UserProfileSetTimerPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ABD347E2A9AE0170071EE4F /* UserProfileSetTimerPassword.swift */; };
 		0ACE796B29D9EEAA00599C19 /* AlertSpinner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE796A29D9EEAA00599C19 /* AlertSpinner.swift */; };
 		0ACE797229DD95C600599C19 /* CreateTaskTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE797129DD95C600599C19 /* CreateTaskTableVC.swift */; };
 		0ACE797829DECF3300599C19 /* NewContactVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ACE797729DECF3300599C19 /* NewContactVC.swift */; };
@@ -232,6 +233,7 @@
 		0AB578F12A90315100227581 /* InformationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InformationView.swift; sourceTree = "<group>"; };
 		0AB763B929E3FAC900BFDB0D /* AlertError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertError.swift; sourceTree = "<group>"; };
 		0ABD347C2A9536A90071EE4F /* ChangePasswordController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordController.swift; sourceTree = "<group>"; };
+		0ABD347E2A9AE0170071EE4F /* UserProfileSetTimerPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileSetTimerPassword.swift; sourceTree = "<group>"; };
 		0ACE796A29D9EEAA00599C19 /* AlertSpinner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertSpinner.swift; sourceTree = "<group>"; };
 		0ACE797129DD95C600599C19 /* CreateTaskTableVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTaskTableVC.swift; sourceTree = "<group>"; };
 		0ACE797729DECF3300599C19 /* NewContactVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewContactVC.swift; sourceTree = "<group>"; };
@@ -488,6 +490,7 @@
 			children = (
 				0AD4985C2A752E8100B0599E /* UserProfile */,
 				0A9918D32A52BCA0001004FA /* UserProfileAppIconVC.swift */,
+				0ABD347E2A9AE0170071EE4F /* UserProfileSetTimerPassword.swift */,
 				0A9918F62A57F524001004FA /* UserProfileSwitchPasswordVC.swift */,
 				0AA0E93D2A63A46700911C0D /* UserProfileChangeAppFontVC.swift */,
 			);
@@ -969,6 +972,7 @@
 				0AD498512A701F3700B0599E /* UserProfileFontCollectionViewCell.swift in Sources */,
 				0A9918B22A41B655001004FA /* LockscreenWidget.swift in Sources */,
 				0ACE796B29D9EEAA00599C19 /* AlertSpinner.swift in Sources */,
+				0ABD347F2A9AE0170071EE4F /* UserProfileSetTimerPassword.swift in Sources */,
 				0AEAA9F82A272BB600BE85A4 /* EditContactVC.swift in Sources */,
 				0AD4985A2A750E5900B0599E /* UserProfileFooterView.swift in Sources */,
 				0A99A90729CD99CA00CC5A42 /* UserAuthController.swift in Sources */,

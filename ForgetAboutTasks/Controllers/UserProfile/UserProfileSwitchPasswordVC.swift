@@ -38,13 +38,13 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
     
     private let firstTextField :UITextField = {
         let field = UITextField()
+        field.layer.borderWidth = 1.0
+        field.layer.borderColor = UIColor(named: "textColor")?.cgColor
         field.isSecureTextEntry = true
         field.textColor = UIColor(named: "textColor")
         field.backgroundColor = UIColor(named: "backgroundColor")
         field.keyboardType = .numberPad
         field.textAlignment = .center
-        field.layer.borderWidth = 1
-        field.layer.borderColor = UIColor(named: "backgroundColor")?.cgColor
         field.layer.cornerRadius = 8
         field.tag = 1
         return field
@@ -52,13 +52,13 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
     
     private let secondTextField :UITextField = {
         let field = UITextField()
+        field.layer.borderWidth = 1.0
+        field.layer.borderColor = UIColor(named: "textColor")?.cgColor
         field.isSecureTextEntry = true
         field.textColor = UIColor(named: "textColor")
         field.backgroundColor = UIColor(named: "backgroundColor")
         field.keyboardType = .numberPad
         field.textAlignment = .center
-        field.layer.borderWidth = 1
-        field.layer.borderColor = UIColor(named: "backgroundColor")?.cgColor
         field.layer.cornerRadius = 8
         field.tag = 2
         return field
@@ -66,13 +66,13 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
     
     private let thirdTextField :UITextField = {
         let field = UITextField()
+        field.layer.borderWidth = 1.0
+        field.layer.borderColor = UIColor(named: "textColor")?.cgColor
         field.isSecureTextEntry = true
         field.textColor = UIColor(named: "textColor")
         field.backgroundColor = UIColor(named: "backgroundColor")
         field.keyboardType = .numberPad
         field.textAlignment = .center
-        field.layer.borderWidth = 1
-        field.layer.borderColor = UIColor(named: "backgroundColor")?.cgColor
         field.layer.cornerRadius = 8
         field.tag = 3
         return field
@@ -80,13 +80,13 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
     
     private let forthTextField :UITextField = {
         let field = UITextField()
+        field.layer.borderWidth = 1.0
+        field.layer.borderColor = UIColor(named: "textColor")?.cgColor
         field.isSecureTextEntry = true
         field.textColor = UIColor(named: "textColor")
         field.backgroundColor = UIColor(named: "backgroundColor")
         field.keyboardType = .numberPad
         field.textAlignment = .center
-        field.layer.borderWidth = 1
-        field.layer.borderColor = UIColor(named: "backgroundColor")?.cgColor
         field.layer.cornerRadius = 8
         field.tag = 4
         return field
@@ -210,21 +210,23 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
         setupHapticMotion(style: .light)
         let emailUser = UserDefaults.standard.string(forKey: "userMail") ?? "No email"
         let password = passwordDigits
-        let data = KeychainManager.getPassword(email: emailUser) ?? Data()
+        let data = KeychainManager.getPassword(email: emailUser)
         if passwordDigits.count == 4 && passwordDigits == confirmPasswordDigits {
             confirmPasswordButton.setImage(UIImage(systemName: "lock.fill"), for: .normal)
             confirmPasswordButton.setTitle("Confirmed", for: .normal)
+            
             checkAuthForFaceID { [weak self] success in
                 UserDefaults.standard.setValue(success, forKey: "accessToFaceID")
                 UserDefaults.standard.setValue(true, forKey: "isPasswordCodeEnabled")
-                UserDefaults.standard.setValue(false, forKey: "isUserConfirmPassword")
+                UserDefaults.standard.setValue(true, forKey: "isUserConfirmPassword")
                 if data != nil {
                     KeychainManager.delete()
                 }
                 
                 try! KeychainManager.savePassword(password: password, email: emailUser)
                 self?.delegate?.isSavedCompletely(boolean: true)
-                self?.navigationController?.popToRootViewController(animated: isViewAnimated)
+                self?.navigationController?.popViewController(animated: isViewAnimated)
+                self?.dismiss(animated: isViewAnimated)
             }
         } else {
             alertError(text: "You entered different passwords. Try again", mainTitle: "Error!".localized())
@@ -243,7 +245,7 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
         setupRegistrationView()
         setupTextField()
         addConstrains()
-        view.backgroundColor = UIColor(named: "calendarHeaderColor")
+        view.backgroundColor = .systemBackground
         confirmPasswordButton.addTarget(self, action: #selector(didTapConfirmPassword(sender: )), for: .touchUpInside)
     }
     
@@ -255,6 +257,8 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
     }
     //setup for view if user entered in app when password is turn on
     private func setupEntryView(){
+        
+        title = "Before using"
         view.backgroundColor = UIColor(named: "calendarHeaderColor")
         tabBarController?.tabBar.isHidden = true
         confirmPasswordButton.isHidden = true
@@ -271,6 +275,7 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
     }
     
     private func setupTextField(){
+        
         firstTextField.addTarget(self, action: #selector(textDidChangeValue(textField: )), for: UIControl.Event.editingChanged)
         secondTextField.addTarget(self, action: #selector(textDidChangeValue(textField: )), for: UIControl.Event.editingChanged)
         thirdTextField.addTarget(self, action: #selector(textDidChangeValue(textField: )), for: UIControl.Event.editingChanged)
@@ -290,6 +295,7 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
                 showAlertForUser(text: "Success", duration: .now()+1, controllerView: view)
                 DispatchQueue.main.asyncAfter(deadline: .now()+1) {
                     self.navigationController?.popViewController(animated: isViewAnimated)
+                    self.dismiss(animated: isViewAnimated)
                 }
             } else {
                 alertError(text: "Incorrect password.\nPlease try again!",mainTitle: "Error")

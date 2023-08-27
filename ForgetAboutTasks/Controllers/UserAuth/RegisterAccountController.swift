@@ -241,18 +241,8 @@ class RegisterAccountViewController: UIViewController {
     
     private func askForSavingPassword(email: String, password: String,userName: String){
         view.alpha = 0.8
-        let alert = UIAlertController(title: "Save Data?", message: "Do you want to save email and password for future quick authentication?", preferredStyle: .alert)
-        
-        alert.addAction(UIAlertAction(title: "Cancel", style: .default,handler: { [weak self] _ in
-            self?.createNewAccount(email: email, userName: userName)
-            self?.indicator.stopAnimating()
-        }))
-        alert.addAction(UIAlertAction(title: "Save", style: .destructive,handler: { [weak self] _ in
-            try! KeychainManager.savePassword(password: password, email: email)
-            self?.createNewAccount(email: email, userName: userName)
-            self?.indicator.stopAnimating()
-        }))
-        present(alert, animated: isViewAnimated)
+        createNewAccount(email: email, userName: userName)
+        indicator.stopAnimating()
     }
     
     private func createNewAccount(email: String, userName: String) {

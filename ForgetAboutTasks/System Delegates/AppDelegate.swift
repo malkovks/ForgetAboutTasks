@@ -14,6 +14,12 @@ import GoogleSignIn
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        let value = UserDefaults.standard.integer(forKey: "timerPassword")
+        print(value)
+        let timer = Timer.scheduledTimer(withTimeInterval: TimeInterval(value), repeats: true) { _ in
+            
+            UserDefaults.standard.set(false, forKey: "isUserConfirmPassword")
+        }
         FirebaseApp.configure()
         return true
     }

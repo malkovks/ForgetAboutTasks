@@ -144,7 +144,12 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
         let isAuthorized = UserDefaults.standard.bool(forKey: "isUserConfirmPassword")
         if success && !isAuthorized {
             let vc = UserProfileSwitchPasswordViewController(isCheckPassword: true)
-            navigationController?.pushViewController(vc, animated: isViewAnimated)
+            vc.modalPresentationStyle = .overCurrentContext
+            tabBarController?.present(vc, animated: isViewAnimated)
+//            navigationController?.pushViewController(vc, animated: isViewAnimated)
+        } else {
+            print(success)
+            print(isAuthorized)
         }
     }
     

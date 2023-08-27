@@ -11,10 +11,29 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
     
+    private func checkPasswordEntryEnable(tabBar: UITabBarController){
+        let success = UserDefaults.standard.bool(forKey: "isPasswordCodeEnabled")
+        let isAuthorized = UserDefaults.standard.bool(forKey: "isUserConfirmPassword")
+        if success {//&& !isAuthorized {
+            let vc = UserProfileSwitchPasswordViewController(isCheckPassword: true)
+            vc.modalPresentationStyle = .overCurrentContext
+            tabBar.present(vc, animated: isViewAnimated)
+//            navigationController?.pushViewController(vc, animated: isViewAnimated)
+        } else {
+            print(success)
+            print(isAuthorized)
+            print("result")
+        }
+    }
+    
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         let window = UIWindow(windowScene: windowScene)
         let mainVC = TabBarViewController()
+        
+        checkPasswordEntryEnable(tabBar: mainVC)
+        
+        
         window.rootViewController = mainVC
         window.makeKeyAndVisible()
         self.window = window

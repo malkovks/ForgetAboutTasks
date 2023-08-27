@@ -42,15 +42,20 @@ class UserProfileViewController: UIViewController {
                                         cellImageColor: .systemBrown ),
                         UserProfileData(title: "Access to Photo and Camera",
                                         cellImage: UIImage(systemName: "camera.circle")!,
-                                        cellImageColor: UIColor(named: "textColor")! ),
+                                        cellImageColor: UIColor(named: "textColor")! )
+                    ],
+                    [
                         UserProfileData(title: "Access to Face ID",
                                         cellImage: UIImage(systemName: "faceid")!,
                                         cellImageColor: .systemBlue),
                         UserProfileData(title: "Code-password and Face ID".localized(),
                                         cellImage: UIImage(systemName: "lock.open.fill")!,
-                                        cellImageColor: .systemBlue)
-                     ],
-                     [
+                                        cellImageColor: .systemBlue),
+                        UserProfileData(title: "Password check frequency",
+                                        cellImage: UIImage(systemName: "timer.circle.fill")!,
+                                        cellImageColor: .systemIndigo)
+                    ],
+                    [
                         UserProfileData(title: "Change App Icon".localized(),
                                         cellImage: UIImage(systemName: "app.fill")!,
                                         cellImageColor: .systemIndigo),
@@ -70,7 +75,8 @@ class UserProfileViewController: UIViewController {
                                         cellImageColor: .systemGreen),
                         UserProfileData(title: "Information".localized(),
                                         cellImage: UIImage(systemName: "info.circle.fill")!,
-                                        cellImageColor: .systemGray)],
+                                        cellImageColor: .systemGray)
+                     ],
                      [
                         UserProfileData(title: "Delete Account".localized(),
                                         cellImage: UIImage(systemName: "trash.fill")!,
@@ -598,6 +604,18 @@ class UserProfileViewController: UIViewController {
         present(alert, animated: isViewAnimated)
     }
     
+    private func changePasswordTimerDisplaying(){
+        let vc = UserProfileSetTimerPassword()
+        let nav = UINavigationController(rootViewController: vc)
+        nav.modalPresentationStyle = .pageSheet
+        nav.sheetPresentationController?.detents = [.custom(resolver: { [unowned self] context in
+            self.view.frame.size.height/3
+        })]
+        nav.sheetPresentationController?.prefersGrabberVisible = true
+        nav.isNavigationBarHidden = false
+        present(nav, animated: isViewAnimated)
+    }
+    
     
     
 }
@@ -623,13 +641,13 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
     //header and footer setups
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
-        case 0...3: return cellArray[section].count
+        case 0...4: return cellArray[section].count
         default: return 0
         }
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 4
+        return 5
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -646,14 +664,14 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         switch section {
-        case 0...2: return fontSizeValue * 3
+        case 0...4: return fontSizeValue * 3
         default: return 0
         }
     }
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         switch section {
-        case 0...2: return fontSizeValue * 4
+        case 0...3: return fontSizeValue * 4
         default: return 0
         }
     }
@@ -666,7 +684,7 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
         cell.separatorInset = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15)
         cell.configureSwitch(indexPath: indexPath)
         cell.switchButton.removeTarget(nil, action: nil, for: .allEvents)
-        if indexPath == [1,0] {
+        if indexPath == [2,0] {
             let appIcon = UIApplication.shared.alternateIconName ?? "AppIcon.png"
             let iconImage = UIImage(named: appIcon)?.withRenderingMode(.alwaysOriginal)
             let image = imageWith(image: iconImage!)
@@ -706,7 +724,7 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
                     cell.switchButton.isOn = success
                 }
             }
-        case [0,5]:
+        case [1,0]:
             cell.switchButton.addTarget(self, action: #selector(didTapChangeAccessToFaceID), for: .touchUpInside)
             let value = UserDefaults.standard.bool(forKey: "accessToFaceID")
             if !value {
@@ -718,17 +736,17 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
             } else {
                 cell.switchButton.isOn = value
             }
-        case [0,6]:
+        case [1,1]:
             let passwordEnabled = UserDefaults.standard.bool(forKey: "isPasswordCodeEnabled")
             if passwordEnabled {
                 cell.cellImageView.image = UIImage(systemName: "lock.fill")!
             } else {
                 cell.cellImageView.image = UIImage(systemName: "lock.open.fill")
             }
-        case [1,2]:
+        case [2,2]:
             cell.switchButton.addTarget(self, action: #selector(didTapDisableAnimation), for: .valueChanged)
             cell.switchButton.isOn = UserDefaults.standard.bool(forKey: "enabledAnimation")
-        case [1,3]:
+        case [2,3]:
             cell.switchButton.addTarget(self, action: #selector(didTapChangeNapticStyle), for: .valueChanged)
             cell.switchButton.isOn = UserDefaults.standard.bool(forKey: "enableVibration")
 
@@ -744,29 +762,30 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
         setupHapticMotion(style: .soft)
         tableView.deselectRow(at: indexPath, animated: isViewAnimated)
         switch indexPath {
-        case [0,6]:
+        case [1,1]:
             if passwordBoolean {
                 openPasswordController(title: "Warning!", message: "Do you want to switch off or change password?", alertTitle: "Change password")
             } else {
                 openPasswordController()
             }
-            
-        case [1,0]:
-            openSelectionChangeIcon()
-        case [1,1]:
-            openChangeFontController()
+        case [1,2]:
+            changePasswordTimerDisplaying()
         case [2,0]:
-            showVariationsWithLanguage(title: "Change language", message: "") {  result in  }
+            openSelectionChangeIcon()
         case [2,1]:
-            showInfoAuthentication(text: infoText, controller: self.view)
+            openChangeFontController()
         case [3,0]:
-            deleteAccount()
+            showVariationsWithLanguage(title: "Change language", message: "") {  result in  }
         case [3,1]:
+            showInfoAuthentication(text: infoText, controller: self.view)
+        case [4,0]:
+            deleteAccount()
+        case [4,1]:
             changeAccountPassword()
-        case [3,2]:
+        case [4,2]:
             didTapLogout()
         default:
-            print("Error")
+            break
         }
     }
     

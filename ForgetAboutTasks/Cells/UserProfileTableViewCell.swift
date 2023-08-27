@@ -69,13 +69,15 @@ class UserProfileTableViewCell: UITableViewCell {
 
     func configureSwitch(indexPath: IndexPath){
         switch indexPath {
-        case [0,0],[0,1],[0,2],[0,3],[0,4],[0,5],[1,2],[1,3]:
+        case [0,0],[0,1],[0,2],[0,3],[0,4],[1,0],[2,2],[2,3]:
             switchButton.isHidden = false
             inclosureIndicator.isHidden = true
-        case [0,6],[1,0],[1,1],[2,0],[2,1],[2,2],[3,0],[3,1]:
+//        case [1,1],[1,2],[2,0],[2,1],[3,0],[3,1],[3,2]:
+//            inclosureIndicator.isHidden = false
+//            switchButton.isHidden = true
+        default:
             inclosureIndicator.isHidden = false
             switchButton.isHidden = true
-        default: break
         }
         
     }

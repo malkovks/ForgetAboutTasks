@@ -143,22 +143,7 @@ class LogInViewController: UIViewController {
                 }
             }
         } else {
-            if let data = try! KeychainManager.getPassword(email: email){
-                let pswrd = String(decoding: data, as: UTF8.self)
-                if !pswrd.contains(password) {
-                    self.alertError(text: "Incorrect password. Try again", mainTitle: "Error!")
-                    self.clearTextFields()
-                } else {
-                    UserDefaultsManager.shared.setupForAuth()
-                    UserDefaults.standard.setValue("Set name", forKey: "userName")
-                    UserDefaults.standard.setValue(email, forKey: "userMail")
-                    setupLoadingSpinner()
-                    indicator.stopAnimating()
-                    navigationController?.popToRootViewController(animated: isViewAnimated)
-                }
-            } else {
-                self.alertError(text: "Can't enter to application")
-            }
+            self.alertError(text: "Can't enter to application during low internet connection")
         }
     }
     
