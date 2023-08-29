@@ -148,7 +148,7 @@ class ChangeFontViewController: UIViewController {
         savedFontSize = round(fontSize / step) * step
         
         testFontLabel.font = .systemFont(ofSize: savedFontSize,weight: UIFont.Weight(rawValue: savedFontWeight))
-        testFontLabel.text = "Test font size and style: ".localized() + \(savedFontSize)
+        testFontLabel.text = "Test font size and style: ".localized() + String(describing: savedFontSize)
     }
     
     @objc private func didTapDismiss(){
