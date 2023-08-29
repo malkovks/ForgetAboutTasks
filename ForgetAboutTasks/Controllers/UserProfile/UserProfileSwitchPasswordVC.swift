@@ -29,7 +29,7 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
     private let passwordLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
-        label.text = "Enter code-password"
+        label.text = "Enter code-password".localized()
         label.backgroundColor = .clear
         label.textColor = UIColor(named: "textColor")
         label.font = .systemFont(ofSize: 26, weight: .bold)
@@ -101,7 +101,7 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
         button.configuration = .tinted()
         button.configuration?.imagePlacement = .leading
         button.configuration?.imagePadding = 4
-        button.configuration?.title = "Confirm Password"
+        button.configuration?.title = "Confirm Password".localized()
         button.configuration?.baseBackgroundColor = UIColor(named: "launchBackgroundColor")
         button.configuration?.baseForegroundColor = UIColor(named: "launchBackgroundColor")
         return button
@@ -213,7 +213,7 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
         let data = KeychainManager.getPassword(email: emailUser)
         if passwordDigits.count == 4 && passwordDigits == confirmPasswordDigits {
             confirmPasswordButton.setImage(UIImage(systemName: "lock.fill"), for: .normal)
-            confirmPasswordButton.setTitle("Confirmed", for: .normal)
+            confirmPasswordButton.setTitle("Confirmed".localized(), for: .normal)
             
             checkAuthForFaceID { [weak self] success in
                 UserDefaults.standard.setValue(success, forKey: "accessToFaceID")
@@ -229,7 +229,7 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
                 self?.dismiss(animated: isViewAnimated)
             }
         } else {
-            alertError(text: "You entered different passwords. Try again", mainTitle: "Error!".localized())
+            alertError(text: "You entered different passwords. Try again".localized())
             clearRequest()
             
         }
@@ -258,7 +258,7 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
     //setup for view if user entered in app when password is turn on
     private func setupEntryView(){
         
-        title = "Before using"
+        title = "Before using".localized()
         view.backgroundColor = UIColor(named: "calendarHeaderColor")
         tabBarController?.tabBar.isHidden = true
         confirmPasswordButton.isHidden = true
@@ -292,13 +292,13 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
         if textField.tag == 4 {
             if textValue.contains(passwordDigits){
                 UserDefaults.standard.setValue(true, forKey: "isUserConfirmPassword")
-                showAlertForUser(text: "Success", duration: .now()+1, controllerView: view)
+                showAlertForUser(text: "Success".localized(), duration: .now()+1, controllerView: view)
                 DispatchQueue.main.asyncAfter(deadline: .now()+1) {
                     self.navigationController?.popViewController(animated: isViewAnimated)
                     self.dismiss(animated: isViewAnimated)
                 }
             } else {
-                alertError(text: "Incorrect password.\nPlease try again!",mainTitle: "Error")
+                alertError(text: "Incorrect password.\nPlease try again!".localized())
                 clearRequest()
             }
         }
@@ -313,7 +313,7 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
         confirmPasswordDigits = ""
         firstTextField.becomeFirstResponder()
         confirmPasswordButton.isEnabled = false
-        passwordLabel.text = "Enter code-password"
+        passwordLabel.text = "Enter code-password".localized()
     }
     
     private func secondPasswordConfirm(){
@@ -322,7 +322,7 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
         thirdTextField.text = ""
         forthTextField.text = ""
         firstTextField.becomeFirstResponder()
-        passwordLabel.text = "Confirm password"
+        passwordLabel.text = "Confirm password".localized()
     }
 }
 //MARK: - snapkit constraints
@@ -335,8 +335,6 @@ extension UserProfileSwitchPasswordViewController {
         stackView.contentMode = .scaleAspectFit
         stackView.axis = .horizontal
         stackView.spacing = 10
-        
-        
         
         view.addSubview(stackView)
         stackView.snp.makeConstraints { make in

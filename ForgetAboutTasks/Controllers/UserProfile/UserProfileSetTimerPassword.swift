@@ -10,15 +10,15 @@ import SnapKit
 
 class UserProfileSetTimerPassword: UIViewController {
     
-    private let timerValue: [String] = ["One hour",
-                                        "Two hours",
-                                        "Three hours",
-                                        "Six hours",
-                                        "Twelve hours",
-                                        "Once a day",
-                                        "Once every two days",
-                                        "Once every three days",
-                                        "Once a week"]
+    private let timerValue: [String] = ["One hour".localized(),
+                                        "Two hours".localized(),
+                                        "Three hours".localized(),
+                                        "Six hours".localized(),
+                                        "Twelve hours".localized(),
+                                        "Once a day".localized(),
+                                        "Once every two days".localized(),
+                                        "Once every three days".localized(),
+                                        "Once a week".localized()]
     
     private let timerPasswordPicker: UIPickerView = {
         let picker = UIPickerView()
@@ -49,10 +49,10 @@ class UserProfileSetTimerPassword: UIViewController {
     }
     
     private func setupNavigation(){
-        title = "Choose time"
-        navigationController?.navigationBar.tintColor = UIColor(named: "textColor")
+        title = "Choose time".localized()
+        navigationController?.navigationBar.tintColor = UIColor(named: "calendarHeaderColor")
         view.backgroundColor = .systemBackground
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "chevron.down.circle.fill"), style: .done, target: self, action: #selector(didTapDismiss))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "chevron.down"), style: .done, target: self, action: #selector(didTapDismiss))
     }
     
     private func returnTimerCount(row : String) -> Int {
@@ -90,9 +90,7 @@ extension UserProfileSetTimerPassword: UIPickerViewDelegate , UIPickerViewDataSo
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         let timerVariation = timerValue[row]
         let value = returnTimerCount(row: timerVariation)
-        UserDefaults.standard.setValue(value, forKey: "timerPassword")
-
-        
+        UserDefaults.standard.setValue(value, forKey: "timerPassword")   
     }
     
     func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {

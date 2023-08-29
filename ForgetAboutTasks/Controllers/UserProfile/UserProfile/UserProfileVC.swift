@@ -25,7 +25,7 @@ struct UserProfileData {
 
 class UserProfileViewController: UIViewController {
     
-    private let infoText = "Authorization goes through a special Firebase Authentication service. User data is not accessible to anyone, including the development team.\nThis application collects data to improve the performance of the application, as well as for better user experience. All data is encrypted and stored on a special server inaccessible to anyone.\nRealm Data Base is used as storage, user settings and other system parameters are stored in UserDefaults."
+    private let infoText = "Authorization goes through a special Firebase Authentication service. User data is not accessible to anyone, including the development team.\nThis application collects data to improve the performance of the application, as well as for better user experience. All data is encrypted and stored on a special server inaccessible to anyone.\nRealm Data Base is used as storage, user settings and other system parameters are stored in UserDefaults.".localized()
 
     private var cellArray = [[
                         UserProfileData(title: "Dark Mode".localized(),
@@ -37,22 +37,22 @@ class UserProfileViewController: UIViewController {
                         UserProfileData(title: "Access to Calendar's Event".localized(),
                                         cellImage: UIImage(systemName: "calendar.badge.clock")!,
                                         cellImageColor: .systemRed),
-                        UserProfileData(title: "Access to Contacts",
+                        UserProfileData(title: "Access to Contacts".localized(),
                                         cellImage: UIImage(systemName: "character.book.closed.fill")!,
                                         cellImageColor: .systemBrown ),
-                        UserProfileData(title: "Access to Photo and Camera",
+                        UserProfileData(title: "Access to Photo and Camera".localized(),
                                         cellImage: UIImage(systemName: "camera.circle")!,
                                         cellImageColor: UIColor(named: "textColor")! )
                     ],
                     [
-                        UserProfileData(title: "Access to Face ID",
+                        UserProfileData(title: "Access to Face ID".localized(),
                                         cellImage: UIImage(systemName: "faceid")!,
                                         cellImageColor: .systemBlue),
                         UserProfileData(title: "Code-password and Face ID".localized(),
                                         cellImage: UIImage(systemName: "lock.open.fill")!,
                                         cellImageColor: .systemBlue),
-                        UserProfileData(title: "Password check frequency",
-                                        cellImage: UIImage(systemName: "timer.circle.fill")!,
+                        UserProfileData(title: "Password check frequency".localized(),
+                                        cellImage: UIImage(systemName: "timer")!,
                                         cellImageColor: .systemIndigo)
                     ],
                     [
@@ -62,10 +62,10 @@ class UserProfileViewController: UIViewController {
                         UserProfileData(title: "Change Font".localized(),
                                         cellImage: UIImage(systemName: "character.cursor.ibeam")!,
                                         cellImageColor: .systemIndigo),
-                        UserProfileData(title: "Enable Animation",
+                        UserProfileData(title: "Enable Animation".localized(),
                                         cellImage: UIImage(systemName: "figure.walk.motion")!,
                                         cellImageColor: .systemGreen),
-                        UserProfileData(title: "Enable vibration",
+                        UserProfileData(title: "Enable vibration".localized(),
                                         cellImage: UIImage(systemName: "iphone.gen2.radiowaves.left.and.right")!,
                                         cellImageColor: .black)
                      ],
@@ -81,7 +81,7 @@ class UserProfileViewController: UIViewController {
                         UserProfileData(title: "Delete Account".localized(),
                                         cellImage: UIImage(systemName: "trash.fill")!,
                                         cellImageColor: .systemRed),
-                        UserProfileData(title: "Change Account Password",
+                        UserProfileData(title: "Change Account Password".localized(),
                                         cellImage: UIImage(systemName: "square.and.pencil")!,
                                         cellImageColor: .systemBlue),
                         UserProfileData(title: "Log Out".localized(),
@@ -182,8 +182,8 @@ class UserProfileViewController: UIViewController {
     //MARK: - Targets methods
     @objc private func didTapLogout(){
         setupHapticMotion(style: .soft)
-        let alert = UIAlertController(title: "Warning", message: "Do you want to Exit from your account?", preferredStyle: .actionSheet)
-        alert.addAction(UIAlertAction(title: "Confirm", style: .destructive,handler: { [weak self] _ in
+        let alert = UIAlertController(title: "Warning".localized(), message: "Do you want to Exit from your account?".localized(), preferredStyle: .alert)
+        let confirm = UIAlertAction(title: "Confirm".localized(), style: .destructive,handler: { [weak self] _ in
             if UserDefaults.standard.bool(forKey: "isAuthorised"){
                 do {
                     try FirebaseAuth.Auth.auth().signOut()
@@ -192,13 +192,17 @@ class UserProfileViewController: UIViewController {
                     vc.navigationItem.hidesBackButton = true
                     self?.navigationController?.pushViewController(vc, animated: isViewAnimated)
                 } catch let error {
-                    print("Error signing out from Firebase \(error)")
+                    self?.alertError(text: error.localizedDescription)
                 }
             } else {
                 self?.alertError(text: "Cant exit from account.\nTry again later")
             }
-        }))
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        })
+        
+        let cancel = UIAlertAction(title: "Cancel".localized(), style: .cancel)
+
+        alert.addAction(confirm)
+        alert.addAction(cancel)
         present(alert, animated: isViewAnimated)
     }
     
@@ -206,7 +210,7 @@ class UserProfileViewController: UIViewController {
         setupHapticMotion(style: .soft)
         view.alpha = 0.7
         let alert = UIAlertController(title: nil, message: "What exactly do you want to do?".localized(), preferredStyle: .actionSheet)
-        alert.addAction(UIAlertAction(title: "Set new image".localized(), style: .default,handler: { [self] _ in
+        alert.addAction(UIAlertAction(title: "Choose image from Photo".localized(), style: .default,handler: { [self] _ in
             if UIImagePickerController.isSourceTypeAvailable(.photoLibrary){
                 imagePicker.delegate = self
                 imagePicker.sourceType = .photoLibrary
@@ -270,7 +274,7 @@ class UserProfileViewController: UIViewController {
     @objc private func didTapChangeAccessNotifications(sender: UISwitch){
         DispatchQueue.main.async { [weak self] in
             if !sender.isOn {
-                self?.showSettingsForChangingAccess(title: "Switching off access Notifications", message: "Do you want to switch off notifications?") { success in
+                self?.showSettingsForChangingAccess(title: "Switching off access Notifications".localized(), message: "Do you want to switch off notifications?".localized()) { success in
                     if !success {
                         sender.isOn = true
                     } else {
@@ -281,11 +285,11 @@ class UserProfileViewController: UIViewController {
                 self?.notificationCenter.requestAuthorization(options: [.alert,.badge,.sound]) { success, error in
                     if success {
                         DispatchQueue.main.async {
-                            self?.showAlertForUser(text: "Notifications turn on completely", duration: DispatchTime.now() + 2, controllerView: (self?.view)!)
+                            self?.showAlertForUser(text: "Notifications turn on completely".localized(), duration: DispatchTime.now() + 2, controllerView: (self?.view)!)
                             sender.isOn = success
                         }
                     } else {
-                        self?.showSettingsForChangingAccess(title: "Switching on Notifications", message: "Do you want to switch on notifications?") { success in
+                        self?.showSettingsForChangingAccess(title: "Switching on Notifications".localized(), message: "Do you want to switch on notifications?".localized()) { success in
                             if !success {
                                 sender.isOn = false
                             } else {
@@ -301,7 +305,7 @@ class UserProfileViewController: UIViewController {
     
     @objc private func didTapChangeAccessCalendar(sender: UISwitch){
         if !sender.isOn {
-            showSettingsForChangingAccess(title: "Switching off access Calendar", message: "Do you want to switch off access to Calendar?") { success in
+            showSettingsForChangingAccess(title: "Switching off access Calendar".localized(), message: "Do you want to switch off access to Calendar?".localized()) { success in
                 if !success {
                     sender.isOn = true
                 }
@@ -316,7 +320,7 @@ class UserProfileViewController: UIViewController {
     @objc private func didTapChangeAccessToFaceID(sender: UISwitch){
         DispatchQueue.main.async { [weak self] in
             if !sender.isOn {
-                self?.showSettingsForChangingAccess(title: "Switching Off Face ID", message: "Do you want to switch off access to Face ID. You could always change access if it will be necessary ") { success in
+                self?.showSettingsForChangingAccess(title: "Switching Off Face ID".localized(), message: "Do you want to switch off access to Face ID. You could always change access if it will be necessary ".localized()) { success in
                     if !success {
                         sender.isOn = true
                     } else {
@@ -334,7 +338,7 @@ class UserProfileViewController: UIViewController {
     @objc private func didTapChangeAccessToContacts(sender: UISwitch){
         DispatchQueue.main.async { [weak self] in
             if !sender.isOn {
-                self?.showSettingsForChangingAccess(title: "Switching off access to Contacts", message: "Do you want to switch off access to Contacts? You could always change access if it will be necessary") { success in
+                self?.showSettingsForChangingAccess(title: "Switching off access to Contacts".localized(), message: "Do you want to switch off access to Contacts? You could always change access if it will be necessary".localized()) { success in
                     if !success {
                         sender.isOn = true
                     }
@@ -350,7 +354,7 @@ class UserProfileViewController: UIViewController {
     @objc private func didTapChangeAccessToMedia(sender: UISwitch){
         DispatchQueue.main.async { [weak self] in
             if !sender.isOn {
-                self?.showSettingsForChangingAccess(title: "Switching off access to Media", message: "Do you want to switch off access to Media? You could always change access if it will be necessary") { success in
+                self?.showSettingsForChangingAccess(title: "Switching off access to Media".localized(), message: "Do you want to switch off access to Media? You could always change access if it will be necessary".localized()) { success in
                     if !success {
                         sender.isOn = true
                     }
@@ -375,7 +379,6 @@ class UserProfileViewController: UIViewController {
 
     @objc private func didTapDismissView(){
         tabBarController?.tabBar.isHidden = false
-        print("Work fine")
     }
     
     
@@ -507,7 +510,7 @@ class UserProfileViewController: UIViewController {
         present(nav, animated: isViewAnimated)
     }
     
-    private func openPasswordController(title: String = "Code-password",message: String = "This function allow you to switch on password if it neccesary. Any time you could change it",alertTitle: String = "Switch on code-password"){
+    private func openPasswordController(title: String = "Code-password".localized(),message: String = "This function allow you to switch on password if it neccesary. Any time you could change it".localized(),alertTitle: String = "Switch on code-password".localized()){
         setupHapticMotion(style: .soft)
         let alert = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
         alert.addAction(UIAlertAction(title: alertTitle, style: .default,handler: { [unowned self] _ in
@@ -517,7 +520,7 @@ class UserProfileViewController: UIViewController {
             navigationController?.pushViewController(vc, animated: isViewAnimated)
         }))
         if passwordBoolean {
-            alert.addAction(UIAlertAction(title: "Switch off", style: .default,handler: { [weak self]_ in
+            alert.addAction(UIAlertAction(title: "Switch off".localized(), style: .default,handler: { [weak self]_ in
                 UserDefaults.standard.setValue(false, forKey: "isPasswordCodeEnabled")
                 KeychainManager.delete()
                 self?.passwordBoolean = UserDefaults.standard.bool(forKey: "isPasswordCodeEnabled")
@@ -525,7 +528,7 @@ class UserProfileViewController: UIViewController {
                 
             }))
         }
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Cancel".localized(), style: .cancel))
         present(alert, animated: isViewAnimated)
         
     }
@@ -547,18 +550,18 @@ class UserProfileViewController: UIViewController {
     }
     
     private func deleteAccount(){
-        let alertController = UIAlertController(title: "Warning", message: "Do you want to delete your account?", preferredStyle: .alert)
-        alertController.addAction(UIAlertAction(title: "Delete", style: .destructive,handler: { [weak self] _ in
+        let alertController = UIAlertController(title: "Warning".localized(), message: "Do you want to delete your account?".localized(), preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "Delete".localized(), style: .destructive,handler: { [weak self] _ in
             let boolean = UserDefaults.standard.bool(forKey: "authWithGoogle")
             guard let user = Auth.auth().currentUser else {
-                self?.alertError(text: "Error access to account", mainTitle: "Error")
+                self?.alertError(text: "Error access to account".localized())
                 return }
             if !boolean {
                 user.delete { [weak self] error in
                     if let error = error {
-                        self?.alertError(text: error.localizedDescription, mainTitle: "Error")
+                        self?.alertError(text: error.localizedDescription)
                     } else {
-                        self?.alertError(text: "Account was deleted",mainTitle: "Success")
+                        self?.alertError(text: "Account was deleted".localized())
                         UserDefaultsManager.shared.signOut()
                         let vc = UserAuthViewController()
                         vc.navigationItem.hidesBackButton = true
@@ -567,7 +570,7 @@ class UserProfileViewController: UIViewController {
                 }
             } else {
                 guard let url = URL(string: "https://myaccount.google.com/deleteaccount") else {
-                    self?.alertError(text: "Link is unavaliable", mainTitle: "Error")
+                    self?.alertError(text: "Can't access to link".localized())
                     return
                 }
                 let vc = SFSafariViewController(url: url)
@@ -575,32 +578,32 @@ class UserProfileViewController: UIViewController {
             }
             
             }))
-        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alertController.addAction(UIAlertAction(title: "Cancel".localized(), style: .cancel))
         present(alertController, animated: isViewAnimated)
     }
     
     private func changeAccountPassword(){
-        let alert = UIAlertController(title: "Warning", message: "Do you want to change account password?", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Change", style: .default,handler: { [weak self] _ in
+        let alert = UIAlertController(title: "Warning".localized(), message: "Do you want to change account password?".localized(), preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Change".localized(), style: .default,handler: { [weak self] _ in
             let boolean = UserDefaults.standard.bool(forKey: "authWithGoogle")
             guard let user = Auth.auth().currentUser else {
-                self?.alertError(text: "Error access to account", mainTitle: "Error")
+                self?.alertError(text: "Error access to account".localized())
                 return
             }
 
             if !boolean {
-                let vc = ChangePasswordController(account: user.email ?? "")
+                let vc = ChangePasswordViewController(account: user.email ?? "")
                 self?.navigationController?.pushViewController(vc, animated: isViewAnimated)
             } else {
                 guard let url = URL(string: "https://myaccount.google.com/signinoptions/password") else {
-                    self?.alertError(text: "Can't access to link", mainTitle: "Error")
+                    self?.alertError(text: "Can't access to link".localized())
                     return
                 }
                 let vc = SFSafariViewController(url: url)
                 self?.navigationController?.pushViewController(vc, animated: isViewAnimated)
             }
         }))
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Cancel".localized(), style: .cancel))
         present(alert, animated: isViewAnimated)
     }
     
@@ -630,7 +633,7 @@ extension UserProfileViewController: CheckSuccessSaveProtocol, ChangeFontDelegat
     func isSavedCompletely(boolean: Bool) {
         tabBarController?.tabBar.isHidden = false
         if boolean {
-            showAlertForUser(text: "Password was created", duration: .now()+1, controllerView: view)
+            showAlertForUser(text: "Password was created".localized(), duration: .now()+1, controllerView: view)
             passwordBoolean = UserDefaults.standard.bool(forKey: "isPasswordCodeEnabled")
         }
     }
@@ -764,7 +767,7 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
         switch indexPath {
         case [1,1]:
             if passwordBoolean {
-                openPasswordController(title: "Warning!", message: "Do you want to switch off or change password?", alertTitle: "Change password")
+                openPasswordController(title: "Warning!".localized(), message: "Do you want to switch off or change password?".localized(), alertTitle: "Change password".localized())
             } else {
                 openPasswordController()
             }
@@ -775,7 +778,7 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
         case [2,1]:
             openChangeFontController()
         case [3,0]:
-            showVariationsWithLanguage(title: "Change language", message: "") {  result in  }
+            showVariationsWithLanguage(title: "Change language".localized(), message: "") {  result in  }
         case [3,1]:
             showInfoAuthentication(text: infoText, controller: self.view)
         case [4,0]:

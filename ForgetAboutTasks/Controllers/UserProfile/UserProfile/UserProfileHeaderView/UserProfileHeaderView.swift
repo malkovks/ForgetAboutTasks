@@ -41,7 +41,7 @@ class UserProfileHeaderView: UIView {
         case 1: headerLabel.text = "Security settings"
         case 2: headerLabel.text = "Secondary setups".localized()
         case 3: headerLabel.text = "Info".localized()
-        case 4: headerLabel.text = "Account settings"
+        case 4: headerLabel.text = "Account settings".localized()
         default: break
         }
     }

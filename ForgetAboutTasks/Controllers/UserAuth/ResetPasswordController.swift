@@ -20,7 +20,7 @@ class ResetPasswordViewController: UIViewController ,UITextFieldDelegate{
        let field = UITextField()
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: field.frame.size.height))
         field.leftViewMode = .always
-        field.placeholder = "Enter your email"
+        field.placeholder = "Enter your email".localized()
         field.isSecureTextEntry = false
         field.layer.borderWidth = 1
         field.returnKeyType = .continue
@@ -36,7 +36,7 @@ class ResetPasswordViewController: UIViewController ,UITextFieldDelegate{
     private let resetPasswordButton: UIButton = {
         let button = UIButton()
         button.configuration = .tinted()
-        button.configuration?.title = "Reset password"
+        button.configuration?.title = "Reset password".localized()
         button.layer.cornerRadius = 8
         button.configuration?.baseForegroundColor = UIColor(named: "textColor")
         button.configuration?.baseBackgroundColor = UIColor(named: "loginColor")
@@ -59,17 +59,17 @@ class ResetPasswordViewController: UIViewController ,UITextFieldDelegate{
     @objc private func didTapResetPassword(){
         setupHapticMotion(style: .medium)
         let auth = Auth.auth()
-        guard let text = emailTextField.text, !text.isEmpty else { alertError(text: "Enter email"); return }
+        guard let text = emailTextField.text, !text.isEmpty else { alertError(text: "Enter your email".localized()); return }
         view.alpha = 0.8
         indicatorView.startAnimating()
         auth.sendPasswordReset(withEmail: text) { [unowned self] errors in
             if let error = errors {
-                self.alertError(text: error.localizedDescription, mainTitle: "Error")
+                self.alertError(text: error.localizedDescription)
                 self.indicatorView.stopAnimating()
             } else {
                 
-                let alert = UIAlertController(title: "Important message", message: "We send you message with detail information. Check mailbox", preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "Ok", style: .default,handler: { [weak self] _ in
+                let alert = UIAlertController(title: "Important message".localized() , message: "We send you message with detail information. Check mailbox".localized(), preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "OK".localized(), style: .default,handler: { [weak self] _ in
                     if let vc = self?.navigationController?.viewControllers[(self?.navigationController!.viewControllers.count)!-3] {
                         DispatchQueue.main.async {
                             self?.indicatorView.stopAnimating()
@@ -107,7 +107,7 @@ class ResetPasswordViewController: UIViewController ,UITextFieldDelegate{
     }
     
     private func setupNavigationController(){
-        title = "Password recovery"
+        title = "Password recovery".localized()
         navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .done, target: nil, action: nil)
@@ -145,8 +145,6 @@ extension ResetPasswordViewController {
             make.leading.trailing.equalToSuperview().inset(60)
             make.height.equalTo(40)
         }
-        
-        
     }
 }
 

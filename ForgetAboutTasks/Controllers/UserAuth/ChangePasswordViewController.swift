@@ -9,7 +9,7 @@ import UIKit
 import Firebase
 
 
-class ChangePasswordController: UIViewController {
+class ChangePasswordViewController: UIViewController {
     
     private let accountMail: String
     
@@ -27,7 +27,7 @@ class ChangePasswordController: UIViewController {
     private let passwordLabel: UILabel = {
         let label = UILabel()
         label.font = .setMainLabelFont()
-        label.text = "Set new password"
+        label.text = "Set new password".localized()
         label.backgroundColor = .clear
         label.textAlignment = .center
         label.layer.cornerRadius = 12
@@ -38,7 +38,7 @@ class ChangePasswordController: UIViewController {
         let field = UITextField()
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: field.frame.size.height))
         field.leftViewMode = .always
-        field.placeholder = "Enter old password"
+        field.placeholder = "Enter old password".localized()
         field.textColor = UIColor(named: "textColor")
         field.isSecureTextEntry = true
         field.layer.borderWidth = 1
@@ -56,7 +56,7 @@ class ChangePasswordController: UIViewController {
         let field = UITextField()
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: field.frame.size.height))
         field.leftViewMode = .always
-        field.placeholder = "Enter new password"
+        field.placeholder = "Enter new password".localized()
         field.textColor = UIColor(named: "textColor")
         field.isSecureTextEntry = true
         field.layer.borderWidth = 1
@@ -74,7 +74,7 @@ class ChangePasswordController: UIViewController {
         let field = UITextField()
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: field.frame.size.height))
         field.leftViewMode = .always
-        field.placeholder = "Repeat the password"
+        field.placeholder = "Repeat the password".localized()
         field.textColor = UIColor(named: "textColor")
         field.isSecureTextEntry = true
         field.layer.borderWidth = 1
@@ -91,7 +91,7 @@ class ChangePasswordController: UIViewController {
     private let confirmNewPasswordButton: UIButton = {
         let button = UIButton()
         button.configuration = .tinted()
-        button.configuration?.title = "Reset"
+        button.configuration?.title = "Reset".localized()
         button.layer.cornerRadius = 8
         button.configuration?.baseForegroundColor = UIColor(named: "textColor")
         button.configuration?.baseBackgroundColor = UIColor(named: "loginColor")
@@ -143,8 +143,8 @@ class ChangePasswordController: UIViewController {
     }
     
     @objc private func didTapGenerateStrongPassword(sender: UIBarButtonItem){
-        let alertController = UIAlertController(title: "Warning!" , message: "Do you want to use strong generated password for your account?", preferredStyle: .actionSheet)
-        let confirmButton = UIAlertAction(title: "Generate and save", style: .default,handler: { [weak self] _ in
+        let alertController = UIAlertController(title: "Warning!".localized() , message: "Do you want to use strong generated password for your account?".localized(), preferredStyle: .actionSheet)
+        let confirmButton = UIAlertAction(title: "Create".localized(), style: .default,handler: { [weak self] _ in
             let password = self?.generateStrongPassword()
             let passwordFields = [self?.firstNewPasswordTextField, self?.secondNewPasswordTextField]
             passwordFields.forEach { field in
@@ -155,7 +155,7 @@ class ChangePasswordController: UIViewController {
             }
         })
         alertController.addAction(confirmButton)
-        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alertController.addAction(UIAlertAction(title: "Cancel".localized(), style: .cancel))
         present(alertController, animated: isViewAnimated)
     }
     //MARK: - Setup methods
@@ -182,7 +182,7 @@ class ChangePasswordController: UIViewController {
         let space = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         let fixedSpace = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
         fixedSpace.width = 1.0
-        let action = UIBarButtonItem(title: "Generate strong password", style: .done, target: self, action: #selector(didTapGenerateStrongPassword))
+        let action = UIBarButtonItem(title: "Generate strong password".localized(), style: .done, target: self, action: #selector(didTapGenerateStrongPassword))
         action.tintColor = UIColor(named: "textColor")
         toolBar.items = [space, fixedSpace, action , fixedSpace, space]
         toolBar.backgroundColor = .systemGray3
@@ -191,17 +191,15 @@ class ChangePasswordController: UIViewController {
         oldPasswordField.delegate = self
         oldPasswordField.rightView = isPasswordHiddenButton
         oldPasswordField.rightViewMode = .always
+        
+        firstNewPasswordTextField.rightView = isPasswordHiddenButton
         firstNewPasswordTextField.delegate = self
-//        firstNewPasswordTextField.rightView = isPasswordHiddenButton
         firstNewPasswordTextField.rightViewMode = .whileEditing
+        
         secondNewPasswordTextField.delegate = self
-//        secondNewPasswordTextField.rightView = isPasswordHiddenButton
+        secondNewPasswordTextField.rightView = isPasswordHiddenButton
         secondNewPasswordTextField.rightViewMode = .whileEditing
-//        fields.forEach { [unowned self] textField in
-//            textField.delegate = self
-//            textField.rightView = self.isPasswordHiddenButton
-//            textField.rightViewMode = .always
-//        }
+
         firstNewPasswordTextField.inputAccessoryView = toolBar as UIView
         secondNewPasswordTextField.inputAccessoryView = toolBar as UIView
     }
@@ -213,7 +211,7 @@ class ChangePasswordController: UIViewController {
     
     
     private func checkPasswordFields(){
-        guard let oldPassword = oldPasswordField.text else { alertError(text: "Enter correct old password", mainTitle: "Error"); return }
+        guard let oldPassword = oldPasswordField.text else { alertError(text: "Enter correct old password".localized()); return }
         let authCredential = EmailAuthProvider.credential(withEmail: accountMail, password: oldPassword)
         if let password = firstNewPasswordTextField.text, !password.isEmpty,
            let secondPassword = secondNewPasswordTextField.text, !secondPassword.isEmpty,
@@ -229,7 +227,6 @@ class ChangePasswordController: UIViewController {
                             self?.indicator.stopAnimating()
                         } else {
                             self?.indicator.stopAnimating()
-//                            self?.alertError(text: "Password was changed successfully", mainTitle: "Success!")
                             self?.alertDismissed(view: (self?.view)!, title: "Password was changed successfully")
                             DispatchQueue.main.async {
                                 if let nav = self?.navigationController {
@@ -243,7 +240,7 @@ class ChangePasswordController: UIViewController {
                 }
             })
         } else {
-            alertError(text: "Password is not equal or valid. Try again", mainTitle: "Ошибка")
+            alertError(text: "Password is not equal or valid. Try again".localized())
             indicator.stopAnimating()
         }
         view.alpha = 1
@@ -268,7 +265,7 @@ class ChangePasswordController: UIViewController {
 
 }
 //MARK: - Delegates and constraints
-extension ChangePasswordController: UITextFieldDelegate {
+extension ChangePasswordViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         guard let text = textField.text else { return false }
         if textField == firstNewPasswordTextField {
@@ -295,7 +292,7 @@ extension ChangePasswordController: UITextFieldDelegate {
    
 }
 
-extension ChangePasswordController {
+extension ChangePasswordViewController {
     private func setupConstraints(){
         view.addSubview(oldPasswordField)
         oldPasswordField.snp.makeConstraints { make in

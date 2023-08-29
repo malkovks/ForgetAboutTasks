@@ -175,6 +175,7 @@
 "Postal code: " = "Почтовый индекс: ";
 
 
+
 //UserProfile View Controller
 "Age: " = "Возраст: ";
 "My Profile" = "Мой Профиль";
@@ -199,16 +200,144 @@
 "Main setups" = "Основные настройки";
 "Secondary setups" = "Дополнительные настройки";
 "Info" = "Информация";
+"Access to Contacts" = "Доступ к контактам";
+"Access to Photo and Camera" = "Доступ к камере и библиотеке";
+"Access to Face ID" = "Доступ к Face ID";
+"Password check frequency" = "Таймер срабатывания пароля";
+"Enable Animation" = "Анимации";
+"Enable vibration" = "Вибрации";
+"Confirm" = "Подтвердить";
+"Choose image from Photo" = "Выбрать изображение из медиатеки";
+"Do you want to Exit from your account?" = "Вы хотите выйти из вашего аккаунта?";
+"Change Account Password" = "Изменить пароль аккаунта";
 "Changing App Language" = "Изменение языка приложения";
 "Would you like to change the language of your application?" = "Вы хотели бы изменить язык вашего приложения?";
+"Do you want to switch off notifications?" = "Вы хотите отключить доступ к уведомлениям?";
+"Switching off access Notifications" = "Отключение доступа к Уведомлениям";
+"Notifications turn on completely" = "Уведомления включены успешно";
+"Switching on Notifications" = "Включение уведомлений";
+"Do you want to switch on notifications?" = "Вы хотите включить уведомления?";
+"Switching off access Calendar" = "Отключение доступа к Календарю";
+"Do you want to switch off access to Calendar?" = "Вы хотите отключить доступ к Календарю и его мероприятиям?";
+"Switching Off Face ID" = "Отключение доступа к Face ID";
+"Do you want to switch off access to Face ID. You could always change access if it will be necessary " = "Вы хотите ограничить доступ к Face ID? В любое время вы сможете поменять это в настройках";
+"Switching off access to Contacts" = "Отключение доступа к Контактам";
+"Do you want to switch off access to Contacts? You could always change access if it will be necessary" = "Вы хотите ограничить доступ к Контактам? В любой момент вы сможете поменять доступ в настройках";
+"Switching off access to Media" = "Отключение доступа к Медиафайлам";
+"Do you want to switch off access to Media? You could always change access if it will be necessary" = "Вы действительно хотите ограничить доступ к Медиафайлам? В любой момент вы сможете поменять доступ в настройках";
 "Code-password and Face ID" = "Код-пароль и Face ID";
+"Code-password" = "Код-пароль";
+"This function allow you to switch on password if it neccesary. Any time you could change it" = "Эта функция позволяет вам включить пароль если это необходимо. В любой момент можно будет выключить";
+"Switch on code-password" = "Включен код-пароль";
+"Switch off" = "Выключен";
+"Do you want to delete your account?" = "Вы хотите удалить свой аккаунт?";
+"Error access to account" = "Ошибка доступа к аккаунту";
+"Account was deleted" = "Аккаунт был удален";
+"Link is unavaliable" = "Ссылка недоступна";
+"Change" = "Изменить";
+"Can't access to link" = "Не удается получить доступ к ссылке";
+"Password was created" = "Пароль был создан";
+"Do you want to switch off or change password?" = "Вы хотите выключить пароль или изменить его?";
+"Change password" = "Изменить пароль";
+"Change language" = "Изменить язык";
+"Do you want to change account password?" = "Вы хотите изменить пароль аккаунта?";
+"Authorization goes through a special Firebase Authentication service. User data is not accessible to anyone, including the development team.\nThis application collects data to improve the performance of the application, as well as for better user experience. All data is encrypted and stored on a special server inaccessible to anyone.\nRealm Data Base is used as storage, user settings and other system parameters are stored in UserDefaults." = "Авторизация в приложение использует специальный сервис Firebase Authentication. Пользовательские данные недоступны третьим лицам, даже команде разработчика.\nДанное приложение собирает данные и аналитику для улучшения производительства и качества данного приложения для лучшего пользовательского впечатления.\nВ качестве хранения данных используется база данных Realm, пользовательские настройки и другие системные параметры хранятся в UserDefaults.";
+"Cant exit from account.\nTry again later" = "Не удалось получить доступ при выходе из аккаунта. Попробуйте позже";
 //User Profile App Icon View Controller
 "Choose App Icon" = "Выберите иконку";
 "Cant get access to change Image" = "Не удается изменить изображение";
+//User Profile Set TimerVC
+"One hour" = "Один час";
+"Two hours" = "Два часа";
+"Three hours" = "Три часа";
+"Six hours" = "Шесть часов";
+"Twelve hours" = "Двенадцать часов";
+"Once a day" = "Раз в день";
+"Once every two days" = "Раз в два дня";
+"Once every three days" = "Раз в три дня";
+"Once a week" = "Раз в неделю";
+"Choose time" = "Выберите время";
+//User Profile Password VC
+"Enter code-password" = "Введите код-пароль";
+"Confirm Password" = "Подтвердите пароль";
+"Confirmed" = "Подтвержден";
+"You entered different passwords. Try again" = "Вы ввели разные пароли. Попробуйте еще раз!";
+"Before using" = "Перед использованием";
+"Success" = "Успешно";
+"Incorrect password.\nPlease try again!" = "Некорректный пароль. Попробуйте еще раз";
+//User Profile Change App Font VC
+"Test font size and style: " = "Тестируемый размер и стиль текста: ";
+"Set weight font for table headers" = "Укажите толщину шрифта для оглавлений";
+"Set Weight for header title of Tables" = "Укажите толщину шрифта для заголовков таблиц";
+"Save changes" = "Сохранить изменения";
+"Default Settings" = "Стандартные настройки";
+"Do you want to set font settings to default?" = "Вы хотите вернуть стандартные настройки шрифта?";
+"Apply" = "Подтвердить";
 //CheckAuth
 "Not indicated" = "Недоступен";
 "Error loading email" = "Почта недоступна";
 "Error loading name" = "Имя недоступно";
 "Set your name" = "Укажите Ваше Имя";
 "No email" = "Почта отсутствует";
- 
+ //UserAuthVC
+"This application using Firebase Authentication for entering, creating and storing user email and password. However our service using Keychain API for storing email and password, it store in UTF8 format and closed for third-persons can't be available. \nFor more information, visit Firebase.Google.com" = "Это приложение использует аутентификацию Firebase для ввода, создания и хранения электронной почты и пароля пользователя. Однако наш сервис, использующий Keychain API для хранения электронной почты и пароля, хранится в формате UTF8 и закрыт для третьих лиц, не может быть доступен. \nДля получения дополнительной информации посетите Firebase.Google.com.
+";
+"Log In" = "Войти";
+"Create New Account" = "Создать аккаунт";
+"Or" = "Или";
+"Sign in with Google" = "Войти с помощью Google";
+"Error getting access to Firebase servers.\nTry again later" = "Ошибка получения доступа к серверам Firebase.\nПопробуйте позже";
+"Error getting data from account" = "Ошибка получения данных аккаунта";
+"Authorization" = "Авторизация";
+//LoginVC
+"Enter the password.." = "Введите пароль";
+"Continue" = "Продолжить";
+"Forget password?" = "Забыли пароль?";
+"Enter email and password.\nIf You forget password, push Forget Password" = "Укажите почту и пароль.\nЕсли вы забыли пароль, нажмите Забыли пароль.";
+"Error login" = "Ошибка входа";
+"Enter email and password.\nIf You forget your personal data, try again later." = "Укажите почту и пароль.\nЕсли вы забыли ваши данные, попробуйте позже.";
+"Can't enter to application during low internet connection" = "Не удается войти в приложение из-за плохого интернет соединения. Попробуйте позже.";
+"Log In" = "Вход";
+"Back" = "Назад";
+//RegisterAccountVC
+"Enter the password.." = "Введите пароль..";
+"Repeat the password.." = "Повторите пароль..";
+"Enter your name" = "Введите имя";
+"Create new account" = "Создать новый аккаунт";
+"Enter text in all fields" = "Заполнитес все поля";
+"This account has already been created" = "Аккаунт уже существует";
+"Password must contains at least 8 symbols, have uppercase and some numbers" = "Пароль должен содержать как минимум 8 символов, иметь заглавные буквы и цифры";
+"Passwords must be identical"
+ = "Пароли должны быть идентичными";
+"Do you want to use strong generated password for your account?" = "Вы хотите использовать генерацию сильного пароля для вашего аккаунта?";
+"Create" = "Создать";
+"Create New Account" = "Создать новый аккаунт";
+"Generate strong password" = "Сгенерировать пароль";
+//ResetPasswordVC
+"Enter your email" = "Введите вашу почту";
+"Reset password" = "Сбросить пароль";
+"Important message" = "Важное сообщение";
+"We send you message with detail information. Check mailbox" = "Мы отправили сообщение с восстановлением вашего аккаунта. Проверьте почту";
+"Password recovery" = "Сброс пароля";
+//ChangePasswordController
+"Set new password" = "Укажите новый пароль";
+"Enter old password" = "Укажите старый пароль";
+"Enter new password" = "Укажите новый пароль";
+"Repeat the password" = "Повторите пароль";
+"Reset" = "Сброс";
+"Change password" = "Изменение пароля";
+"Enter correct old password" = "Введите корректный старый пароль";
+"Password was changed successfully" = "Пароль был успешно изменен";
+"Password is not equal or valid. Try again" = "Пароль не идентичен или не подходит по условиям. Попробуйте позже";
+"Password is not valid" = "Пароль не идентичен";
+//UserProfileFooterView
+"This settings need for switching on/off access to some services. It will segue to Main Settings for changing value." = "Данные настройки нужны для включения и отключения необходимых сервисов. В случае отключения приложение переведет Вас в настройки доступа";
+"This settings allow you to switch on/off password, set timer how offen application will request you password and set allowing to Face ID" = "Эти настройки позволяют устанавливать пароль для входа, настраивать время запроса ввода пароля, а также доступ к Face ID";
+"You can change app icon, font of application, enable animation and vibration" = "Вы можете поменять иконку приложения, размер и стиль шрифта, а также регулировать анимацию и вибрацию";
+"You could change localization of application, read information about developer and read some features, which planned on near future" = "Вы можете сменить локалицазию приложения,а также прочитать информацию по поводу ресурсов, используемых приложением.";
+//UserProfileHeaderView
+"Main setups" = "Главные настройки";
+"Security settings" = "Настройки  безопасности";
+"Secondary setups" = "Дополнительные настройки";
+"Info" = "Информация";
+"Account settings" = "Настройки аккаунта";

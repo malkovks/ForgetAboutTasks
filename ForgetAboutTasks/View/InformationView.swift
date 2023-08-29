@@ -11,8 +11,11 @@ class InformationView: UIView {
     
     let customView: UIView = {
        let view = UIView()
-        view.backgroundColor = .systemIndigo
+        view.backgroundColor = .systemBackground
+        view.layer.borderColor = UIColor(named: "textColor")?.cgColor
+        view.layer.borderWidth = 1.0
         view.layer.cornerRadius = 12
+        view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
     
@@ -91,6 +94,7 @@ extension UIViewController {
     func showInfoAuthentication(text: String, controller: UIView){
         let customView = InformationView()
         customView.setupLabelTextIndent(text: text)
+        
         self.view.addSubview(customView)
         customView.snp.makeConstraints { make in
             make.centerX.centerY.equalToSuperview()

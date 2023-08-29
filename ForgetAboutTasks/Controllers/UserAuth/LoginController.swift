@@ -44,7 +44,7 @@ class LogInViewController: UIViewController {
         field.tag = 1
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: field.frame.size.height))
         field.leftViewMode = .always
-        field.placeholder = "Enter the password.."
+        field.placeholder = "Enter the password..".localized()
         field.isSecureTextEntry = true
         field.textContentType = .password
         field.layer.borderWidth = 1
@@ -68,7 +68,7 @@ class LogInViewController: UIViewController {
     private let configureUserButton: UIButton = {
         let button = UIButton()
         button.configuration = .tinted()
-        button.configuration?.title = "Continue"
+        button.configuration?.title = "Continue".localized()
         button.layer.cornerRadius = 8
         button.configuration?.baseForegroundColor = UIColor(named: "textColor")
         button.configuration?.baseBackgroundColor = UIColor(named: "loginColor")
@@ -78,7 +78,7 @@ class LogInViewController: UIViewController {
     private let resetPasswordButton: UIButton = {
         let button = UIButton(type: .system)
         button.configuration = .tinted()
-        button.configuration?.title = "Forget password?"
+        button.configuration?.title = "Forget password?".localized()
         button.configuration?.baseBackgroundColor = .clear
         button.configuration?.baseForegroundColor = UIColor(named: "textColor")
         return button
@@ -118,11 +118,11 @@ class LogInViewController: UIViewController {
     @objc private func didTapContinue(){
         setupHapticMotion(style: .soft)
         guard let password = passwordField.text, !password.isEmpty else {
-            alertError(text: "Enter email and password.\nIf You forget password, push Forget Password", mainTitle: "Error login")
+            alertError(text: "Enter email and password.\nIf You forget password, push Forget Password".localized(), mainTitle: "Error login".localized())
             return
         }
         guard let email = emailField.text, !email.isEmpty else {
-            alertError(text: "Enter email and password.\nIf You forget your personal data, try again later.", mainTitle: "Error login")
+            alertError(text: "Enter email and password.\nIf You forget your personal data, try again later.".localized(), mainTitle: "Error login".localized())
             return
         }
         let internetIsAvailable = InternetConnectionManager.isConnectedToInternet()
@@ -143,7 +143,7 @@ class LogInViewController: UIViewController {
                 }
             }
         } else {
-            self.alertError(text: "Can't enter to application during low internet connection")
+            self.alertError(text: "Can't enter to application during low internet connection".localized())
         }
     }
     
@@ -172,10 +172,10 @@ class LogInViewController: UIViewController {
     }
     
     private func setupNavigationController(){
-        title = "Log In"
+        title = "Log In".localized()
         navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
         navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: .done, target: nil, action: nil)
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back".localized(), style: .done, target: nil, action: nil)
     }
     
     private func setupTargets(){

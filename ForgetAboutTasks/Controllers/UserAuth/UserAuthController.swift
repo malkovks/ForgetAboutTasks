@@ -13,13 +13,13 @@ import GoogleSignIn
 
 class UserAuthViewController: UIViewController {
     
-    private let textInfo: String = "Здесь и вступают в игру startZoom и zoomLimit.При сете камеры мы ставили startZoom на 2.0, если камера обладала ультрашириком и 1.0 во всех остальных случаях. Дело в том что камеры с ультрашириком ставят зум 0.5 (в коде 1.0) по умолчанию, а нам бы хотелось открывать камеру на зуме 1.0. Код выставления зума весьма прост: мы получаем скейл рекогнайзера, определяем в какую сторону был сделан жест (меньше 1.0 - жест на уменьшение) и в зависимости от характера жеста, производим рассчет нового фактора. Дальше мы ограничиваем новый фактор функцией minMaxZoom и вызываем более низкоурвневую функцию updateZoom, которая принимает в себя новый фактор и безопасно сетит его девайсу. Собственно, на этом все."
+    private let textInfo: String = "This application using Firebase Authentication for entering, creating and storing user email and password. However our service using Keychain API for storing email and password, it store in UTF8 format and closed for third-persons can't be available. \nFor more information, visit Firebase.Google.com".localized()
 
     //MARK: - UI views
     private let loginButton: UIButton = {
         let button = UIButton(type: .system)
         button.configuration = .tinted()
-        button.configuration?.title = "Log In"
+        button.configuration?.title = "Log In".localized()
         button.configuration?.baseBackgroundColor = UIColor(named: "calendarHeaderColor")
         button.configuration?.baseForegroundColor = UIColor(named: "textColor")
         return button
@@ -28,7 +28,7 @@ class UserAuthViewController: UIViewController {
     private let registerButton: UIButton = {
         let button = UIButton(type: .system)
         button.configuration = .tinted()
-        button.configuration?.title = "Create New Account"
+        button.configuration?.title = "Create New Account".localized()
         button.configuration?.baseForegroundColor = UIColor(named: "textColor")
         button.configuration?.baseBackgroundColor = UIColor(named: "calendarHeaderColor")
         return button
@@ -36,7 +36,7 @@ class UserAuthViewController: UIViewController {
     
     private let anotherAuthLabel: UILabel = {
        let label = UILabel()
-        label.text = "Or"
+        label.text = "Or".localized()
         label.textAlignment = .center
         label.font = .systemFont(ofSize: 18,weight: .thin)
         label.textColor = UIColor(named: "textColor")
@@ -46,7 +46,7 @@ class UserAuthViewController: UIViewController {
     private let signWithGoogle: UIButton = {
         let button = UIButton()
         button.configuration = .tinted()
-        button.configuration?.title = "Sign in with Google"
+        button.configuration?.title = "Sign in with Google".localized()
         button.configuration?.image = UIImage(named: "google_logo")
         button.configuration?.imagePadding = 8
         button.configuration?.baseForegroundColor = UIColor(named: "textColor")
@@ -90,7 +90,7 @@ class UserAuthViewController: UIViewController {
         spinner.startAnimating()
         view.alpha = 0.8
         guard let client = FirebaseApp.app()?.options.clientID else {
-            print("Error client id")
+            alertError(text: "Error getting access to Firebase servers.\nTry again later".localized(), mainTitle: "Error".localized())
             return
         }
         
@@ -107,13 +107,12 @@ class UserAuthViewController: UIViewController {
             }
             guard let user = result?.user,
                   let token = user.idToken?.tokenString else {
-                print("Error getting user data and token data")
                 return
             }
             let credential = GoogleAuthProvider.credential(withIDToken: token, accessToken: user.accessToken.tokenString)
             Auth.auth().signIn(with: credential) { result, error in
                 guard let result = result, error == nil else {
-                    self.alertError(text: "Error getting data from account", mainTitle: "Attention")
+                    self.alertError(text: "Error getting data from account".localized(), mainTitle: "Error!".localized())
                     return
                 }
                 UserDefaultsManager.shared.saveAccountData(result: result, user: user)
@@ -136,7 +135,7 @@ class UserAuthViewController: UIViewController {
     
     private func setupNavigation(){
         tabBarController?.tabBar.isHidden = true
-        title = "Authorization"
+        title = "Authorization".localized()
         navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
         navigationController?.navigationItem.largeTitleDisplayMode = .always
         navigationController?.navigationBar.prefersLargeTitles = true

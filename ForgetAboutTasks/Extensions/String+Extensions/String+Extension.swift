@@ -7,6 +7,13 @@
 
 import UIKit
 
+struct EmailValidation {
+    private static let firstPart = "[A-Z0-9a-z]([A-Z0-9a-z._%+-]{0,30}[A-Z0-9a-z])?"
+    private static let secondPart = "[A-Z0-9a-z]([A-Z0-9a-z-]{0,30}[A-Z0-9a-z])"
+    private static let emailRegex = firstPart + "@" + secondPart + "[A-Za-z]{2,8}"
+    static let emailPredicate = NSPredicate(format: "SELF MATCHES %@", emailRegex)
+}
+
 extension String {
     
     func localized() -> String {
@@ -17,36 +24,15 @@ extension String {
                                  comment: self)
     }
     
-    func localText(_ text: String) -> String {
-        guard let path = Bundle.main.path(forResource: text, ofType: "lproj") else { return "" }
-        guard let bundle = Bundle(path: path) else { return ""}
-        return NSLocalizedString(self, tableName: "Localizable", bundle: bundle, value: self, comment: self)
-    }
-    
     func isPasswordValidation(_ password: String) -> Bool {
         let regex = "^(?=.*[AZ])(?=.*\\d)[A-Za-z\\d]{8,}$"
         return NSPredicate(format: "SELF MATCHES %@", regex).evaluate(with: password)
-    }
-    
-    struct EmailValidation {
-        private static let firstPart = "[A-Z0-9a-z]([A-Z0-9a-z._%+-]{0,30}[A-Z0-9a-z])?"
-        private static let secondPart = "[A-Z0-9a-z]([A-Z0-9a-z-]{0,30}[A-Z0-9a-z])"
-        private static let emailRegex = firstPart + "@" + secondPart + "[A-Za-z]{2,8}"
-        static let emailPredicate = NSPredicate(format: "SELF MATCHES %@", emailRegex)
-    }
-    
-    struct URLValidation {
-        private static let firstPart = "[A-Z0-9a-z]([A-Z0-9a-z._%+-]{0,30}[A-Z0-9a-z])?"
     }
     
     func emailValidation(email: String) -> Bool {
         let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
         let emailPred = NSPredicate(format: "SELF MATCHES %@", emailRegex)
         return emailPred.evaluate(with: email)
-    }
-    
-    func isEmailValid() -> Bool {
-        return EmailValidation.emailPredicate.evaluate(with: self)
     }
     
     func isURLValid(text: String) -> Bool {

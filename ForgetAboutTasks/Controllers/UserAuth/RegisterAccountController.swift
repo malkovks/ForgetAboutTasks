@@ -42,7 +42,7 @@ class RegisterAccountViewController: UIViewController {
        let field = UITextField()
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: field.frame.size.height))
         field.leftViewMode = .always
-        field.placeholder = "Enter the password.."
+        field.placeholder = "Enter the password..".localized()
         field.isSecureTextEntry = true
         field.textColor = UIColor(named: "textColor")
         field.layer.borderWidth = 1
@@ -61,7 +61,7 @@ class RegisterAccountViewController: UIViewController {
         let field = UITextField()
          field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: field.frame.size.height))
          field.leftViewMode = .always
-         field.placeholder = "Repeat the password.."
+        field.placeholder = "Repeat the password..".localized()
          field.isSecureTextEntry = true
          field.textColor = UIColor(named: "textColor")
          field.layer.borderWidth = 1
@@ -81,7 +81,7 @@ class RegisterAccountViewController: UIViewController {
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: field.frame.size.height))
         field.leftViewMode = .always
         field.textContentType = .givenName
-        field.placeholder = "Enter your name"
+        field.placeholder = "Enter your name".localized()
         field.textColor = UIColor(named: "textColor")
         field.isSecureTextEntry = false
         field.layer.borderWidth = 1
@@ -107,7 +107,7 @@ class RegisterAccountViewController: UIViewController {
     private let configureUserButton: UIButton = {
         let button = UIButton()
         button.configuration = .tinted()
-        button.configuration?.title = "Create new account"
+        button.configuration?.title = "Create new account".localized()
         button.layer.cornerRadius = 8
         button.configuration?.baseForegroundColor = UIColor(named: "textColor")
         button.configuration?.baseBackgroundColor = UIColor(named: "loginColor")
@@ -149,29 +149,29 @@ class RegisterAccountViewController: UIViewController {
               let firstPassword = passwordField.text, !firstPassword.isEmpty,
               let secondPassword = secondPasswordField.text, !secondPassword.isEmpty,
               let userName = userNameField.text, !userName.isEmpty else {
-            alertError(text: "Enter text in all fields")
+            alertError(text: "Enter text in all fields".localized())
             return
         }
         if firstPassword.elementsEqual(secondPassword) {
             if secondPassword.count >= 8 {
                 FirebaseAuth.Auth.auth().createUser(withEmail: mailField, password: secondPassword) { [weak self] _, error in
-                    guard error == nil else { self?.alertError(text: "This account has already been created", mainTitle: "Error!"); return }
+                    guard error == nil else { self?.alertError(text: "This account has already been created".localized()); return }
                     self?.askForSavingPassword(email: mailField, password: firstPassword,userName: userName)
                 }
             } else {
-                alertError(text: "Password must contains at least 8 symbols", mainTitle: "Warning")
+                alertError(text: "Password must contains at least 8 symbols, have uppercase and some numbers".localized(), mainTitle: "Warning".localized())
                 passwordField.text = ""
                 secondPasswordField.text = ""
             }
             
         } else {
-            alertError(text: "Passwords must be equal", mainTitle: "Warning")
+            alertError(text: "Passwords must be identical".localized(), mainTitle: "Warning".localized())
         }
     }
 
     @objc private func didTapGenerateStrongPassword(sender: UIBarButtonItem){
-        let alertController = UIAlertController(title: "Warning!" , message: "Do you want to use strong generated password for your account?", preferredStyle: .actionSheet)
-        let confirmButton = UIAlertAction(title: "Generate and save", style: .default,handler: { [weak self] _ in
+        let alertController = UIAlertController(title: "Warning!".localized() , message: "Do you want to use strong generated password for your account?".localized(), preferredStyle: .actionSheet)
+        let confirmButton = UIAlertAction(title: "Create".localized(), style: .default,handler: { [weak self] _ in
             self?.didTapChangeVisible()
             let password = self?.generateStrongPassword()
             let passwordFields = [self?.passwordField, self?.secondPasswordField]
@@ -183,7 +183,7 @@ class RegisterAccountViewController: UIViewController {
             }
         })
         alertController.addAction(confirmButton)
-        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alertController.addAction(UIAlertAction(title: "Cancel".localized(), style: .cancel))
         present(alertController, animated: isViewAnimated)
     }
     //MARK: - Set up methods
@@ -202,7 +202,7 @@ class RegisterAccountViewController: UIViewController {
     }
     
     private func setupNavigationController(){
-        title = "Create New Account"
+        title = "Create New Account".localized()
         navigationController?.navigationBar.tintColor = UIColor(named: "navigationControllerColor")
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .done, target: nil, action: nil)
@@ -214,7 +214,7 @@ class RegisterAccountViewController: UIViewController {
         let space = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         let fixedSpace = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
         fixedSpace.width = 1.0
-        let action = UIBarButtonItem(title: "Generate strong password", style: .done, target: self, action: #selector(didTapGenerateStrongPassword))
+        let action = UIBarButtonItem(title: "Generate strong password".localized(), style: .done, target: self, action: #selector(didTapGenerateStrongPassword))
         action.tintColor = UIColor(named: "textColor")
         toolBar.setItems([space, fixedSpace, action , fixedSpace, space], animated: isViewAnimated)
         toolBar.backgroundColor = .systemGray3

@@ -82,8 +82,9 @@ class UserProfileAppIconViewController: UIViewController {
     private func setupViewAndNavigation(){
         setConstraints()
         view.backgroundColor = UIColor(named: "backgroundColor")
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(didTapDismiss))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "chevron.down"), style: .done, target: self, action: #selector(didTapDismiss))
         title = "Choose App Icon".localized()
+        navigationController?.navigationBar.tintColor = UIColor(named: "calendarHeaderColor")
         firstIconButton.addTarget(self, action: #selector(didTapChangeImage(sender: )), for: .touchUpInside)
         secondIconButton.addTarget(self, action: #selector(didTapChangeImage(sender: )), for: .touchUpInside)
         thirdIconButton.addTarget(self, action: #selector(didTapChangeImage(sender: )), for: .touchUpInside)

@@ -48,7 +48,8 @@ class ChangeFontViewController: UIViewController {
     private let testFontLabel: UILabel = {
         let label = UILabel()
         label.textColor = UIColor(named: "textColor")
-        label.text = "Test font size and style: "
+        label.text = "Test font size and style: ".localized()
+        
         label.numberOfLines = 2
         label.textAlignment = .center
         return label
@@ -57,7 +58,7 @@ class ChangeFontViewController: UIViewController {
     private let changeFontWeightLabel: UILabel = {
         let label = UILabel()
         label.textColor = UIColor(named: "textColor")
-        label.text = "Set weight font for table headers"
+        label.text = "Set weight font for table headers".localized()
         label.numberOfLines = 2
         label.textAlignment = .center
         return label
@@ -66,7 +67,7 @@ class ChangeFontViewController: UIViewController {
     private let headerForCollectionLabel: UILabel = {
         let label = UILabel()
         label.textColor = UIColor(named: "textColor")
-        label.text = "Set Weight for header title of Tables"
+        label.text = "Set Weight for header title of Tables".localized()
         label.numberOfLines = 1
         label.textAlignment = .center
         label.font = .setMainLabelFont()
@@ -113,7 +114,7 @@ class ChangeFontViewController: UIViewController {
     private let saveFontSettingsButton: UIButton = {
         let button = UIButton(type: .system)
         button.configuration = .tinted()
-        button.configuration?.title = "Save changes"
+        button.configuration?.title = "Save changes".localized()
         button.configuration?.image = UIImage(systemName: "heart.circle.fill")
         button.configuration?.imagePadding = 2
         button.configuration?.imagePlacement = .trailing
@@ -147,7 +148,7 @@ class ChangeFontViewController: UIViewController {
         savedFontSize = round(fontSize / step) * step
         
         testFontLabel.font = .systemFont(ofSize: savedFontSize,weight: UIFont.Weight(rawValue: savedFontWeight))
-        testFontLabel.text = "Test font size and style: \(savedFontSize)"
+        testFontLabel.text = "Test font size and style: ".localized() + \(savedFontSize)
     }
     
     @objc private func didTapDismiss(){
@@ -167,8 +168,8 @@ class ChangeFontViewController: UIViewController {
     
     @objc private func didTapReturnDefaultSettings(){
         setupHapticMotion(style: .heavy)
-        let alert = UIAlertController(title: "Alert", message: "Do you want to set font settings to default?", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Apply", style: .destructive,handler: { _ in
+        let alert = UIAlertController(title: "Warning".localized(), message: "Do you want to set font settings to default?".localized(), preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Apply".localized(), style: .destructive,handler: { _ in
             UserDefaults.standard.setValue(16, forKey: "fontSizeChanging")
             UserDefaults.standard.setValue("Didot", forKey: "fontNameChanging")
             UserDefaults.standard.setValue(0.0, forKey: "fontWeightChanging")
@@ -176,7 +177,7 @@ class ChangeFontViewController: UIViewController {
                 self.dismiss(animated: isViewAnimated)
             }
         }))
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Cancel".localized(), style: .cancel))
         self.present(alert, animated: isViewAnimated)
     }
     
@@ -240,8 +241,8 @@ class ChangeFontViewController: UIViewController {
     }
     
     private func setupNavigation(){
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", style: .done, target: self, action: #selector(didTapSave))
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back", image: UIImage(systemName: "chevron.down"), target: self, action: #selector(didTapDismiss))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save".localized(), style: .done, target: self, action: #selector(didTapSave))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back".localized(), image: UIImage(systemName: "chevron.down"), target: self, action: #selector(didTapDismiss))
         navigationItem.leftBarButtonItem?.tintColor = UIColor(named: "calendarHeaderColor")
         navigationItem.rightBarButtonItem?.tintColor = UIColor(named: "calendarHeaderColor")
     }
