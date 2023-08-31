@@ -78,7 +78,7 @@ class ChangeFontViewController: UIViewController {
     
     private let changeFontSlider: UISlider = {
         let slider = UISlider()
-        slider.minimumValue = 8
+        slider.minimumValue = 10
         slider.maximumValue = 20
         slider.isContinuous = true
         slider.minimumTrackTintColor = UIColor(named: "calendarHeaderColor")
@@ -143,12 +143,15 @@ class ChangeFontViewController: UIViewController {
     //MARK: - Target methods
     @objc private func didTapChangeFont(sender: UISlider){
         feedbackGenerator.selectionChanged()
+        let interval = (changeFontSlider.maximumValue - changeFontSlider.minimumValue) / 5
         let fontSize = CGFloat(sender.value)
         let step = CGFloat(2)
         savedFontSize = round(fontSize / step) * step
         
         testFontLabel.font = .systemFont(ofSize: savedFontSize,weight: UIFont.Weight(rawValue: savedFontWeight))
         testFontLabel.text = "Test font size and style: ".localized() + String(describing: savedFontSize)
+        let section = Int(floor(sender.value / interval))
+        sender.value = Float(section) * interval
     }
     
     @objc private func didTapDismiss(){

@@ -9,7 +9,7 @@ import UIKit
 
 extension UIViewController {
     func setupLoadingSpinner(){
-        let alert = UIAlertController(title: "", message: "Please wait...", preferredStyle: .alert)
+        let alert = UIAlertController(title: "", message: "Please wait...".localized(), preferredStyle: .alert)
         let loadingAlert = UIActivityIndicatorView(frame: CGRect(x: 10, y: 5, width: 50, height: 50))
         loadingAlert.hidesWhenStopped = true
         loadingAlert.style = .medium

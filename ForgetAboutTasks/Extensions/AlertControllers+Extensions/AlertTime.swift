@@ -20,7 +20,7 @@ extension UIViewController {
         alert.view.addSubview(datePicker)
         
         
-        alert.addAction(UIAlertAction(title: "Ok", style: .default) { action in
+        alert.addAction(UIAlertAction(title: "OK".localized(), style: .default) { action in
             let dateFormatter = DateFormatter()
             dateFormatter.locale = .current
             dateFormatter.dateFormat = "HH:mm"
@@ -30,7 +30,7 @@ extension UIViewController {
 
             completiongHandler(date,timeString)
         })
-        alert.addAction(UIAlertAction(title: "Cancel", style: .destructive))
+        alert.addAction(UIAlertAction(title: "Cancel".localized(), style: .destructive))
         
         alert.view.snp.makeConstraints { make in
             make.height.equalTo(400)
@@ -56,7 +56,7 @@ extension UIViewController {
         alert.view.addSubview(datePicker)
         
         
-        alert.addAction(UIAlertAction(title: "Ok", style: .default) { action in
+        alert.addAction(UIAlertAction(title: "OK".localized(), style: .default) { action in
             
             let date = datePicker.date
             
@@ -71,7 +71,7 @@ extension UIViewController {
 //                table.reloadData()
             }
         })
-        alert.addAction(UIAlertAction(title: "Cancel", style: .destructive))
+        alert.addAction(UIAlertAction(title: "Cancel".localized(), style: .destructive))
         
         alert.view.snp.makeConstraints { make in
             make.height.equalTo(540)

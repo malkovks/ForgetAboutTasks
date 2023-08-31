@@ -38,7 +38,7 @@ class UserProfileHeaderView: UIView {
     func setupText(indexPath section: Int){
         switch section {
         case 0: headerLabel.text = "Main setups".localized()
-        case 1: headerLabel.text = "Security settings"
+        case 1: headerLabel.text = "Security settings".localized()
         case 2: headerLabel.text = "Secondary setups".localized()
         case 3: headerLabel.text = "Info".localized()
         case 4: headerLabel.text = "Account settings".localized()

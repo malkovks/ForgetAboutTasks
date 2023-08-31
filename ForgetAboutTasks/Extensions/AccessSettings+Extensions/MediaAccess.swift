@@ -66,7 +66,7 @@ extension UIViewController {
     func requestUserForCamera(){
         AVCaptureDevice.requestAccess(for: .video) { success in
             if !success {
-                self.alertDismissed(view: self.view, title: "Successfully")
+                self.alertDismissed(view: self.view, title: "Successfully".localized())
             }
         }
     }

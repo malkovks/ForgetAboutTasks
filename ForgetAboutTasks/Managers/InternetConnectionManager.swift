@@ -25,8 +25,6 @@ public class InternetConnectionManager {
         }
         let isReachable = flags.contains(.reachable)
         let needConnection = flags.contains(.connectionRequired)
-        print("is reachable",isReachable)
-        print("need connection",needConnection)
         return (isReachable && !needConnection)
     }
 }

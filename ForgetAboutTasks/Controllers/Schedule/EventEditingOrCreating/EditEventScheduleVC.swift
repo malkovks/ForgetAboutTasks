@@ -224,9 +224,9 @@ class EditEventScheduleViewController: UIViewController {
                 }
             }
         case .restricted:
-            print("Restricted")
+            break
         case .denied:
-            alertError(text: "Cant save event in Calendar", mainTitle: "Warning!")
+            alertError(text: "Cant save event in Calendar".localized(), mainTitle: "Warning!".localized())
         case .authorized:
             setupAddingEventToCalendar(store: eventStore, model: model, status: status)
         @unknown default:
@@ -250,11 +250,11 @@ class EditEventScheduleViewController: UIViewController {
                     try store.save(event, span: .thisEvent)
                     editedScheduleModel.scheduleActiveCalendar = true
                 } catch let error as NSError{
-                    alertError(text: error.localizedDescription, mainTitle: "Error!")
+                    alertError(text: error.localizedDescription)
                 }
             }
         } else {
-            alertError(text: "Error saving event to calendar")
+            alertError(text: "Error saving event to calendar".localized())
             editedScheduleModel.scheduleActiveCalendar = false
         }
     }
@@ -266,12 +266,12 @@ class EditEventScheduleViewController: UIViewController {
         case [0,0]: cellsName[indexPath.section][indexPath.row] = model.scheduleName ?? ""
         case [1,0]: cellsName[indexPath.section][indexPath.row] = DateFormatter.localizedString(from: dateTime, dateStyle: .medium, timeStyle: .short)
         case [1,1]: cellsName[indexPath.section][indexPath.row] = DateFormatter.localizedString(from: endDateTime, dateStyle: .medium, timeStyle: .short)
-        case [2,0]: cellsName[indexPath.section][indexPath.row] = model.scheduleCategoryName ?? "Set Name of event"
-        case [2,1]: cellsName[indexPath.section][indexPath.row] = model.scheduleCategoryType ?? "Set Type of event"
-        case [2,2]: cellsName[indexPath.section][indexPath.row] = model.scheduleCategoryURL ?? "Set URL"
-        case [2,3]: cellsName[indexPath.section][indexPath.row] = model.scheduleCategoryNote ?? "Enter some notes"
+        case [2,0]: cellsName[indexPath.section][indexPath.row] = model.scheduleCategoryName ?? "Set Name of event".localized()
+        case [2,1]: cellsName[indexPath.section][indexPath.row] = model.scheduleCategoryType ?? "Set Type of event".localized()
+        case [2,2]: cellsName[indexPath.section][indexPath.row] = model.scheduleCategoryURL ?? "Set URL".localized()
+        case [2,3]: cellsName[indexPath.section][indexPath.row] = model.scheduleCategoryNote ?? "Enter some notes".localized()
         default:
-            print("Error")
+            break
         }
     }
     //MARK: - Logics methods
@@ -279,13 +279,13 @@ class EditEventScheduleViewController: UIViewController {
     private func setupAlertIfDataEmpty() -> Bool{
         setupHapticMotion(style: .medium)
         if scheduleModel.scheduleName == "Unknown" {
-            alertError(text: "Enter value in Name cell")
+            alertError(text: "Enter value in Name cell".localized())
             return false
         } else if scheduleModel.scheduleStartDate == nil {
-            alertError(text: "Specify start of event")
+            alertError(text: "Specify start of event".localized())
             return false
         } else if scheduleModel.scheduleTime == nil {
-            alertError(text: "Specify end of event")
+            alertError(text: "Specify end of event".localized())
             return false
         } else {
             return true
@@ -478,7 +478,7 @@ extension EditEventScheduleViewController: UITableViewDelegate, UITableViewDataS
                 tableView.selectRow(at: indexPath, animated: isViewAnimated, scrollPosition: .none)
                 chooseTypeOfImagePicker()
             default:
-                print("error")
+                break
             
         }
     }

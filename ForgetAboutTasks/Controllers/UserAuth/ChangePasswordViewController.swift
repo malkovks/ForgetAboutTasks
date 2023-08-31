@@ -17,6 +17,7 @@ class ChangePasswordViewController: UIViewController {
     
     init(account: String) {
         self.accountMail = account
+        
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -164,6 +165,7 @@ class ChangePasswordViewController: UIViewController {
         setupTextFields()
         setupConstraints()
         setupIndicator()
+        tabBarController?.tabBar.isHidden = true
         view.backgroundColor = UIColor(named: "launchBackgroundColor")
         confirmNewPasswordButton.addTarget(self, action: #selector(didTapConfirmChangePassword), for: .touchUpInside)
     }

@@ -146,10 +146,7 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
             let vc = UserProfileSwitchPasswordViewController(isCheckPassword: true)
             vc.modalPresentationStyle = .overCurrentContext
             tabBarController?.present(vc, animated: isViewAnimated)
-//            navigationController?.pushViewController(vc, animated: isViewAnimated)
-        } else {
-            print(success)
-            print(isAuthorized)
+            navigationController?.pushViewController(vc, animated: isViewAnimated)
         }
     }
     
@@ -318,7 +315,7 @@ extension ScheduleViewController: FSCalendarDelegate, FSCalendarDataSource {
         
         for birthday in filteredContactData {
             if let model = birthday.contactDateBirthday {
-                let convertedModel = model.getDateWithoutYear(date: model,currentYearDate: date)
+                let convertedModel = model.getDateWithoutYear(currentYearDate: date)
                 let dateString = DateFormatter.localizedString(from: convertedModel, dateStyle: .medium, timeStyle: .none)
                 if birthdayCounts[dateString] != nil {
                     birthdayCounts[dateString]! += 1

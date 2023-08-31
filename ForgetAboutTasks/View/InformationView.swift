@@ -51,6 +51,8 @@ class InformationView: UIView {
                 self.customView.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
             } completion: { success in
                 self.customView.removeFromSuperview()
+                self.infoLabel.removeFromSuperview()
+                self.closeInfoViewButton.removeFromSuperview()
             }
         }
     }

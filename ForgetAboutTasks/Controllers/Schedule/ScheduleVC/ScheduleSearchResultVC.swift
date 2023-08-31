@@ -54,7 +54,7 @@ extension ScheduleSearchResultViewController: UITableViewDelegate, UITableViewDa
         let dateF = DateFormatter.localizedString(from: model?.scheduleTime ?? Date(), dateStyle: .medium, timeStyle: .none)
 
         cell.textLabel?.text = model?.scheduleName
-        cell.detailTextLabel?.text =  dateF + ". Time: " + timeFF
+        cell.detailTextLabel?.text =  dateF + ". Time: ".localized() + timeFF
         cell.imageView?.image = UIImage(systemName: "circle.fill")
         if let data = model?.scheduleColor {
             let color = UIColor.color(withData: data)

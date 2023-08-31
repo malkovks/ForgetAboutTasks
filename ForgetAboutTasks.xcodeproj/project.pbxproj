@@ -21,7 +21,6 @@
 		0A1FD0C32A7D7641003A7158 /* TaskBirthdayDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A1FD0C22A7D7641003A7158 /* TaskBirthdayDetailVC.swift */; };
 		0A2717B829FE518000EFBC11 /* OpenTaskDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2717B729FE518000EFBC11 /* OpenTaskDetailVC.swift */; };
 		0A2717BA2A01F7FE00EFBC11 /* AllTasksDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2717B92A01F7FE00EFBC11 /* AllTasksDetailVC.swift */; };
-		0A525DAF29FC3C3B009D116F /* AlertNewName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A525DAE29FC3C3B009D116F /* AlertNewName.swift */; };
 		0A6152122A09D57000A26792 /* AlertDismissed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A6152112A09D57000A26792 /* AlertDismissed.swift */; };
 		0A6152142A09E57700A26792 /* AlertActionWithURL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A6152132A09E57700A26792 /* AlertActionWithURL.swift */; };
 		0A7FFFB829EFD9E100CAC9DA /* ContactModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7FFFB729EFD9E100CAC9DA /* ContactModel.swift */; };
@@ -80,10 +79,8 @@
 		0AA604DF29E04541007ACE58 /* AlertImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA604DE29E04541007ACE58 /* AlertImagePicker.swift */; };
 		0AA604E329E14673007ACE58 /* ScheduleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA604E229E14673007ACE58 /* ScheduleModel.swift */; };
 		0AA604E629E14814007ACE58 /* ScheduleRealmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA604E529E14814007ACE58 /* ScheduleRealmManager.swift */; };
-		0AA604E929E16C05007ACE58 /* ColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA604E829E16C05007ACE58 /* ColorExtensions.swift */; };
 		0AA6857B2A6922950002C533 /* UIFont+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA6857A2A6922950002C533 /* UIFont+Extensions.swift */; };
 		0AA74A2129E6EAB200F01532 /* ColorConverters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA74A2029E6EAB200F01532 /* ColorConverters.swift */; };
-		0AA74A2429E715ED00F01532 /* DateFormatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA74A2329E715ED00F01532 /* DateFormatters.swift */; };
 		0AA74A2629EC521800F01532 /* AllTasksRealmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA74A2529EC521800F01532 /* AllTasksRealmManager.swift */; };
 		0AA74A2829EC524200F01532 /* AllTaskModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA74A2729EC524200F01532 /* AllTaskModel.swift */; };
 		0AA8EC5D29C76968004DC6DD /* AlertDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA8EC5C29C76968004DC6DD /* AlertDate.swift */; };
@@ -156,7 +153,6 @@
 		0A1FD0C22A7D7641003A7158 /* TaskBirthdayDetailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskBirthdayDetailVC.swift; sourceTree = "<group>"; };
 		0A2717B729FE518000EFBC11 /* OpenTaskDetailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenTaskDetailVC.swift; sourceTree = "<group>"; };
 		0A2717B92A01F7FE00EFBC11 /* AllTasksDetailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllTasksDetailVC.swift; sourceTree = "<group>"; };
-		0A525DAE29FC3C3B009D116F /* AlertNewName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertNewName.swift; sourceTree = "<group>"; };
 		0A6152112A09D57000A26792 /* AlertDismissed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertDismissed.swift; sourceTree = "<group>"; };
 		0A6152132A09E57700A26792 /* AlertActionWithURL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertActionWithURL.swift; sourceTree = "<group>"; };
 		0A7FFFB729EFD9E100CAC9DA /* ContactModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactModel.swift; sourceTree = "<group>"; };
@@ -219,10 +215,8 @@
 		0AA604DE29E04541007ACE58 /* AlertImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertImagePicker.swift; sourceTree = "<group>"; };
 		0AA604E229E14673007ACE58 /* ScheduleModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleModel.swift; sourceTree = "<group>"; };
 		0AA604E529E14814007ACE58 /* ScheduleRealmManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleRealmManager.swift; sourceTree = "<group>"; };
-		0AA604E829E16C05007ACE58 /* ColorExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtensions.swift; sourceTree = "<group>"; };
 		0AA6857A2A6922950002C533 /* UIFont+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+Extensions.swift"; sourceTree = "<group>"; };
 		0AA74A2029E6EAB200F01532 /* ColorConverters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorConverters.swift; sourceTree = "<group>"; };
-		0AA74A2329E715ED00F01532 /* DateFormatters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormatters.swift; sourceTree = "<group>"; };
 		0AA74A2529EC521800F01532 /* AllTasksRealmManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllTasksRealmManager.swift; sourceTree = "<group>"; };
 		0AA74A2729EC524200F01532 /* AllTaskModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllTaskModel.swift; sourceTree = "<group>"; };
 		0AA8EC5C29C76968004DC6DD /* AlertDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertDate.swift; sourceTree = "<group>"; };
@@ -568,7 +562,6 @@
 		0AA604E729E16BF6007ACE58 /* UIColor+Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				0AA604E829E16C05007ACE58 /* ColorExtensions.swift */,
 				0AA74A2029E6EAB200F01532 /* ColorConverters.swift */,
 			);
 			path = "UIColor+Extensions";
@@ -593,7 +586,6 @@
 		0AA74A2229E715DA00F01532 /* Date */ = {
 			isa = PBXGroup;
 			children = (
-				0AA74A2329E715ED00F01532 /* DateFormatters.swift */,
 				0A1FD0BF2A7A5400003A7158 /* Date+Extensions.swift */,
 			);
 			path = Date;
@@ -610,7 +602,6 @@
 				0AA604DB29E03CB1007ACE58 /* AlertContacts.swift */,
 				0AA604DE29E04541007ACE58 /* AlertImagePicker.swift */,
 				0AB763B929E3FAC900BFDB0D /* AlertError.swift */,
-				0A525DAE29FC3C3B009D116F /* AlertNewName.swift */,
 				0A6152112A09D57000A26792 /* AlertDismissed.swift */,
 				0A6152132A09E57700A26792 /* AlertActionWithURL.swift */,
 			);
@@ -934,7 +925,6 @@
 				0A9918D82A542470001004FA /* LanguageManager.swift in Sources */,
 				0A9918F72A57F524001004FA /* UserProfileSwitchPasswordVC.swift in Sources */,
 				0AA1E9392A4128CA0052B849 /* LockscreenWidget.intentdefinition in Sources */,
-				0A525DAF29FC3C3B009D116F /* AlertNewName.swift in Sources */,
 				0ACE797A29DED2D400599C19 /* NewContactCustomView.swift in Sources */,
 				0AA0E93A2A60C69B00911C0D /* MediaAccess.swift in Sources */,
 				0A9918D42A52BCA0001004FA /* UserProfileAppIconVC.swift in Sources */,
@@ -952,13 +942,11 @@
 				0A8AC1A829B9DBD300EA052B /* UserProfileVC.swift in Sources */,
 				0AA604E629E14814007ACE58 /* ScheduleRealmManager.swift in Sources */,
 				0A8AC1A629B9D4FA00EA052B /* ContactsVC.swift in Sources */,
-				0AA604E929E16C05007ACE58 /* ColorExtensions.swift in Sources */,
 				0AB578EF2A8FD62600227581 /* InternetConnectionManager.swift in Sources */,
 				0A1FD0C02A7A5400003A7158 /* Date+Extensions.swift in Sources */,
 				0AA604DF29E04541007ACE58 /* AlertImagePicker.swift in Sources */,
 				0AA0E93C2A60D24B00911C0D /* ContactsAccess.swift in Sources */,
 				0ADAB9FC2A310EEA00A5C2B2 /* AlertPhoneNumber.swift in Sources */,
-				0AA74A2429E715ED00F01532 /* DateFormatters.swift in Sources */,
 				0A0CE6F729C461F600A14648 /* CreateEventScheduleVC.swift in Sources */,
 				0AA8EC5F29C7AA56004DC6DD /* AlertTime.swift in Sources */,
 				0AB763BA29E3FAC900BFDB0D /* AlertError.swift in Sources */,

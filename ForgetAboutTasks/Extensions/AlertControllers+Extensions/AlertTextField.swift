@@ -40,26 +40,26 @@ extension UIViewController{
             }
             textField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
         })
-        let saveAction = UIAlertAction(title: "Save", style: .default,handler: { _ in
+        let saveAction = UIAlertAction(title: "Save".localized(), style: .default,handler: { _ in
             DispatchQueue.main.async {
                 guard let text = alert.textFields?.first?.text else {
-                    self.alertError(text: "Error value!")
+                    self.alertError(text: "Error value!".localized())
                     return
                 }
                 if !text.isEmpty {
                     completion(text)
                 } else {
-                    self.alertError(text: "Enter some value!")
+                    self.alertError(text: "Enter some value!".localized())
                 }
             }
         })
         alert.addAction(saveAction)
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Cancel".localized(), style: .cancel))
         alert.editButtonItem.tintColor = UIColor(named: "calendarHeaderColor")
         let toolbar = UIToolbar()
         toolbar.sizeToFit()
         //НЕ РАБОТАЕТ кнопка скрытия клавиатуры
-        let doneB = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(toolBarDoneButtonTapped))
+        let doneB = UIBarButtonItem(title: "Done".localized(), style: .done, target: self, action: #selector(toolBarDoneButtonTapped))
         doneB.tintColor = UIColor(named: "calendarHeaderColor")
         let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         toolbar.setItems([flexibleSpace,doneB], animated: isViewAnimated)

@@ -175,7 +175,7 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
         UIGraphicsBeginImageContextWithOptions(tableView.contentSize, false, 0.0)
         tableView.layer.render(in: UIGraphicsGetCurrentContext()!)
         guard let image = UIGraphicsGetImageFromCurrentImageContext() else {
-            alertError(text: "Error making screenshot of table view", mainTitle: "Error!")
+            alertError(text: "Error making screenshot of table view".localized())
             return
         }
         UIGraphicsEndImageContext()
@@ -325,7 +325,7 @@ extension OpenTaskDetailViewController: UITableViewDelegate, UITableViewDataSour
             customCell?.imageViewSchedule.image = image ?? UIImage(systemName: "camera.fill")
             return customCell!
         default:
-            alertError(text: "Please,try again later\nError getting data", mainTitle: "Error!!")
+            alertError(text: "Please,try again later\nError getting data".localized())
         }
         return cell!
     }

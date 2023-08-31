@@ -212,7 +212,7 @@ class EditContactViewController: UIViewController {
     private func setupOpenCalendar(){
         setupHapticMotion(style: .soft)
         guard let date = contactModel.contactDateBirthday else { alertError(text: "Cant get date".localized(), mainTitle: "Error".localized()); return}
-        let convertedDate = date.getDateWithoutYear(date: date)
+        let convertedDate = date.getDateWithoutYear()
         let vc = CreateTaskForDayController(choosenDate: convertedDate)
         self.dismiss(animated: isViewAnimated)
         if let tabBarController = self.tabBarController {

@@ -242,8 +242,7 @@ class UserProfileViewController: UIViewController {
     
     @objc private func didTapOnName(sender: UITapGestureRecognizer){
         setupHapticMotion(style: .soft)
-        alertNewName(title: "Enter new name and second name".localized(),
-                     placeholder: "Enter the text".localized()) { [weak self] text in
+        alertTextField(cell: "Enter new name and second name".localized(), placeholder: "Enter the text".localized(), keyboard: .default) {[weak self] text in
             self?.userNameLabel.text = text
             UserDefaults.standard.set(text, forKey: "userName")
         }
@@ -251,11 +250,9 @@ class UserProfileViewController: UIViewController {
     
     @objc private func didTapOnAge(sender: UITapGestureRecognizer){
         setupHapticMotion(style: .soft)
-        alertNewName(title: "Enter your age".localized(),
-                     placeholder: "Enter age number".localized(),
-                     type: .numberPad) { [weak self] text in
-            self?.ageLabel.text = "Age: ".localized() + text
-            UserDefaults.standard.set(text, forKey: "userAge")
+        alertTextField(cell: "Enter your age".localized(), placeholder: "Enter age number".localized(), keyboard: .numbersAndPunctuation) { [weak self] age in
+            self?.ageLabel.text = "Age: ".localized() + age
+            UserDefaults.standard.set(age, forKey: "userAge")
         }
     }
     
@@ -600,7 +597,11 @@ class UserProfileViewController: UIViewController {
                     return
                 }
                 let vc = SFSafariViewController(url: url)
-                self?.navigationController?.pushViewController(vc, animated: isViewAnimated)
+                vc.tabBarController?.tabBar.isHidden = true
+                vc.delegate = self
+                self?.present(vc, animated: true,completion: {
+                    self?.tabBarController?.tabBar.isHidden = true
+                })
             }
         }))
         alert.addAction(UIAlertAction(title: "Cancel".localized(), style: .cancel))
@@ -622,6 +623,15 @@ class UserProfileViewController: UIViewController {
     
     
 }
+//MARK: - Safari delegate
+extension UserProfileViewController: SFSafariViewControllerDelegate {
+    func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
+        dismiss(animated: isViewAnimated) {
+            self.tabBarController?.tabBar.isHidden = false
+        }
+    }
+}
+
 //MARK: - Check Success Delegate
 extension UserProfileViewController: CheckSuccessSaveProtocol, ChangeFontDelegate {
     func changeFont(font size: CGFloat, style: String) {

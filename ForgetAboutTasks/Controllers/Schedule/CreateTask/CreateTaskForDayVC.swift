@@ -81,7 +81,7 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
     }()
     
     private var segmentalController: UISegmentedControl = {
-        let controller = UISegmentedControl(items: ["Time".localized(),"Date".lowercased(),"A-Z".localized()])
+        let controller = UISegmentedControl(items: ["Time".localized(),"Date".localized(),"A-Z".localized()])
         controller.tintColor = UIColor(named: "calendarHeaderColor")
         controller.backgroundColor = UIColor(named: "calendarHeaderColor")
         controller.selectedSegmentIndex = 0
@@ -98,7 +98,7 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
     private let birthdayDetailButton: UIButton = {
         let button = UIButton(type: .system)
         button.configuration = .tinted()
-        button.configuration?.title = "Today have some birthdays!"
+        button.configuration?.title = "Today have some birthdays!".localized()
         button.configuration?.image = UIImage(systemName: "gift.fill")
         button.configuration?.imagePadding = 2
         button.configuration?.titleAlignment = .leading
@@ -131,8 +131,6 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
         super.viewWillAppear(animated)
         tableView.reloadData()
         calendar.reloadData()
-        
-        
     }
 
     override func viewDidLoad() {
@@ -144,7 +142,7 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
         let predicate = setupRealmData(date: choosenDate)
         loadingRealmData(predicate: predicate)
         
-        tableView.allowsMultipleSelectionDuringEditing = true
+        
     }
     
     
@@ -194,7 +192,7 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
         let alert = UIAlertController(title: "Do you want to delete choosen cells?".localized(), message: "Warning!".localized(), preferredStyle: .actionSheet)
         alert.addAction(UIAlertAction(title: "Delete".localized(), style: .destructive,handler: { [self] _ in
             guard let indexPath = tableView.indexPathsForSelectedRows else {
-                alertError(text: "Can't get index from table view", mainTitle: "Error")
+                alertError(text: "Can't get index from table view", mainTitle: "Error".localized())
                 return
             }
             for index in indexPath {
@@ -212,9 +210,17 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
     @objc private func didTapOpenBirthdays(sender: UIButton){
         setupHapticMotion(style: .soft)
         let vc = TaskBirthdayDetailViewController(choosenDate: choosenDate, birthdayModel: birthdayContactModel)
+        vc.isOpenContact = { [weak self] result in
+            let vc = EditContactViewController(contactModel: result, editing: false)
+            DispatchQueue.main.asyncAfter(deadline: .now()+1) {
+                self?.navigationController?.pushViewController(vc, animated: isViewAnimated)
+            }
+            
+        }
         let convertChoosenDate = DateFormatter.localizedString(from: choosenDate, dateStyle: .medium, timeStyle: .none)
-        let countValue = birthdayCounts[convertChoosenDate] ?? 0
-        let height = Int(navigationController?.navigationBar.frame.height ?? 70) + (40*countValue)
+
+        guard let countValue = birthdayCounts[convertChoosenDate] else { return }
+        let height = Int(navigationController?.navigationBar.frame.height ?? 70) + (80*countValue)
         let nav = UINavigationController(rootViewController: vc)
         nav.modalPresentationStyle = .pageSheet
         nav.sheetPresentationController?.detents = [.custom(resolver: { context in
@@ -268,10 +274,10 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
     private func setupBirthdayButton(){
         guard let contactModel = self.birthdayContactModel else {
             return }
-
         for birthday in contactModel {
             if let model = birthday.contactDateBirthday {
-                let convertedModel = model.getDateWithoutYear(date: model,currentYearDate: choosenDate)
+                let convertedModel = model.getDateWithoutYear(currentYearDate: choosenDate)
+                
                 let dateString = DateFormatter.localizedString(from: convertedModel, dateStyle: .medium, timeStyle: .none)
                 if birthdayCounts[dateString] != nil {
                     birthdayCounts[dateString]! += 1
@@ -390,7 +396,7 @@ extension CreateTaskForDayController: UITableViewDelegate, UITableViewDataSource
             cell.imageView?.image = UIImage(systemName: "circle.fill")
             cell.imageView?.tintColor = color
         } else {
-            alertError(mainTitle: "Error gettin time or date.\nTry again!")
+            alertError(mainTitle: "Error gettin time or date.\nTry again!".localized())
         }
         return cell
     }

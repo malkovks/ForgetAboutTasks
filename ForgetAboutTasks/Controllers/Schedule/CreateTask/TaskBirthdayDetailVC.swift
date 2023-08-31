@@ -13,15 +13,19 @@ final class TaskBirthdayDetailViewController: UIViewController {
     //properties and inits
     private var birthdayContactModel: Results<ContactModel>!
     private var currentDate: Date
-    private var birthdayDictionary: [String:[ContactModel]] = [String:[ContactModel]]()
+    private var birthdayModel: [ContactModel] = []
     private var convertedDate = String()
     private let realm = try! Realm()
     
+    var isOpenContact: ((ContactModel) -> Void)?
+    
     init(choosenDate: Date,birthdayModel: Results<ContactModel>){
+        
         self.currentDate = choosenDate
         self.birthdayContactModel = birthdayModel
         super.init(nibName: nil, bundle: nil)
     }
+
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -38,9 +42,8 @@ final class TaskBirthdayDetailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupModel()
         setupView()
-        filterContactModel()
-//        filterModel(date: currentDate)
         
     }
     //MARK: - Targets
@@ -50,11 +53,26 @@ final class TaskBirthdayDetailViewController: UIViewController {
     }
     
     //MARK: - Setups
+    private func calculateBirthdayModel(models: Results<ContactModel>,currentDateString: String){
+        for model in models {
+            guard let birthday = model.contactDateBirthday else { continue }
+            let modelDate = birthday.getDateWithoutYear(currentYearDate: currentDate)
+            let modelDateString = DateFormatter.localizedString(from: modelDate, dateStyle: .medium, timeStyle: .none)
+            if modelDateString == currentDateString {
+                birthdayModel.append(model)
+            }
+            continue
+        }
+    }
     
+    private func setupModel(){
+        guard let model = birthdayContactModel else { return }
+        let currentDateString = DateFormatter.localizedString(from: currentDate, dateStyle: .medium, timeStyle: .none)
+        self.calculateBirthdayModel(models: birthdayContactModel, currentDateString: currentDateString)
+    }
 
     
     private func setupView(){
-        
         setupConstraints()
         setupNavigationController()
         setupTableView()
@@ -67,89 +85,47 @@ final class TaskBirthdayDetailViewController: UIViewController {
     }
     
     private func setupNavigationController(){
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "chevron.down"), style: .done, target: self, action: #selector(didTapDismiss))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "chevron.down"), style: .done, target: self, action: #selector(didTapDismiss))
         navigationController?.navigationBar.tintColor = UIColor(named: "calendarHeaderColor")
-        title = "Today's Birthday"
+        let shortCurrentDate = DateFormatter.localizedString(from: currentDate, dateStyle: .short, timeStyle: .none)
+        title = "Birthday's " + shortCurrentDate
         navigationController?.navigationItem.largeTitleDisplayMode = .never
-    }
-    
-    private func setupDateFilter(choosen date: Date) -> (Date,Date) {
-        let dateStart = date
-        let finalDateStart: Date = {
-            let comp = DateComponents(hour: 00,minute: 00,second: 00)
-            return Calendar.current.date(byAdding: comp, to: dateStart)!
-        }()
-        
-        let dateEnd: Date = {
-            let components = DateComponents(day:1, second: -1)
-            return Calendar.current.date(byAdding: components, to: finalDateStart)!
-        }()
-        return (finalDateStart,dateEnd)
-    }
-    
-    private func setupDateFilterWithoutYear(date: Date) -> (Date,Date){
-        let startDate: Date = {
-            let comp =  Calendar.current.dateComponents([.month,.day], from: date)
-            return Calendar.current.date(byAdding: comp, to: date)!
-        }()
-        let endDate: Date = {
-            let comp = DateComponents(day: 1,second: -1)
-            return Calendar.current.date(byAdding: comp, to: startDate)!
-        }()
-        return (startDate,endDate)
-    }
-    
-    private func filterModel(date: Date){
-        let day = Calendar.current.dateComponents([.day], from: date).day!
-        let month = Calendar.current.dateComponents([.month], from: date).month!
-        
-//        let predicate = NSPredicate(format: "MONTH(contactDateBirthday) == %d AND DAY(contactDateBirthday) == %d", month,day)
-        let predicate = NSPredicate(format: "dateComponents([.month, .day], from: contactDateBirthday).month == %d AND dateComponents([.month, .day], from contactDateBirthday).day == %d", month,day)
-        let models = realm.objects(ContactModel.self).filter(predicate)
-        
-    }
-    
-    private func filterContactModel(){
-        let (dateStart,dateEnd) = setupDateFilter(choosen: currentDate)
-//        let (dateStart,dateEnd) = setupDateFilterWithoutYear(date: currentDate)
-        let realmModel = realm.objects(ContactModel.self)
-            .filter("contactDateBirthday >=  %@ AND contactDateBirthday <= %@",dateStart,dateEnd)
-//        birthdayContactModel = realmModel
-        guard let birthdayModel = self.birthdayContactModel else { return }
-        for birthday in birthdayModel {
-            if let model = birthday.contactDateBirthday {
-                let convertedModel = model.getDateWithoutYear(date: model,currentYearDate: currentDate)
-                
-                let dateString = DateFormatter.localizedString(from: model, dateStyle: .medium, timeStyle: .none)
-//                print(dateString ,"Name \(birthday.contactName)")
-                self.convertedDate = dateString
-                
-                self.birthdayDictionary[dateString]?.append(birthday)
-            } else {
-//                print("No birthday Date. Empty value")
-            }
-        }
-//        print(birthdayDictionary)
     }
 }
 
 //MARK: - Extensions
 extension TaskBirthdayDetailViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        birthdayDictionary[convertedDate]?.count ?? 5
+        birthdayModel.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "birthdayCell")
-        guard let model = birthdayDictionary[convertedDate] else { return UITableViewCell() }
-        cell.backgroundColor = .systemRed
-        cell.textLabel?.text = model[indexPath.row].contactName ?? "Test"
-        cell.detailTextLabel?.text = String(describing: model[indexPath.row].contactDateBirthday)
+        let model = birthdayModel[indexPath.row]
+        
+        let name = model.contactName ?? ""
+        let secondName = model.contactSurname ?? ""
+        let birthday = DateFormatter.localizedString(from: model.contactDateBirthday ?? Date(), dateStyle: .medium, timeStyle: .none)
+        let age = "Age: ".localized() + String(describing: model.contactDateBirthday?.getContactUserAge(specifiedDate: currentDate) ?? 0)
+        
+        cell.tintColor = UIColor(named: "calendarHeaderColor")
+        cell.textLabel?.text = name + " " + secondName
+        cell.detailTextLabel?.text = age + ". Birthday date: ".localized() + birthday
+        cell.imageView?.image = UIImage(systemName: "person.circle.fill")
         return cell
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: isViewAnimated)
+        let model = birthdayModel[indexPath.row]
+        let vc = EditContactViewController(contactModel: model, editing: false)
+        isOpenContact?(model)
+        dismiss(animated: isViewAnimated)
+
+    }
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 40
+        return 80
     }
 }
 

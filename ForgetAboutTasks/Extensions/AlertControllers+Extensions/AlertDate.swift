@@ -21,7 +21,7 @@ extension UIViewController {
         alert.view.addSubview(datePicker)
 
         
-        alert.addAction(UIAlertAction(title: "Ok", style: .default) { action in
+        alert.addAction(UIAlertAction(title: "OK".localized(), style: .default) { action in
             let date = datePicker.date
             let dateString = Formatters.instance.stringFromDate(date: date)
             
@@ -31,7 +31,7 @@ extension UIViewController {
             let weekday = weekdayComp
             completiongHandler(weekday,date,dateString)
         })
-        alert.addAction(UIAlertAction(title: "Cancel", style: .destructive))
+        alert.addAction(UIAlertAction(title: "Cancel".localized(), style: .destructive))
         
         alert.view.snp.makeConstraints { make in
             make.height.equalTo(300)

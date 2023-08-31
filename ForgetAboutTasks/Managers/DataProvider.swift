@@ -10,9 +10,9 @@ import UIKit
 class DataProvider {
     func dataProvider(url: URL, completion: @escaping (UIImage?) -> ()) {
         let request = URLRequest(url: url,cachePolicy: URLRequest.CachePolicy.returnCacheDataElseLoad, timeoutInterval: 10)
-        let dataTask = URLSession.shared.dataTask(with: request) { data, response, error in
+        let dataTask = URLSession.shared.dataTask(with: request) { data, _, error in
             guard data != nil,
-                  error == nil else { print("Error decoding image"); return }
+                  error == nil else { return }
             guard let image = UIImage(data: data!) else {
                 completion(UIImage(systemName: "person.circle.fill"))
                 return

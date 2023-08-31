@@ -35,10 +35,10 @@ extension UIViewController {
             }
             textField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
         })
-        let saveAction = UIAlertAction(title: "Save", style: .default,handler: { _ in
+        let saveAction = UIAlertAction(title: "Save".localized(), style: .default,handler: { _ in
             DispatchQueue.main.async {
                 guard var text = alert.textFields?.first?.text else {
-                    self.alertError(text: "Error value!")
+                    self.alertError(text: "Error value!".localized())
                     return
                 }
                 if text.count == 11 {
@@ -52,12 +52,12 @@ extension UIViewController {
                 } else if text.count == 7{
                     completion(text)
                 } else {
-                    self.alertError(text: "Please enter a valid phone number with 7 or 10 digits", mainTitle: "Error!")
+                    self.alertError(text: "Please enter a valid phone number with 7 or 10 digits".localized())
                 }
             }
         })
         alert.addAction(saveAction)
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Cancel".localized(), style: .cancel))
         alert.editButtonItem.tintColor = UIColor(named: "calendarHeaderColor")
         
         present(alert, animated: isViewAnimated)

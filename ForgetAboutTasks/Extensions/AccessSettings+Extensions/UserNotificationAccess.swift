@@ -18,7 +18,7 @@ extension UIViewController {
             case false:
                 handler(false)
                 DispatchQueue.main.async {
-                    self.showSettingsForChangingAccess(title: "Switching on Notifications", message: "Do you want to switch on Notifications?") { _ in
+                    self.showSettingsForChangingAccess(title: "Switching on Notifications".localized(), message: "Do you want to switch on Notifications?".localized()) { _ in
                     }
                 }
             }
@@ -73,20 +73,20 @@ extension UIViewController {
             self.setupAppLanguage(languageCode: "en")
             self.restartApp()
         }))
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Cancel".localized(), style: .cancel))
         present(alert, animated: isViewAnimated)
     }
     
     func showSettingsForChangingAccess(title: String, message: String,handler: @escaping (Bool)-> ()){
         let alert = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
-        alert.addAction(UIAlertAction(title: "Settings", style: .default) { _ in
+        alert.addAction(UIAlertAction(title: "Settings".localized(), style: .default) { _ in
             guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
             if UIApplication.shared.canOpenURL(url) {
                 UIApplication.shared.open(url)
                 handler(true)
             }
         })
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel,handler: { _ in
+        alert.addAction(UIAlertAction(title: "Cancel".localized(), style: .cancel,handler: { _ in
             handler(false)
         }))
         present(alert, animated: isViewAnimated)

@@ -198,6 +198,8 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
                     confirmPasswordDigits += forthTextField.text!
                     forthTextField.resignFirstResponder()
                     confirmPasswordButton.isEnabled = true
+                    confirmPasswordButton.configuration?.baseBackgroundColor = .systemBlue
+                    confirmPasswordButton.configuration?.baseForegroundColor = UIColor(named: "textColor")
                     break
                 default:
                     break

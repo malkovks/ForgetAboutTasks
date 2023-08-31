@@ -34,10 +34,10 @@ class TabBarViewController: UITabBarController {
     }
     
     private func setupTabBar() {
-        let schedule = tabbarsetup(vc: ScheduleViewController(), title: "Schedule", image: "calendar.badge.clock")
-        let tasks = tabbarsetup(vc: AllTasksToDoViewController(), title: "All Tasks", image: "list.clipboard.fill")
-        let contact = tabbarsetup(vc: ContactsViewController(), title: "Contacts", image: "rectangle.stack.person.crop")
-        let user = tabbarsetup(vc: UserProfileViewController(), title: "Profile", image: "gear")
+        let schedule = tabbarsetup(vc: ScheduleViewController(), title: "Schedule".localized(), image: "calendar.badge.clock")
+        let tasks = tabbarsetup(vc: AllTasksToDoViewController(), title: "All Tasks".localized(), image: "list.clipboard.fill")
+        let contact = tabbarsetup(vc: ContactsViewController(), title: "Contacts".localized(), image: "rectangle.stack.person.crop")
+        let user = tabbarsetup(vc: UserProfileViewController(), title: "Profile".localized(), image: "gear")
         setViewControllers([schedule,tasks,contact,user], animated: isViewAnimated)
     }
     

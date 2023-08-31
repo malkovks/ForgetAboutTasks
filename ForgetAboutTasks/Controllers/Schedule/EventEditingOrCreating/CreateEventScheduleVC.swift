@@ -77,7 +77,7 @@ class CreateEventScheduleViewController: UIViewController {
     @objc private func didTapDismiss(){
         setupHapticMotion(style: .medium)
         if isStartEditing {
-            setupAlertSheet(title:"Attention", subtitle: "You inputed the data that was not saved.\nWhat do you want to do?" )
+            setupAlertSheet(title:"Attention".localized(), subtitle: "You inputed the data that was not saved.\nWhat do you want to do?".localized() )
         } else {
             dismiss(animated: isViewAnimated)
         }
@@ -120,7 +120,7 @@ class CreateEventScheduleViewController: UIViewController {
     @objc private func didTapSetEKEvent(sender: UISwitch){
         if sender.isOn {
             if scheduleModel.scheduleStartDate == nil && scheduleModel.scheduleEndDate == nil {
-                alertError(text: "Enter date for adding event to Calendar", mainTitle: "Error!")
+                alertError(text: "Enter date for adding event to Calendar".localized())
             } else {
                 self.request(forAllowing: self.eventStore) { access in
                     self.addingEventStatus = access
@@ -234,11 +234,11 @@ class CreateEventScheduleViewController: UIViewController {
                     try store.save(event, span: .thisEvent)
                     scheduleModel.scheduleActiveCalendar = true
                 } catch let error as NSError{
-                    alertError(text: error.localizedDescription, mainTitle: "Error!")
+                    alertError(text: error.localizedDescription)
                 }
             }
         } else {
-            alertError(text: "Error saving event to calendar")
+            alertError(text: "Error saving event to calendar".localized())
         }
     }
     
@@ -246,16 +246,16 @@ class CreateEventScheduleViewController: UIViewController {
     
     private func setupAlertIfDataEmpty() -> Bool{
         if scheduleModel.scheduleName == "" {
-            alertError(text: "Enter value in Name cell")
+            alertError(text: "Enter value in Name cell".localized())
             return false
         } else if scheduleModel.scheduleStartDate == nil {
-            alertError(text: "Choose date of event")
+            alertError(text: "Choose date of event".localized())
             return false
         } else if scheduleModel.scheduleEndDate == nil {
-            alertError(text: "Choose time of event")
+            alertError(text: "Choose time of event".localized())
             return false
         } else if scheduleModel.scheduleStartDate?.compare(scheduleModel.scheduleEndDate ?? startChoosenDate) == .orderedDescending {
-            alertError(text: "End Date can't end earlier than Start Date. Change start or end date", mainTitle: "Error")
+            alertError(text: "End Date can't end earlier than Start Date. Change start or end date".localized())
             return false
         } else {
             return true

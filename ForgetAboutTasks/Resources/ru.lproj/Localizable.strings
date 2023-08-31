@@ -1,4 +1,8 @@
-
+//TabBarViewController
+"Schedule" = "Календарь";
+"All Tasks" = "Все задачи";
+"Contacts" = "Контакты";
+"Profile" = "Профиль";
 
 //Schedule View Controller
 "Calendar" = "Календарь";
@@ -9,6 +13,7 @@
 
 //Schedule Search Result View Controller
 "Result of search:" = "Результат поиска:";
+". Time: "  = ". Время: ";
 
 // Schedule All Event View Controller
 "All events" = "Все мероприятия";
@@ -16,6 +21,7 @@
 ".End - " = ". Окончание -";
 
 //Create Task For Day Controller
+"Today have some birthdays!" = "У кого-то день рождения!";
 "Time" = "Время";
 "Date" = "Дата";
 "A-Z" = "А-Я";
@@ -26,6 +32,7 @@
 "Delete choosen" = "Удалить";
 "Cancel editing mode" = "Отменить редактирование";
 "Actions" = "Действия";
+"Error gettin time or date.\nTry again!" = "Ошибка получения времени или даты. Попробуйте позже";
 
 //Open Task Detail View Controller;
 "Name of event" = "Детали";
@@ -53,6 +60,8 @@
 "Event was edited!" = "Мероприятие отредактировано!";
 "Share Image" = "Поделиться изображением";
 "Copy Image" = "Скопировать изображение";
+"Error making screenshot of table view" = "Ошибка создания скриншота таблицы";
+"Please,try again later\nError getting data" = "Пожалуйста, повторите позже. Ошибка получения данных";
 //Create Event Schedule View Controller
 "Details of event" = "Детали мероприятия";
 "Start and End of event" = "Начало и окончание мероприятия";
@@ -70,6 +79,12 @@
 "Attention" = "Внимание";
 "You inputed the data that was not saved.\nWhat do you want to do?" = "Вы хотите отменить введенные данные?";
 "Enter date for adding event to Calendar" = "Выберите дату для добавления мероприятия в Календарь";
+"Enter date for adding event to Calendar" = "Введите дату для добавления мероприятия в Календарь";
+"Error saving event to calendar" = "Ошибка сохранения мероприятия в календарь";
+"Enter value in Name cell" = "Введите данные в поле с именем";
+"Choose date of event" = "Выберите дату мероприятия";
+"Choose time of event" = "Выберите время мероприятия";
+"End Date can't end earlier than Start Date. Change start or end date" = "Конечная дата не может быть раньше начала мероприятия. Поменяйте данные на корректные";
 "Error!" = "Ошибка!";
 "Discard changes" = "Отменить изменения";
 "Save" = "Сохранить";
@@ -98,7 +113,14 @@
 "Editing event" = "Редактирование мероприятия";
 "Share selection" = "Поделиться";
 "Error making screenshot of table view" = "Не удалось сделать скриншот таблицы";
-
+"Enter value in Name cell" = "Введите значение в поле Названия";
+"Specify start of event" = "Укажите начало мероприятия";
+"Specify end of event" = "Укажите окончание мероприятия";
+"Enter some notes" = "Укажите значение в заметки";
+"Set URL" = "Укажите ссылку URL";
+"Set Type of event" = "Укажите тип мероприятия";
+"Set Name of event" = "Укажите полное наименование мероприятия";
+"Cant save event in Calendar" = "Не удалось сохранить мероприятие в Календарь";
 //All Tasks ToDo View Controller
 "Date" = "Дата";
 "A-Z" = "А-Я";
@@ -178,6 +200,7 @@
 
 //UserProfile View Controller
 "Age: " = "Возраст: ";
+". Birthday date: " = ". Дата рождения: ";
 "My Profile" = "Мой Профиль";
 "Enter your age" = "Введите ваш возраст";
 "Enter age number" = "Введите число";
@@ -243,6 +266,8 @@
 "Do you want to change account password?" = "Вы хотите изменить пароль аккаунта?";
 "Authorization goes through a special Firebase Authentication service. User data is not accessible to anyone, including the development team.\nThis application collects data to improve the performance of the application, as well as for better user experience. All data is encrypted and stored on a special server inaccessible to anyone.\nRealm Data Base is used as storage, user settings and other system parameters are stored in UserDefaults." = "Авторизация в приложение использует специальный сервис Firebase Authentication. Пользовательские данные недоступны третьим лицам, даже команде разработчика.\nДанное приложение собирает данные и аналитику для улучшения производительства и качества данного приложения для лучшего пользовательского впечатления.\nВ качестве хранения данных используется база данных Realm, пользовательские настройки и другие системные параметры хранятся в UserDefaults.";
 "Cant exit from account.\nTry again later" = "Не удалось получить доступ при выходе из аккаунта. Попробуйте позже";
+"Change Font" = "Изменить шрифт";
+"Warning" = "Внимание";
 //User Profile App Icon View Controller
 "Choose App Icon" = "Выберите иконку";
 "Cant get access to change Image" = "Не удается изменить изображение";
@@ -341,3 +366,29 @@
 "Secondary setups" = "Дополнительные настройки";
 "Info" = "Информация";
 "Account settings" = "Настройки аккаунта";
+//Extensions
+"Set image" = "Изменить";
+"Switching on Notifications" = "Доступ к Уведомлениям";
+"Do you want to switch on Notifications?" = "Вы хотите включить Уведомления?";
+"Settings" = "Настройки";
+"Enter Password" = "Введите пароль";
+"Log in to your Account" = "Вход в аккаунт";
+"Access to Face ID" = "Доступ к Face ID";
+"Successfully" = "Успешно";
+"Please wait..." = "Пожалуйста, подождите...";
+"Error value!" = "Ошибка значения";
+"Enter some value!" = "Введите значение!";
+"Done" = "Готово";
+"Please enter a valid phone number with 7 or 10 digits" = "Введите корректно номер телефона";
+"Friend" = "Друзья";
+"Colleague" = "Коллеги";
+"Family" = "Семья";
+"Camera" = "Камера";
+"Photo Library" = "Медиатека";
+"Saved Photo Album" = "Избранное";
+"Text was copied" = "Текст был скопирован";
+"What do you want to do with this link" = "Что вы хотите сделать с этой ссылкой?";
+"Open in browser" = "Открыть в браузере";
+"Copy link" = "Копировать";
+//User Defaults localization
+"Can't get user's image" = "Не удалось загрузить изображение";

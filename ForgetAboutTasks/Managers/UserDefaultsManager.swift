@@ -42,7 +42,7 @@ class UserDefaultsManager: UIViewController {
             let decode = try! PropertyListDecoder().decode(Data.self, from: data)
             image = UIImage(data: decode)
         } else {
-            alertError(text: "Can't get user's image", mainTitle: "Error!".localized())
+            alertError(text: "Can't get user's image".localized())
         }
         return image ?? UIImage(systemName: "photo.circle")!
     }
