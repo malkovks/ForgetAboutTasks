@@ -8,6 +8,12 @@
 import UIKit
 
 extension UIViewController {
+    
+    /// Function necessary for displaying custom alert
+    /// - Parameters:
+    ///   - text: custom text variations
+    ///   - duration: time duration of presenting alert
+    ///   - controllerView: view of UIViewController where this alert will presented
     func showAlertForUser(text: String,duration: DispatchTime,controllerView: UIView){
         let customView = UIView()
         customView.backgroundColor = UIColor(named: "cellColor")

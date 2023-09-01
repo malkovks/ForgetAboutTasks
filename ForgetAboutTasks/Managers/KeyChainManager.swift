@@ -11,6 +11,8 @@ import Foundation
 
 class KeychainManager {
     
+    
+    /// Enums for throwing errors if somethings goes wrong with keychain managing
     enum KeychainError: Error {
         case duplicateEntry
         case unknown(OSStatus)
@@ -19,6 +21,10 @@ class KeychainManager {
         case failureOnRead(OSStatus)
     }
     
+    /// Saving password in Keychain Manager. If data is duplicates - previous data deletes automatically
+    /// - Parameters:
+    ///   - password: getting password string type for saving in data format
+    ///   - email: email string type for saving in kSecAttrAccount
     static func savePassword(password: String, email: String) throws {
         let doubleQuery: [String:Any] = [kSecClass as String: kSecClassInternetPassword,
                                    kSecAttrServer as String: "firebase.google.com",
@@ -37,6 +43,9 @@ class KeychainManager {
         }
     }
     
+    /// Returning data value with full information which was saved in keychain
+    /// - Parameter email: entered email as key for getting data
+    /// - Returns: return data by input value as key
     static func getPassword(email: String) -> Data? {
         
         
@@ -50,6 +59,7 @@ class KeychainManager {
         return result as? Data
     }
     
+    /// Function for delete all data from keychain 
     static func delete(){
         let secItems = [kSecClassGenericPassword,
                         kSecClassInternetPassword,

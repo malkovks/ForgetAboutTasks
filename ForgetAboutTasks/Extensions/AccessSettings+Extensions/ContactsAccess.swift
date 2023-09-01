@@ -10,7 +10,9 @@ import Contacts
 import ContactsUI
 
 extension UIViewController {
-    
+
+    /// Function asked user for get access to User's contacts
+    /// - Parameter handler: return status access boolean value
     func requestAccessForInheritContacts(handler: @escaping (Bool?)->()){
         let contactStore = CNContactStore()
         DispatchQueue.main.async { [weak self] in
@@ -27,6 +29,8 @@ extension UIViewController {
         
     }
     
+    /// Check access to users contacts
+    /// - Parameter handler: return boolean value access status
     func checkAuthForContacts(handler: @escaping (Bool) -> Void) {
         DispatchQueue.main.async { [weak self] in
             switch CNContactStore.authorizationStatus(for: .contacts){

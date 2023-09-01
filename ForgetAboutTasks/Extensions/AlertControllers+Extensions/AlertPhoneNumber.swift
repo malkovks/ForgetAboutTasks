@@ -11,6 +11,12 @@ import UIKit
 extension UIViewController {
     
     
+    /// Function for presenting alert controller with entering phone number
+    /// - Parameters:
+    ///   - title: title of alert header
+    ///   - placeholder: placeholder text
+    ///   - type: type of keyboard
+    ///   - completion: return inputed string  
     func alertPhoneNumber(cell title: String,placeholder: String,keyboard type: UIKeyboardType, completion: @escaping (String) -> Void) {
         setupHapticMotion(style: .soft)
         let alert = UIAlertController(title: "", message: title, preferredStyle: .alert)

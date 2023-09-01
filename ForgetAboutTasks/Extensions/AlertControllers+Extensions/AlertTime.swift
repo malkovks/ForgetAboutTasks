@@ -9,6 +9,11 @@ import UIKit
 import SnapKit
 
 extension UIViewController {
+    
+    /// Function for presenting alert with time picker
+    /// - Parameters:
+    ///   - choosenDate: current date input
+    ///   - completiongHandler: return chosen time and time in string format
     func alertTime(choosenDate: Date, completiongHandler: @escaping (Date,String) -> Void) {
         setupHapticMotion(style: .soft)
         let alert = UIAlertController(title: "", message: nil, preferredStyle: .actionSheet)
@@ -45,7 +50,11 @@ extension UIViewController {
     }
     
     
-    func alertTimeInline(table: UITableView, choosenDate: Date, completionHandler: @escaping (Date,String,Int) -> Void) {
+    /// function for presenting alert with choosing date and time in one alert
+    /// - Parameters:
+    ///   - choosenDate: current date
+    ///   - completionHandler: return edited date, edited date in string type and weekday
+    func alertTimeInline(choosenDate: Date, completionHandler: @escaping (Date,String,Int) -> Void) {
         setupHapticMotion(style: .soft)
         let alert = UIAlertController(title: "", message: nil, preferredStyle: .actionSheet)
         let datePicker = UIDatePicker()

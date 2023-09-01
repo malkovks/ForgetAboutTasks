@@ -10,6 +10,8 @@ import LocalAuthentication
 
 extension UIViewController {
     
+    /// Function check status of Face ID after verification with user's biometrics and set true for authentication if user enter to application
+    /// - Parameter textField: needed if face id could not get access to user's face
     func safetyEnterApplicationWithFaceID(textField: UITextField){
         setupHapticMotion(style: .light)
         let context = LAContext()
@@ -35,6 +37,8 @@ extension UIViewController {
     
     
     
+    /// check authentication and access to Face ID
+    /// - Parameter handler: return status authentication and status access 
     func checkAuthForFaceID(handler: @escaping (Bool) -> Void){
         setupHapticMotion(style: .light)
         let context = LAContext()

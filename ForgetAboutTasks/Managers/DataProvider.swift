@@ -8,6 +8,11 @@
 import UIKit
 
 class DataProvider {
+    
+    /// function for working with url and getting image from it
+    /// - Parameters:
+    ///   - url: image link for future downloading
+    ///   - completion: if success returning downloaded image from url, if not returning system image
     func dataProvider(url: URL, completion: @escaping (UIImage?) -> ()) {
         let request = URLRequest(url: url,cachePolicy: URLRequest.CachePolicy.returnCacheDataElseLoad, timeoutInterval: 10)
         let dataTask = URLSession.shared.dataTask(with: request) { data, _, error in

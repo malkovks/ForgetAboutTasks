@@ -207,7 +207,7 @@ extension AllTasksToDoViewController: UITableViewDelegate, UITableViewDataSource
         cell.accessoryView = button as UIView
         cell.accessoryView?.tintColor = UIColor(named: "calendarHeaderColor")
         
-        let timeFF = Formatters.instance.timeStringFromDate(date: data.allTaskTime ?? Date())
+        let timeFF = DateFormatter.localizedString(from: data.allTaskTime ?? Date(), dateStyle: .none, timeStyle: .short)
         let dateF = DateFormatter.localizedString(from: data.allTaskDate ?? Date(), dateStyle: .medium, timeStyle: .none)
         cell.textLabel?.text = data.allTaskNameEvent
         cell.detailTextLabel?.text = dateF + " | " + timeFF

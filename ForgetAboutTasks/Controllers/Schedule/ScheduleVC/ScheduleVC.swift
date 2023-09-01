@@ -125,7 +125,7 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
     }
     
     private func setupAuthentification(){
-        if UserDefaultsManager.shared.isNotAuth() {
+        if !UserDefaults.standard.bool(forKey: "isAuthorised"){
             let vc = UserAuthViewController()
             let navVC = UINavigationController(rootViewController: vc)
             navVC.modalPresentationStyle = .fullScreen

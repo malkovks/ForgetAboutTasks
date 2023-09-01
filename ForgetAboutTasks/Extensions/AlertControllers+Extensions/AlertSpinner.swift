@@ -8,6 +8,8 @@
 import UIKit
 
 extension UIViewController {
+    
+    /// Function for displaying custom alert with timer 2
     func setupLoadingSpinner(){
         let alert = UIAlertController(title: "", message: "Please wait...".localized(), preferredStyle: .alert)
         let loadingAlert = UIActivityIndicatorView(frame: CGRect(x: 10, y: 5, width: 50, height: 50))

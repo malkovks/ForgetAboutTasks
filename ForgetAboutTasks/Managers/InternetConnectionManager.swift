@@ -8,6 +8,9 @@
 import SystemConfiguration
 
 public class InternetConnectionManager {
+    
+    /// Function for checking internet connection
+    /// - Returns: return status of internet connection. true if connection available
     class func isConnectedToInternet() -> Bool {
         var zeroAddress = sockaddr_in()
         zeroAddress.sin_len = UInt8(MemoryLayout.size(ofValue: zeroAddress))

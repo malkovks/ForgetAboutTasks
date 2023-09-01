@@ -16,6 +16,8 @@ class ScheduleRealmManager {
     
     private init() {}
     
+    /// Saving all schedule model in Realm model
+    /// - Parameter model: Realm model used for saving data in Database
     func saveScheduleModel(model: ScheduleModel){
         DispatchQueue.main.async {
             try! self.localRealm.write {
@@ -24,12 +26,19 @@ class ScheduleRealmManager {
         }
     }
     
+    /// Deleting chosen model from Realm Database
+    /// - Parameter model: Realm model
     func deleteScheduleModel(model: ScheduleModel){
         try! localRealm.write {
             localRealm.delete(model)
         }
     }
 
+    
+    /// Editing chosen model by full or some parameters
+    /// - Parameters:
+    ///   - id: the id of schedule Realm model. Needed for identification and filtering model
+    ///   - changes: the input model which check if there is some changes
     func editScheduleModel(user id: String,changes: ScheduleModel){
         DispatchQueue.main.async {
             let model = self.localRealm.objects(ScheduleModel.self).filter("scheduleModelId == %@",id).first

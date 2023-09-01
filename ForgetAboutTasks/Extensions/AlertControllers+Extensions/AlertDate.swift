@@ -9,6 +9,12 @@ import UIKit
 import SnapKit
 
 extension UIViewController {
+    
+    /// Function for presenting alert with choosing date
+    /// - Parameters:
+    ///   - choosenDate: input date
+    ///   - style: style of date picker
+    ///   - completiongHandler: return weekday of current date, formatted date and formatted date in string value
     func alertDate(choosenDate: Date?,calendar style: UIDatePicker.Mode = .date, completiongHandler: @escaping (Int,Date,String) -> Void) {
         setupHapticMotion(style: .soft)
         let alert = UIAlertController(title: "", message: nil, preferredStyle: .actionSheet)
@@ -23,7 +29,7 @@ extension UIViewController {
         
         alert.addAction(UIAlertAction(title: "OK".localized(), style: .default) { action in
             let date = datePicker.date
-            let dateString = Formatters.instance.stringFromDate(date: date)
+            let dateString = DateFormatter.localizedString(from: date, dateStyle: .medium, timeStyle: .none)
             
             let calendar = Calendar.current
             let comp = calendar.dateComponents([.weekday], from: date)

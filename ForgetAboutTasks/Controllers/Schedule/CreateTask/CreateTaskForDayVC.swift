@@ -390,7 +390,7 @@ extension CreateTaskForDayController: UITableViewDelegate, UITableViewDataSource
         
         if let date = data.scheduleStartDate, let time = data.scheduleTime {
             let date = DateFormatter.localizedString(from: date, dateStyle: .medium, timeStyle: .none)
-            let time = Formatters.instance.timeStringFromDate(date: time)
+            let time = DateFormatter.localizedString(from: time, dateStyle: .none, timeStyle: .short)
             cell.textLabel?.text = data.scheduleName
             cell.detailTextLabel?.text = date + " " + time
             cell.imageView?.image = UIImage(systemName: "circle.fill")

@@ -9,6 +9,9 @@ import UIKit
 
 extension UIViewController {
     
+    
+    /// Function for presenting alert controller with choosing type of work with user's media
+    /// - Parameter completion: return source type 
     func alertImagePicker(completion: @escaping (UIImagePickerController.SourceType) -> Void) {
         setupHapticMotion(style: .soft)
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)

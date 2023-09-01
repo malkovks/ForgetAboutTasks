@@ -9,6 +9,9 @@ import UIKit
 import SafariServices
 
 extension UIViewController {
+    
+    /// Function for presenting alert controller for any action with link
+    /// - Parameter link: input link with what function work
     func futureUserActions(link: String) {
         setupHapticMotion(style: .soft)
         let alert = UIAlertController(title: nil, message: "What do you want to do with this link".localized(), preferredStyle: .actionSheet)

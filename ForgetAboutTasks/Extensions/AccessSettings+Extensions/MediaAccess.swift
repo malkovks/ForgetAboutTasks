@@ -9,6 +9,9 @@ import UIKit
 import Photos
 
 extension UIViewController {
+    
+    /// Func for get access to Users Media library
+    /// - Parameter handler: rreturn boolean value of access to media
     func requestForUserLibrary(handler: @escaping (Bool?) -> ()){
         DispatchQueue.main.async {
             PHPhotoLibrary.requestAuthorization { success in
@@ -30,6 +33,9 @@ extension UIViewController {
         }
     }
     
+    
+    /// Function for checking access to users media
+    /// - Parameter handler: return boolean value of access to media
     func checkAccessForMedia(handler: @escaping (Bool) -> Void ) {
         let status = PHPhotoLibrary.authorizationStatus()
         DispatchQueue.main.async { [weak self] in
@@ -63,6 +69,7 @@ extension UIViewController {
     }
 
     
+    /// function asked access to using camera
     func requestUserForCamera(){
         AVCaptureDevice.requestAccess(for: .video) { success in
             if !success {

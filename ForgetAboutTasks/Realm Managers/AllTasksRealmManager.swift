@@ -16,6 +16,9 @@ class AllTasksRealmManager {
     
     private init() {}
     
+    
+    /// Saving All Tasks model to Realm Database
+    /// - Parameter model: All Task Realm model
     func saveAllTasksModel(model: AllTaskModel){
         try! localRealm.write {
             localRealm.add(model)
@@ -23,12 +26,20 @@ class AllTasksRealmManager {
         }
     }
     
+    /// Function for sets status of event
+    /// - Parameters:
+    ///   - model: Status of chosen realm model
+    ///   - boolean: boolean status of chosen model
     func changeCompleteStatus(model: AllTaskModel,boolean: Bool){
         try! localRealm.write {
             model.allTaskCompleted = boolean
         }
     }
     
+    ///  Function for editing chosen model, full or partly edits
+    /// - Parameters:
+    ///   - oldModelDate: Date used as identifier
+    ///   - newModel: this value set new edits if it not equal to nil
     func editAllTasksModel(oldModelDate: Date,newModel:AllTaskModel){
         let model = localRealm.objects(AllTaskModel.self).filter("allTaskDate == %@",oldModelDate).first!
         try! localRealm.write {
@@ -42,6 +53,8 @@ class AllTasksRealmManager {
     }
     
     
+    /// Deleting current model from Database
+    /// - Parameter model: model which need to delete
     func deleteAllTasks(model: AllTaskModel){
         try! localRealm.write {
             localRealm.delete(model)

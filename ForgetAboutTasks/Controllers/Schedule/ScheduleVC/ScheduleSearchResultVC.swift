@@ -49,12 +49,10 @@ extension ScheduleSearchResultViewController: UITableViewDelegate, UITableViewDa
         cell.backgroundView?.tintColor = UIColor(named: "cellColor")
         cell.textLabel?.font = UIFont.setMainLabelFont()
         cell.detailTextLabel?.font = UIFont.setDetailLabelFont()
-
-        let timeFF = Formatters.instance.timeStringFromDate(date: model?.scheduleStartDate ?? Date())
-        let dateF = DateFormatter.localizedString(from: model?.scheduleTime ?? Date(), dateStyle: .medium, timeStyle: .none)
+        let dateFormatted = DateFormatter.localizedString(from: model?.scheduleTime ?? Date(), dateStyle: .medium, timeStyle: .short)
 
         cell.textLabel?.text = model?.scheduleName
-        cell.detailTextLabel?.text =  dateF + ". Time: ".localized() + timeFF
+        cell.detailTextLabel?.text =  dateFormatted
         cell.imageView?.image = UIImage(systemName: "circle.fill")
         if let data = model?.scheduleColor {
             let color = UIColor.color(withData: data)

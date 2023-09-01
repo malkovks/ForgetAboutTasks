@@ -16,6 +16,9 @@ class ContactRealmManager {
     
     private init() {}
     
+    
+    /// Function for saving created contact in Contact Database
+    /// - Parameter model: Contact model
     func saveContactModel(model: ContactModel){
         try! localRealm.write {
             localRealm.add(model)
@@ -23,12 +26,15 @@ class ContactRealmManager {
         }
     }
     
+    /// Function for deleting chosen model
+    /// - Parameter model: chosen model
     func deleteContactModel(model: ContactModel){
         try! localRealm.write {
             localRealm.delete(model)
         }
     }
     
+    /// Deleting all  contacts from Database
     func deleteAllContactModel(){
         let objects = localRealm.objects(ContactModel.self)
         try! localRealm.write {
@@ -36,6 +42,10 @@ class ContactRealmManager {
         }
     }
     
+    /// Editing contact parameters
+    /// - Parameters:
+    ///   - id: identifier for editing chosen value
+    ///   - newModel: new value which checked if value changed, if not - assigning old value
     func editAllTasksModel(user id: String,newModel:ContactModel){
 
         let model = localRealm.objects(ContactModel.self).filter("contactID == %@",id).first!

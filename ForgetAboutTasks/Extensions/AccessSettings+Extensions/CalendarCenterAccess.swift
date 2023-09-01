@@ -9,6 +9,11 @@ import UIKit
 import EventKit
 
 extension UIViewController {
+    
+    /// function for asking access to EKEventStore
+    /// - Parameters:
+    ///   - event: input event store
+    ///   - handler: returning boolean status of access to Event
     func request(forAllowing event: EKEventStore,handler: @escaping (Bool)-> ()) {
         DispatchQueue.main.async {
             switch EKEventStore.authorizationStatus(for: .event){

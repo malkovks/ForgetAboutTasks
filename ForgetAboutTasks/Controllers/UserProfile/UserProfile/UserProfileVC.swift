@@ -707,7 +707,7 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
         
         switch indexPath {
         case [0,0]:
-            cell.switchButton.isOn = userInterface.checkDarkModeUserDefaults() ?? setupSwitchDarkMode()
+            cell.switchButton.isOn = userInterface.checkDarkModeUserDefaults() ?? false
             cell.switchButton.addTarget(self, action: #selector(didTapSwitchDisplayMode), for: .valueChanged)
         case [0,1]:
             cell.switchButton.addTarget(self, action: #selector(didTapChangeAccessNotifications), for: .touchUpInside)

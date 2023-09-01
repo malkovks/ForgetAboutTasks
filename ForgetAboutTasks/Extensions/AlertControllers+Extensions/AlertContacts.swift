@@ -9,6 +9,8 @@ import UIKit
 
 extension UIViewController {
     
+    /// Function for presenting alert Controller with choosing category of contact
+    /// - Parameter completion: return chosen type
     func alertFriends(completion: @escaping (String) -> Void) {
         setupHapticMotion(style: .soft)
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)

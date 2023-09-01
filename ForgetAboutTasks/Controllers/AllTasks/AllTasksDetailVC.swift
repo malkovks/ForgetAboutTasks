@@ -200,7 +200,7 @@ extension AllTasksDetailViewController: UITableViewDelegate, UITableViewDataSour
         case [1,0]:
             cell.textLabel?.text = DateFormatter.localizedString(from: tasksModel.allTaskDate ?? Date(), dateStyle: .medium, timeStyle: .none)
         case [2,0]:
-            cell.textLabel?.text = Formatters.instance.timeStringFromDate(date: tasksModel.allTaskTime ?? Date())
+            cell.textLabel?.text = DateFormatter.localizedString(from: tasksModel.allTaskTime ?? Date(), dateStyle: .none, timeStyle: .short)
         case [3,0]:
             cell.textLabel?.text = tasksModel.allTaskNotes
         case [4,0]:
