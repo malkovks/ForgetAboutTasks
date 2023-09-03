@@ -70,7 +70,7 @@ class UserAuthViewController: UIViewController {
     
     //MARK: - Targets methods
     @objc private func didTapOpenInfo(){
-        showInfoAuthentication(text: textInfo, controller: self.view)
+        showInfoAuthentication(text: textInfo, controller: view)
     }
     
     @objc private func didTapLogin(){

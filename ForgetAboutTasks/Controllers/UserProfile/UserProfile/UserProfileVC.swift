@@ -326,6 +326,9 @@ class UserProfileViewController: UIViewController {
                 }
             } else {
                 self?.checkAuthForFaceID { success in
+                    if !success {
+                        self?.alertError(text: "You need to turn on Face ID in system settings for future use".localized())
+                    }
                     sender.isOn = success
                 }
             }
@@ -660,7 +663,7 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 5
+        return cellArray.count
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -676,10 +679,7 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        switch section {
-        case 0...4: return fontSizeValue * 3
-        default: return 0
-        }
+        return fontSizeValue * 3
     }
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
@@ -790,7 +790,15 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
         case [3,0]:
             showVariationsWithLanguage(title: "Change language".localized(), message: "") {  result in  }
         case [3,1]:
-            showInfoAuthentication(text: infoText, controller: self.view)
+            
+            
+        
+            if !InformationView().isHidden {
+                showInfoAuthentication(text: infoText, controller: view)
+            }
+          
+            
+            
         case [4,0]:
             deleteAccount()
         case [4,1]:
@@ -833,7 +841,7 @@ extension UserProfileViewController: UIImagePickerControllerDelegate,UINavigatio
 extension UserProfileViewController  {
     private func configureConstraints(){
 
-        let infoStack = UIStackView(arrangedSubviews: [userNameLabel,mailLabel,ageLabel])
+        let infoStack = UIStackView(arrangedSubviews: [userNameLabel, mailLabel, ageLabel])
         infoStack.alignment = .fill
         infoStack.contentMode = .scaleAspectFit
         infoStack.axis = .vertical

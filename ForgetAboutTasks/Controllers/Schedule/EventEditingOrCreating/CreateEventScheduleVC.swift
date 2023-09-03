@@ -392,7 +392,7 @@ extension CreateEventScheduleViewController: UITableViewDelegate, UITableViewDat
                 isStartEditing = true
             }
         case [1,0]:
-            alertTimeInline(table: tableView, choosenDate: choosenDate) { [self] date, timeString, weekday in
+            alertTimeInline(choosenDate: choosenDate) { [self] date, timeString, weekday in
                 scheduleModel.scheduleTime = date
                 scheduleModel.scheduleStartDate = date
 //                scheduleModel.scheduleWeekday = weekday
@@ -404,7 +404,7 @@ extension CreateEventScheduleViewController: UITableViewDelegate, UITableViewDat
         case [1,1]:
             let hourPlus = scheduleModel.scheduleStartDate
             let hour = hourPlus?.addingTimeInterval(3600) ?? startChoosenDate.addingTimeInterval(3600)
-            alertTimeInline(table: tableView, choosenDate: hour) { [weak self] date, dateString, weekday in
+            alertTimeInline(choosenDate: hour) { [weak self] date, dateString, weekday in
                 self?.scheduleModel.scheduleEndDate = date
                 cell?.textLabel?.text = dateString
                 self?.isStartEditing = true

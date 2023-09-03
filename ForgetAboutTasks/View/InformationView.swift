@@ -9,6 +9,8 @@ import UIKit
 
 class InformationView: UIView {
     
+    var isOpened: ((Bool) -> Void)?
+    
     let customView: UIView = {
        let view = UIView()
         view.backgroundColor = .systemBackground
@@ -36,7 +38,7 @@ class InformationView: UIView {
         button.tintColor = .green
         return button
     }()
-    
+
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -45,16 +47,13 @@ class InformationView: UIView {
     }
     
     @objc private func didTapCloseInfoView(sender: UIButton){
-        DispatchQueue.main.asyncAfter(deadline: .now()) {
             UIView.animate(withDuration: 0.5,delay: 0) {
                 self.customView.alpha = 0.0
                 self.customView.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
             } completion: { success in
-                self.customView.removeFromSuperview()
-                self.infoLabel.removeFromSuperview()
-                self.closeInfoViewButton.removeFromSuperview()
+                self.removeFromSuperview()
+                self.isOpened?(false)
             }
-        }
     }
     
     private func setupConstraints(){
@@ -93,14 +92,20 @@ class InformationView: UIView {
 
 
 extension UIViewController {
-    func showInfoAuthentication(text: String, controller: UIView){
+    
+    /// Function for showing custom view with information for user
+    /// - Parameters:
+    ///   - text: input text for displaying in view
+    ///   - controller: super view where current view will add to subview
+    /// - Returns: return boolean value if view was closed
+    func showInfoAuthentication(text: String, controller: UIView) {
         let customView = InformationView()
         customView.setupLabelTextIndent(text: text)
         
         self.view.addSubview(customView)
         customView.snp.makeConstraints { make in
             make.centerX.centerY.equalToSuperview()
-            make.width.equalToSuperview().dividedBy(1.5)
+            make.width.equalToSuperview().dividedBy(1.4)
             make.height.equalToSuperview().dividedBy(2)
         }
         

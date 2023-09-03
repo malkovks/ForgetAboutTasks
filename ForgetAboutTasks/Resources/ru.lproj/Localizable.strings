@@ -392,3 +392,4 @@
 "Copy link" = "Копировать";
 //User Defaults localization
 "Can't get user's image" = "Не удалось загрузить изображение";
+"You need to turn on Face ID in system settings for future use" = "Если вам необходимо включить Face ID,то зайти в системные настройки и включите вручную";

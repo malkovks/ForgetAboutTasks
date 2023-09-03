@@ -425,7 +425,7 @@ extension EditEventScheduleViewController: UITableViewDelegate, UITableViewDataS
                     isStartEditing = true
                 }
             case [1,0]:
-                alertTimeInline(table: tableView, choosenDate: choosenDate) { [self] date, timeString, weekday in
+                alertTimeInline(choosenDate: choosenDate) { [self] date, timeString, weekday in
                     editedScheduleModel.scheduleTime = date
                     editedScheduleModel.scheduleStartDate = date
                     editedScheduleModel.scheduleWeekday = weekday
@@ -434,7 +434,7 @@ extension EditEventScheduleViewController: UITableViewDelegate, UITableViewDataS
                     isStartEditing = true
                 }
             case [1,1]:
-                alertTimeInline(table: tableView, choosenDate: changableChoosenDate) { [self] date, timeString, _ in
+                alertTimeInline(choosenDate: changableChoosenDate) { [self] date, timeString, _ in
                     editedScheduleModel.scheduleEndDate = date
                     cell?.textLabel?.text = timeString
                     isStartEditing = true
