@@ -213,7 +213,7 @@ extension EditTaskTableViewController: UITableViewDelegate, UITableViewDataSourc
             }
         case [4,0]:
             alertTextField(cell: cellName, placeholder: "Enter URL value".localized(), keyboard: .URL, completion: { [self] text in
-                if text.isURLValid(text: text){
+                if text.urlValidation(text: text){
                     cellsName[indexPath.section][indexPath.row] = text
                     editedTaskModel.allTaskURL = text
                     cell?.textLabel?.text = text

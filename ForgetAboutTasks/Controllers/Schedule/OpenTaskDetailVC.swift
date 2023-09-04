@@ -310,7 +310,7 @@ extension OpenTaskDetailViewController: UITableViewDelegate, UITableViewDataSour
             cell?.textLabel?.text = inheritedData.scheduleCategoryURL ?? data
             let text = inheritedData.scheduleCategoryURL
 
-            if let success = text?.isURLValid(text: text ?? "") , !success {
+            if let success = text?.urlValidation(text: text ?? "") , !success {
                 cell?.textLabel?.textColor = .systemBlue
             } else {
                 cell?.textLabel?.textColor = UIColor(named: "textColor")

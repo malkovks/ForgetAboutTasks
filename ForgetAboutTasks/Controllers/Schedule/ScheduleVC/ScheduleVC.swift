@@ -213,8 +213,6 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
         }()
         let predicate = NSPredicate(format: "\(text) BETWEEN %@", [startDate,dateEnd])
         return predicate
-        
-        
     }
     
     

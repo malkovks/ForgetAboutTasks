@@ -89,6 +89,17 @@ class ChangePasswordViewController: UIViewController {
         return field
     }()
     
+    private let validationPasswordLabel: UILabel = {
+       let label = UILabel()
+        label.textAlignment = .center
+        label.text = "Password validation"
+        label.font = .systemFont(ofSize: UIFont.systemFontSize)
+        label.textColor = .systemRed
+        label.backgroundColor = .clear
+        label.numberOfLines = 1
+        return label
+    }()
+    
     private let confirmNewPasswordButton: UIButton = {
         let button = UIButton()
         button.configuration = .tinted()
@@ -130,11 +141,13 @@ class ChangePasswordViewController: UIViewController {
     @objc private func didTapChangeVisible(){
         setupHapticMotion(style: .rigid)
         if isPasswordHidden {
+            isPasswordHidden = true
             oldPasswordField.isSecureTextEntry = false
             firstNewPasswordTextField.isSecureTextEntry = false
             secondNewPasswordTextField.isSecureTextEntry = false
             isPasswordHiddenButton.setImage(UIImage(systemName: "eye.slash.fill"), for: .normal)
         } else {
+            isPasswordHidden = false
             oldPasswordField.isSecureTextEntry = true
             firstNewPasswordTextField.isSecureTextEntry = true
             secondNewPasswordTextField.isSecureTextEntry = true
@@ -192,7 +205,7 @@ class ChangePasswordViewController: UIViewController {
         
         oldPasswordField.delegate = self
         oldPasswordField.rightView = isPasswordHiddenButton
-        oldPasswordField.rightViewMode = .always
+        oldPasswordField.rightViewMode = .whileEditing
         
         firstNewPasswordTextField.rightView = isPasswordHiddenButton
         firstNewPasswordTextField.delegate = self
@@ -204,6 +217,7 @@ class ChangePasswordViewController: UIViewController {
 
         firstNewPasswordTextField.inputAccessoryView = toolBar as UIView
         secondNewPasswordTextField.inputAccessoryView = toolBar as UIView
+        confirmNewPasswordButton.isEnabled = false
     }
     
     private func setupIndicator(){
@@ -219,7 +233,7 @@ class ChangePasswordViewController: UIViewController {
            let secondPassword = secondNewPasswordTextField.text, !secondPassword.isEmpty,
            password == secondPassword {
             Auth.auth().currentUser?.reauthenticate(with: authCredential, completion: { [weak self] _, error in
-                if let error = error {
+                if let error = error{
                     self?.alertError(text: error.localizedDescription)
                     self?.indicator.stopAnimating()
                 } else {
@@ -233,8 +247,6 @@ class ChangePasswordViewController: UIViewController {
                             DispatchQueue.main.async {
                                 if let nav = self?.navigationController {
                                     nav.popViewController(animated: true)
-                                } else {
-                                    print("Error")
                                 }
                             }
                         }
@@ -270,15 +282,21 @@ class ChangePasswordViewController: UIViewController {
 extension ChangePasswordViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         guard let text = textField.text else { return false }
-        if textField == firstNewPasswordTextField {
+        if textField == oldPasswordField {
+            oldPasswordField.resignFirstResponder()
+            firstNewPasswordTextField.becomeFirstResponder()
+            return true
+        } else if textField == firstNewPasswordTextField {
             firstNewPasswordTextField.resignFirstResponder()
             secondNewPasswordTextField.becomeFirstResponder()
             return true
         } else if textField == secondNewPasswordTextField {
-            if text.isPasswordValidation(text){
+//            if text.passwordValidation(text){
+            if text.passValidation(password: text){
                 textField.resignFirstResponder()
                 view.alpha = 0.8
                 checkPasswordFields()
+                confirmNewPasswordButton.isEnabled = true
                 return true
             } else {
                 alertError(text: "Password is not valid")
@@ -289,6 +307,13 @@ extension ChangePasswordViewController: UITextFieldDelegate {
             return false
         }
         
+    }
+    
+    override func textFieldDidChange(_ textField: UITextField) {
+        guard let text = textField.text else { return }
+        if text.passValidation(password: text) {
+            confirmNewPasswordButton.isEnabled = true
+        }
     }
     
    
@@ -324,9 +349,16 @@ extension ChangePasswordViewController {
             make.height.equalTo(40)
         }
         
+        view.addSubview(validationPasswordLabel)
+        validationPasswordLabel.snp.makeConstraints { make in
+            make.top.equalTo(secondNewPasswordTextField.snp.bottom).offset(20)
+            make.leading.trailing.equalToSuperview().multipliedBy(0.8)
+            make.height.equalTo(40)
+        }
+        
         view.addSubview(confirmNewPasswordButton)
         confirmNewPasswordButton.snp.makeConstraints { make in
-            make.top.equalTo(secondNewPasswordTextField.snp.bottom).offset(20)
+            make.top.equalTo(validationPasswordLabel.snp.bottom).offset(20)
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(40)
         }

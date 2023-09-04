@@ -339,7 +339,6 @@
 				0A9E1C4329D46851000CC9A9 /* ForgetAboutTasks.entitlements */,
 				0A8AC19929B9C87300EA052B /* System Delegates */,
 				0AA604E029E1460E007ACE58 /* Model */,
-				0AB578F02A90313A00227581 /* View */,
 				0A8AC1A229B9D4D700EA052B /* Controllers */,
 				0AD4984F2A701E6D00B0599E /* Cells */,
 				0A9918D62A542458001004FA /* Managers */,
@@ -633,14 +632,6 @@
 			path = TabBarController;
 			sourceTree = "<group>";
 		};
-		0AB578F02A90313A00227581 /* View */ = {
-			isa = PBXGroup;
-			children = (
-				0AB578F12A90315100227581 /* InformationView.swift */,
-			);
-			path = View;
-			sourceTree = "<group>";
-		};
 		0AD4984F2A701E6D00B0599E /* Cells */ = {
 			isa = PBXGroup;
 			children = (
@@ -690,6 +681,7 @@
 			isa = PBXGroup;
 			children = (
 				0AF2D6F02A1364EC0093A824 /* AlertUser.swift */,
+				0AB578F12A90315100227581 /* InformationView.swift */,
 			);
 			path = "UIView+Extensions";
 			sourceTree = "<group>";

@@ -29,10 +29,24 @@ extension String {
     /// Function for checking validation of password
     /// - Parameter password: entered password
     /// - Returns: return boolean value status validation
-    func isPasswordValidation(_ password: String) -> Bool {
+    func passwordValidation(_ password: String) -> Bool {
         let regex = "^(?=.*[AZ])(?=.*\\d)[A-Za-z\\d]{8,}$"
         return NSPredicate(format: "SELF MATCHES %@", regex).evaluate(with: password)
     }
+    
+
+    func passValidation(password: String) -> Bool {
+        let regex = "^(?=.*[A-Z])(?=.*[0-9])(?=.*[a-z]).{6}$"
+        let passRegix = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{6,}$"
+
+        if NSPredicate(format: "SELF MATCHES %@", passRegix).evaluate(with: password) {
+            return true
+        } else {
+            print("Incorrect work of func")
+            return false
+        }
+    }
+    
     
     /// Check email validation on correct input of email
     /// - Parameter email: inputed email
@@ -46,7 +60,7 @@ extension String {
     /// Check URL on correct input
     /// - Parameter text: url input
     /// - Returns: return boolean value
-    func isURLValid(text: String) -> Bool {
+    func urlValidation(text: String) -> Bool {
         let value = (text.contains("www.") || text.contains("https://") || text.contains("https://www")) && text.contains(".")
         if value {
             return true

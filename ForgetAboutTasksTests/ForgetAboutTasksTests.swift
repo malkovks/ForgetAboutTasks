@@ -10,21 +10,59 @@ import RealmSwift
 @testable import ForgetAboutTasks
 
 final class ForgetAboutTasksTests: XCTestCase {
-
+    
+    var extensions: UIViewController!
+    var stringExt: String!
+    var schedule: ScheduleViewController!
+    
+    
     var sut : KeychainManager!
     
     override func setUpWithError() throws {
         try super.setUpWithError()
-        sut = KeychainManager()
+        extensions = UIViewController()
+        stringExt = String()
+        schedule = ScheduleViewController()
+        
+        
     }
 
     override func tearDownWithError() throws {
-        sut = nil
+        extensions = nil
+        stringExt = nil
+        schedule = nil
         try super.tearDownWithError()
         
     }
     
-    func testSaveKeychainManager() throws {
+    func testEmailValidation() throws {
+        XCTAssertTrue(stringExt.emailValidation(email: "test@mail.ru"))
+    }
+    
+    func testValidationURL() throws {
+        XCTAssert(stringExt.urlValidation(text: "www.link.com"))
+    }
+    
+    func testScheduleView() throws {
+        
+    }
+    
+    
+    
+    func testPasswordValidation() throws {
+        XCTAssertTrue(stringExt.passValidation(password: "test12"))
+    }
+    
+    
+    func testAccessExtensions() throws {
+        //notification
+        extensions.request(forUser: UNUserNotificationCenter.current()) { success in
+            XCTAssert(success)
+        }
+        extensions.showNotificationAccessStatus { success in
+            XCTAssert(success, "access status")
+        }
+        
         
     }
     
@@ -34,8 +72,10 @@ final class ForgetAboutTasksTests: XCTestCase {
 
     func testPerformanceExample() throws {
         
-        self.measure {
-            
+        measure {
+            extensions.showNotificationAccessStatus { success in
+                XCTAssert(success)
+            }
         }
     }
 

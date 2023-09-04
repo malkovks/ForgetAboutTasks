@@ -277,6 +277,7 @@ class RegisterAccountViewController: UIViewController {
 extension RegisterAccountViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         guard  let field = textField.text, !field.isEmpty else { return false}
+//        #error("добавить валидацию пароля при помощи расширенной функции и потестить")
         switch textField.tag {
         case 0:
             emailField.resignFirstResponder()

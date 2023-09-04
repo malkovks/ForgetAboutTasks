@@ -218,7 +218,7 @@ extension AllTasksDetailViewController: UITableViewDelegate, UITableViewDataSour
         tableView.deselectRow(at: indexPath, animated: isViewAnimated)
         if indexPath.section == 4 {
             let url = tasksModel.allTaskURL ?? "Empty URL"
-            if url.isURLValid(text: url) {
+            if url.urlValidation(text: url) {
                 futureUserActions(link: url)
             }
         }

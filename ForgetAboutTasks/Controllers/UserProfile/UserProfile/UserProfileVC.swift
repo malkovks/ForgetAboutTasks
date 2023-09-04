@@ -790,15 +790,9 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
         case [3,0]:
             showVariationsWithLanguage(title: "Change language".localized(), message: "") {  result in  }
         case [3,1]:
-            
-            
-        
             if !InformationView().isHidden {
                 showInfoAuthentication(text: infoText, controller: view)
             }
-          
-            
-            
         case [4,0]:
             deleteAccount()
         case [4,1]:

@@ -131,12 +131,12 @@ class LogInViewController: UIViewController {
             indicator.isHidden = false
             indicator.startAnimating()
             FirebaseAuth.Auth.auth().signIn(withEmail: email, password: password) { [weak self] result, error in
-//                let passwordData = password.data(using: .utf8) ?? Data()
                 if let result = result {
                     UserDefaultsManager.shared.saveAccountData(result: result)
                     self?.setupLoadingSpinner()
                     self?.indicator.stopAnimating()
                     self?.navigationController?.popToRootViewController(animated: isViewAnimated)
+                    self?.dismiss(animated: true)
                 } else {
                     self?.alertError(text: error?.localizedDescription ?? "", mainTitle: "Error")
                     self?.clearTextFields()
@@ -206,6 +206,10 @@ extension LogInViewController: UITextFieldDelegate {
         default:
             break
         }
+        return true
+    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         return true
     }
 }
