@@ -34,6 +34,7 @@ class RegisterAccountViewController: UIViewController {
         field.clearButtonMode = .whileEditing
         field.autocapitalizationType = .none
         field.returnKeyType = .continue
+        field.enablesReturnKeyAutomatically = true
         field.tag = 0
         return field
     }()
@@ -53,25 +54,27 @@ class RegisterAccountViewController: UIViewController {
         field.layer.cornerRadius = 12
         field.layer.borderColor = UIColor(named: "navigationControllerColor")?.cgColor
         field.returnKeyType = .continue
+        field.enablesReturnKeyAutomatically = true
         field.tag = 1
         return field
     }()
     
     private let secondPasswordField: UITextField = {
-        let field = UITextField()
+         let field = UITextField()
          field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: field.frame.size.height))
          field.leftViewMode = .always
-        field.placeholder = "Repeat the password..".localized()
+         field.placeholder = "Repeat the password..".localized()
          field.isSecureTextEntry = true
          field.textColor = UIColor(named: "textColor")
          field.layer.borderWidth = 1
          field.textContentType = .password
-        field.keyboardType = .default
+         field.keyboardType = .default
          field.autocorrectionType = .no
          field.autocapitalizationType = .none
          field.layer.cornerRadius = 12
          field.layer.borderColor = UIColor(named: "navigationControllerColor")?.cgColor
          field.returnKeyType = .continue
+         field.enablesReturnKeyAutomatically = true
          field.tag = 1
          return field
     }()
@@ -91,6 +94,7 @@ class RegisterAccountViewController: UIViewController {
         field.layer.cornerRadius = 12
         field.layer.borderColor = UIColor(named: "navigationControllerColor")?.cgColor
         field.returnKeyType = .continue
+        field.enablesReturnKeyAutomatically = true
         field.tag = 3
         return field
     }()
@@ -104,6 +108,17 @@ class RegisterAccountViewController: UIViewController {
         return button
     }()
     
+    private let validationLabel: UILabel = {
+       let label = UILabel()
+        label.textColor = UIColor.systemRed
+        label.textAlignment = .center
+        label.font = .systemFont(ofSize: UIFont.systemFontSize)
+        label.backgroundColor = .clear
+        label.numberOfLines = 2
+        label.isHidden = true
+        return label
+    }()
+    
     private let configureUserButton: UIButton = {
         let button = UIButton()
         button.configuration = .tinted()
@@ -112,6 +127,7 @@ class RegisterAccountViewController: UIViewController {
         button.configuration?.baseForegroundColor = UIColor(named: "textColor")
         button.configuration?.baseBackgroundColor = UIColor(named: "loginColor")
         button.tintColor = UIColor(named: "textColor")
+        button.isEnabled = false
         return button
     }()
     
@@ -155,7 +171,12 @@ class RegisterAccountViewController: UIViewController {
         if firstPassword.elementsEqual(secondPassword) {
             if secondPassword.count >= 8 {
                 FirebaseAuth.Auth.auth().createUser(withEmail: mailField, password: secondPassword) { [weak self] _, error in
-                    guard error == nil else { self?.alertError(text: "This account has already been created".localized()); return }
+                    guard error == nil else {
+                        self?.alertError(text: "This account has already been created".localized())
+                        self?.indicator.stopAnimating()
+                        self?.clearAllFields()
+                        return
+                    }
                     self?.askForSavingPassword(email: mailField, password: firstPassword,userName: userName)
                 }
             } else {
@@ -229,8 +250,7 @@ class RegisterAccountViewController: UIViewController {
         }
         emailField.delegate = self
         userNameField.delegate = self
-        
-        
+    
     }
     
     private func setupTargets(){
@@ -249,8 +269,6 @@ class RegisterAccountViewController: UIViewController {
         UserDefaults.standard.setValue(userName, forKey: "userName")
         UserDefaults.standard.setValue(email, forKey: "userMail")
         UserDefaults.standard.setValue(false, forKey: "authWithGoogle")
-        dump(userName)
-        dump(email)
         DispatchQueue.main.async { [weak self] in
             self?.view.alpha = 1.0
             self?.indicator.stopAnimating()
@@ -258,6 +276,15 @@ class RegisterAccountViewController: UIViewController {
             self?.view.window?.rootViewController?.dismiss(animated: isViewAnimated)
             dump(UserDefaults.standard.string(forKey: "userName"))
             dump(UserDefaults.standard.string(forKey: "userMail"))
+        }
+    }
+    
+    private func clearAllFields(){
+        let fields = [emailField, passwordField, secondPasswordField, userNameField]
+        fields.forEach { textField in
+            textField.text = ""
+            validationLabel.text = ""
+            configureUserButton.isEnabled = false
         }
     }
     
@@ -272,9 +299,15 @@ class RegisterAccountViewController: UIViewController {
         }
         return password
     }
+    
+    func validatePasswordNew(_ password: String) -> Bool {
+        let regex = "^(?=.*[A-Z])(?=.*[0-9]).{8,}$"
+        return NSPredicate(format: "SELF MATCHES %@", regex).evaluate(with: password)
+    }
 }
 
 extension RegisterAccountViewController: UITextFieldDelegate {
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         guard  let field = textField.text, !field.isEmpty else { return false}
 //        #error("добавить валидацию пароля при помощи расширенной функции и потестить")
@@ -290,12 +323,45 @@ extension RegisterAccountViewController: UITextFieldDelegate {
             userNameField.becomeFirstResponder()
         case 3:
             userNameField.resignFirstResponder()
-            didTapCreateNewAccount()
+            if validatePasswordNew(passwordField.text ?? "") && validatePasswordNew(secondPasswordField.text ?? ""),
+               passwordField.text == secondPasswordField.text {
+                configureUserButton.isEnabled = true
+                didTapCreateNewAccount()
+            }
+            
         default:
             break
         }
         return true
     }
+    
+    
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if textField == passwordField || textField == secondPasswordField  {
+            validationLabel.isHidden = false
+        } else {
+            validationLabel.isHidden = true
+        }
+        let firstText = textField.text ?? ""
+        
+        if validatePasswordNew(firstText) {
+            validationLabel.text = "Password is valid"
+            validationLabel.textColor = .systemGreen
+            if passwordField.text == secondPasswordField.text {
+                configureUserButton.isEnabled = true
+            } else {
+                validationLabel.text = "Passwords are not equal. Try again"
+                validationLabel.textColor = .systemRed
+                configureUserButton.isEnabled = false
+            }
+        } else {
+            validationLabel.text = "The password must contain at least one capital letter, a number and must be at least 8 characters long"
+            validationLabel.textColor = .systemRed
+        }
+        return true
+    }
+    
 }
 //MARK: - Extensions
 extension RegisterAccountViewController {
@@ -328,11 +394,16 @@ extension RegisterAccountViewController {
             make.height.equalTo(40)
         }
         
-        
+        view.addSubview(validationLabel)
+        validationLabel.snp.makeConstraints { make in
+            make.top.equalTo(userNameField.snp.bottom).offset(10)
+            make.leading.trailing.equalToSuperview().inset(20)
+            make.height.equalTo(40)
+        }
         
         view.addSubview(configureUserButton)
         configureUserButton.snp.makeConstraints { make in
-            make.top.equalTo(userNameField.snp.bottom).offset(20)
+            make.top.equalTo(validationLabel.snp.bottom).offset(10)
             make.leading.trailing.equalToSuperview().inset(60)
             make.height.equalTo(40)
         }

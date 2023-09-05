@@ -35,16 +35,18 @@ extension String {
     }
     
 
-    func passValidation(password: String) -> Bool {
-        let regex = "^(?=.*[A-Z])(?=.*[0-9])(?=.*[a-z]).{6}$"
-        let passRegix = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{6,}$"
-
-        if NSPredicate(format: "SELF MATCHES %@", passRegix).evaluate(with: password) {
-            return true
-        } else {
-            print("Incorrect work of func")
-            return false
-        }
+    func passValidation() -> Bool {
+        let regex = "^(?=.*[A-Z])(?=.*[0-9]).{8,}$"
+        return NSPredicate(format: "SELF MATCHES %@", regex).evaluate(with: self)
+//        let regex = "^(?=.*[A-Z])(?=.*[0-9])(?=.*[a-z]).{6}$"
+//        let passRegix = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{6,}$"
+//
+//        if NSPredicate(format: "SELF MATCHES %@", passRegix).evaluate(with: password) {
+//            return true
+//        } else {
+//            print("Incorrect work of func")
+//            return false
+//        }
     }
     
     

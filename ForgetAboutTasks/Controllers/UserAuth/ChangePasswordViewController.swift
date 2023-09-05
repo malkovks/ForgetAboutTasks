@@ -292,7 +292,7 @@ extension ChangePasswordViewController: UITextFieldDelegate {
             return true
         } else if textField == secondNewPasswordTextField {
 //            if text.passwordValidation(text){
-            if text.passValidation(password: text){
+            if text.passValidation(){
                 textField.resignFirstResponder()
                 view.alpha = 0.8
                 checkPasswordFields()
@@ -306,14 +306,16 @@ extension ChangePasswordViewController: UITextFieldDelegate {
         } else {
             return false
         }
-        
     }
-    
-    override func textFieldDidChange(_ textField: UITextField) {
-        guard let text = textField.text else { return }
-        if text.passValidation(password: text) {
-            confirmNewPasswordButton.isEnabled = true
+//    #error("Добавить сюда же валидацию паролей, как в RegisterAccountController и также лейбл для отображения")
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let text = firstNewPasswordTextField.text ?? ""
+        if text.passValidation() {
+            print("Valid")
+        } else {
+            print("Not valid")
         }
+        return true
     }
     
    

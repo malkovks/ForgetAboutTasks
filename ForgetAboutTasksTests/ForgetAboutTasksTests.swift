@@ -16,10 +16,11 @@ final class ForgetAboutTasksTests: XCTestCase {
     var schedule: ScheduleViewController!
     
     
-    var sut : KeychainManager!
+    var sut: RegisterAccountViewController!
     
     override func setUpWithError() throws {
         try super.setUpWithError()
+        sut = RegisterAccountViewController()
         extensions = UIViewController()
         stringExt = String()
         schedule = ScheduleViewController()
@@ -33,6 +34,11 @@ final class ForgetAboutTasksTests: XCTestCase {
         schedule = nil
         try super.tearDownWithError()
         
+    }
+    
+    func testNewPasswordValidation() throws {
+        
+        XCTAssert(sut.validatePasswordNew("Header1234"))
     }
     
     func testEmailValidation() throws {
