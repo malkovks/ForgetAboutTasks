@@ -600,7 +600,7 @@ class UserProfileViewController: UIViewController {
                     return
                 }
                 let vc = SFSafariViewController(url: url)
-                vc.tabBarController?.tabBar.isHidden = true
+//                vc.tabBarController?.tabBar.isHidden = true
                 vc.delegate = self
                 self?.present(vc, animated: true,completion: {
                     self?.tabBarController?.tabBar.isHidden = true

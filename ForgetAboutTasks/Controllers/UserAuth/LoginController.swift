@@ -136,7 +136,7 @@ class LogInViewController: UIViewController {
                     self?.setupLoadingSpinner()
                     self?.indicator.stopAnimating()
                     self?.navigationController?.popToRootViewController(animated: isViewAnimated)
-                    self?.dismiss(animated: true)
+                    self?.view.window?.rootViewController?.dismiss(animated: isViewAnimated)
                 } else {
                     self?.alertError(text: error?.localizedDescription ?? "", mainTitle: "Error")
                     self?.clearTextFields()

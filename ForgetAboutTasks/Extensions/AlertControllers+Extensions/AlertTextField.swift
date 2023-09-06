@@ -58,7 +58,6 @@ extension UIViewController{
         alert.editButtonItem.tintColor = UIColor(named: "calendarHeaderColor")
         let toolbar = UIToolbar()
         toolbar.sizeToFit()
-        //НЕ РАБОТАЕТ кнопка скрытия клавиатуры
         let doneB = UIBarButtonItem(title: "Done".localized(), style: .done, target: self, action: #selector(toolBarDoneButtonTapped))
         doneB.tintColor = UIColor(named: "calendarHeaderColor")
         let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)

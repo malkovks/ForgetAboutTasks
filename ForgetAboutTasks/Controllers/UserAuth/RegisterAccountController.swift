@@ -345,7 +345,7 @@ extension RegisterAccountViewController: UITextFieldDelegate {
         }
         let firstText = textField.text ?? ""
         
-        if validatePasswordNew(firstText) {
+        if firstText.passValidation() {
             validationLabel.text = "Password is valid"
             validationLabel.textColor = .systemGreen
             if passwordField.text == secondPasswordField.text {
