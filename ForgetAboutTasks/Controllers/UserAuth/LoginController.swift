@@ -16,9 +16,8 @@ enum LoginConnectionStatus {
 }
 
 
+/// Class for login with current email and password and checking if available service, if email and password are available and correct
 class LogInViewController: UIViewController {
-    
-    private var isPasswordHidden: Bool = true
     
     //MARK: - UI views
     private let emailField: UITextField = {
@@ -77,6 +76,7 @@ class LogInViewController: UIViewController {
     
     private let resetPasswordButton: UIButton = {
         let button = UIButton(type: .system)
+        button.isEnabled = false
         button.configuration = .tinted()
         button.configuration?.title = "Forget password?".localized()
         button.configuration?.baseBackgroundColor = .clear
@@ -105,16 +105,12 @@ class LogInViewController: UIViewController {
     
     @objc private func didTapChangeVisible(){
         setupHapticMotion(style: .rigid)
-        if isPasswordHidden {
-            passwordField.isSecureTextEntry = false
-            isPasswordHiddenButton.setImage(UIImage(systemName: "eye.slash.fill"), for: .normal)
-        } else {
-            passwordField.isSecureTextEntry = true
-            isPasswordHiddenButton.setImage(UIImage(systemName: "eye.fill"), for: .normal)
-        }
-        isPasswordHidden = !isPasswordHidden
+        passwordField.isSecureTextEntry.toggle()
+        let image = passwordField.isSecureTextEntry ? UIImage(systemName: "eye.fill") :  UIImage(systemName: "eye.slash.fill")
+        isPasswordHiddenButton.setImage(image, for: .normal)
     }
     //при входе в аккаунт выгружать также имя фамилию и прочее
+    
     @objc private func didTapContinue(){
         setupHapticMotion(style: .soft)
         guard let password = passwordField.text, !password.isEmpty else {
@@ -125,26 +121,7 @@ class LogInViewController: UIViewController {
             alertError(text: "Enter email and password.\nIf You forget your personal data, try again later.".localized(), mainTitle: "Error login".localized())
             return
         }
-        let internetIsAvailable = InternetConnectionManager.isConnectedToInternet()
-        
-        if internetIsAvailable {
-            indicator.isHidden = false
-            indicator.startAnimating()
-            FirebaseAuth.Auth.auth().signIn(withEmail: email, password: password) { [weak self] result, error in
-                if let result = result {
-                    UserDefaultsManager.shared.saveAccountData(result: result)
-                    self?.setupLoadingSpinner()
-                    self?.indicator.stopAnimating()
-                    self?.navigationController?.popToRootViewController(animated: isViewAnimated)
-                    self?.view.window?.rootViewController?.dismiss(animated: isViewAnimated)
-                } else {
-                    self?.alertError(text: error?.localizedDescription ?? "", mainTitle: "Error")
-                    self?.clearTextFields()
-                }
-            }
-        } else {
-            self.alertError(text: "Can't enter to application during low internet connection".localized())
-        }
+        checkLoginEntering(email, password)
     }
     
     @objc private func didTapResetPassword(){
@@ -191,8 +168,36 @@ class LogInViewController: UIViewController {
         indicator.isHidden = true
     }
     
+    /// Enter function which input textField email and password and check if FirebaseAuthentication has any same email and password
+    /// - Parameters:
+    ///   - email: textfield text email value
+    ///   - password: textfield text password value
+    private func checkLoginEntering(_ email: String, _ password: String) {
+        let internetIsAvailable = InternetConnectionManager.isConnectedToInternet()
+        
+        if internetIsAvailable {
+            indicator.isHidden = false
+            indicator.startAnimating()
+            FirebaseAuth.Auth.auth().signIn(withEmail: email, password: password) { [weak self] result, error in
+                if let result = result {
+                    UserDefaultsManager.shared.saveAccountData(result: result)
+                    self?.setupLoadingSpinner()
+                    self?.indicator.stopAnimating()
+                    self?.navigationController?.popToRootViewController(animated: isViewAnimated)
+                    self?.view.window?.rootViewController?.dismiss(animated: isViewAnimated)
+                } else {
+                    self?.alertError(text: error?.localizedDescription ?? "", mainTitle: "Error")
+                    self?.clearTextFields()
+                }
+            }
+        } else {
+            
+            self.alertError(text: "Can't enter to application during low internet connection".localized())
+        }
+    }
+    
 }
-
+//MARK: - Textfield delegate
 extension LogInViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         guard  let field = textField.text, !field.isEmpty else { return false}
@@ -210,12 +215,23 @@ extension LogInViewController: UITextFieldDelegate {
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        return true
+        guard let text = emailField.text,
+              let password = passwordField.text else {
+            return false
+        }
+        if !text.isEmpty && !password.isEmpty {
+            configureUserButton.isEnabled = true
+            return true
+        } else {
+            configureUserButton.isEnabled = false
+            return false
+        }
+        
     }
 }
 
 
-//MARK: - Extensions
+//MARK: - Constraints extensions
 extension LogInViewController {
     private func setupConstraints(){
         view.addSubview(emailField)

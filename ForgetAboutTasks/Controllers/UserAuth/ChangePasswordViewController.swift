@@ -8,16 +8,13 @@
 import UIKit
 import Firebase
 
-
+///class for changing password of created Firebase account
 class ChangePasswordViewController: UIViewController {
     
     private let accountMail: String
     
-    private var isPasswordHidden: Bool = true
-    
     init(account: String) {
         self.accountMail = account
-        
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -144,37 +141,12 @@ class ChangePasswordViewController: UIViewController {
     }
     @objc private func didTapChangeVisible(){
         setupHapticMotion(style: .rigid)
-        let fields = [oldPasswordField,firstNewPasswordTextField,secondNewPasswordTextField]
+        let fields = [oldPasswordField, firstNewPasswordTextField, secondNewPasswordTextField]
         fields.forEach { field in
-            field.isSecureTextEntry = !field.isSecureTextEntry
+            field.isSecureTextEntry.toggle()
         }
-//        if isPasswordHidden {
-//            firstNewPasswordTextField.isSecureTextEntry = false
-//            secondNewPasswordTextField.isSecureTextEntry = false
-//            oldPasswordField.isSecureTextEntry = false
-//            isPasswordHiddenButton.setImage(UIImage(systemName: "eye.slash.fill"), for: .normal)
-//        } else {
-//            firstNewPasswordTextField.isSecureTextEntry = true
-//            secondNewPasswordTextField.isSecureTextEntry = true
-//            oldPasswordField.isSecureTextEntry = true
-//            isPasswordHiddenButton.setImage(UIImage(systemName: "eye.fill"), for: .normal)
-//        }
-//        isPasswordHidden = !isPasswordHidden
-        
-        
-        
-//        if isPasswordHidden {
-//            oldPasswordField.isSecureTextEntry = false
-//            firstNewPasswordTextField.isSecureTextEntry = false
-//            secondNewPasswordTextField.isSecureTextEntry = false
-//            isPasswordHiddenButton.setImage(UIImage(systemName: "eye.slash.fill"), for: .normal)
-//        } else {
-//            oldPasswordField.isSecureTextEntry = true
-//            firstNewPasswordTextField.isSecureTextEntry = true
-//            secondNewPasswordTextField.isSecureTextEntry = true
-//            isPasswordHiddenButton.setImage(UIImage(systemName: "eye.fill"), for: .normal)
-//        }
-//        isPasswordHidden = !isPasswordHidden
+        let image = oldPasswordField.isSecureTextEntry ? UIImage(systemName: "eye.fill") : UIImage(systemName: "eye.slash.fill")
+        isPasswordHiddenButton.setImage(image, for: .normal)
     }
     
     @objc private func didTapGenerateStrongPassword(sender: UIBarButtonItem){
@@ -186,7 +158,6 @@ class ChangePasswordViewController: UIViewController {
                 field?.text = ""
                 field?.text = password
                 field?.resignFirstResponder()
-                
             }
         })
         alertController.addAction(confirmButton)
@@ -229,7 +200,10 @@ class ChangePasswordViewController: UIViewController {
             field.rightView = isPasswordHiddenButton
             field.rightViewMode = .whileEditing
         }
-
+        
+        
+        isPasswordHiddenButton.addTarget(self, action: #selector(didTapChangeVisible), for: .touchUpInside)
+        
         oldPasswordField.inputAccessoryView = toolBarOldPassword as UIView
         firstNewPasswordTextField.inputAccessoryView = toolBarNewPassword as UIView
         secondNewPasswordTextField.inputAccessoryView = toolBarNewPassword as UIView
@@ -239,6 +213,11 @@ class ChangePasswordViewController: UIViewController {
     private func setupIndicator(){
         view.addSubview(indicator)
         indicator.center = view.center
+    }
+    
+    private func clearTextFields(){
+        firstNewPasswordTextField.text = ""
+        secondNewPasswordTextField.text = ""
     }
     
     private func setupCustomToolBar(newPassword boolean: Bool) -> UIToolbar {
@@ -263,29 +242,33 @@ class ChangePasswordViewController: UIViewController {
     }
     
     //MARK: - Business logic methods
+    
+    /// Function check if auth current user is enable and can get access to firebase server to request update password
     private func checkPasswordFields(){
         guard let oldPassword = oldPasswordField.text else { alertError(text: "Enter correct old password".localized()); return }
         let authCredential = EmailAuthProvider.credential(withEmail: accountMail, password: oldPassword)
-        if let password = firstNewPasswordTextField.text, !password.isEmpty,
-           let secondPassword = secondNewPasswordTextField.text, !secondPassword.isEmpty,
-           password == secondPassword {
-            Auth.auth().currentUser?.reauthenticate(with: authCredential, completion: { [weak self] _, error in
+        if let password = firstNewPasswordTextField.text,
+           let secondPassword = secondNewPasswordTextField.text,
+           password == secondPassword,
+           password.passValidation() && secondPassword.passValidation() {
+            Auth.auth().currentUser?.reauthenticate(with: authCredential, completion: { [unowned self] _, error in
                 if let error = error{
-                    self?.alertError(text: error.localizedDescription)
-                    self?.indicator.stopAnimating()
+                    self.alertError(text: error.localizedDescription)
+                    self.indicator.stopAnimating()
                 } else {
                     Auth.auth().currentUser?.updatePassword(to: password, completion: { error in
                         if let error = error {
-                            self?.alertError(text: error.localizedDescription)
-                            self?.indicator.stopAnimating()
+                            self.alertError(text: error.localizedDescription)
+                            self.indicator.stopAnimating()
                         } else {
-                            self?.indicator.stopAnimating()
-                            self?.navigationController?.popToRootViewController(animated: isViewAnimated)
-//                            DispatchQueue.main.async {
-//                                if let nav = self?.navigationController {
-//                                    nav.popViewController(animated: true)
-//                                }
-//                            }
+                            self.indicator.stopAnimating()
+                            self.showAlertForUser(text: "Password was successfully changed", duration: .now()+1, controllerView: self.view)
+                            self.navigationController?.popToRootViewController(animated: isViewAnimated)
+                            DispatchQueue.main.asyncAfter(deadline: .now()+1) {
+                                if let nav = self.navigationController {
+                                    nav.popToRootViewController(animated: isViewAnimated)
+                                }
+                            }
                         }
                     })
                 }
@@ -297,6 +280,9 @@ class ChangePasswordViewController: UIViewController {
         view.alpha = 1
     }
     
+    
+    /// Generate random 16 elements password with using random
+    /// - Returns: return created password
     private func generateStrongPassword() -> String{
         let chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+?"
         var password = ""
@@ -309,10 +295,7 @@ class ChangePasswordViewController: UIViewController {
         return password
     }
     
-    private func clearTextFields(){
-        firstNewPasswordTextField.text = ""
-        secondNewPasswordTextField.text = ""
-    }
+    
 
 }
 //MARK: - Delegates and constraints
@@ -333,7 +316,7 @@ extension ChangePasswordViewController: UITextFieldDelegate {
                 didTapConfirmChangePassword()
                 return true
             } else {
-                alertError(text: "Password is not valid")
+                alertError(text: "Password is not valid".localized())
                 clearTextFields()
                 return false
             }
@@ -348,7 +331,7 @@ extension ChangePasswordViewController: UITextFieldDelegate {
             confirmNewPasswordButton.isEnabled = true
         }
     }
-//    #error("Добавить сюда же валидацию паролей, как в RegisterAccountController и также лейбл для отображения")
+    
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         if textField == firstNewPasswordTextField || textField == secondNewPasswordTextField {
             validationLabel.isHidden = false
@@ -356,64 +339,21 @@ extension ChangePasswordViewController: UITextFieldDelegate {
             validationLabel.isHidden = true
         }
         
-        
-        
-//        let firstField = textField.viewWithTag(1)
-//        let secondField = textField.viewWithTag(2)
-//
-//        let text = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) ?? ""
-//        let secondText = (secondField.text as NSString?)?.replacingCharacters(in: range, with: string) ?? ""
-        
         let newText = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) ?? ""
         if newText.passValidation() {
-            validationLabel.text = "Password is valid"
+            if firstNewPasswordTextField.text == newText && secondNewPasswordTextField.text == newText {
+                validationLabel.text = "Password equal and valid".localized()
+            } else {
+                validationLabel.text = "Password are not equal.\nTry again!".localized()
+            }
+            validationLabel.text = "Password is valid".localized()
             validationLabel.textColor = .systemGreen
             confirmNewPasswordButton.isEnabled = false
         } else {
-            validationLabel.text = "The password must contain at least one capital letter, a number and must be at least 8 characters long"
+            validationLabel.text = "The password must contain at least one capital letter, a number and must be at least 8 characters long".localized()
             validationLabel.textColor = .systemRed
             confirmNewPasswordButton.isEnabled = false
         }
-//        if text == secondText {
-//            validationLabel.text = "Passwords are equal"
-//            validationLabel.textColor = .systemGreen
-//        } else {
-//            validationLabel.text = "Passwords are not equal"
-//            validationLabel.textColor = .systemRed
-//        }
-//        if newText.passValidation() {
-//            validationLabel.text = "Password is valid"
-//            validationLabel.textColor = .systemGreen
-//            if firstNewPasswordTextField.text == secondNewPasswordTextField.text {
-//                confirmNewPasswordButton.isEnabled = true
-//                validationLabel.text = "Password is valid"
-//                validationLabel.textColor = .systemGreen
-//            } else {
-//                validationLabel.text = "Passwords are not equal. Try again"
-//                validationLabel.textColor = .systemRed
-//                confirmNewPasswordButton.isEnabled = false
-//            }
-//        } else {
-//            validationLabel.text = "The password must contain at least one capital letter, a number and must be at least 8 characters long"
-//            validationLabel.textColor = .systemRed
-//        }
-        
-//        if text.passValidation() && secondText.passValidation() {
-//            validationLabel.text = "Password is valid"
-//            validationLabel.textColor = .systemGreen
-//            if firstNewPasswordTextField.text == secondNewPasswordTextField.text {
-//                confirmNewPasswordButton.isEnabled = true
-//                validationLabel.text = "Password is valid"
-//                validationLabel.textColor = .systemGreen
-//            } else {
-//                validationLabel.text = "Passwords are not equal. Try again"
-//                validationLabel.textColor = .systemRed
-//                confirmNewPasswordButton.isEnabled = false
-//            }
-//        } else {
-//            validationLabel.text = "The password must contain at least one capital letter, a number and must be at least 8 characters long"
-//            validationLabel.textColor = .systemRed
-//        }
         return true
     }
     

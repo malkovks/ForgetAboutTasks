@@ -7,6 +7,7 @@
 
 import UIKit
 
+///Custom view for displaying in Header of UserProfileViewController UITableView
 class UserProfileHeaderView: UIView {
     
     let headerView: UIView = {
@@ -27,14 +28,14 @@ class UserProfileHeaderView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupConstraints()
-        
-        
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    /// Setup text of label
+    /// - Parameter section: input indexPath.section from tableView
     func setupText(indexPath section: Int){
         switch section {
         case 0: headerLabel.text = "Main setups".localized()

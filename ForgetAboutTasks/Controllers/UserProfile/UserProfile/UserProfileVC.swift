@@ -16,7 +16,7 @@ import Photos
 import GoogleSignIn
 import SafariServices
 
-
+///Structure using for storing title,image and color of image which using in future to displaying in UITableView
 struct UserProfileData {
     var title: String
     var cellImage: UIImage
@@ -96,7 +96,7 @@ class UserProfileViewController: UIViewController {
     private let semaphore = DispatchSemaphore(value: 0)
     private let userInterface = UserDefaultsManager.shared
     private let activityIndicator = UIActivityIndicatorView(style: .large)
-    private let windows = UIApplication.shared.windows
+    private let windows = UIApplication.shared.connectedScenes.first?.inputView?.overrideUserInterfaceStyle
     
  //MARK: - UI Elements
     private var imagePicker = UIImagePickerController()
@@ -168,7 +168,6 @@ class UserProfileViewController: UIViewController {
  //MARK: - Load cicle
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setupView()
     }
     
@@ -182,9 +181,10 @@ class UserProfileViewController: UIViewController {
     //MARK: - Targets methods
     @objc private func didTapLogout(){
         setupHapticMotion(style: .soft)
+        let statusAuth = UserDefaults.standard.bool(forKey: "isAuthorised")
         let alert = UIAlertController(title: "Warning".localized(), message: "Do you want to Exit from your account?".localized(), preferredStyle: .alert)
         let confirm = UIAlertAction(title: "Confirm".localized(), style: .destructive,handler: { [weak self] _ in
-            if UserDefaults.standard.bool(forKey: "isAuthorised"){
+            if statusAuth == true {
                 do {
                     try FirebaseAuth.Auth.auth().signOut()
                     UserDefaultsManager.shared.signOut()
@@ -206,38 +206,12 @@ class UserProfileViewController: UIViewController {
         present(alert, animated: isViewAnimated)
     }
     
+    
+    
     @objc private func didTapImagePicker(){
         setupHapticMotion(style: .soft)
         view.alpha = 0.7
-        let alert = UIAlertController(title: nil, message: "What exactly do you want to do?".localized(), preferredStyle: .actionSheet)
-        alert.addAction(UIAlertAction(title: "Choose image from Photo".localized(), style: .default,handler: { [self] _ in
-            if UIImagePickerController.isSourceTypeAvailable(.photoLibrary){
-                imagePicker.delegate = self
-                imagePicker.sourceType = .photoLibrary
-                imagePicker.allowsEditing = true
-                activityIndicator.startAnimating()
-                present(self.imagePicker, animated: isViewAnimated)
-            }
-        }))
-        alert.addAction(UIAlertAction(title: "Make new image".localized(), style: .default,handler: { [self] _ in
-            if UIImagePickerController.isSourceTypeAvailable(.camera) {
-                imagePicker.delegate = self
-                imagePicker.sourceType = .camera
-                imagePicker.allowsEditing = true
-                activityIndicator.startAnimating()
-                present(self.imagePicker, animated: isViewAnimated)
-            }
-        }))
-        alert.addAction(UIAlertAction(title: "Delete image".localized(), style: .destructive,handler: { _ in
-            self.userImageView.image = UIImage(systemName: "photo.circle")
-            UserDefaults.standard.set(nil,forKey: "userImage")
-            self.view.alpha = 1
-        }))
-        alert.addAction(UIAlertAction(title: "Cancel".localized(), style: .cancel,handler: { _ in
-            self.view.alpha = 1
-            self.activityIndicator.stopAnimating()
-        }))
-        present(alert, animated: isViewAnimated)
+        imagePickerAlertController()
     }
     
     @objc private func didTapOnName(sender: UITapGestureRecognizer){
@@ -391,36 +365,15 @@ class UserProfileViewController: UIViewController {
         setupFontSize()
         setupDelegates()
         setupTapGestureForImage()
-        setupTargets()
         setTapGestureForLabel()
         setTapGestureForAgeLabel()
+        setupTargets()
         loadingData()
-
         setupTableView()
         setupLabelUnderline()
         view.backgroundColor = UIColor(named: "backgroundColor")
     }
-    
-    private func setupTableView(){
-        tableView.register(UserProfileTableViewCell.self, forCellReuseIdentifier: UserProfileTableViewCell.identifier)
-        tableView.bounces = false
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.layer.cornerRadius = 8
-        tableView.backgroundColor = UIColor(named: "backgroundColor")
-        tableView.separatorStyle = .none
-        tableView.isUserInteractionEnabled = true
-    }
-    
-    private func setupLabelUnderline(){
-        guard let labelText = userNameLabel.text, let ageText = ageLabel.text else { return }
-        let attributedText = NSAttributedString(string: labelText, attributes: [NSAttributedString.Key.underlineStyle : NSUnderlineStyle.single.rawValue])
-        let attributedText2 = NSAttributedString(string: ageText, attributes: [NSAttributedString.Key.underlineStyle : NSUnderlineStyle.single.rawValue])
-        userNameLabel.attributedText = attributedText
-        ageLabel.attributedText = attributedText2
-        changeUserImageView.titleLabel?.attributedText = attributedText
-    }
-    
+    //setup methods
     private func setupNavigationController(){
         title = "My Profile".localized()
         navigationController?.navigationBar.prefersLargeTitles = false
@@ -428,6 +381,14 @@ class UserProfileViewController: UIViewController {
         navigationController?.navigationBar.tintColor = UIColor(named: "textColor")
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "arrow.uturn.right.square"), style: .done, target: self, action: #selector(didTapLogout))
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .done, target: self, action: #selector(didTapDismissView))
+    }
+    
+    private func setupFontSize(){
+        ageLabel.font = .setMainLabelFont()
+        userNameLabel.font = .setMainLabelFont()
+        mailLabel.font = .setMainLabelFont()
+        changeUserImageView.titleLabel?.font = .setMainLabelFont()
+        tableView.reloadData()
     }
     
     private func setupDelegates(){
@@ -455,25 +416,7 @@ class UserProfileViewController: UIViewController {
     private func setupTargets(){
         changeUserImageView.addTarget(self, action: #selector(didTapImagePicker), for: .touchUpInside)
     }
-
-    private func setupFontSize(){
-        ageLabel.font = .setMainLabelFont()
-        userNameLabel.font = .setMainLabelFont()
-        mailLabel.font = .setMainLabelFont()
-        changeUserImageView.titleLabel?.font = .setMainLabelFont()
-        tableView.reloadData()
-    }
-    //setup size of image 
-    private func imageWith(image: UIImage) -> UIImage {
-        let newSize = CGSize(width: image.size.width/2, height: image.size.height/2)
-        UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
-        image.draw(in: CGRect(origin: CGPoint.zero, size: newSize))
-        let newImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        return newImage ?? UIImage(systemName: "square.fill")!
-    }
     
-    //loading data
     private func loadingData(){
         let (name,mail,age) = UserDefaultsManager.shared.loadData()
         if let url = UserDefaults.standard.url(forKey: "userImageURL"){
@@ -492,8 +435,73 @@ class UserProfileViewController: UIViewController {
         userNameLabel.text = name
     }
     
+    private func setupTableView(){
+        tableView.register(UserProfileTableViewCell.self, forCellReuseIdentifier: UserProfileTableViewCell.identifier)
+        tableView.bounces = false
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.layer.cornerRadius = 8
+        tableView.backgroundColor = UIColor(named: "backgroundColor")
+        tableView.separatorStyle = .none
+        tableView.isUserInteractionEnabled = true
+    }
     
-    //Setup segue to another ViewController
+    private func setupLabelUnderline(){
+        guard let labelText = userNameLabel.text, let ageText = ageLabel.text else { return }
+        let attributedText = NSAttributedString(string: labelText, attributes: [NSAttributedString.Key.underlineStyle : NSUnderlineStyle.single.rawValue])
+        let attributedText2 = NSAttributedString(string: ageText, attributes: [NSAttributedString.Key.underlineStyle : NSUnderlineStyle.single.rawValue])
+        userNameLabel.attributedText = attributedText
+        ageLabel.attributedText = attributedText2
+        changeUserImageView.titleLabel?.attributedText = attributedText
+    }
+    //MARK: - User Profile Managers
+    
+    /// Converting image to correct size which successfully will size in table view cell
+    /// - Parameter image: input UIImage
+    /// - Returns: return converted size image
+    private func imageWith(image: UIImage) -> UIImage {
+        let newSize = CGSize(width: image.size.width/2, height: image.size.height/2)
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
+        image.draw(in: CGRect(origin: CGPoint.zero, size: newSize))
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return newImage ?? UIImage(systemName: "square.fill")!
+    }
+    
+    /// Function ask user what exactly he can do with User Image. Return choosed image from media, new taken photo or user could delete and set default image
+    private func imagePickerAlertController() {
+        let alert = UIAlertController(title: nil, message: "What exactly do you want to do?".localized(), preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction(title: "Choose image from Photo".localized(), style: .default,handler: { [self] _ in
+            if UIImagePickerController.isSourceTypeAvailable(.photoLibrary){
+                imagePicker.delegate = self
+                imagePicker.sourceType = .photoLibrary
+                imagePicker.allowsEditing = true
+                activityIndicator.startAnimating()
+                present(self.imagePicker, animated: isViewAnimated)
+            }
+        }))
+        alert.addAction(UIAlertAction(title: "Make new image".localized(), style: .default,handler: { [self] _ in
+            if UIImagePickerController.isSourceTypeAvailable(.camera) {
+                imagePicker.delegate = self
+                imagePicker.sourceType = .camera
+                imagePicker.allowsEditing = true
+                activityIndicator.startAnimating()
+                present(self.imagePicker, animated: isViewAnimated)
+            }
+        }))
+        alert.addAction(UIAlertAction(title: "Delete image".localized(), style: .destructive,handler: { _ in
+            self.userImageView.image = UIImage(systemName: "photo.circle")
+            UserDefaults.standard.set(nil,forKey: "userImage")
+            self.view.alpha = 1
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel".localized(), style: .cancel,handler: { _ in
+            self.view.alpha = 1
+            self.activityIndicator.stopAnimating()
+        }))
+        present(alert, animated: isViewAnimated)
+    }
+    
+    ///Setup segue to choose application icon image
     private func openSelectionChangeIcon(){
         setupHapticMotion(style: .soft)
         let vc = UserProfileAppIconViewController()
@@ -510,6 +518,12 @@ class UserProfileViewController: UIViewController {
         present(nav, animated: isViewAnimated)
     }
     
+    
+    /// Open alert for choosing actions with setting up password for application
+    /// - Parameters:
+    ///   - title: title of alert controller
+    ///   - message: subtitle of alert controller
+    ///   - alertTitle: optional. It will display text when user want to turn on password
     private func openPasswordController(title: String = "Code-password".localized(),message: String = "This function allow you to switch on password if it neccesary. Any time you could change it".localized(),alertTitle: String = "Switch on code-password".localized()){
         setupHapticMotion(style: .soft)
         let alert = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
@@ -522,7 +536,7 @@ class UserProfileViewController: UIViewController {
         if passwordBoolean {
             alert.addAction(UIAlertAction(title: "Switch off".localized(), style: .default,handler: { [weak self]_ in
                 UserDefaults.standard.setValue(false, forKey: "isPasswordCodeEnabled")
-                KeychainManager.delete()
+                KeychainManager.shared.delete()
                 self?.passwordBoolean = UserDefaults.standard.bool(forKey: "isPasswordCodeEnabled")
                 self?.tableView.reloadData()
                 
@@ -533,6 +547,7 @@ class UserProfileViewController: UIViewController {
         
     }
     
+    /// Open view controller with changing font size,style of all application
     private func openChangeFontController(){
         let vc = ChangeFontViewController()
         vc.delegate = self
@@ -549,6 +564,8 @@ class UserProfileViewController: UIViewController {
         self.present(nav, animated: isViewAnimated)
     }
     
+    
+    /// Open alert controller if user ask to delete application. It delete it from local store and from Firebase. If user login with Google - it will segue to Google mail settings to delete account
     private func deleteAccount(){
         let alertController = UIAlertController(title: "Warning".localized(), message: "Do you want to delete your account?".localized(), preferredStyle: .alert)
         alertController.addAction(UIAlertAction(title: "Delete".localized(), style: .destructive,handler: { [weak self] _ in
@@ -790,7 +807,7 @@ extension UserProfileViewController: UITableViewDelegate, UITableViewDataSource 
         case [3,0]:
             showVariationsWithLanguage(title: "Change language".localized(), message: "") {  result in  }
         case [3,1]:
-            if !InformationView().isHidden {
+            if !InformationVisualView().isHidden {
                 showInfoAuthentication(text: infoText, controller: view)
             }
         case [4,0]:

@@ -7,6 +7,7 @@
 
 import UIKit
 
+///Custom UIView for displaying footer of UserProfile UITableView
 class UserProfileFooterView: UIView {
 
     let footerView: UIView = {
@@ -22,11 +23,12 @@ class UserProfileFooterView: UIView {
         label.sizeToFit()
         label.numberOfLines = 0
         label.font = .systemFont(ofSize: 14, weight: .thin)
-        if UIApplication.shared.windows.first?.overrideUserInterfaceStyle == .light {
+        if UIApplication.shared.connectedScenes.first?.inputView?.overrideUserInterfaceStyle == .light {
             label.textColor = .darkGray
         } else {
-            label.textColor = .darkText
+            label.textColor = .lightText
         }
+        
         return label
     }()
     
@@ -39,6 +41,9 @@ class UserProfileFooterView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    
+    /// Setup function for returning text to label
+    /// - Parameter section: input indexPath.section
     func setupTextLabel(section: Int){
         switch section {
         case 0: footerLabel.text = "This settings need for switching on/off access to some services. It will segue to Main Settings for changing value.".localized()

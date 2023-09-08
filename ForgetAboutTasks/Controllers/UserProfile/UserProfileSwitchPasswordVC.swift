@@ -212,7 +212,7 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
         setupHapticMotion(style: .light)
         let emailUser = UserDefaults.standard.string(forKey: "userMail") ?? "No email"
         let password = passwordDigits
-        let data = KeychainManager.getPassword(email: emailUser)
+        let textValue = try! KeychainManager.shared.getPassword(email: emailUser)
         if passwordDigits.count == 4 && passwordDigits == confirmPasswordDigits {
             confirmPasswordButton.setImage(UIImage(systemName: "lock.fill"), for: .normal)
             confirmPasswordButton.setTitle("Confirmed".localized(), for: .normal)
@@ -221,11 +221,11 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
                 UserDefaults.standard.setValue(success, forKey: "accessToFaceID")
                 UserDefaults.standard.setValue(true, forKey: "isPasswordCodeEnabled")
                 UserDefaults.standard.setValue(true, forKey: "isUserConfirmPassword")
-                if data != nil {
-                    KeychainManager.delete()
+                if !textValue.isEmpty  {
+                    KeychainManager.shared.delete()
                 }
                 
-                try! KeychainManager.savePassword(password: password, email: emailUser)
+                try! KeychainManager.shared.savePassword(password: password, email: emailUser)
                 self?.delegate?.isSavedCompletely(boolean: true)
                 self?.navigationController?.popViewController(animated: isViewAnimated)
                 self?.dismiss(animated: isViewAnimated)
@@ -289,8 +289,7 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
 
     private func checkCorrectPassword(textField: UITextField){
         let emailUser = UserDefaults.standard.string(forKey: "userMail") ?? "No email"
-        let value = try! KeychainManager.getPassword(email: emailUser)
-        let textValue = String(decoding: value ?? Data(), as: UTF8.self)
+        let textValue = try! KeychainManager.shared.getPassword(email: emailUser)
         if textField.tag == 4 {
             if textValue.contains(passwordDigits){
                 UserDefaults.standard.setValue(true, forKey: "isUserConfirmPassword")

@@ -10,7 +10,7 @@ import SnapKit
 import Firebase
 import GoogleSignIn
 
-
+/// Class display main setup for Login to application with possibility to enter with login, creating account or enter with google account
 class UserAuthViewController: UIViewController {
     
     private let textInfo: String = "This application using Firebase Authentication for entering, creating and storing user email and password. However our service using Keychain API for storing email and password, it store in UTF8 format and closed for third-persons can't be available. \nFor more information, visit Firebase.Google.com".localized()
@@ -60,7 +60,6 @@ class UserAuthViewController: UIViewController {
         return UIBarButtonItem(image: UIImage(systemName: "info.circle.fill"), style: .done, target: self, action: #selector(didTapOpenInfo))
     }()
     
-    
     private let spinner = UIActivityIndicatorView()
     
     override func viewDidLoad() {
@@ -93,36 +92,7 @@ class UserAuthViewController: UIViewController {
             alertError(text: "Error getting access to Firebase servers.\nTry again later".localized(), mainTitle: "Error".localized())
             return
         }
-        
-        //
-        //create google sign in configuration object
-        let config = GIDConfiguration(clientID: client)
-        GIDSignIn.sharedInstance.configuration = config
-        //start the sign in flow
-        GIDSignIn.sharedInstance.signIn(withPresenting: self) { [unowned self] result, error in
-            guard error == nil else {
-                self.spinner.stopAnimating()
-                self.view.alpha = 1.0
-                return
-            }
-            guard let user = result?.user,
-                  let token = user.idToken?.tokenString else {
-                return
-            }
-            let credential = GoogleAuthProvider.credential(withIDToken: token, accessToken: user.accessToken.tokenString)
-            Auth.auth().signIn(with: credential) { result, error in
-                guard let result = result, error == nil else {
-                    self.alertError(text: "Error getting data from account".localized(), mainTitle: "Error!".localized())
-                    return
-                }
-                UserDefaultsManager.shared.saveAccountData(result: result, user: user)
-                
-                self.dismiss(animated: isViewAnimated)
-                self.navigationController?.popToRootViewController(animated: isViewAnimated)
-                self.spinner.stopAnimating()
-                self.view.alpha = 1.0
-            }
-        }
+        googleAuthentication(client)
     }
     //MARK: - Setup methods
     private func setupView(){
@@ -147,6 +117,40 @@ class UserAuthViewController: UIViewController {
         loginButton.addTarget(self, action: #selector(didTapLogin), for: .touchUpInside)
         registerButton.addTarget(self, action: #selector(didTapRegister), for: .touchUpInside)
         signWithGoogle.addTarget(self, action: #selector(didTapLoginWithGoogle), for: .touchUpInside)
+    }
+    
+    /// function for check input clients id if Firebase available for user
+    /// - Parameter client: users identical id
+    private func googleAuthentication(_ client: String) {
+        //create google sign in configuration object
+        let config = GIDConfiguration(clientID: client)
+        GIDSignIn.sharedInstance.configuration = config
+        //start the sign in flow
+        GIDSignIn.sharedInstance.signIn(withPresenting: self) { [unowned self] result, error in
+            guard error == nil else {
+                self.spinner.stopAnimating()
+                self.view.alpha = 1.0
+                self.alertError(text: error?.localizedDescription ?? "")
+                return
+            }
+            guard let user = result?.user,
+                  let token = user.idToken?.tokenString else {
+                return
+            }
+            let credential = GoogleAuthProvider.credential(withIDToken: token, accessToken: user.accessToken.tokenString)
+            Auth.auth().signIn(with: credential) { result, error in
+                guard let result = result, error == nil else {
+                    self.alertError(text: "Error getting data from account".localized(), mainTitle: "Error!".localized())
+                    return
+                }
+                UserDefaultsManager.shared.saveAccountData(result: result, user: user)
+                
+                self.dismiss(animated: isViewAnimated)
+                self.navigationController?.popToRootViewController(animated: isViewAnimated)
+                self.spinner.stopAnimating()
+                self.view.alpha = 1.0
+            }
+        }
     }
 }
 //MARK: - Extensions

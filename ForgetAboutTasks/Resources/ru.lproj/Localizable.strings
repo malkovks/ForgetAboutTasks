@@ -393,3 +393,8 @@
 //User Defaults localization
 "Can't get user's image" = "Не удалось загрузить изображение";
 "You need to turn on Face ID in system settings for future use" = "Если вам необходимо включить Face ID,то зайти в системные настройки и включите вручную";
+"Password is not valid" = "Пароли не совпадают. Попробуйте еще раз";
+"Password equal and valid" = "Пароли не совпадают и не соответствуют требованиям. Попробуйте еще раз.";
+"Password is valid" = "Пароли совпадают";
+"Password are not equal.\nTry again!" = "Пароли не совпадают.\nПопробуйте еще раз!";
+"The password must contain at least one capital letter, a number and must be at least 8 characters long" = "Пароль должено содержать как минимум одну заглавную букву, число и содержать не менее 8 элементов в пароле";

@@ -11,12 +11,8 @@ import FirebaseAuth
 import AuthenticationServices
 //import FirebaseDatabase
 
-
+///Class for creating account with functionallity to add name
 class RegisterAccountViewController: UIViewController {
-    
-    private var isPasswordHidden: Bool = true
-    
-   
     
     //MARK: - UI views
     private let emailField: UITextField = {
@@ -145,18 +141,14 @@ class RegisterAccountViewController: UIViewController {
     //MARK: - Targets
     @objc private func didTapChangeVisible(){
         setupHapticMotion(style: .rigid)
-        if isPasswordHidden {
-            passwordField.isSecureTextEntry = false
-            secondPasswordField.isSecureTextEntry = false
-            isPasswordHiddenButton.setImage(UIImage(systemName: "eye.slash.fill"), for: .normal)
-        } else {
-            passwordField.isSecureTextEntry = true
-            secondPasswordField.isSecureTextEntry = true
-            isPasswordHiddenButton.setImage(UIImage(systemName: "eye.fill"), for: .normal)
+        let fields = [passwordField, secondPasswordField]
+        fields.forEach { field in
+            field.isSecureTextEntry.toggle()
         }
-        isPasswordHidden = !isPasswordHidden
+        let image = fields.first!.isSecureTextEntry ? UIImage(systemName: "eye.fill") : UIImage(systemName: "eye.slash.fill")
+        isPasswordHiddenButton.setImage(image, for: .normal)
     }
-    //Добавить функцию создания имени фамилии и базовых данных и привязки данных к аккаунту
+    
     @objc private func didTapCreateNewAccount(){
         setupHapticMotion(style: .soft)
         indicator.startAnimating()
@@ -168,26 +160,7 @@ class RegisterAccountViewController: UIViewController {
             alertError(text: "Enter text in all fields".localized())
             return
         }
-        if firstPassword.elementsEqual(secondPassword) {
-            if secondPassword.count >= 8 {
-                FirebaseAuth.Auth.auth().createUser(withEmail: mailField, password: secondPassword) { [weak self] _, error in
-                    guard error == nil else {
-                        self?.alertError(text: "This account has already been created".localized())
-                        self?.indicator.stopAnimating()
-                        self?.clearAllFields()
-                        return
-                    }
-                    self?.askForSavingPassword(email: mailField, password: firstPassword,userName: userName)
-                }
-            } else {
-                alertError(text: "Password must contains at least 8 symbols, have uppercase and some numbers".localized(), mainTitle: "Warning".localized())
-                passwordField.text = ""
-                secondPasswordField.text = ""
-            }
-            
-        } else {
-            alertError(text: "Passwords must be identical".localized(), mainTitle: "Warning".localized())
-        }
+        createNewUserAccount(firstPassword, secondPassword, mailField, userName)
     }
 
     @objc private func didTapGenerateStrongPassword(sender: UIBarButtonItem){
@@ -258,13 +231,60 @@ class RegisterAccountViewController: UIViewController {
         configureUserButton.addTarget(self, action: #selector(didTapCreateNewAccount), for: .touchUpInside)
     }
     
+    private func clearAllFields(){
+        let fields = [emailField, passwordField, secondPasswordField, userNameField]
+        fields.forEach { textField in
+            textField.text = ""
+            validationLabel.text = ""
+            configureUserButton.isEnabled = false
+        }
+    }
     
+    /// Function for checking if Firebase service is enable and if enable ask for method
+    /// - Parameters:
+    ///   - firstPassword: first password text from textField
+    ///   - secondPassword: repeat password text from second TextField
+    ///   - mailField: mail text from email TextField
+    ///   - userName: user name text from userName TextField
+    private func createNewUserAccount(_ firstPassword: String, _ secondPassword: String, _ mailField: String, _ userName: String) {
+        if firstPassword.elementsEqual(secondPassword) {
+            if secondPassword.count >= 8 {
+                FirebaseAuth.Auth.auth().createUser(withEmail: mailField, password: secondPassword) { [weak self] _, error in
+                    guard error == nil else {
+                        self?.alertError(text: "This account has already been created".localized())
+                        self?.indicator.stopAnimating()
+                        self?.clearAllFields()
+                        return
+                    }
+                    self?.askForSavingPassword(email: mailField, password: firstPassword,userName: userName)
+                }
+            } else {
+                alertError(text: "Password must contains at least 8 symbols, have uppercase and some numbers".localized(), mainTitle: "Warning".localized())
+                passwordField.text = ""
+                secondPasswordField.text = ""
+            }
+            
+        } else {
+            alertError(text: "Passwords must be identical".localized(), mainTitle: "Warning".localized())
+        }
+    }
+    
+    /// function with getting inputs email,password and userName
+    /// - Parameters:
+    ///   - email: email text from textfield
+    ///   - password: password text from textfield
+    ///   - userName: username text from textfield
     private func askForSavingPassword(email: String, password: String,userName: String){
         view.alpha = 0.8
         createNewAccount(email: email, userName: userName)
         indicator.stopAnimating()
     }
     
+    
+    /// function for saving data to user defaults and some animations works
+    /// - Parameters:
+    ///   - email: email text from textfield
+    ///   - userName: user name text from textfield
     private func createNewAccount(email: String, userName: String) {
         UserDefaults.standard.setValue(userName, forKey: "userName")
         UserDefaults.standard.setValue(email, forKey: "userMail")
@@ -279,15 +299,11 @@ class RegisterAccountViewController: UIViewController {
         }
     }
     
-    private func clearAllFields(){
-        let fields = [emailField, passwordField, secondPasswordField, userNameField]
-        fields.forEach { textField in
-            textField.text = ""
-            validationLabel.text = ""
-            configureUserButton.isEnabled = false
-        }
-    }
     
+    
+    
+    /// Function for generation random password text with custom
+    /// - Returns: return password string value
     private func generateStrongPassword() -> String{
         let chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+?"
         var password = ""
@@ -299,18 +315,14 @@ class RegisterAccountViewController: UIViewController {
         }
         return password
     }
-    
-    func validatePasswordNew(_ password: String) -> Bool {
-        let regex = "^(?=.*[A-Z])(?=.*[0-9]).{8,}$"
-        return NSPredicate(format: "SELF MATCHES %@", regex).evaluate(with: password)
-    }
 }
 
+//MARK: - Delegate extensions
 extension RegisterAccountViewController: UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         guard  let field = textField.text, !field.isEmpty else { return false}
-//        #error("добавить валидацию пароля при помощи расширенной функции и потестить")
+        guard let firstText = passwordField.text, let secondText = secondPasswordField.text else { return false }
         switch textField.tag {
         case 0:
             emailField.resignFirstResponder()
@@ -323,20 +335,17 @@ extension RegisterAccountViewController: UITextFieldDelegate {
             userNameField.becomeFirstResponder()
         case 3:
             userNameField.resignFirstResponder()
-            if validatePasswordNew(passwordField.text ?? "") && validatePasswordNew(secondPasswordField.text ?? ""),
+            if firstText.passValidation() && secondText.passValidation(),
                passwordField.text == secondPasswordField.text {
                 configureUserButton.isEnabled = true
                 didTapCreateNewAccount()
             }
-            
         default:
             break
         }
         return true
     }
-    
-    
-    
+
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         if textField == passwordField || textField == secondPasswordField  {
             validationLabel.isHidden = false
@@ -346,22 +355,21 @@ extension RegisterAccountViewController: UITextFieldDelegate {
         let firstText = textField.text ?? ""
         
         if firstText.passValidation() {
-            validationLabel.text = "Password is valid"
+            validationLabel.text = "Password is valid".localized()
             validationLabel.textColor = .systemGreen
             if passwordField.text == secondPasswordField.text {
                 configureUserButton.isEnabled = true
             } else {
-                validationLabel.text = "Passwords are not equal. Try again"
+                validationLabel.text = "Password are not equal.\nTry again!".localized()
                 validationLabel.textColor = .systemRed
                 configureUserButton.isEnabled = false
             }
         } else {
-            validationLabel.text = "The password must contain at least one capital letter, a number and must be at least 8 characters long"
+            validationLabel.text = "The password must contain at least one capital letter, a number and must be at least 8 characters long".localized()
             validationLabel.textColor = .systemRed
         }
         return true
     }
-    
 }
 //MARK: - Extensions
 extension RegisterAccountViewController {

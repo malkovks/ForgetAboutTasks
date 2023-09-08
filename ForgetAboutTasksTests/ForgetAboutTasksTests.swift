@@ -6,6 +6,8 @@
 //
 
 import XCTest
+import Firebase
+import GoogleSignIn
 import RealmSwift
 @testable import ForgetAboutTasks
 
@@ -14,16 +16,17 @@ final class ForgetAboutTasksTests: XCTestCase {
     var extensions: UIViewController!
     var stringExt: String!
     var schedule: ScheduleViewController!
-    
-    
-    var sut: RegisterAccountViewController!
+    var keychain: KeychainManager!
+    var userAuth: UserAuthViewController!
     
     override func setUpWithError() throws {
         try super.setUpWithError()
-        sut = RegisterAccountViewController()
+        userAuth = UserAuthViewController()
         extensions = UIViewController()
         stringExt = String()
         schedule = ScheduleViewController()
+        keychain = KeychainManager()
+        
         
         
     }
@@ -32,55 +35,58 @@ final class ForgetAboutTasksTests: XCTestCase {
         extensions = nil
         stringExt = nil
         schedule = nil
+        keychain = nil
+        userAuth = nil
         try super.tearDownWithError()
         
     }
     
-    func testNewPasswordValidation() throws {
-        
-        XCTAssert(sut.validatePasswordNew("Header1234"))
-    }
+//    func testUserAuthController() throws {
+//        
+//        
+//    }
     
     func testEmailValidation() throws {
         XCTAssertTrue(stringExt.emailValidation(email: "test@mail.ru"))
+        XCTAssertFalse(stringExt.emailValidation(email: "some_mail.ru"))
+        XCTAssertFalse(stringExt.emailValidation(email: "test@mail"))
     }
     
     func testValidationURL() throws {
         XCTAssert(stringExt.urlValidation(text: "www.link.com"))
+        XCTAssertFalse(stringExt.urlValidation(text: "nike.com"))
     }
     
-    func testScheduleView() throws {
+    func testKeychainManager() throws {
+        let user = "someuser"
+        let password = "12345678"
+        try! keychain.savePassword(password: password, email: user)
         
-    }
-    
-    
-    
-    func testPasswordValidation() throws {
-        XCTAssertTrue(stringExt.passValidation(password: "test12"))
+        let savedValue = keychain.getPassword(email: user)
+        let textValue = String(decoding: savedValue ?? Data(), as: UTF8.self)
+        XCTAssertEqual(password, textValue)
+        
+        
     }
     
     
     func testAccessExtensions() throws {
         //notification
         extensions.request(forUser: UNUserNotificationCenter.current()) { success in
-            XCTAssert(success)
+            XCTAssertTrue(success)
         }
         extensions.showNotificationAccessStatus { success in
             XCTAssert(success, "access status")
         }
-        
-        
-    }
-    
-    func testExample() throws {
-        
     }
 
     func testPerformanceExample() throws {
         
         measure {
-            extensions.showNotificationAccessStatus { success in
-                XCTAssert(success)
+            let array = Array(0...10_000)
+            var counter = 0
+            array.forEach {
+                counter += $0
             }
         }
     }

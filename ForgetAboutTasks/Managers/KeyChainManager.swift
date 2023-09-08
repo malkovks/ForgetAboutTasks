@@ -11,11 +11,13 @@ import Foundation
 
 class KeychainManager {
     
-    
+    static let shared = KeychainManager()
     /// Enums for throwing errors if somethings goes wrong with keychain managing
     enum KeychainError: Error {
         case duplicateEntry
-        case unknown(OSStatus)
+        case unknown
+        case failureGetPassword
+        case noPassword(OSStatus)
         case failureSaveOnDuplicate(OSStatus)
         case failureOnWrite(OSStatus)
         case failureOnRead(OSStatus)
@@ -25,7 +27,7 @@ class KeychainManager {
     /// - Parameters:
     ///   - password: getting password string type for saving in data format
     ///   - email: email string type for saving in kSecAttrAccount
-    static func savePassword(password: String, email: String) throws {
+    func savePassword(password: String, email: String) throws {
         let doubleQuery: [String:Any] = [kSecClass as String: kSecClassInternetPassword,
                                    kSecAttrServer as String: "firebase.google.com",
                                    kSecAttrAccount as String: email]
@@ -46,7 +48,7 @@ class KeychainManager {
     /// Returning data value with full information which was saved in keychain
     /// - Parameter email: entered email as key for getting data
     /// - Returns: return data by input value as key
-    static func getPassword(email: String) -> Data? {
+    func getPassword(email: String) throws -> String {
         
         
         let query: [String: Any] = [kSecClass as String: kSecClassInternetPassword,
@@ -54,13 +56,30 @@ class KeychainManager {
                                     kSecAttrAccount as String: email,
                                     kSecReturnData as String: true,
                                     kSecMatchLimit as String: kSecMatchLimitOne]
+        
         var result: AnyObject?
-        let _ = SecItemCopyMatching(query as CFDictionary, &result)
-        return result as? Data
+        let status = SecItemCopyMatching(query as CFDictionary, &result)
+        guard status != errSecItemNotFound else {
+            throw KeychainError.noPassword(status)
+        }
+        
+        guard status == errSecSuccess else {
+            throw KeychainError.failureOnRead(status)
+        }
+        
+        guard let result = result as? Data, !result.isEmpty else {
+            throw KeychainError.unknown
+        }
+        
+        guard let password = String(data: result, encoding: String.Encoding.utf8) else {
+            throw KeychainError.failureGetPassword
+        }
+        
+        return password
     }
     
     /// Function for delete all data from keychain 
-    static func delete(){
+    func delete(){
         let secItems = [kSecClassGenericPassword,
                         kSecClassInternetPassword,
                         kSecAttrServer,

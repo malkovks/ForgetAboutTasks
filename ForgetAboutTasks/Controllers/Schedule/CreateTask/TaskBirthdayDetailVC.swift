@@ -66,7 +66,6 @@ final class TaskBirthdayDetailViewController: UIViewController {
     }
     
     private func setupModel(){
-        guard let model = birthdayContactModel else { return }
         let currentDateString = DateFormatter.localizedString(from: currentDate, dateStyle: .medium, timeStyle: .none)
         self.calculateBirthdayModel(models: birthdayContactModel, currentDateString: currentDateString)
     }

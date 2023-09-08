@@ -87,12 +87,12 @@ class UserDefaultsManager: UIViewController {
     /// - Returns: return true if dark mode is turn on and false if light mode
     func checkDarkModeUserDefaults() -> Bool? {
         let userDefaults = UserDefaults.standard
-        let windows = UIApplication.shared.windows
-        if userDefaults.bool(forKey: "setUserInterfaceStyle"){//
-            windows.first?.overrideUserInterfaceStyle = .dark
+        var windows = UIApplication.shared.connectedScenes.first?.inputView?.overrideUserInterfaceStyle
+        if userDefaults.bool(forKey: "setUserInterfaceStyle"){
+            windows = .dark
             return true
         } else {
-            windows.first?.overrideUserInterfaceStyle = .light
+            windows = .light
             return false
         }
     }

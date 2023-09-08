@@ -221,6 +221,7 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
         contact.imageData = model.contactImage
         contact.phoneNumbers = phoneNumber
         contact.emailAddresses = email
+        #error("посмотреть вариации поделиться карточкой контакта")
         
         let documentaryPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first
         let fileURL = URL.init(fileURLWithPath: (documentaryPath?.appending("/My Contacts.vcf"))!)

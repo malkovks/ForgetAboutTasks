@@ -9,6 +9,7 @@
 
 import UIKit
 
+///Tab bar custom class which display customised UITabBar 
 class TabBarViewController: UITabBarController {
 
     override func viewDidLoad() {

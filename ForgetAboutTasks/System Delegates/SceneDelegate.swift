@@ -13,7 +13,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     private func checkPasswordEntryEnable(tabBar: UITabBarController){
         let success = UserDefaults.standard.bool(forKey: "isPasswordCodeEnabled")
-        let isAuthorized = UserDefaults.standard.bool(forKey: "isUserConfirmPassword")
         if success {
             let vc = UserProfileSwitchPasswordViewController(isCheckPassword: true)
             vc.modalPresentationStyle = .overCurrentContext
