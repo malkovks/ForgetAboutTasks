@@ -398,3 +398,4 @@
 "Password is valid" = "Пароли совпадают";
 "Password are not equal.\nTry again!" = "Пароли не совпадают.\nПопробуйте еще раз!";
 "The password must contain at least one capital letter, a number and must be at least 8 characters long" = "Пароль должено содержать как минимум одну заглавную букву, число и содержать не менее 8 элементов в пароле";
+"Cant share contact" = "Не удалось поделиться контактом";

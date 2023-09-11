@@ -32,7 +32,6 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
                      [""],
                      [""]]
     
-    private var cellBackgroundColor =  #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
     private var selectedScheduleModel: ScheduleModel
     
     init(model: ScheduleModel) {
@@ -54,7 +53,6 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
     }()
     
     private var topMenu = UIMenu()
-    private let indicator =  UIActivityIndicatorView(style: .medium)
     
     private let tableView = UITableView(frame: CGRectZero, style: .insetGrouped)
     
@@ -82,7 +80,9 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
         nav.modalPresentationStyle = .fullScreen
         nav.modalTransitionStyle = .crossDissolve
         nav.isNavigationBarHidden = false
-        present(nav, animated: isViewAnimated)
+        present(nav, animated: isViewAnimated) { [unowned self] in
+            self.tableView.reloadData()
+        }
     }
     
     @objc private func didGesturePress(_ gesture: UILongPressGestureRecognizer){
@@ -100,7 +100,7 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
                 break
             }
             UIPasteboard.general.string = model
-            showAlertForUser(text: "Text was copied".localized(), duration: DispatchTime.now()+0.5, controllerView: view)
+            showAlertForUser(text: "Text was copied".localized(), duration: DispatchTime.now()+1, controllerView: view)
             tableView.deselectRow(at: indexPath, animated: isViewAnimated)
         }
     }
@@ -119,7 +119,6 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
         setupNavigationController()
         setupConstraints()
         setupGestureForDismiss()
-        indicator.hidesWhenStopped = true
         view.backgroundColor = UIColor(named: "backgroundColor")
     }
     
@@ -163,6 +162,9 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
         topMenu = UIMenu(image: UIImage(systemName: "square.and.arrow.up"), children: [sectionShare,deleteCell])
     }
     
+    
+    /// Function for sharing table view by share in .pdf and screenshot
+    /// - Parameter typeSharing: type of sharing
     private func shareTableView(_ typeSharing: String) {
         setupHapticMotion(style: .soft)
         //pdf render
@@ -188,6 +190,7 @@ class OpenTaskDetailViewController: UIViewController,CheckSuccessSaveProtocol {
         let activityViewController = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
         self.present(activityViewController, animated: isViewAnimated, completion: nil)
     }
+    
     
     private func deleteModel(){
         let alert = UIAlertController(title: "Warning!".localized(),
@@ -369,12 +372,6 @@ extension OpenTaskDetailViewController {
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
             make.leading.trailing.equalToSuperview()
             make.bottom.equalToSuperview()
-        }
-        view.addSubview(indicator)
-        indicator.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.centerY.equalToSuperview().offset(-60)
-            make.width.height.equalTo(50)
         }
     }
 }

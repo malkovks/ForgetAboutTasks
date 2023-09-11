@@ -32,10 +32,11 @@ class UserProfileSetTimerPassword: UIViewController {
         setupView()
     }
     
+    //MARK: - Target methods
     @objc private func didTapDismiss(){
         self.dismiss(animated: isViewAnimated)
     }
-    
+    //MARK: - Setup methods
     private func setupView(){
         setupConstraints()
         setupPickerSetup()
@@ -55,6 +56,10 @@ class UserProfileSetTimerPassword: UIViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "chevron.down"), style: .done, target: self, action: #selector(didTapDismiss))
     }
     
+    
+    /// Function for returning chosen value from timer picker
+    /// - Parameter row: input string row from picker view
+    /// - Returns: return integer count
     private func returnTimerCount(row : String) -> Int {
         switch row {
         case "One hour" : return 3600
@@ -73,6 +78,7 @@ class UserProfileSetTimerPassword: UIViewController {
 
 }
 
+//MARK: - UIPickerView Delegate and DataSource
 extension UserProfileSetTimerPassword: UIPickerViewDelegate , UIPickerViewDataSource {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
@@ -105,7 +111,7 @@ extension UserProfileSetTimerPassword: UIPickerViewDelegate , UIPickerViewDataSo
         return label
     }
 }
-
+//MARK: - Controller constraints
 extension UserProfileSetTimerPassword {
     private func setupConstraints() {
         view.addSubview(timerPasswordPicker)

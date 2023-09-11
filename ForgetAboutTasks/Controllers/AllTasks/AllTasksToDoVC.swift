@@ -54,7 +54,6 @@ class AllTasksToDoViewController: UIViewController, CheckSuccessSaveProtocol {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -74,7 +73,9 @@ class AllTasksToDoViewController: UIViewController, CheckSuccessSaveProtocol {
         navVC.sheetPresentationController?.detents = [.large()]
         navVC.sheetPresentationController?.prefersGrabberVisible = true
         navVC.isNavigationBarHidden = false
-        present(navVC, animated: isViewAnimated)
+        present(navVC, animated: isViewAnimated) {
+            self.tableView.reloadData()
+        }
     }
     
     @objc private func didTapRefresh(sender: AnyObject){
@@ -158,6 +159,11 @@ class AllTasksToDoViewController: UIViewController, CheckSuccessSaveProtocol {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cellIdentifier")
     }
     //MARK: - Logic methods
+    
+    /// Function for loading realm model,sort and filter
+    /// - Parameters:
+    ///   - sort: type of sort realm model
+    ///   - ascending: boolean value ascending sort
     private func loadingRealmData(typeOf sort: String = "allTaskDate",ascending:Bool = true) {
         let secValue = localRealmData.objects(AllTaskModel.self).sorted(byKeyPath: sort,ascending: ascending)
         allTasksData = secValue
@@ -166,8 +172,9 @@ class AllTasksToDoViewController: UIViewController, CheckSuccessSaveProtocol {
         }
     }
     
+    /// Function for sets up categories for model
+    /// - Parameter model: input element of AllTaskModel
     private func setupCategories(model: AllTaskModel) {
-        
         allTasksDataSections.append(model.allTaskDate ?? Date())
         UIView.transition(with: tableView, duration: 0.3,options: .transitionCrossDissolve) {
             self.tableView.reloadData()

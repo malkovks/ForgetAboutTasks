@@ -14,8 +14,7 @@ protocol ChangeFontDelegate: AnyObject {
 
 class ChangeFontViewController: UIViewController {
     
-    var dataReceive: ((CGFloat) -> Void)!
-    private let feedbackGenerator = UISelectionFeedbackGenerator()
+//    var dataReceive: ((CGFloat) -> Void)!
     private var savedFontSize: CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontSizeChanging"))
     private var savedFontName: String = UserDefaults.standard.string(forKey: "fontNameChanging") ?? "Times New Roman"
     private var savedFontWeight: CGFloat = CGFloat(UserDefaults.standard.float(forKey: "fontWeightChanging"))
@@ -142,7 +141,7 @@ class ChangeFontViewController: UIViewController {
     }
     //MARK: - Target methods
     @objc private func didTapChangeFont(sender: UISlider){
-        feedbackGenerator.selectionChanged()
+        setupHapticMotion(style: .medium)
         let interval = (changeFontSlider.maximumValue - changeFontSlider.minimumValue) / 5
         let fontSize = CGFloat(sender.value)
         let step = CGFloat(2)
@@ -158,6 +157,7 @@ class ChangeFontViewController: UIViewController {
         setupHapticMotion(style: .soft)
         self.dismiss(animated: isViewAnimated)
     }
+    
     @objc private func didTapSave(){
         setupHapticMotion(style: .soft)
         delegate?.changeFont(font: savedFontSize, style: savedFontName)
@@ -194,10 +194,8 @@ class ChangeFontViewController: UIViewController {
         setupNavigation()
         setupPageControll()
         view.backgroundColor = .systemBackground
-        DispatchQueue.main.async {
-            self.fontNamePicker.delegate = self
-            self.fontNamePicker.dataSource = self
-        }
+        self.fontNamePicker.delegate = self
+        self.fontNamePicker.dataSource = self
     }
     
     private func setupPageControll(){
@@ -250,6 +248,7 @@ class ChangeFontViewController: UIViewController {
         navigationItem.rightBarButtonItem?.tintColor = UIColor(named: "calendarHeaderColor")
     }
 }
+//MARK: - Collection view delegate and data source
 extension ChangeFontViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -315,7 +314,7 @@ extension ChangeFontViewController : UIPickerViewDelegate, UIPickerViewDataSourc
         return label
     }
 }
- //MARK: - Extension
+ //MARK: - constraints extension
 
 
 extension ChangeFontViewController {

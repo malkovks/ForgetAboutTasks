@@ -46,7 +46,7 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
     }()
     
     private lazy var createContactButton: UIBarButtonItem = {
-       return UIBarButtonItem(image: UIImage(systemName: "plus.circle.fill"), landscapeImagePhone: nil, style: .done, target: self, action: #selector(didTapCreateNewContact))
+       return UIBarButtonItem(image: UIImage(systemName: "plus.circle.fill"), style: .done, target: self, action: #selector(didTapCreateNewContact))
     }()
     
     private lazy var editTableViewButton: UIBarButtonItem = {
@@ -119,10 +119,9 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
         isSavedCompletely(boolean: false)
         setupConstraints()
         setupSearchController()
-        loadingRealmData()
+        loadingContactData()
         contactPicker.delegate = self
         view.backgroundColor = UIColor(named: "backgroundColor")
-        contactPicker.delegate = self
     }
     
     private func setupTableView(){
@@ -153,12 +152,17 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
     
     
     //MARK: -Loading methods
-    private func loadingRealmData(typeOf sort: String = "contactName") {
+    
+    /// Function for loading data from realm model
+    /// - Parameter sort: type of sort contacts
+    private func loadingContactData(typeOf sort: String = "contactName") {
         let secValue = localRealmData.objects(ContactModel.self).sorted(byKeyPath: sort)
         contactData = secValue
         self.tableView.reloadData()
     }
     
+    
+    /// Function for deleting all contacts from realm model
     private func alertForDeleting(){
         setupHapticMotion(style: .medium)
         let alert = UIAlertController(title: "Warning!".localized(),
@@ -177,6 +181,8 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
     }
 
     
+    /// Function for importing chosen contacts from system Contacts application
+    /// - Parameter contacts: array of imported contacts
     private func importContact(contacts: [CNContact]){
         for contact in contacts {
             let model = ContactModel()
@@ -210,6 +216,9 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
         }
     }
     
+    
+    /// Function for sharing contact vCard for any applications
+    /// - Parameter indexPath: indexPath of contact in table view
     private func shareChoosenContact(indexPath: IndexPath){
         let model = viewIsFiltered ? filteredContactData[indexPath.row] : contactData[indexPath.row]
         let contact = CNMutableContact()
@@ -221,7 +230,6 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
         contact.imageData = model.contactImage
         contact.phoneNumbers = phoneNumber
         contact.emailAddresses = email
-        #error("посмотреть вариации поделиться карточкой контакта")
         
         let documentaryPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first
         let fileURL = URL.init(fileURLWithPath: (documentaryPath?.appending("/My Contacts.vcf"))!)
@@ -231,17 +239,23 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
             let activity = UIActivityViewController(activityItems: [data as Any], applicationActivities: nil)
             present(activity, animated: isViewAnimated)
         } catch {
-            alertError(text: "Cant share contact", mainTitle: "warning!")
+            alertError(text: "Cant share contact".localized(), mainTitle: "Warning".localized())
         }
     }
     
     
+    
+    /// Method for gets index of chosen contact and present Edit view controller
+    /// - Parameter indexPath: <#indexPath description#>
     private func openChoosenContact(indexPath: IndexPath){
         let model = viewIsFiltered ? filteredContactData[indexPath.row] : contactData[indexPath.row]
         let vc = EditContactViewController(contactModel: model, editing: false)
         navigationController?.pushViewController(vc, animated: isViewAnimated)
     }
     
+    
+    /// Method for deleting contact from realm model and from Contacts
+    /// - Parameter indexPath: table view indexPath
     private func deleteChoosenContact(indexPath: IndexPath){
         tableView.beginUpdates()
         let model = viewIsFiltered ? filteredContactData : contactData
@@ -250,6 +264,8 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
         tableView.endUpdates()
     }
     
+    /// Function for make call of chosen contact
+    /// - Parameter indexPath: table view indexPath
     private func makeCallContact(indexPath: IndexPath){
         let model = viewIsFiltered ? filteredContactData[indexPath.row] : contactData[indexPath.row]
         let phone = model.contactPhoneNumber?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "No number to call"
@@ -261,6 +277,9 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
         }
     }
     
+    
+    /// Function for sending quick message to chosen contact
+    /// - Parameter indexPath: table view index path
     private func makeSendMessage(indexPath: IndexPath){
         let model = viewIsFiltered ? filteredContactData[indexPath.row] : contactData[indexPath.row]
         let phone = model.contactPhoneNumber ?? "No number to call"
@@ -290,10 +309,6 @@ extension ContactsViewController: CNContactPickerDelegate {
     func contactPicker(_ picker: CNContactPickerViewController, didSelect contacts: [CNContact]) {
         importContact(contacts: contacts)
     }
-}
-
-extension ContactsViewController: CNContactViewControllerDelegate {
-    
 }
 
 //MARK: - Search delegates

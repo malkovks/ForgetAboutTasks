@@ -14,8 +14,6 @@ final class TaskBirthdayDetailViewController: UIViewController {
     private var birthdayContactModel: Results<ContactModel>!
     private var currentDate: Date
     private var birthdayModel: [ContactModel] = []
-    private var convertedDate = String()
-    private let realm = try! Realm()
     
     var isOpenContact: ((ContactModel) -> Void)?
     
@@ -44,7 +42,6 @@ final class TaskBirthdayDetailViewController: UIViewController {
         super.viewDidLoad()
         setupModel()
         setupView()
-        
     }
     //MARK: - Targets
     @objc private func didTapDismiss(){
@@ -53,18 +50,6 @@ final class TaskBirthdayDetailViewController: UIViewController {
     }
     
     //MARK: - Setups
-    private func calculateBirthdayModel(models: Results<ContactModel>,currentDateString: String){
-        for model in models {
-            guard let birthday = model.contactDateBirthday else { continue }
-            let modelDate = birthday.getDateWithoutYear(currentYearDate: currentDate)
-            let modelDateString = DateFormatter.localizedString(from: modelDate, dateStyle: .medium, timeStyle: .none)
-            if modelDateString == currentDateString {
-                birthdayModel.append(model)
-            }
-            continue
-        }
-    }
-    
     private func setupModel(){
         let currentDateString = DateFormatter.localizedString(from: currentDate, dateStyle: .medium, timeStyle: .none)
         self.calculateBirthdayModel(models: birthdayContactModel, currentDateString: currentDateString)
@@ -89,6 +74,22 @@ final class TaskBirthdayDetailViewController: UIViewController {
         let shortCurrentDate = DateFormatter.localizedString(from: currentDate, dateStyle: .short, timeStyle: .none)
         title = "Birthday's " + shortCurrentDate
         navigationController?.navigationItem.largeTitleDisplayMode = .never
+    }
+    
+    /// Calculate birthday model by filtering realm model
+    /// - Parameters:
+    ///   - models: input chosen model of Schedule
+    ///   - currentDateString: value for equal current date and model date string
+    private func calculateBirthdayModel(models: Results<ContactModel>,currentDateString: String){
+        for model in models {
+            guard let birthday = model.contactDateBirthday else { continue }
+            let modelDate = birthday.getDateWithoutYear(currentYearDate: currentDate)
+            let modelDateString = DateFormatter.localizedString(from: modelDate, dateStyle: .medium, timeStyle: .none)
+            if modelDateString == currentDateString {
+                birthdayModel.append(model)
+            }
+            continue
+        }
     }
 }
 

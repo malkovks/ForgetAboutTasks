@@ -118,6 +118,11 @@ class NewContactViewController: UIViewController{
         viewForTable.addGestureRecognizer(gesture)
     }
     
+    //MARK: - Business logic methods
+    
+    
+    /// Function for adding created elements to CNContact and then save to system Contacts
+    /// - Parameter model: input created model of new contact
     private func saveContactInContacts(model: ContactModel){
         let contact = CNMutableContact()
         
@@ -131,13 +136,15 @@ class NewContactViewController: UIViewController{
         address.city = model.contactCity ?? ""
         address.street = model.contactAddress ?? ""
         address.postalCode = model.contactPostalCode ?? ""
-        _ = CNLabeledValue(label: CNLabelHome, value: address)//Доделать
+        let postalAddress = address.copy() as! CNPostalAddress
+        let labeledAddress = [CNLabeledValue(label: CNLabelHome, value: postalAddress)]
         
         contact.phoneNumbers = [CNLabeledValue(label: CNLabelPhoneNumberiPhone, value: CNPhoneNumber(stringValue: phone))]
         contact.emailAddresses = [email]
         contact.imageData = data
         contact.givenName = model.contactName ?? "No name"
         contact.familyName = model.contactSurname ?? ""
+        contact.postalAddresses = labeledAddress
         
         
         

@@ -18,10 +18,7 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
     private var birthdayContactModel: Results<ContactModel>!
     private var localRealmData = try! Realm()
     private var choosenDate = Date()
-    private var isValueWasChanged = Bool()
     private var isTrailingSwipeActionActive = Bool()
-    private var indexOfCell = Int()
-    private var isCellEdited = Bool()
     private var birthdayCounts = [String: Int]()
     
     init(model: Results<ScheduleModel>,choosenDate: Date){
@@ -29,21 +26,12 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
         self.cellDataScheduleModel = model
         self.choosenDate = choosenDate
         self.birthdayContactModel = localRealmData.objects(ContactModel.self)
-        
     }
 
     init(choosenDate: Date){
         super.init(nibName: nil, bundle: nil)
         self.choosenDate = choosenDate
         self.cellDataScheduleModel = nil
-        
-    }
-    
-    init(choosenDate: Date, model: Results<ScheduleModel>,birthdayModel: Results<ContactModel>){
-        super.init(nibName: nil, bundle: nil)
-        self.choosenDate = choosenDate
-        self.cellDataScheduleModel = model
-        self.birthdayContactModel = birthdayModel
     }
     
     required init?(coder: NSCoder) {
@@ -56,7 +44,6 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
         let calendar = FSCalendar()
         calendar.formatter.timeZone = TimeZone.current
         calendar.scrollDirection = .vertical
-        calendar.appearance.todayColor = UIColor(named: "calendarHeaderColor")
         
         calendar.scope = .week
         calendar.firstWeekday = 2
@@ -67,7 +54,7 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
         calendar.locale = .current
         
         calendar.appearance.titleFont = UIFont.systemFont(ofSize: 18)
-        calendar.appearance.todayColor = .systemRed
+        calendar.appearance.todayColor = UIColor(named: "calendarHeaderColor")
         calendar.appearance.todaySelectionColor = .systemBlue
         calendar.appearance.headerTitleFont = .systemFont(ofSize: 20)
         calendar.appearance.borderDefaultColor = .clear
@@ -141,8 +128,6 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
         setupBirthdayButton()
         let predicate = setupRealmData(date: choosenDate)
         loadingRealmData(predicate: predicate)
-        
-        
     }
     
     
@@ -158,10 +143,14 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
         let vc = CreateEventScheduleViewController(choosenDate: Date())
         vc.delegate = self
         let navVC = UINavigationController(rootViewController: vc)
-        navVC.modalTransitionStyle = .flipHorizontal
+        navVC.modalTransitionStyle = .coverVertical
         navVC.modalPresentationStyle = .fullScreen
         navVC.isNavigationBarHidden = false
-        present(navVC, animated: isViewAnimated)
+        present(navVC, animated: isViewAnimated) { [unowned self] in
+            self.calendar.reloadData()
+            let predicate = self.setupRealmData(date: self.choosenDate)
+            self.loadingRealmData(predicate: predicate)
+        }
     }
     
     @objc private func didTapSegmentChanged(segment: UISegmentedControl) {
@@ -231,12 +220,6 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
         present(nav, animated: isViewAnimated)
     }
 //MARK: - Setups for view controller
-    private func setupGestureForDismiss(){
-        let gesture = UISwipeGestureRecognizer(target: self, action: #selector(didTapDismiss))
-        gesture.direction = .right
-        view.addGestureRecognizer(gesture)
-    }
-    
     private func setupView(){
         setupConstraintsForCalendar()
         setupActionWithTableMenu()
@@ -271,6 +254,14 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
         navigationController?.navigationBar.tintColor = UIColor(named: "calendarHeaderColor")
     }
     
+    private func setupGestureForDismiss(){
+        let gesture = UISwipeGestureRecognizer(target: self, action: #selector(didTapDismiss))
+        gesture.direction = .right
+        view.addGestureRecognizer(gesture)
+    }
+    
+    
+    /// Function for update birthday data when user choose any date on calendar and it need to update realm model by predicate start date and end date
     private func setupBirthdayButton(){
         guard let contactModel = self.birthdayContactModel else {
             return }
@@ -295,6 +286,10 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
         }
     }
     
+    
+    /// Using for deleting row in table view by swipe
+    /// - Parameter indexPath: index path of choosen row and section in table view
+    /// - Returns: return UISwipeConfiguration for delegate
     private func setupDeletingCell(indexPath: IndexPath) -> UISwipeActionsConfiguration {
         let editingData = cellDataScheduleModel[indexPath.row]
         let deleteInstance = UIContextualAction(style: .destructive, title: "") { _, _, _ in
@@ -311,6 +306,7 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
     
     
     
+    /// Function for setup methods for UIMenu when user press on settings button
     private func setupActionWithTableMenu(){
         let deleteModels = UIAction(title: "Delete choosen".localized(), image: UIImage(systemName: "trash"),attributes: .destructive) { _ in
             self.didTapDeleteChoosenCell()
@@ -324,6 +320,10 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
     }
     
     //MARK: - logics methods
+    
+    /// Function for creating predicate with start and end dates for filtering realm model for current day
+    /// - Parameter date: input chosen date from calendar
+    /// - Returns: return completed predicate for future using
     private func setupRealmData(date: Date) -> NSCompoundPredicate {
         let dateStart = date
         let dateEnd: Date = {
@@ -340,6 +340,11 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
         return compound
     }
     
+    
+    /// Function using for loading all data on current day for realm model
+    /// - Parameters:
+    ///   - compound: input filter predicate for uploading data from realm
+    ///   - sort: sort type by key of realm model element
     private func loadingRealmData(predicate compound: NSCompoundPredicate,typeOf sort: String = "scheduleTime") {
         let value = localRealmData.objects(ScheduleModel.self)
             .filter(compound)
@@ -351,6 +356,7 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
         self.calendar.reloadData()
     }
     
+    // delegate method
     func isSavedCompletely(boolean: Bool) {
         if boolean {
             showAlertForUser(text: "Event saved successfully".localized(), duration: DispatchTime.now()+1, controllerView: view)

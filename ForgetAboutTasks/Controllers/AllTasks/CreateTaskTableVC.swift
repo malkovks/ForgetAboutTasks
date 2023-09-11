@@ -10,9 +10,6 @@ import SnapKit
 import Combine
 import RealmSwift
 
-
-
-
 class CreateTaskTableViewController: UIViewController {
     
     weak var delegate: CheckSuccessSaveProtocol?
@@ -24,15 +21,16 @@ class CreateTaskTableViewController: UIViewController {
                                ,"URL"
                                ,"Color accent".localized()]
     private var cellsName = [
-        ["Name of event".localized()],
+                     ["Name of event".localized()],
                      ["Date".localized()],
                      ["Time".localized()],
                      ["Notes".localized()],
                      ["URL"],
-                     [""]]
+                     [""]
+        ]
     private var cellBackgroundColor =  #colorLiteral(red: 0.3555810452, green: 0.3831118643, blue: 0.5100654364, alpha: 1)
     private var tasksModel = AllTaskModel()
-    
+    //MARK: - UI elements
     private var cancellable: AnyCancellable?//for parallels displaying color in cell and Combine Kit for it
     private let picker = UIColorPickerViewController()
     private let tableView = UITableView(frame: .zero, style: .insetGrouped)
@@ -180,7 +178,6 @@ extension CreateTaskTableViewController: UITableViewDelegate, UITableViewDataSou
                 } else {
                     alertError(text: "Enter name of URL link with correct domain".localized(), mainTitle: "Error!".localized())
                 }
-                
             }
         case [5,0]:
             openColorPicker()
@@ -205,7 +202,7 @@ extension CreateTaskTableViewController: UITableViewDelegate, UITableViewDataSou
     }
     
 }
-
+//MARK: - UIColorPicker delegate extension
 extension CreateTaskTableViewController: UIColorPickerViewControllerDelegate {
     func colorPickerViewController(_ viewController: UIColorPickerViewController, didSelect color: UIColor, continuously: Bool) {
         let cell = tableView.cellForRow(at: [5,0])
@@ -217,10 +214,7 @@ extension CreateTaskTableViewController: UIColorPickerViewControllerDelegate {
         
     }
 }
-
-extension CreateTaskTableViewController: UIAdaptivePresentationControllerDelegate {
-    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {}
-}
+//MARK: - Constraints extension
 
 extension CreateTaskTableViewController {
     private func setupConstraints(){

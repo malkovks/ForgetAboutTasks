@@ -38,8 +38,8 @@ class CreateEventScheduleViewController: UIViewController {
                      [""]]
     
     
-    private var cancellable: AnyCancellable?//for parallels displaying color in cell and Combine Kit for it
-    private let notificationCenter = UNUserNotificationCenter.current()
+    private var cancellable: AnyCancellable?
+    private let userNotificationCenter = UNUserNotificationCenter.current()
     private let eventStore = EKEventStore()
     private let library = PHPhotoLibrary.self
     private let camera = AVCaptureDevice.self
@@ -69,7 +69,6 @@ class CreateEventScheduleViewController: UIViewController {
     //MARK: - viewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupTableView()
         setupView()
     }
 
@@ -88,7 +87,7 @@ class CreateEventScheduleViewController: UIViewController {
         let isClear = setupAlertIfDataEmpty()
         if isClear {
             scheduleModel.scheduleColor = cellBackgroundColor.encode()
-            setupUserNotification(model: scheduleModel, status: reminderStatus)
+            createNewNotification(model: scheduleModel, status: reminderStatus)
             setupCalendarEvent(model: scheduleModel, status: addingEventStatus)
             delegate?.isSavedCompletely(boolean: true)
             ScheduleRealmManager.shared.saveScheduleModel(model: self.scheduleModel)
@@ -103,7 +102,7 @@ class CreateEventScheduleViewController: UIViewController {
             if scheduleModel.scheduleStartDate == nil && scheduleModel.scheduleTime == nil {
                 alertError(text: "Enter date for setting reminder".localized(), mainTitle: "Error set up reminder!".localized())
             } else {
-                    self.request(forUser: self.notificationCenter) { access in
+                    self.request(forUser: self.userNotificationCenter) { access in
                         self.reminderStatus = access
                         self.scheduleModel.scheduleActiveNotification = access
                         DispatchQueue.main.async {
@@ -136,29 +135,22 @@ class CreateEventScheduleViewController: UIViewController {
 
 
     //MARK: - Setup Views and secondary methods
-    private func setupAlertSheet(title: String,subtitle: String) {
-        let sheet = UIAlertController(title: title, message: subtitle, preferredStyle: .actionSheet)
-        sheet.addAction(UIAlertAction(title: "Discard changes".localized(), style: .destructive,handler: { _ in
-            self.dismiss(animated: isViewAnimated)
-        }))
-        sheet.addAction(UIAlertAction(title: "Save".localized(), style: .default,handler: { [self] _ in
-            didTapSave()
-        }))
-        sheet.addAction(UIAlertAction(title: "Cancel".localized(), style: .cancel))
-        present(sheet, animated: isViewAnimated)
-    }
-
-    
     private func setupView() {
         
         setupNavigationController()
         setupDelegate()
         setupColorPicker()
         setupConstraints()
-        
+        setupIndicator()
+        setupTableView()
         view.backgroundColor = UIColor(named: "backgroundColor")
         title = "Options".localized()
         
+    }
+    
+    private func setupIndicator(){
+        view.addSubview(indicator)
+        indicator.center = view.center
     }
     
     private func setupDelegate(){
@@ -186,11 +178,13 @@ class CreateEventScheduleViewController: UIViewController {
         let saveButton = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(didTapSave))
         navigationItem.rightBarButtonItems = [saveButton]
     }
+    //MARK: - Business logic methods
     
-
-    
-    private func setupUserNotification(model: ScheduleModel,status: Bool){
-        
+    /// Function for adding user notification if user turn on this function
+    /// - Parameters:
+    ///   - model: input created realm model
+    ///   - status: boolean status check if user give access to userNotifications
+    private func createNewNotification(model: ScheduleModel,status: Bool){
         let center = UNUserNotificationCenter.current()
         let content = UNMutableNotificationContent()
         
@@ -212,11 +206,14 @@ class CreateEventScheduleViewController: UIViewController {
                 }
             }
         }
-        
     }
     
 
     
+    /// Function for adding event to Calendar as duplicate if it necessary
+    /// - Parameters:
+    ///   - model: input data with realm model for sending data to EKEventStore
+    ///   - status: boolean status check if user give access EKEventStore
     private func setupCalendarEvent(model: ScheduleModel,status: Bool){
         let store = EKEventStore()
         if let calendar = store.defaultCalendarForNewEvents{
@@ -241,9 +238,10 @@ class CreateEventScheduleViewController: UIViewController {
             alertError(text: "Error saving event to calendar".localized())
         }
     }
+
     
-    //MARK: - Logics methods
-    
+    /// Alert function for user if some cells is empty
+    /// - Returns: return boolean status
     private func setupAlertIfDataEmpty() -> Bool{
         if scheduleModel.scheduleName == "" {
             alertError(text: "Enter value in Name cell".localized())
@@ -262,8 +260,12 @@ class CreateEventScheduleViewController: UIViewController {
         }
     }
     
-    @objc private func chooseTypeOfImagePicker() {
+    
+    /// Function for opening alert controller for choosing image type
+    private func chooseTypeOfImagePicker() {
         setupHapticMotion(style: .soft)
+        indicator.isHidden.toggle()
+        indicator.startAnimating()
         let alert = UIAlertController(title: "", message: "What exactly do you want to do?".localized(), preferredStyle: .actionSheet)
         alert.addAction(UIAlertAction(title: "Set new image".localized(), style: .default,handler: { [self] _ in
             if UIImagePickerController.isSourceTypeAvailable(.photoLibrary){
@@ -284,14 +286,16 @@ class CreateEventScheduleViewController: UIViewController {
         alert.addAction(UIAlertAction(title: "Delete image".localized(), style: .destructive,handler: { _ in
             let cell = self.tableView.cellForRow(at: [4,0])
             cell?.imageView?.image = UIImage(named: "camera.fill")
+            self.indicator.isHidden.toggle()
         }))
-        alert.addAction(UIAlertAction(title: "Cancel".localized(), style: .cancel))
+        alert.addAction(UIAlertAction(title: "Cancel".localized(), style: .cancel,handler: { _ in
+            self.indicator.isHidden.toggle()
+        }))
         present(alert, animated: isViewAnimated)
     }
 
-    //MARK: - Segue methods
-    //methods with dispatch of displaying color in cell while choosing color in picker view
-    @objc private func openColorPicker(){
+    
+    private func openColorPicker(){
         setupHapticMotion(style: .soft)
         self.cancellable = picker.publisher(for: \.selectedColor) .sink(receiveValue: { color in
             DispatchQueue.main.async {
@@ -316,7 +320,7 @@ extension CreateEventScheduleViewController: UIImagePickerControllerDelegate, UI
         } else {
             alertError(text: "Error!".localized(), mainTitle: "Can't get image and save it to event.\nTry again later!".localized())
         }
-        indicator.stopAnimating()
+        indicator.isHidden.toggle()
         
         
     }
@@ -494,9 +498,21 @@ extension CreateEventScheduleViewController: UIColorPickerViewControllerDelegate
         }
     }
 }
-//MARK: - Setup constraint extension
+//MARK: - Setup constraint extension and alert for exiting
 
 extension CreateEventScheduleViewController {
+    private func setupAlertSheet(title: String,subtitle: String) {
+        let sheet = UIAlertController(title: title, message: subtitle, preferredStyle: .actionSheet)
+        sheet.addAction(UIAlertAction(title: "Discard changes".localized(), style: .destructive,handler: { _ in
+            self.dismiss(animated: isViewAnimated)
+        }))
+        sheet.addAction(UIAlertAction(title: "Save".localized(), style: .default,handler: { [self] _ in
+            didTapSave()
+        }))
+        sheet.addAction(UIAlertAction(title: "Cancel".localized(), style: .cancel))
+        present(sheet, animated: isViewAnimated)
+    }
+    
     private func setupConstraints(){
         tableView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top)

@@ -28,7 +28,6 @@ final class ForgetAboutTasksTests: XCTestCase {
         keychain = KeychainManager()
         
         
-        
     }
 
     override func tearDownWithError() throws {
@@ -62,9 +61,8 @@ final class ForgetAboutTasksTests: XCTestCase {
         let password = "12345678"
         try! keychain.savePassword(password: password, email: user)
         
-        let savedValue = keychain.getPassword(email: user)
-        let textValue = String(decoding: savedValue ?? Data(), as: UTF8.self)
-        XCTAssertEqual(password, textValue)
+        let savedValue = try! keychain.getPassword(email: user)
+        XCTAssertEqual(password, savedValue)
         
         
     }

@@ -28,6 +28,7 @@ class EditTaskTableViewController: UIViewController {
                      ["URL"],
                      [""]]
 
+    private var cancellable: AnyCancellable?
     private var cellBackgroundColor: UIColor
     private var isStartEditing: Bool = false
     private var tasksModel: AllTaskModel
@@ -44,15 +45,14 @@ class EditTaskTableViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    var cancellable: AnyCancellable?//for parallels displaying color in cell and Combine Kit for it
-    
-    let picker = UIColorPickerViewController()
-    
+    //MARK: - UIElements
+    private let picker = UIColorPickerViewController()
     private let tableView = UITableView(frame: .zero, style: .insetGrouped)
     
     private lazy var navigationButton: UIBarButtonItem = {
         return UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(didTapEdit))
     }()
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -140,8 +140,7 @@ class EditTaskTableViewController: UIViewController {
         case 2: cellsName[indexPath.section][indexPath.row] = DateFormatter.localizedString(from: time, dateStyle: .none, timeStyle: .short)
         case 3: cellsName[indexPath.section][indexPath.row] = model.allTaskNotes ?? "Empty cell"
         case 4: cellsName[indexPath.section][indexPath.row] = model.allTaskURL ?? "Empty cell"
-        default:
-            print("Error")
+        default: break
         }
     }
 }
@@ -258,7 +257,7 @@ extension EditTaskTableViewController: UIColorPickerViewControllerDelegate {
         tableView.reloadData()
     }
 }
-
+//MARK: - Constraints and Alert Extension
 extension EditTaskTableViewController {
     private func setupConstraints(){
         tableView.snp.makeConstraints { make in

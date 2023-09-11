@@ -81,18 +81,28 @@ class UserProfileAppIconViewController: UIViewController {
     //MARK: - Setup Method
     private func setupViewAndNavigation(){
         setConstraints()
+        extractedFunc()
+        setupTargets()
+    }
+    
+    private func extractedFunc() {
+        navigationController?.navigationBar.tintColor = UIColor(named: "calendarHeaderColor")
         view.backgroundColor = UIColor(named: "backgroundColor")
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "chevron.down"), style: .done, target: self, action: #selector(didTapDismiss))
         title = "Choose App Icon".localized()
-        navigationController?.navigationBar.tintColor = UIColor(named: "calendarHeaderColor")
-        firstIconButton.addTarget(self, action: #selector(didTapChangeImage(sender: )), for: .touchUpInside)
-        secondIconButton.addTarget(self, action: #selector(didTapChangeImage(sender: )), for: .touchUpInside)
-        thirdIconButton.addTarget(self, action: #selector(didTapChangeImage(sender: )), for: .touchUpInside)
-        forthIconButton.addTarget(self, action: #selector(didTapChangeImage(sender: )), for: .touchUpInside)
     }
     
-    private func setupAppIcon(named iconName: String?) {
+    private func setupTargets() {
+        let buttons = [firstIconButton, secondIconButton, thirdIconButton, forthIconButton]
+        buttons.forEach { button in
+                button.addTarget(self, action: #selector(didTapChangeImage(sender: )), for: .touchUpInside)
+        }
         
+    }
+    
+    /// Function for setting up chosen icon to app icon image
+    /// - Parameter iconName: input assets name of image
+    private func setupAppIcon(named iconName: String?) {
         guard UIApplication.shared.supportsAlternateIcons else { alertError(text: "Cant get access to change Image".localized()); return }
         UIApplication.shared.setAlternateIconName(iconName) { error in
             if let error = error {
@@ -105,7 +115,6 @@ class UserProfileAppIconViewController: UIViewController {
             }
         }
     }
-    
 }
 
 extension UserProfileAppIconViewController {

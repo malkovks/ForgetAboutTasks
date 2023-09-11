@@ -17,11 +17,9 @@ import WidgetKit
 class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
     
     private let localRealm = try! Realm()
-    private let provider = DataProvider()
     private var scheduleModel: Results<ScheduleModel>!
     private var filteredModel: Results<ScheduleModel>!
     private var birthdayModel: [Date] = []
-    
     private var filteredContactData: Results<ContactModel>!
     private var filteredScheduleModel: Results<ScheduleModel>!
     
@@ -51,8 +49,6 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
         calendar.firstWeekday = 2
         calendar.placeholderType = .none //remove past and future dates of months
         calendar.appearance.eventDefaultColor = .systemBlue
-        calendar.appearance.titleFont = UIFont.systemFont(ofSize: 18)
-        calendar.appearance.headerTitleFont = .systemFont(ofSize: 20)
         calendar.appearance.borderDefaultColor = .clear
         calendar.appearance.titleWeekendColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
         calendar.appearance.titleDefaultColor = UIColor(named: "textColor")
@@ -90,8 +86,8 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
     
     @objc private func didTapSearch(){
         setupHapticMotion(style: .rigid)
-            navigationItem.searchController = searchController
-            searchController.isActive = true
+        navigationItem.searchController = searchController
+        searchController.isActive = true
     }
     
     @objc private func didTapCreate(){
@@ -102,7 +98,10 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
         nav.modalPresentationStyle = .fullScreen
         nav.modalTransitionStyle = .flipHorizontal
         nav.isNavigationBarHidden = false
-        present(nav, animated: isViewAnimated)
+        present(nav, animated: isViewAnimated) { [unowned self] in
+            self.calendar.reloadData()
+            self.setupView()
+        }
     }
     
     @objc private func didTapOpenAllEvent(){
@@ -112,6 +111,22 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
     }
     
     //MARK: - Setup Methods
+    private func setupView(){
+        isSavedCompletely(boolean: false)
+        loadingData()
+        calendar.reloadData()
+        setupDelegates()
+        setupConstraints()
+        setupSearchController()
+        calendarDidBeginScrolling(calendar)
+        
+        loadingDataByDate(date: Date(), at: .current, is: true)
+        view.backgroundColor = UIColor(named: "backgroundColor")
+        calendar.appearance.titleFont = .setMainLabelFont()
+        calendar.appearance.weekdayFont = .setMainLabelFont()
+        calendar.appearance.headerTitleFont = .setMainLabelFont()
+    }
+    
     private func setupDelegates(){
         calendar.delegate = self
         calendar.dataSource = self
@@ -139,6 +154,7 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
         }
     }
     
+    
     private func checkPasswordEntryEnable(){
         let success = UserDefaults.standard.bool(forKey: "isPasswordCodeEnabled")
         let isAuthorized = UserDefaults.standard.bool(forKey: "isUserConfirmPassword")
@@ -148,22 +164,6 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
             tabBarController?.present(vc, animated: isViewAnimated)
             navigationController?.pushViewController(vc, animated: isViewAnimated)
         }
-    }
-    
-    private func setupView(){
-        isSavedCompletely(boolean: false)
-        loadingData()
-        calendar.reloadData()
-        setupDelegates()
-        setupConstraints()
-        setupSearchController()
-        calendarDidBeginScrolling(calendar)
-        
-        loadingDataByDate(date: Date(), at: .current, is: true)
-        view.backgroundColor = UIColor(named: "backgroundColor")
-        calendar.appearance.titleFont = UIFont.setMainLabelFont()
-        calendar.appearance.weekdayFont = UIFont.setMainLabelFont()
-        calendar.appearance.headerTitleFont = UIFont.setMainLabelFont()
     }
     
     private func setupNavigationController(){
@@ -177,7 +177,6 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
         navigationController?.navigationBar.prefersLargeTitles = false
     }
 
-    
     private func setupSearchController(){
         searchController.searchResultsUpdater = self
         searchController.searchBar.delegate = self
@@ -205,18 +204,12 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
         guard let date = calendar.selectedDate else { return }
         calendar.deselect(date)
     }
-    
-    private func dateInterval(startDate: Date,text: String) -> NSPredicate {
-        let dateEnd: Date = {
-           let components = DateComponents(day: 1,second: -1)
-            return Calendar.current.date(byAdding: components, to: startDate)!
-        }()
-        let predicate = NSPredicate(format: "\(text) BETWEEN %@", [startDate,dateEnd])
-        return predicate
-    }
-    
-    
-    
+
+    /// Setup function for loading data from Realm model by date predicate and other filters and assings loaded data to realm value
+    /// - Parameters:
+    ///   - date: sending current date
+    ///   - monthPosition: current position of month in calendar
+    ///   - firstLoad: boolean value which check if application launch at first time
     private func loadingDataByDate(date: Date,at monthPosition: FSCalendarMonthPosition,is firstLoad: Bool) {
         let dateStart = date
         let dateEnd: Date = {
@@ -234,13 +227,13 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
         
         let value = localRealm.objects(ScheduleModel.self)
         scheduleModel = value
-        let userDefaults = UserDefaults(suiteName: "group.widgetGroupIdentifier")
+        let userDefaults = UserDefaults(suiteName: "group.widgetGroupIdentifier")//value needed for sending data to WidgetKit
     
         let currentDatePredicate = NSPredicate(format: "scheduleStartDate BETWEEN %@", [dateStart,dateEnd])
         let filteredValue = localRealm.objects(ScheduleModel.self).filter(currentDatePredicate)
         userDefaults?.setValue(filteredValue.count, forKey: "group.integer")
         WidgetCenter.shared.reloadAllTimelines()
-        openCreateTaskController(firstLoad: firstLoad, monthPosition: .current, weekday: weekday, dateStart: dateStart, dateEnd: dateEnd)
+        openChosenDate(firstLoad: firstLoad, monthPosition: .current, weekday: weekday, dateStart: dateStart, dateEnd: dateEnd)
         
         let valueContact = localRealm.objects(ContactModel.self)
         
@@ -248,7 +241,15 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
         
     }
     
-    private func openCreateTaskController(firstLoad: Bool,monthPosition: FSCalendarMonthPosition,weekday: Int,dateStart: Date,dateEnd: Date){
+    
+    /// Function for open Create Task View controller with sending to next controller realm model data
+    /// - Parameters:
+    ///   - firstLoad: boolean value check if app launch at first time
+    ///   - monthPosition: position of selected month
+    ///   - weekday: number of weekday(from 0..6)
+    ///   - dateStart: start date which use for predicate
+    ///   - dateEnd: end date which use for predicate
+    private func openChosenDate(firstLoad: Bool,monthPosition: FSCalendarMonthPosition,weekday: Int,dateStart: Date,dateEnd: Date){
         if firstLoad == false {
             if monthPosition == .current {
                 let predicate = NSPredicate(format: "scheduleWeekday = \(weekday)")
@@ -264,22 +265,7 @@ class ScheduleViewController: UIViewController, CheckSuccessSaveProtocol{
         }
     }
     
-    private func setupDateByYear(_ date: Date) -> Date{
-        let calendar = Calendar.current
-        let currentYear = calendar.component(.year, from: Date())
-        let customMonth = calendar.component(.month, from: date)
-        let customDay = calendar.component(.day, from: date)
-        
-        var components = DateComponents()
-        components.year = currentYear
-        components.month = customMonth
-        components.day = customDay
-        
-        let valueDate = calendar.date(from: components) ?? Date()
-        
-        return valueDate
-    }
-    
+    //MARK: - Check Success Protocol delegate
     func isSavedCompletely(boolean: Bool) {
         if boolean {
             showAlertForUser(text: "Event saved successfully".localized(), duration: DispatchTime.now()+1, controllerView: view)

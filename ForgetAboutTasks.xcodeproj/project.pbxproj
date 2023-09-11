@@ -443,7 +443,7 @@
 			children = (
 				0AF2D6F62A189A1F0093A824 /* ScheduleVC */,
 				0A1FD0C12A7D7611003A7158 /* CreateTask */,
-				0A2717B729FE518000EFBC11 /* OpenTaskDetailVC.swift */,
+				0AC306812AAF863000AF50DF /* DetailTaskVC */,
 				0AF2D6F92A189CF00093A824 /* EventEditingOrCreating */,
 			);
 			path = Schedule;
@@ -463,9 +463,9 @@
 		0A99A90229CD98DD00CC5A42 /* Contacts */ = {
 			isa = PBXGroup;
 			children = (
-				0A8AC1A529B9D4FA00EA052B /* ContactsVC.swift */,
+				0AC306822AAFA84200AF50DF /* Contact */,
 				0AD4985B2A7518B000B0599E /* NewContact */,
-				0AEAA9F72A272BB600BE85A4 /* EditContactVC.swift */,
+				0AC306832AAFA84900AF50DF /* EditContact */,
 			);
 			path = Contacts;
 			sourceTree = "<group>";
@@ -630,6 +630,30 @@
 				0A8AC19E29B9D00A00EA052B /* TabBarViewController.swift */,
 			);
 			path = TabBarController;
+			sourceTree = "<group>";
+		};
+		0AC306812AAF863000AF50DF /* DetailTaskVC */ = {
+			isa = PBXGroup;
+			children = (
+				0A2717B729FE518000EFBC11 /* OpenTaskDetailVC.swift */,
+			);
+			path = DetailTaskVC;
+			sourceTree = "<group>";
+		};
+		0AC306822AAFA84200AF50DF /* Contact */ = {
+			isa = PBXGroup;
+			children = (
+				0A8AC1A529B9D4FA00EA052B /* ContactsVC.swift */,
+			);
+			path = Contact;
+			sourceTree = "<group>";
+		};
+		0AC306832AAFA84900AF50DF /* EditContact */ = {
+			isa = PBXGroup;
+			children = (
+				0AEAA9F72A272BB600BE85A4 /* EditContactVC.swift */,
+			);
+			path = EditContact;
 			sourceTree = "<group>";
 		};
 		0AD4984F2A701E6D00B0599E /* Cells */ = {

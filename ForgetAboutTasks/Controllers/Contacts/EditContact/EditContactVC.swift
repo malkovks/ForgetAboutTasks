@@ -109,7 +109,7 @@ class EditContactViewController: UIViewController {
         
         let contact = try! CNContactVCardSerialization.data(with: [shareContact])
         let activityVC = UIActivityViewController(activityItems: [contact], applicationActivities: nil)
-        self.present(activityVC, animated: isViewAnimated)
+        present(activityVC, animated: isViewAnimated)
     }
     
     @objc private func didTapDismiss(){
@@ -176,6 +176,9 @@ class EditContactViewController: UIViewController {
         }
     }
     
+    
+    /// Function for sending mail by clicking on table view cell with email logo
+    /// - Parameter model: input current model of contact
     private func setupComposeView(model: ContactModel){
         setupHapticMotion(style: .soft)
         if MFMailComposeViewController.canSendMail() {
@@ -194,6 +197,8 @@ class EditContactViewController: UIViewController {
         }
     }
     
+    
+    /// Function for asking if possible to make call ,if it true , user can call by clicking on contacts number
     private func setupPhoneCalling(){
         setupHapticMotion(style: .soft)
         guard let phone = contactModel.contactPhoneNumber?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
@@ -208,7 +213,7 @@ class EditContactViewController: UIViewController {
         }
     }
     
-    
+    /// Function check if date is not empty, if it so user segue to calendar to see chosen date
     private func setupOpenCalendar(){
         setupHapticMotion(style: .soft)
         guard let date = contactModel.contactDateBirthday else { alertError(text: "Cant get date".localized(), mainTitle: "Error".localized()); return}
@@ -225,7 +230,7 @@ class EditContactViewController: UIViewController {
     }
     
 
-    
+    /// Function for taking address if its not nil and segue to Map application to show where is it this address
     private func setupOpenAddressInMap(){
         setupHapticMotion(style: .soft)
         guard let country = contactModel.contactCountry,

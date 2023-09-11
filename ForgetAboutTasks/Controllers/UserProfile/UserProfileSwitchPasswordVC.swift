@@ -131,9 +131,13 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
     }
     
     //MARK: - Target Methods
+    
+    /// Function for checking when current view is open and for segue to next field
+    /// - Parameter textField: input textfield by row
     @objc private func textDidChangeValue(textField: UITextField){
         guard let text = textField.text?.first, text.isNumber else { return }
         if text.utf16.count == 1 {
+            //for first input when user create password
             if passwordDigits.count != 4 && !isCheckPassword {
                 switch textField {
                 case firstTextField:
@@ -156,29 +160,7 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
                 default:
                     break
                 }
-            } else if isCheckPassword && passwordDigits.count != 4 {
-                switch textField {
-                    
-                case firstTextField:
-                    passwordDigits += firstTextField.text!
-                    secondTextField.becomeFirstResponder()
-                    break
-                case secondTextField:
-                    passwordDigits += secondTextField.text!
-                    thirdTextField.becomeFirstResponder()
-                    break
-                case thirdTextField:
-                    passwordDigits += thirdTextField.text!
-                    forthTextField.becomeFirstResponder()
-                    break
-                case forthTextField:
-                    passwordDigits += forthTextField.text!
-                    forthTextField.resignFirstResponder()
-                    checkCorrectPassword(textField: textField)
-                    break
-                default:
-                    break
-                }
+                //for second repeat password when user create password
             } else if passwordDigits.count == 4 {
                 switch textField {
                     
@@ -204,10 +186,36 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
                 default:
                     break
                 }
+                //for checking password if user launch the app
+            } else if isCheckPassword && passwordDigits.count != 4 {
+                switch textField {
+                case firstTextField:
+                    passwordDigits += firstTextField.text!
+                    secondTextField.becomeFirstResponder()
+                    break
+                case secondTextField:
+                    passwordDigits += secondTextField.text!
+                    thirdTextField.becomeFirstResponder()
+                    break
+                case thirdTextField:
+                    passwordDigits += thirdTextField.text!
+                    forthTextField.becomeFirstResponder()
+                    break
+                case forthTextField:
+                    passwordDigits += forthTextField.text!
+                    forthTextField.resignFirstResponder()
+                    checkCorrectPassword(textField: textField)
+                    break
+                default:
+                    break
+                }
             }
         }
     }
     
+    
+    /// Function for saving password when user create or change password value. Password store in Keychain, other value saved in UserDefaults
+    /// - Parameter sender: button sender (for necessary using)
     @objc private func didTapConfirmPassword(sender: UIButton) {
         setupHapticMotion(style: .light)
         let emailUser = UserDefaults.standard.string(forKey: "userMail") ?? "No email"
@@ -216,7 +224,6 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
         if passwordDigits.count == 4 && passwordDigits == confirmPasswordDigits {
             confirmPasswordButton.setImage(UIImage(systemName: "lock.fill"), for: .normal)
             confirmPasswordButton.setTitle("Confirmed".localized(), for: .normal)
-            
             checkAuthForFaceID { [weak self] success in
                 UserDefaults.standard.setValue(success, forKey: "accessToFaceID")
                 UserDefaults.standard.setValue(true, forKey: "isPasswordCodeEnabled")
@@ -224,7 +231,6 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
                 if !textValue.isEmpty  {
                     KeychainManager.shared.delete()
                 }
-                
                 try! KeychainManager.shared.savePassword(password: password, email: emailUser)
                 self?.delegate?.isSavedCompletely(boolean: true)
                 self?.navigationController?.popViewController(animated: isViewAnimated)
@@ -233,7 +239,6 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
         } else {
             alertError(text: "You entered different passwords. Try again".localized())
             clearRequest()
-            
         }
     }
     @objc private func didTapActiveFaceID(){
@@ -242,13 +247,14 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
     }
     
     //MARK: - Setups for view
-    //setup view if user try to change of turn on password
+    
+    /// This setup using for creating or changing password value
     private func setupView(){
+        view.backgroundColor = .systemBackground
+        confirmPasswordButton.addTarget(self, action: #selector(didTapConfirmPassword(sender: )), for: .touchUpInside)
         setupRegistrationView()
         setupTextField()
         addConstrains()
-        view.backgroundColor = .systemBackground
-        confirmPasswordButton.addTarget(self, action: #selector(didTapConfirmPassword(sender: )), for: .touchUpInside)
     }
     
     private func setupRegistrationView(){
@@ -257,7 +263,7 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
         confirmPasswordButton.isHidden = false
         tabBarController?.tabBar.isHidden = true
     }
-    //setup for view if user entered in app when password is turn on
+    ///This setup function using for entry setups when app is launching
     private func setupEntryView(){
         
         title = "Before using".localized()
@@ -277,16 +283,14 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
     }
     
     private func setupTextField(){
-        
-        firstTextField.addTarget(self, action: #selector(textDidChangeValue(textField: )), for: UIControl.Event.editingChanged)
-        secondTextField.addTarget(self, action: #selector(textDidChangeValue(textField: )), for: UIControl.Event.editingChanged)
-        thirdTextField.addTarget(self, action: #selector(textDidChangeValue(textField: )), for: UIControl.Event.editingChanged)
-        forthTextField.addTarget(self, action: #selector(textDidChangeValue(textField: )), for: UIControl.Event.editingChanged)
-        
+        let textFields = [firstTextField, secondTextField, thirdTextField, forthTextField]
+        textFields.forEach { textField in
+            textField.addTarget(self, action: #selector(textDidChangeValue(textField: )), for: UIControl.Event.editingChanged)
+        }
     }
-    //MARK: - Keychain safety func for password
-    //check for correct input password with comparsion entered password and saved password in keychain
-
+    
+    /// Function for checking password when app is first launched
+    /// - Parameter textField: input textField check when its tag equal to 4
     private func checkCorrectPassword(textField: UITextField){
         let emailUser = UserDefaults.standard.string(forKey: "userMail") ?? "No email"
         let textValue = try! KeychainManager.shared.getPassword(email: emailUser)
@@ -326,7 +330,7 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
         passwordLabel.text = "Confirm password".localized()
     }
 }
-//MARK: - snapkit constraints
+//MARK: - Setup constraints
 extension UserProfileSwitchPasswordViewController {
     private func addConstrains(){
         let textFieldSubViews = [firstTextField,secondTextField,thirdTextField,forthTextField]

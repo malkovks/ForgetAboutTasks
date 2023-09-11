@@ -31,10 +31,8 @@ class EditEventScheduleViewController: UIViewController {
     private var choosenDate: Date
     private var scheduleModel: ScheduleModel
     private var editedScheduleModel = ScheduleModel()
-    private let realm = try! Realm()
-    private let notificationCenter = UNUserNotificationCenter.current()
+    private let userNotificationCenter = UNUserNotificationCenter.current()
     private let eventStore = EKEventStore()
-    
     private var reminderStatus: Bool = false
     private var isStartEditing: Bool = false
     private var addingToEvent: Bool = false
@@ -52,6 +50,7 @@ class EditEventScheduleViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    //MARK: - UI Elemets
     private lazy var navigationItemButton: UIBarButtonItem = {
         return UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(didTapEdit))
     }()
@@ -65,10 +64,10 @@ class EditEventScheduleViewController: UIViewController {
     }
 
     
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        tableView.frame = view.bounds
-    }
+//    override func viewDidLayoutSubviews() {
+//        super.viewDidLayoutSubviews()
+//        tableView.frame = view.bounds
+//    }
 
     //MARK: - Targets methods
     @objc private func didTapDismiss(){
@@ -89,8 +88,8 @@ class EditEventScheduleViewController: UIViewController {
         if isStartEditing {
             ScheduleRealmManager.shared.editScheduleModel(user: id, changes: editedScheduleModel)
             DispatchQueue.main.async {
-                self.setupUserNotification(model: self.editedScheduleModel, status: self.reminderStatus)
-                self.checkAuthorizationForCalendar(model: self.editedScheduleModel, status: self.addingToEvent)
+                self.addNewUserNotification(model: self.editedScheduleModel, status: self.reminderStatus)
+                self.createNewEvent(model: self.editedScheduleModel, status: self.addingToEvent)
                 self.delegate?.isSavedCompletely(boolean: true)
                 self.dismiss(animated: isViewAnimated)
             }
@@ -104,7 +103,7 @@ class EditEventScheduleViewController: UIViewController {
                            ,mainTitle: "Error set up reminder!".localized())
                 sender.isOn = false
             } else {
-                request(forUser: notificationCenter) { access in
+                request(forUser: userNotificationCenter) { access in
                     self.reminderStatus = access
                     self.isStartEditing = access
                     self.editedScheduleModel.scheduleActiveNotification = access
@@ -138,6 +137,7 @@ class EditEventScheduleViewController: UIViewController {
     
     //MARK: - Setup Views and secondary methods
     private func setupView() {
+        setupConstraints()
         setupNavigationController()
         setupDelegate()
         setupColorPicker()
@@ -159,7 +159,6 @@ class EditEventScheduleViewController: UIViewController {
     }
     
     private func setupTableView(){
-        view.addSubview(tableView)
         tableView.backgroundColor = UIColor(named: "backgroundColor")
         tableView.delegate = self
         tableView.dataSource = self
@@ -182,8 +181,14 @@ class EditEventScheduleViewController: UIViewController {
         }
 
     }
-    //MARK: - Main functions for view
-    private func setupUserNotification(model: ScheduleModel, status: Bool){
+    //MARK: - Business logics methods
+    
+    
+    /// Function for creating users notification if it necessary
+    /// - Parameters:
+    ///   - model: input data from realm model
+    ///   - status: boolean value check if app has access to UserNotifications
+    private func addNewUserNotification(model: ScheduleModel, status: Bool){
         if status {
             let center = UNUserNotificationCenter.current()
             let content = UNMutableNotificationContent()
@@ -211,7 +216,12 @@ class EditEventScheduleViewController: UIViewController {
         }
     }
     
-    private func checkAuthorizationForCalendar(model:ScheduleModel,status: Bool){
+    
+    /// Function check access to EKEvent
+    /// - Parameters:
+    ///   - model: input data from realm model
+    ///   - status: boolean value check if app has access to EKEvent
+    private func createNewEvent(model:ScheduleModel,status: Bool){
         let eventStore: EKEventStore = EKEventStore()
         switch EKEventStore.authorizationStatus(for: .event){
             
@@ -234,6 +244,11 @@ class EditEventScheduleViewController: UIViewController {
         }
     }
     
+    /// Function for adding event to system Calendar app
+    /// - Parameters:
+    ///   - store: input current EKEventStore
+    ///   - model: input current data model
+    ///   - status: boolean value if user give access to EKEvent
     private func setupAddingEventToCalendar(store: EKEventStore,model: ScheduleModel, status: Bool){
         if let calendar = store.defaultCalendarForNewEvents{
             if status {
@@ -274,7 +289,6 @@ class EditEventScheduleViewController: UIViewController {
             break
         }
     }
-    //MARK: - Logics methods
     
     private func setupAlertIfDataEmpty() -> Bool{
         setupHapticMotion(style: .medium)
@@ -293,7 +307,7 @@ class EditEventScheduleViewController: UIViewController {
     }
 
     //MARK: - Segue methods
-    //methods with dispatch of displaying color in cell while choosing color in picker view
+    ///Method with dispatch of displaying color in cell while choosing color in picker view
     @objc private func openColorPicker(){
         setupHapticMotion(style: .soft)
         self.cancellable = picker.publisher(for: \.selectedColor) .sink(receiveValue: { color in
@@ -304,7 +318,7 @@ class EditEventScheduleViewController: UIViewController {
         })
         self.present(picker, animated: isViewAnimated)
     }
-    
+    ///Alert controller for choosing type of image
     @objc private func chooseTypeOfImagePicker() {
         setupHapticMotion(style: .soft)
         let alert = UIAlertController(title: "", message: "What exactly do you want to do?".localized(), preferredStyle: .actionSheet)
@@ -527,6 +541,13 @@ extension EditEventScheduleViewController {
         }))
         sheet.addAction(UIAlertAction(title: "Cancel".localized(), style: .cancel))
         present(sheet, animated: isViewAnimated)
+    }
+    
+    private func setupConstraints(){
+        view.addSubview(tableView)
+        tableView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
     }
 }
 

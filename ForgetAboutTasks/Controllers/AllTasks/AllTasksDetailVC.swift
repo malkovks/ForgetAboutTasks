@@ -70,7 +70,9 @@ class AllTasksDetailViewController: UIViewController {
         navVC.sheetPresentationController?.detents = [.large()]
         navVC.sheetPresentationController?.prefersGrabberVisible = true
         navVC.isNavigationBarHidden = false
-        present(navVC, animated: isViewAnimated)
+        present(navVC, animated: isViewAnimated) {
+            self.tableView.reloadData()
+        }
     }
     
     @objc private func didGesturePress(_ gesture: UILongPressGestureRecognizer) {
@@ -128,6 +130,9 @@ class AllTasksDetailViewController: UIViewController {
         navigationItem.rightBarButtonItems = [editButton,shareTableInfo]
     }
     
+    //MARK: - Business logic methods
+    
+    /// Method for opening UIMenu for selecting some options for how you want to share table view
     private func setupMenu(){
         let shareImage = UIAction(title: "Share Image".localized(), image: UIImage(systemName: "photo.circle.fill")) { _ in
             self.shareTableView("image")
@@ -138,6 +143,8 @@ class AllTasksDetailViewController: UIViewController {
         topMenu = UIMenu(title: "Share selection".localized(), image: UIImage(systemName: "square.and.arrow.up"), options: .singleSelection , children: [shareImage,sharePDF])
     }
     
+    /// Function for sets up type of sharing, render screenshot or .pdf and return data to activity view controller
+    /// - Parameter typeSharing: input type of variables share table view
     func shareTableView(_ typeSharing: String) {
         setupHapticMotion(style: .rigid)
         //pdf render

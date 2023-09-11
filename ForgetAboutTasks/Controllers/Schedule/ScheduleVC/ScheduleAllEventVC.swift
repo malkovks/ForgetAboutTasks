@@ -13,15 +13,15 @@ class ScheduleAllEventViewController: UIViewController {
     
     private let realm = try! Realm()
     private var scheduleModel: Results<ScheduleModel>
-    private var scheduleDates: [Date]
+//    private var scheduleDates: [Date]
     
     private var dictionaryScheduleModel = [String: [ScheduleModel]]()
     private var sectionHeaderModel = [String]()
     
     init(model: Results<ScheduleModel>){
-        let date = model.map({ $0.scheduleStartDate ?? Date ()}).sorted()
+//        let date = model.map({ $0.scheduleStartDate ?? Date ()}).sorted()
         self.scheduleModel = model.sorted(byKeyPath: "scheduleStartDate")
-        self.scheduleDates = date
+//        self.scheduleDates = date
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -141,7 +141,7 @@ extension ScheduleAllEventViewController: UITableViewDelegate, UITableViewDataSo
     }
     
 }
-
+//MARK: - Constraints
 extension ScheduleAllEventViewController {
     private func setupConstraints() {
         view.addSubview(tableView)

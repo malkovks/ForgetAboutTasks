@@ -551,17 +551,20 @@ class UserProfileViewController: UIViewController {
     private func openChangeFontController(){
         let vc = ChangeFontViewController()
         vc.delegate = self
-        vc.dataReceive = { [weak self] _ in
-            self?.setupView()
-            self?.tableView.reloadData()
-        }
+//        vc.dataReceive = { [weak self] _ in
+//            self?.setupView()
+//            self?.tableView.reloadData()
+//        }
         let nav = UINavigationController(rootViewController: vc)
         nav.modalPresentationStyle = .pageSheet
         nav.sheetPresentationController?.detents = [.large()]
         nav.sheetPresentationController?.prefersGrabberVisible = true
         nav.modalTransitionStyle = .coverVertical
         nav.isNavigationBarHidden = false
-        self.present(nav, animated: isViewAnimated)
+        self.present(nav, animated: isViewAnimated) { [unowned self] in
+            self.setupView()
+            self.tableView.reloadData()
+        }
     }
     
     
