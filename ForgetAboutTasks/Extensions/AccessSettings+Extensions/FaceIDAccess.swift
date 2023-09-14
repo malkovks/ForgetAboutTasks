@@ -43,7 +43,8 @@ extension UIViewController {
         setupHapticMotion(style: .light)
         let context = LAContext()
         var error: NSError?
-        if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics,error: &error) {
+        let isContextCanAvailable = context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics,error: &error)
+        if isContextCanAvailable {
             context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: "Access to Face ID".localized()) { success , error in
                 DispatchQueue.main.async {
                     UserDefaults.standard.setValue(success, forKey: "accessToFaceID")
@@ -51,7 +52,8 @@ extension UIViewController {
                 }
             }
         } else {
-            
+            let errorString = error?.localizedDescription
+            print(errorString)
             handler(false)
         }
     }

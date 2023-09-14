@@ -22,7 +22,6 @@ class ContactRealmManager {
     func saveContactModel(model: ContactModel){
         try! localRealm.write {
             localRealm.add(model)
-            print("Tasks saved in realm")
         }
     }
     
@@ -39,6 +38,12 @@ class ContactRealmManager {
         let objects = localRealm.objects(ContactModel.self)
         try! localRealm.write {
             localRealm.delete(objects)
+        }
+    }
+    
+    func deleteArrayContactModel(models: Results<ContactModel>){
+        try! localRealm.write {
+            localRealm.delete(models)
         }
     }
     

@@ -158,10 +158,11 @@ class EditContactViewController: UIViewController {
     
     private func setupNavigationController(){
         navigationItem.rightBarButtonItems = [editModelButton, shareModelButton]
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel".localized(), style: .done, target: self, action: #selector(didTapDismiss))
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "Cancel".localized(), style: .done, target: self, action: #selector(didTapDismiss))
         navigationController?.navigationBar.tintColor = UIColor(named: "calendarHeaderColor")
         navigationController?.navigationItem.largeTitleDisplayMode = .never
         navigationController?.navigationBar.prefersLargeTitles = false
+        navigationItem.largeTitleDisplayMode = .never
     }
     
     private func customiseView(){
@@ -332,7 +333,7 @@ extension EditContactViewController: UITableViewDelegate, UITableViewDataSource 
             case [4,0]:
                 cell.textLabel?.text = contactModel.contactType ?? "Not indicated"
             default:
-                print("Error")
+                break
             }
         } else {
             cell.accessoryView = nil
@@ -436,7 +437,7 @@ extension EditContactViewController: UITableViewDelegate, UITableViewDataSource 
                     self?.isStartEditing = true
                 }
             default:
-                print("error")
+                break
             }
         } else {
             switch indexPath {
@@ -449,7 +450,7 @@ extension EditContactViewController: UITableViewDelegate, UITableViewDataSource 
             case [3,0]:
                 setupOpenCalendar()
             default:
-                print("Error")
+                break
             }
         }
         

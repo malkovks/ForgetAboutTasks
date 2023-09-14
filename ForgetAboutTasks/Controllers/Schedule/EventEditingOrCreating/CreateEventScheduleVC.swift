@@ -159,7 +159,7 @@ class CreateEventScheduleViewController: UIViewController {
     }
     
     private func setupTableView(){
-        view.addSubview(tableView)
+        
         tableView.backgroundColor = UIColor(named: "backgroundColor")
         tableView.delegate = self
         tableView.dataSource = self
@@ -190,9 +190,10 @@ class CreateEventScheduleViewController: UIViewController {
         
         let dateS = model.scheduleTime ?? Date()
         let date = DateFormatter.localizedString(from: dateS, dateStyle: .medium, timeStyle: .none)
+        let body = "\(String(describing:model.scheduleName ?? ""))"
         content.title = "Planned reminder".localized()
-        content.body = "\(date)"
-        content.subtitle = "\(String(describing:model.scheduleName))"
+        content.body = body
+        content.subtitle = date
         content.sound = .defaultRingtone
         let dateFormat = DateFormatter.localizedString(from: scheduleModel.scheduleStartDate ?? Date(), dateStyle: .medium, timeStyle:.short)
         content.userInfo = ["userNotification": dateFormat]
@@ -390,7 +391,7 @@ extension CreateEventScheduleViewController: UITableViewDelegate, UITableViewDat
         
         switch indexPath {
         case [0,0]:
-            alertTextField(cell: cellName, placeholder: "Enter the text".localized(), keyboard: .default) {[self] text in
+            alertTextField(cell: cellName,previousTitle: scheduleModel.scheduleName, placeholder: "Enter the text".localized(), keyboard: .default) {[self] text in
                 scheduleModel.scheduleName = text
                 cell?.textLabel?.text = text
                 isStartEditing = true
@@ -414,21 +415,21 @@ extension CreateEventScheduleViewController: UITableViewDelegate, UITableViewDat
                 self?.isStartEditing = true
             }
         case [2,0]:
-            alertTextField(cell: "Enter Name of event".localized(), placeholder: "Enter the text".localized(), keyboard: .default) { [self] text in
+            alertTextField(cell: "Enter Name of event".localized(),previousTitle: scheduleModel.scheduleCategoryName, placeholder: "Enter the text".localized(), keyboard: .default) { [self] text in
                 scheduleModel.scheduleCategoryName = text
                 cell?.textLabel?.text = text
                 isStartEditing = true
                 
             }
         case [2,1]:
-            alertTextField(cell: "Enter Type of event".localized(), placeholder: "Enter the text".localized(), keyboard: .default) { [self] text in
+            alertTextField(cell: "Enter Type of event".localized(),previousTitle: scheduleModel.scheduleCategoryType, placeholder: "Enter the text".localized(), keyboard: .default) { [self] text in
                 scheduleModel.scheduleCategoryType = text
                 cell?.textLabel?.text = text
                 isStartEditing = true
                 
             }
         case [2,2]:
-            alertTextField(cell: "Enter URL name with domain".localized(), placeholder: "Enter URL".localized(), keyboard: .URL) { [self] text in
+            alertTextField(cell: "Enter URL name with domain".localized(),previousTitle: scheduleModel.scheduleCategoryURL, placeholder: "Enter URL".localized(), keyboard: .URL) { [self] text in
                 if text.urlValidation(text: text) {
                     cell?.textLabel?.text = text
                     scheduleModel.scheduleCategoryURL = text
@@ -443,7 +444,7 @@ extension CreateEventScheduleViewController: UITableViewDelegate, UITableViewDat
                 }
             }
         case [2,3]:
-            alertTextField(cell: "Enter Notes of event".localized(), placeholder: "Enter the text".localized(), keyboard: .default) { [self] text in
+            alertTextField(cell: "Enter Notes of event".localized(),previousTitle: scheduleModel.scheduleCategoryNote, placeholder: "Enter the text".localized(), keyboard: .default) { [self] text in
                 scheduleModel.scheduleCategoryNote = text
                 cell?.textLabel?.text = text
                 isStartEditing = true
@@ -456,7 +457,7 @@ extension CreateEventScheduleViewController: UITableViewDelegate, UITableViewDat
             requestUserForCamera()
             chooseTypeOfImagePicker()
         default:
-            print("error")
+            break
         }
     }
     
@@ -514,6 +515,7 @@ extension CreateEventScheduleViewController {
     }
     
     private func setupConstraints(){
+        view.addSubview(tableView)
         tableView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
             make.leading.trailing.equalToSuperview()

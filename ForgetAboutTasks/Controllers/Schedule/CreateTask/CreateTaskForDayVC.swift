@@ -140,7 +140,7 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
     
     @objc private func didTapCreate(){
         setupHapticMotion(style: .rigid)
-        let vc = CreateEventScheduleViewController(choosenDate: Date())
+        let vc = CreateEventScheduleViewController(choosenDate: choosenDate)
         vc.delegate = self
         let navVC = UINavigationController(rootViewController: vc)
         navVC.modalTransitionStyle = .coverVertical
@@ -308,7 +308,7 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
     
     /// Function for setup methods for UIMenu when user press on settings button
     private func setupActionWithTableMenu(){
-        let deleteModels = UIAction(title: "Delete choosen".localized(), image: UIImage(systemName: "trash"),attributes: .destructive) { _ in
+        let deleteModels = UIAction(title: "Delete chosen".localized(), image: UIImage(systemName: "trash"),attributes: .destructive) { _ in
             self.didTapDeleteChoosenCell()
         }
         let stopEdit = UIAction(title: "Cancel editing mode".localized(),image: UIImage(systemName: "square.and.pencil.circle.fill")) { _ in

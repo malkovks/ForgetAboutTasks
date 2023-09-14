@@ -16,11 +16,12 @@ extension UIViewController{
     ///   - placeholder: Customise placeholder of textField in alertController
     ///   - type: Type of textfields keyboard
     ///   - completion: This closure return text from textField
-    func alertTextField(cell title: String, placeholder: String, keyboard type: UIKeyboardType, completion: @escaping (String) -> Void) {
+    func alertTextField(cell title: String,previousTitle: String? = "", placeholder: String, keyboard type: UIKeyboardType, completion: @escaping (String) -> Void) {
         setupHapticMotion(style: .soft)
         let alert = UIAlertController(title: "", message: title, preferredStyle: .alert)
         alert.addTextField(configurationHandler: { [self] textField in
             textField.placeholder = placeholder
+            textField.text = previousTitle
             textField.clearButtonMode = .whileEditing
             textField.keyboardType = type
             textField.resignFirstResponder()

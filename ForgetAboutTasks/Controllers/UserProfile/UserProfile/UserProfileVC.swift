@@ -550,11 +550,6 @@ class UserProfileViewController: UIViewController {
     /// Open view controller with changing font size,style of all application
     private func openChangeFontController(){
         let vc = ChangeFontViewController()
-        vc.delegate = self
-//        vc.dataReceive = { [weak self] _ in
-//            self?.setupView()
-//            self?.tableView.reloadData()
-//        }
         let nav = UINavigationController(rootViewController: vc)
         nav.modalPresentationStyle = .pageSheet
         nav.sheetPresentationController?.detents = [.large()]

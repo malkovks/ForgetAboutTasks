@@ -216,7 +216,7 @@ extension AllTasksDetailViewController: UITableViewDelegate, UITableViewDataSour
             let color = UIColor.color(withData: tasksModel.allTaskColor!)
             cell.backgroundColor = color
         default:
-            print("error")
+            break
         }
         return cell
     }

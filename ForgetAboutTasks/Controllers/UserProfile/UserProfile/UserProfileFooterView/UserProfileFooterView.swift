@@ -23,11 +23,7 @@ class UserProfileFooterView: UIView {
         label.sizeToFit()
         label.numberOfLines = 0
         label.font = .systemFont(ofSize: 14, weight: .thin)
-        if UIApplication.shared.connectedScenes.first?.inputView?.overrideUserInterfaceStyle == .light {
-            label.textColor = .darkGray
-        } else {
-            label.textColor = .lightText
-        }
+        label.textColor = .systemGray2
         
         return label
     }()

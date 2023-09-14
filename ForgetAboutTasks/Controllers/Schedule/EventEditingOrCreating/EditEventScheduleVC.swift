@@ -52,23 +52,28 @@ class EditEventScheduleViewController: UIViewController {
     
     //MARK: - UI Elemets
     private lazy var navigationItemButton: UIBarButtonItem = {
-        return UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(didTapEdit))
+        return UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(didTapEdit))
     }()
     private let picker = UIColorPickerViewController()
     private let tableView = UITableView(frame: CGRectZero, style: .insetGrouped)
     private var imagePicker = UIImagePickerController()
+    
+    private let deleteButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.configuration = .bordered()
+        button.configuration?.title = "Delete event"
+        button.configuration?.image = UIImage(systemName: "trash")
+        button.configuration?.imagePlacement = .leading
+        button.configuration?.imagePadding = 3
+        button.configuration?.baseBackgroundColor = .systemRed
+        button.configuration?.baseForegroundColor = .systemRed
+        return button
+    }()
     //MARK: - viewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
     }
-
-    
-//    override func viewDidLayoutSubviews() {
-//        super.viewDidLayoutSubviews()
-//        tableView.frame = view.bounds
-//    }
-
     //MARK: - Targets methods
     @objc private func didTapDismiss(){
         setupHapticMotion(style: .medium)
@@ -172,7 +177,9 @@ class EditEventScheduleViewController: UIViewController {
     
     private func setupNavigationController(){
         navigationController?.navigationBar.tintColor = UIColor(named: "calendarHeaderColor")
-        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(didTapDismiss))
+        let cancelButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(didTapDismiss))
+        deleteButton.tintColor = .systemRed
+        navigationItem.leftBarButtonItem = cancelButton
         navigationItem.rightBarButtonItem = navigationItemButton
         if isStartEditing {
             navigationItemButton.isEnabled = false
@@ -194,11 +201,11 @@ class EditEventScheduleViewController: UIViewController {
             let content = UNMutableNotificationContent()
             let dateS = model.scheduleTime ?? Date()
             let date = DateFormatter.localizedString(from: dateS, dateStyle: .medium, timeStyle: .none)
-            let name = String(describing: model.scheduleName)
+            let body = String(describing: model.scheduleName ?? "")
             content.title = "Planned reminder".localized()
-            content.body = "\(date)"
-            content.subtitle = "\(name)"
-            content.sound = .defaultRingtone
+            content.body = body
+            content.subtitle = date
+            content.sound = .default
             let dateFormat = DateFormatter.localizedString(from: scheduleModel.scheduleStartDate ?? Date(), dateStyle: .medium, timeStyle:.none)
             content.userInfo = ["userNotification": dateFormat]
             let components = Calendar.current.dateComponents([.day,.month,.year,.hour,.minute,.second], from: dateS)
@@ -230,7 +237,7 @@ class EditEventScheduleViewController: UIViewController {
                 if success {
                     self.setupAddingEventToCalendar(store: eventStore, model: model, status: status)
                 } else {
-                    print(error?.localizedDescription as Any)
+                    self.alertError(text: "Cant save event in Calendar".localized(), mainTitle: "Warning!".localized())
                 }
             }
         case .restricted:

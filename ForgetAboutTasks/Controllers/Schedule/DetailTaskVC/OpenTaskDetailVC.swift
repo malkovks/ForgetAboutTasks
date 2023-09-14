@@ -350,8 +350,12 @@ extension OpenTaskDetailViewController: UITableViewDelegate, UITableViewDataSour
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if indexPath == [4,0] {
             return 300
+        } else if indexPath == [2,2] {
+            return 40
+        } else {
+            return UITableView.automaticDimension
         }
-        return UITableView.automaticDimension
+        
     }
     
     
@@ -360,7 +364,11 @@ extension OpenTaskDetailViewController: UITableViewDelegate, UITableViewDataSour
     }
     
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
+        if indexPath != [2,2] {
+            return UITableView.automaticDimension
+        } else {
+            return 40
+        }
     }
     
 }
