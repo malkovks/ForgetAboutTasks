@@ -309,7 +309,7 @@
 ";
 "Log In" = "Войти";
 "Create New Account" = "Создать аккаунт";
-"Or" = "Или";
+"Or" = "или";
 "Sign in with Google" = "Войти с помощью Google";
 "Error getting access to Firebase servers.\nTry again later" = "Ошибка получения доступа к серверам Firebase.\nПопробуйте позже";
 "Error getting data from account" = "Ошибка получения данных аккаунта";

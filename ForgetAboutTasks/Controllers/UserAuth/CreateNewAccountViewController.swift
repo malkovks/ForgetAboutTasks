@@ -1,5 +1,5 @@
 //
-//  RegisterAccountViewController.swift
+//  CreateNewAccountViewController.swift
 //  ForgetAboutTasks
 //
 //  Created by Константин Малков on 26.03.2023.
@@ -12,7 +12,7 @@ import AuthenticationServices
 //import FirebaseDatabase
 
 ///Class for creating account with functionallity to add name
-class RegisterAccountViewController: UIViewController {
+class CreateNewAccountViewController: UIViewController {
     
     //MARK: - UI views
     private let emailField: UITextField = {
@@ -43,7 +43,6 @@ class RegisterAccountViewController: UIViewController {
         field.isSecureTextEntry = true
         field.textColor = UIColor(named: "textColor")
         field.layer.borderWidth = 1
-        field.textContentType = .password
         field.autocorrectionType = .no
         field.autocapitalizationType = .none
         field.keyboardType = .default
@@ -63,7 +62,6 @@ class RegisterAccountViewController: UIViewController {
          field.isSecureTextEntry = true
          field.textColor = UIColor(named: "textColor")
          field.layer.borderWidth = 1
-         field.textContentType = .password
          field.keyboardType = .default
          field.autocorrectionType = .no
          field.autocapitalizationType = .none
@@ -71,7 +69,7 @@ class RegisterAccountViewController: UIViewController {
          field.layer.borderColor = UIColor(named: "navigationControllerColor")?.cgColor
          field.returnKeyType = .continue
          field.enablesReturnKeyAutomatically = true
-         field.tag = 1
+         field.tag = 2
          return field
     }()
     
@@ -84,7 +82,6 @@ class RegisterAccountViewController: UIViewController {
         field.textColor = UIColor(named: "textColor")
         field.isSecureTextEntry = false
         field.layer.borderWidth = 1
-        field.textContentType = .name
         field.autocapitalizationType = .words
         field.autocorrectionType = .no
         field.layer.cornerRadius = 12
@@ -152,12 +149,15 @@ class RegisterAccountViewController: UIViewController {
     @objc private func didTapCreateNewAccount(){
         setupHapticMotion(style: .soft)
         indicator.startAnimating()
+        view.alpha = 0.6
         
         guard let mailField = emailField.text, !mailField.isEmpty,
               let firstPassword = passwordField.text, !firstPassword.isEmpty,
               let secondPassword = secondPasswordField.text, !secondPassword.isEmpty,
               let userName = userNameField.text, !userName.isEmpty else {
             alertError(text: "Enter text in all fields".localized())
+            indicator.stopAnimating()
+            view.alpha = 1
             return
         }
         createNewUserAccount(firstPassword, secondPassword, mailField, userName)
@@ -179,6 +179,10 @@ class RegisterAccountViewController: UIViewController {
         alertController.addAction(confirmButton)
         alertController.addAction(UIAlertAction(title: "Cancel".localized(), style: .cancel))
         present(alertController, animated: isViewAnimated)
+    }
+    
+    @objc private func didTapDismissTextField(_ textField: UITextField){
+        textField.resignFirstResponder()
     }
     //MARK: - Set up methods
     private func setupView(){
@@ -209,8 +213,9 @@ class RegisterAccountViewController: UIViewController {
         let fixedSpace = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
         fixedSpace.width = 1.0
         let action = UIBarButtonItem(title: "Generate strong password".localized(), style: .done, target: self, action: #selector(didTapGenerateStrongPassword))
+        let doneButton = UIBarButtonItem(title: "Done".localized(), style: .done, target: self, action: #selector(didTapDismissTextField))
         action.tintColor = UIColor(named: "textColor")
-        toolBar.setItems([space, fixedSpace, action , fixedSpace, space], animated: isViewAnimated)
+        toolBar.setItems([space, fixedSpace, action , fixedSpace, doneButton], animated: isViewAnimated)
         toolBar.backgroundColor = .systemGray3
         toolBar.sizeToFit()
         
@@ -220,6 +225,7 @@ class RegisterAccountViewController: UIViewController {
             field.rightView = isPasswordHiddenButton
             field.rightViewMode = .whileEditing
             field.delegate = self
+            field.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
         }
         emailField.delegate = self
         userNameField.delegate = self
@@ -253,6 +259,7 @@ class RegisterAccountViewController: UIViewController {
                     guard error == nil else {
                         self?.alertError(text: "This account has already been created".localized())
                         self?.indicator.stopAnimating()
+                        self!.view.alpha = 1
                         self?.clearAllFields()
                         return
                     }
@@ -275,7 +282,7 @@ class RegisterAccountViewController: UIViewController {
     ///   - password: password text from textfield
     ///   - userName: username text from textfield
     private func askForSavingPassword(email: String, password: String,userName: String){
-        view.alpha = 0.8
+        view.alpha = 1
         createNewAccount(email: email, userName: userName)
         indicator.stopAnimating()
     }
@@ -318,7 +325,7 @@ class RegisterAccountViewController: UIViewController {
 }
 
 //MARK: - Delegate extensions
-extension RegisterAccountViewController: UITextFieldDelegate {
+extension CreateNewAccountViewController: UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         guard  let field = textField.text, !field.isEmpty else { return false}
@@ -345,34 +352,17 @@ extension RegisterAccountViewController: UITextFieldDelegate {
         }
         return true
     }
-
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        if textField == passwordField || textField == secondPasswordField  {
-            validationLabel.isHidden = false
+    
+    override func textFieldDidChange(_ textField: UITextField) {
+        if !passwordField.text!.isEmpty && !secondPasswordField.text!.isEmpty && !emailField.text!.isEmpty {
+            configureUserButton.isEnabled = true
         } else {
-            validationLabel.isHidden = true
+            configureUserButton.isEnabled = false
         }
-        let firstText = textField.text ?? ""
-        
-        if firstText.passValidation() {
-            validationLabel.text = "Password is valid".localized()
-            validationLabel.textColor = .systemGreen
-            if passwordField.text == secondPasswordField.text {
-                configureUserButton.isEnabled = true
-            } else {
-                validationLabel.text = "Password are not equal.\nTry again!".localized()
-                validationLabel.textColor = .systemRed
-                configureUserButton.isEnabled = false
-            }
-        } else {
-            validationLabel.text = "The password must contain at least one capital letter, a number and must be at least 8 characters long".localized()
-            validationLabel.textColor = .systemRed
-        }
-        return true
     }
 }
 //MARK: - Extensions
-extension RegisterAccountViewController {
+extension CreateNewAccountViewController {
     private func setupConstraints(){
         view.addSubview(emailField)
         emailField.snp.makeConstraints { make in

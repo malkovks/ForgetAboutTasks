@@ -134,9 +134,8 @@ class ChangePasswordViewController: UIViewController {
     
     //MARK: - Target methods
     @objc private func didTapConfirmChangePassword(){
-        confirmNewPasswordButton.isEnabled = true
         indicator.startAnimating()
-        view.alpha = 0.8
+        view.alpha = 0.6
         checkPasswordFields()
     }
     @objc private func didTapChangeVisible(){
@@ -199,6 +198,7 @@ class ChangePasswordViewController: UIViewController {
             field.delegate = self
             field.rightView = isPasswordHiddenButton
             field.rightViewMode = .whileEditing
+            field.addTarget(self, action: #selector(textFieldDidEndEditing(_:)), for: .editingChanged)
         }
         
         
@@ -251,23 +251,24 @@ class ChangePasswordViewController: UIViewController {
            let secondPassword = secondNewPasswordTextField.text,
            password == secondPassword,
            password.passValidation() && secondPassword.passValidation() {
-            Auth.auth().currentUser?.reauthenticate(with: authCredential, completion: { [unowned self] _, error in
+            Auth.auth().currentUser?.reauthenticate(with: authCredential, completion: { [weak self] _, error in
                 if let error = error{
-                    self.alertError(text: error.localizedDescription)
-                    self.indicator.stopAnimating()
+                    self?.alertError(text: error.localizedDescription)
+                    self?.indicator.stopAnimating()
+                    self!.view.alpha = 1
                 } else {
                     Auth.auth().currentUser?.updatePassword(to: password, completion: { error in
                         if let error = error {
-                            self.alertError(text: error.localizedDescription)
-                            self.indicator.stopAnimating()
+                            self?.alertError(text: error.localizedDescription)
+                            self?.indicator.stopAnimating()
+                            self!.view.alpha = 1
                         } else {
-                            self.indicator.stopAnimating()
-                            self.showAlertForUser(text: "Password was successfully changed", duration: .now()+1, controllerView: self.view)
-                            self.navigationController?.popToRootViewController(animated: isViewAnimated)
+                            self?.indicator.stopAnimating()
+                            self!.view.alpha = 1
+                            self?.showAlertForUser(text: "Password was successfully changed", duration: .now()+1, controllerView: self!.view)
+                            self?.navigationController?.popToRootViewController(animated: isViewAnimated)
                             DispatchQueue.main.asyncAfter(deadline: .now()+1) {
-                                if let nav = self.navigationController {
-                                    nav.popToRootViewController(animated: isViewAnimated)
-                                }
+                                self?.navigationController?.popToRootViewController(animated: isViewAnimated)
                             }
                         }
                     })
@@ -276,8 +277,8 @@ class ChangePasswordViewController: UIViewController {
         } else {
             alertError(text: "Password is not equal or valid. Try again".localized())
             indicator.stopAnimating()
+            view.alpha = 1
         }
-        view.alpha = 1
     }
     
     
@@ -329,35 +330,10 @@ extension ChangePasswordViewController: UITextFieldDelegate {
         guard let firstText = firstNewPasswordTextField.text, let secondText = secondNewPasswordTextField.text else { return }
         if !firstText.isEmpty && !secondText.isEmpty {
             confirmNewPasswordButton.isEnabled = true
-        }
-    }
-    
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        if textField == firstNewPasswordTextField || textField == secondNewPasswordTextField {
-            validationLabel.isHidden = false
         } else {
-            validationLabel.isHidden = true
-        }
-        
-        let newText = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) ?? ""
-        if newText.passValidation() {
-            if firstNewPasswordTextField.text == newText && secondNewPasswordTextField.text == newText {
-                validationLabel.text = "Password equal and valid".localized()
-            } else {
-                validationLabel.text = "Password are not equal.\nTry again!".localized()
-            }
-            validationLabel.text = "Password is valid".localized()
-            validationLabel.textColor = .systemGreen
-            confirmNewPasswordButton.isEnabled = false
-        } else {
-            validationLabel.text = "The password must contain at least one capital letter, a number and must be at least 8 characters long".localized()
-            validationLabel.textColor = .systemRed
             confirmNewPasswordButton.isEnabled = false
         }
-        return true
     }
-    
-   
 }
 
 extension ChangePasswordViewController {

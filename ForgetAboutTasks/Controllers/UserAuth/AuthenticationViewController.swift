@@ -1,5 +1,5 @@
 //
-//  UserAuthViewController.swift
+//  AuthenticationViewController.swift
 //  ForgetAboutTasks
 //
 //  Created by Константин Малков on 24.03.2023.
@@ -11,7 +11,7 @@ import Firebase
 import GoogleSignIn
 
 /// Class display main setup for Login to application with possibility to enter with login, creating account or enter with google account
-class UserAuthViewController: UIViewController {
+class AuthenticationViewController: UIViewController {
     
     private let textInfo: String = "This application using Firebase Authentication for entering, creating and storing user email and password. However our service using Keychain API for storing email and password, it store in UTF8 format and closed for third-persons can't be available. \nFor more information, visit Firebase.Google.com".localized()
 
@@ -80,7 +80,7 @@ class UserAuthViewController: UIViewController {
     
     @objc private func didTapRegister(){
         setupHapticMotion(style: .soft)
-        let vc = RegisterAccountViewController()
+        let vc = CreateNewAccountViewController()
         navigationController?.pushViewController(vc, animated: isViewAnimated)
     }
     
@@ -154,7 +154,7 @@ class UserAuthViewController: UIViewController {
     }
 }
 //MARK: - Extensions
-extension UserAuthViewController {
+extension AuthenticationViewController {
     private func setupConstraints(){
         view.addSubview(loginButton)
         loginButton.snp.makeConstraints { make in

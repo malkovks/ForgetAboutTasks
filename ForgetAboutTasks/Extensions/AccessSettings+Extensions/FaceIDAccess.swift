@@ -53,7 +53,6 @@ extension UIViewController {
             }
         } else {
             let errorString = error?.localizedDescription
-            print(errorString)
             handler(false)
         }
     }

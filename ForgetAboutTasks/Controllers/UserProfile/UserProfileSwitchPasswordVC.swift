@@ -219,8 +219,7 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
     @objc private func didTapConfirmPassword(sender: UIButton) {
         setupHapticMotion(style: .light)
         let emailUser = UserDefaults.standard.string(forKey: "userMail") ?? "No email"
-        let password = passwordDigits
-        let textValue = try! KeychainManager.shared.getPassword(email: emailUser)
+        let password = confirmPasswordDigits
         if passwordDigits.count == 4 && passwordDigits == confirmPasswordDigits {
             confirmPasswordButton.setImage(UIImage(systemName: "lock.fill"), for: .normal)
             confirmPasswordButton.setTitle("Confirmed".localized(), for: .normal)
@@ -228,9 +227,6 @@ class UserProfileSwitchPasswordViewController: UIViewController , UITextFieldDel
                 UserDefaults.standard.setValue(success, forKey: "accessToFaceID")
                 UserDefaults.standard.setValue(true, forKey: "isPasswordCodeEnabled")
                 UserDefaults.standard.setValue(true, forKey: "isUserConfirmPassword")
-                if !textValue.isEmpty  {
-                    KeychainManager.shared.delete()
-                }
                 try! KeychainManager.shared.savePassword(password: password, email: emailUser)
                 self?.delegate?.isSavedCompletely(boolean: true)
                 self?.navigationController?.popViewController(animated: isViewAnimated)

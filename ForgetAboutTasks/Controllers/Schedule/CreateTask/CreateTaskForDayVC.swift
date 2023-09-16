@@ -26,12 +26,16 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
         self.cellDataScheduleModel = model
         self.choosenDate = choosenDate
         self.birthdayContactModel = localRealmData.objects(ContactModel.self)
+        
     }
 
     init(choosenDate: Date){
         super.init(nibName: nil, bundle: nil)
         self.choosenDate = choosenDate
         self.cellDataScheduleModel = nil
+        self.setupBirthdayButton()
+        let predicate = self.setupRealmData(date: choosenDate)
+        self.loadingRealmData(predicate: predicate)
     }
     
     required init?(coder: NSCoder) {
@@ -204,11 +208,10 @@ class CreateTaskForDayController: UIViewController, CheckSuccessSaveProtocol {
             DispatchQueue.main.asyncAfter(deadline: .now()+1) {
                 self?.navigationController?.pushViewController(vc, animated: isViewAnimated)
             }
-            
         }
         let convertChoosenDate = DateFormatter.localizedString(from: choosenDate, dateStyle: .medium, timeStyle: .none)
 
-        guard let countValue = birthdayCounts[convertChoosenDate] else { return }
+        guard let countValue = birthdayCounts[convertChoosenDate] else { alertError(text: "Error", mainTitle: "Birthday error");return }
         let height = Int(navigationController?.navigationBar.frame.height ?? 70) + (80*countValue)
         let nav = UINavigationController(rootViewController: vc)
         nav.modalPresentationStyle = .pageSheet

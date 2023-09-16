@@ -17,11 +17,11 @@ final class ForgetAboutTasksTests: XCTestCase {
     var stringExt: String!
     var schedule: ScheduleViewController!
     var keychain: KeychainManager!
-    var userAuth: UserAuthViewController!
+    var userAuth: AuthenticationViewController!
     
     override func setUpWithError() throws {
         try super.setUpWithError()
-        userAuth = UserAuthViewController()
+        userAuth = AuthenticationViewController()
         extensions = UIViewController()
         stringExt = String()
         schedule = ScheduleViewController()

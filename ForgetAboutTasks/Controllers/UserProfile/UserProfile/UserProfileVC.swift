@@ -188,7 +188,7 @@ class UserProfileViewController: UIViewController {
                 do {
                     try FirebaseAuth.Auth.auth().signOut()
                     UserDefaultsManager.shared.signOut()
-                    let vc = UserAuthViewController()
+                    let vc = AuthenticationViewController()
                     vc.navigationItem.hidesBackButton = true
                     self?.navigationController?.pushViewController(vc, animated: isViewAnimated)
                 } catch let error {
@@ -477,6 +477,7 @@ class UserProfileViewController: UIViewController {
                 imagePicker.sourceType = .photoLibrary
                 imagePicker.allowsEditing = true
                 activityIndicator.startAnimating()
+                view.alpha = 0.6
                 present(self.imagePicker, animated: isViewAnimated)
             }
         }))
@@ -486,6 +487,7 @@ class UserProfileViewController: UIViewController {
                 imagePicker.sourceType = .camera
                 imagePicker.allowsEditing = true
                 activityIndicator.startAnimating()
+                view.alpha = 0.6
                 present(self.imagePicker, animated: isViewAnimated)
             }
         }))
@@ -493,6 +495,7 @@ class UserProfileViewController: UIViewController {
             self.userImageView.image = UIImage(systemName: "photo.circle")
             UserDefaults.standard.set(nil,forKey: "userImage")
             self.view.alpha = 1
+            self.activityIndicator.stopAnimating()
         }))
         alert.addAction(UIAlertAction(title: "Cancel".localized(), style: .cancel,handler: { _ in
             self.view.alpha = 1
@@ -576,11 +579,15 @@ class UserProfileViewController: UIViewController {
                     if let error = error {
                         self?.alertError(text: error.localizedDescription)
                     } else {
-                        self?.alertError(text: "Account was deleted".localized())
-                        UserDefaultsManager.shared.signOut()
-                        let vc = UserAuthViewController()
-                        vc.navigationItem.hidesBackButton = true
-                        self?.navigationController?.pushViewController(vc, animated: isViewAnimated)
+                        let alert = UIAlertController(title: nil, message: "Account was deleted".localized(), preferredStyle: .alert)
+                        alert.addAction(UIAlertAction(title: "OK".localized(), style: .cancel,handler: {_ in
+                            UserDefaultsManager.shared.signOut()
+                            let vc = AuthenticationViewController()
+                            vc.navigationItem.hidesBackButton = true
+                            self?.navigationController?.pushViewController(vc, animated: isViewAnimated)
+                        }))
+                        self?.present(alert, animated: isViewAnimated)
+                        
                     }
                 }
             } else {

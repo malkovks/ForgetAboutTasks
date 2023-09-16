@@ -14,8 +14,6 @@
 		0A0A49D52A02D3A100517E6F /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 0A0A49D42A02D3A100517E6F /* Realm */; };
 		0A0A49D72A02D3A100517E6F /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 0A0A49D62A02D3A100517E6F /* RealmSwift */; };
 		0A0A49DA2A04E64F00517E6F /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 0A0A49D92A04E64F00517E6F /* FirebaseAuth */; };
-		0A0A49DC2A04E64F00517E6F /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 0A0A49DB2A04E64F00517E6F /* FirebaseDatabase */; };
-		0A0A49DE2A04E64F00517E6F /* FirebaseDatabaseSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 0A0A49DD2A04E64F00517E6F /* FirebaseDatabaseSwift */; };
 		0A0CE6F729C461F600A14648 /* CreateEventScheduleVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A0CE6F629C461F600A14648 /* CreateEventScheduleVC.swift */; };
 		0A1FD0C02A7A5400003A7158 /* Date+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A1FD0BF2A7A5400003A7158 /* Date+Extensions.swift */; };
 		0A1FD0C32A7D7641003A7158 /* TaskBirthdayDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A1FD0C22A7D7641003A7158 /* TaskBirthdayDetailVC.swift */; };
@@ -55,11 +53,11 @@
 		0A9918F72A57F524001004FA /* UserProfileSwitchPasswordVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9918F62A57F524001004FA /* UserProfileSwitchPasswordVC.swift */; };
 		0A99A8FD29CD855100CC5A42 /* AlertTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A99A8FC29CD855100CC5A42 /* AlertTextField.swift */; };
 		0A99A8FF29CD8FE000CC5A42 /* AllTasksToDoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A99A8FE29CD8FE000CC5A42 /* AllTasksToDoVC.swift */; };
-		0A99A90729CD99CA00CC5A42 /* UserAuthController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A99A90629CD99CA00CC5A42 /* UserAuthController.swift */; };
+		0A99A90729CD99CA00CC5A42 /* AuthenticationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A99A90629CD99CA00CC5A42 /* AuthenticationViewController.swift */; };
 		0A99A90B29CD9CB300CC5A42 /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A99A90A29CD9CB300CC5A42 /* UserDefaultsManager.swift */; };
 		0A9E1C3829CEEC4B000CC9A9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0A9E1C3729CEEC4B000CC9A9 /* GoogleService-Info.plist */; };
 		0A9E1C3A29CEEDCE000CC9A9 /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9E1C3929CEEDCE000CC9A9 /* LoginController.swift */; };
-		0A9E1C3C29D0778F000CC9A9 /* RegisterAccountController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9E1C3B29D0778F000CC9A9 /* RegisterAccountController.swift */; };
+		0A9E1C3C29D0778F000CC9A9 /* CreateNewAccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9E1C3B29D0778F000CC9A9 /* CreateNewAccountViewController.swift */; };
 		0AA0E9382A60C68B00911C0D /* FaceIDAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA0E9372A60C68B00911C0D /* FaceIDAccess.swift */; };
 		0AA0E93A2A60C69B00911C0D /* MediaAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA0E9392A60C69B00911C0D /* MediaAccess.swift */; };
 		0AA0E93C2A60D24B00911C0D /* ContactsAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA0E93B2A60D24B00911C0D /* ContactsAccess.swift */; };
@@ -189,11 +187,11 @@
 		0A9918F62A57F524001004FA /* UserProfileSwitchPasswordVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileSwitchPasswordVC.swift; sourceTree = "<group>"; };
 		0A99A8FC29CD855100CC5A42 /* AlertTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertTextField.swift; sourceTree = "<group>"; };
 		0A99A8FE29CD8FE000CC5A42 /* AllTasksToDoVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllTasksToDoVC.swift; sourceTree = "<group>"; };
-		0A99A90629CD99CA00CC5A42 /* UserAuthController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAuthController.swift; sourceTree = "<group>"; };
+		0A99A90629CD99CA00CC5A42 /* AuthenticationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationViewController.swift; sourceTree = "<group>"; };
 		0A99A90A29CD9CB300CC5A42 /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
 		0A9E1C3729CEEC4B000CC9A9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		0A9E1C3929CEEDCE000CC9A9 /* LoginController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
-		0A9E1C3B29D0778F000CC9A9 /* RegisterAccountController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterAccountController.swift; sourceTree = "<group>"; };
+		0A9E1C3B29D0778F000CC9A9 /* CreateNewAccountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateNewAccountViewController.swift; sourceTree = "<group>"; };
 		0A9E1C4329D46851000CC9A9 /* ForgetAboutTasks.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ForgetAboutTasks.entitlements; sourceTree = "<group>"; };
 		0AA0E9372A60C68B00911C0D /* FaceIDAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceIDAccess.swift; sourceTree = "<group>"; };
 		0AA0E9392A60C69B00911C0D /* MediaAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaAccess.swift; sourceTree = "<group>"; };
@@ -252,12 +250,10 @@
 				0A0A49C32A02D22300517E6F /* FSCalendar in Frameworks */,
 				0A0A49D22A02D30F00517E6F /* GoogleSignInSwift in Frameworks */,
 				0A0A49D72A02D3A100517E6F /* RealmSwift in Frameworks */,
-				0A0A49DE2A04E64F00517E6F /* FirebaseDatabaseSwift in Frameworks */,
 				0A0A49C62A02D23900517E6F /* SnapKit in Frameworks */,
 				0A0A49D52A02D3A100517E6F /* Realm in Frameworks */,
 				0A0A49DA2A04E64F00517E6F /* FirebaseAuth in Frameworks */,
 				0AA1E9132A411B7E0052B849 /* WidgetKit.framework in Frameworks */,
-				0A0A49DC2A04E64F00517E6F /* FirebaseDatabase in Frameworks */,
 				0A0A49D02A02D30F00517E6F /* GoogleSignIn in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -395,10 +391,10 @@
 			children = (
 				0AB578ED2A8B77DF00227581 /* TabBarController */,
 				0A99A90529CD99B400CC5A42 /* UserAuth */,
-				0A99A90329CD98E600CC5A42 /* UserProfile */,
 				0A99A90029CD98C600CC5A42 /* Schedule */,
 				0A99A90129CD98CE00CC5A42 /* AllTasks */,
 				0A99A90229CD98DD00CC5A42 /* Contacts */,
+				0A99A90329CD98E600CC5A42 /* UserProfile */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -485,9 +481,9 @@
 		0A99A90529CD99B400CC5A42 /* UserAuth */ = {
 			isa = PBXGroup;
 			children = (
-				0A99A90629CD99CA00CC5A42 /* UserAuthController.swift */,
+				0A99A90629CD99CA00CC5A42 /* AuthenticationViewController.swift */,
 				0A9E1C3929CEEDCE000CC9A9 /* LoginController.swift */,
-				0A9E1C3B29D0778F000CC9A9 /* RegisterAccountController.swift */,
+				0A9E1C3B29D0778F000CC9A9 /* CreateNewAccountViewController.swift */,
 				0AEAA9F22A264BBF00BE85A4 /* ResetPasswordController.swift */,
 				0ABD347C2A9536A90071EE4F /* ChangePasswordViewController.swift */,
 			);
@@ -754,8 +750,6 @@
 				0A0A49D42A02D3A100517E6F /* Realm */,
 				0A0A49D62A02D3A100517E6F /* RealmSwift */,
 				0A0A49D92A04E64F00517E6F /* FirebaseAuth */,
-				0A0A49DB2A04E64F00517E6F /* FirebaseDatabase */,
-				0A0A49DD2A04E64F00517E6F /* FirebaseDatabaseSwift */,
 			);
 			productName = ForgetAboutTasks;
 			productReference = 0A86ED0C29B5D97F001C9BAF /* ForgetAboutTasks.app */;
@@ -967,7 +961,7 @@
 				0ABD347F2A9AE0170071EE4F /* UserProfileSetTimerPassword.swift in Sources */,
 				0AEAA9F82A272BB600BE85A4 /* EditContactVC.swift in Sources */,
 				0AD4985A2A750E5900B0599E /* UserProfileFooterView.swift in Sources */,
-				0A99A90729CD99CA00CC5A42 /* UserAuthController.swift in Sources */,
+				0A99A90729CD99CA00CC5A42 /* AuthenticationViewController.swift in Sources */,
 				0A2717BA2A01F7FE00EFBC11 /* AllTasksDetailVC.swift in Sources */,
 				0ACE797229DD95C600599C19 /* CreateTaskTableVC.swift in Sources */,
 				0AACE7A92A1F80D500531C84 /* ScheduleAllEventVC.swift in Sources */,
@@ -978,7 +972,7 @@
 				0AD498542A7276A800B0599E /* UserProfileTableViewCell.swift in Sources */,
 				0A9918C42A50158A001004FA /* CalendarCenterAccess.swift in Sources */,
 				0A7FFFBA29EFDC0B00CAC9DA /* ContactRealmManager.swift in Sources */,
-				0A9E1C3C29D0778F000CC9A9 /* RegisterAccountController.swift in Sources */,
+				0A9E1C3C29D0778F000CC9A9 /* CreateNewAccountViewController.swift in Sources */,
 				0A9918F52A5651EF001004FA /* DataProvider.swift in Sources */,
 				0A86ED1229B5D97F001C9BAF /* SceneDelegate.swift in Sources */,
 				0AB0A96F2A1C61D30084AE07 /* EditTaskTableVC.swift in Sources */,
@@ -1509,16 +1503,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 0A0A49D82A04E64F00517E6F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseAuth;
-		};
-		0A0A49DB2A04E64F00517E6F /* FirebaseDatabase */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 0A0A49D82A04E64F00517E6F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseDatabase;
-		};
-		0A0A49DD2A04E64F00517E6F /* FirebaseDatabaseSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 0A0A49D82A04E64F00517E6F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseDatabaseSwift;
 		};
 		0ABD34822A9C88FF0071EE4F /* RealmSwift */ = {
 			isa = XCSwiftPackageProductDependency;

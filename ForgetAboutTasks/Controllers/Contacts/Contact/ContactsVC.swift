@@ -183,7 +183,6 @@ class ContactsViewController: UIViewController , CheckSuccessSaveProtocol{
             for index in indexes {
                 let model = contactData[index.row]
                 ContactRealmManager.shared.deleteContactModel(model: model)
-                print("success")
             }
             tableView.deleteRows(at: indexes, with: .fade)
         }

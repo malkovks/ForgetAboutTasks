@@ -28,13 +28,14 @@ class LogInViewController: UIViewController {
         field.placeholder = "example@email.com"
         field.layer.borderWidth = 1
         field.textContentType = .emailAddress
-        field.keyboardType = .emailAddress
+        field.keyboardType = .asciiCapable
         field.returnKeyType = .continue
         field.layer.cornerRadius = 12
         field.layer.borderColor = UIColor(named: "navigationControllerColor")?.cgColor
         field.clearButtonMode = .whileEditing
         field.autocapitalizationType = .none
         field.autocorrectionType = .no
+        
         return field
     }()
     
@@ -46,6 +47,7 @@ class LogInViewController: UIViewController {
         field.placeholder = "Enter the password..".localized()
         field.isSecureTextEntry = true
         field.textContentType = .password
+        field.keyboardType = .asciiCapable
         field.layer.borderWidth = 1
         field.autocapitalizationType = .none
         field.autocorrectionType = .no
@@ -58,9 +60,8 @@ class LogInViewController: UIViewController {
     private let isPasswordHiddenButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(UIImage(systemName: "eye.fill"), for: .normal)
-        button.tintColor = .black
-        button.backgroundColor = UIColor(named: "launchBackgroundColor")
-        button.layer.cornerRadius = 8
+        button.tintColor = UIColor(named: "textColor")
+        button.backgroundColor = .clear
         return button
     }()
     
@@ -76,7 +77,6 @@ class LogInViewController: UIViewController {
     
     private let resetPasswordButton: UIButton = {
         let button = UIButton(type: .system)
-        button.isEnabled = false
         button.configuration = .tinted()
         button.configuration?.title = "Forget password?".localized()
         button.configuration?.baseBackgroundColor = .clear
@@ -165,6 +165,7 @@ class LogInViewController: UIViewController {
         emailField.text = ""
         passwordField.text = ""
         indicator.stopAnimating()
+        view.alpha = 1
         indicator.isHidden = true
     }
     
@@ -178,6 +179,7 @@ class LogInViewController: UIViewController {
         if internetIsAvailable {
             indicator.isHidden = false
             indicator.startAnimating()
+            view.alpha = 0.6
             FirebaseAuth.Auth.auth().signIn(withEmail: email, password: password) { [weak self] result, error in
                 if let result = result {
                     UserDefaultsManager.shared.saveAccountData(result: result)
@@ -185,6 +187,7 @@ class LogInViewController: UIViewController {
                     self?.indicator.stopAnimating()
                     self?.navigationController?.popToRootViewController(animated: isViewAnimated)
                     self?.view.window?.rootViewController?.dismiss(animated: isViewAnimated)
+                    self!.view.alpha = 1
                 } else {
                     self?.alertError(text: error?.localizedDescription ?? "", mainTitle: "Error")
                     self?.clearTextFields()
@@ -213,21 +216,7 @@ extension LogInViewController: UITextFieldDelegate {
         }
         return true
     }
-    
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        guard let text = emailField.text,
-              let password = passwordField.text else {
-            return false
-        }
-        if !text.isEmpty && !password.isEmpty {
-            configureUserButton.isEnabled = true
-            return true
-        } else {
-            configureUserButton.isEnabled = false
-            return false
-        }
-        
-    }
+
 }
 
 

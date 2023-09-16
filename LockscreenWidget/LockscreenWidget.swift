@@ -80,7 +80,7 @@ struct LockscreenWidgetEntryView : View {
             case .systemSmall:
                 
                 ContainerRelativeShape()
-                    .fill(.gray.gradient)
+                    .fill(.indigo.gradient)
                 VStack {
                     HStack(spacing: 2) {
                         Image("calendar")
