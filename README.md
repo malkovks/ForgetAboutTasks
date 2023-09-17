@@ -117,6 +117,7 @@ Little Introduction. This application using only imported frameworks and SDK's, 
 * [X] Work with Haptics on iPhone when user make some action with application. It edited if user need to switch vibration;
 * [X] Work with Keychain manager for save storing email and password;
 * [X] Full autolayout with SnapKit only;
-* [X] Completed work with SystemConfiguration for checking internet connection. 
+* [X] Completed work with SystemConfiguration for checking internet connection;
+* [X] Work with WidgetKit and display number of events on current day in widget.
 
 ### This project is non-commercial product. All rights reserved.
